@@ -1,0 +1,6956 @@
+{
+ "keywords": [
+  "ARROW",
+  "BLOCK",
+  "CHANNELING",
+  "CHO_MELODY",
+  "COOK",
+  "DARK_ORB",
+  "ENERGY",
+  "ETERNAL",
+  "ETHEREAL",
+  "EVOKE",
+  "EXHAUST",
+  "FATAL",
+  "FORGE",
+  "FROST_ORB",
+  "GLASS_ORB",
+  "INNATE",
+  "KI_MELODY",
+  "LIGHTNING_ORB",
+  "PLASMA_ORB",
+  "REPLAY",
+  "RETAIN",
+  "SLY",
+  "STUN",
+  "SUMMON_STATIC",
+  "TAROT",
+  "TRANSFORM",
+  "UNPLAYABLE",
+  "WAH_MELODY"
+ ],
+ "tips": {
+  "card": {
+   "ABRASIVE": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    },
+    {
+     "kind": "power",
+     "id": "THORNS"
+    },
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    }
+   ],
+   "ABUNDANCE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ACCELERANT": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "ACCURACY": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    }
+   ],
+   "ADRENALINE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "AFTERIMAGE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "AFTERLIFE": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "AGGRESSION": [
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "ALCHEMIZE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ALIGNMENT": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "ALL_IS_WELL": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ANGUISH": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    }
+   ],
+   "ANOINTED": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "ANTICIPATE": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "APOTHEOSIS": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "APPARITION": [
+    {
+     "kind": "power",
+     "id": "INTANGIBLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ARCHERY": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ],
+   "ARMAMENTS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ARROW_STAB": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ],
+   "ARSENAL": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "ASCENDERS_BANE": [
+    {
+     "kind": "keyword",
+     "id": "ETERNAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ASHEN_STRIKE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ASSASSINATE": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "AUTOMATION": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "BACKFLIP": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BACKSTAB": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "BAD_LUCK": [
+    {
+     "kind": "keyword",
+     "id": "ETERNAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "BALL_LIGHTNING": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "BANSHEES_CRY": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "BARRAGE": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    }
+   ],
+   "BARRICADE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BASH": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "BEACON_OF_HOPE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "BEAM_CELL": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "BEAT_INTO_SHAPE": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "BEGONE": [
+    {
+     "kind": "card",
+     "id": "MINION_STRIKE"
+    }
+   ],
+   "BELIEVE_IN_YOU": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "BIASED_COGNITION": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    }
+   ],
+   "BIG_BANG": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "forge"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "BLADE_DANCE": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "BLADE_OF_INK": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    },
+    {
+     "kind": "enchantment",
+     "id": "INKY"
+    }
+   ],
+   "BLADE_SYMPHONY": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    }
+   ],
+   "BLAZE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "BLIGHT_STRIKE": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "BLOOD_WALL": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BLOODLETTING": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "BLOSSOM_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "power",
+     "id": "STRETCH"
+    }
+   ],
+   "BLOT_OUT_THE_SKY": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "BLUR": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BODY_SLAM": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BODYGUARD": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    }
+   ],
+   "BOMBARDMENT": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "BONE_SHARDS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BOOST_AWAY": [
+    {
+     "kind": "card",
+     "id": "DAZED"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BOOT_SEQUENCE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "BORROWED_TIME": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "BOUNCE": [
+    {
+     "kind": "power",
+     "id": "STRETCH"
+    }
+   ],
+   "BOUNCING_FLASK": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "BOW_SMACK": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    },
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "BRACE": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ],
+   "BRAND": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "BREAK": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "BRIGHTEN_UP": [
+    {
+     "kind": "card",
+     "id": "JOY"
+    },
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "BRIGHTEST_FLAME": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "BUBBLE_BUBBLE": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "BULK_UP": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "BULLY": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "BULWARK": [
+    {
+     "kind": "forge"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BUNDLE_OF_JOY": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "BURN": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "BURNING_PACT": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "BYRDONIS_EGG": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "CALCULATED_GAMBLE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "CALL_OF_THE_VOID": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "CALTROPS": [
+    {
+     "kind": "power",
+     "id": "THORNS"
+    }
+   ],
+   "CAPTURE_SPIRIT": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    }
+   ],
+   "CHAOS": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    }
+   ],
+   "CHARGE": [
+    {
+     "kind": "card",
+     "id": "MINION_DIVE_BOMB"
+    }
+   ],
+   "CHARGE_BATTERY": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CHILD_OF_THE_STARS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CHILL": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "CHO_BARBS": [
+    {
+     "kind": "power",
+     "id": "THORNS"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CHO_CHORUS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CHO_FIRM": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CHO_KI": [
+    {
+     "kind": "power",
+     "id": "STRETCH"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CHO_LIMBS": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CHO_READY": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CINDER": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "CLEANSE": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "CLOAK_AND_DAGGER": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CLOAK_OF_STARS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CLUMSY": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "CODA": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "COLD_SNAP": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    }
+   ],
+   "COLLISION_COURSE": [
+    {
+     "kind": "card",
+     "id": "DEBRIS"
+    }
+   ],
+   "COLOSSUS": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "COMET": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "COMPACT": [
+    {
+     "kind": "card",
+     "id": "FUEL"
+    },
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    },
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "COMPOST": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "CONCOCT": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "CONQUEROR": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "CONSTELLATION": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CONSUMING_SHADOW": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "DARK_ORB"
+    },
+    {
+     "kind": "static",
+     "id": "EVOKE"
+    }
+   ],
+   "CONVERGENCE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "COOLANT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "COOLHEADED": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    }
+   ],
+   "COORDINATE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "CORROSIVE_WAVE": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "CORRUPTION": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "COSMIC_INDIFFERENCE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "COUNTDOWN": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "COVERING_FIRE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CRASH_LANDING": [
+    {
+     "kind": "card",
+     "id": "DEBRIS"
+    }
+   ],
+   "CRIMSON_MANTLE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CRUELTY": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "CRUSH_UNDER": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "CURSE_OF_THE_BELL": [
+    {
+     "kind": "keyword",
+     "id": "ETERNAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "DANSE_MACABRE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "DARK_EMBRACE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DARK_SHACKLES": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DARKNESS": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "DARK_ORB"
+    }
+   ],
+   "DASH": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DAZED": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "DEADLY_POISON": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "DEATH": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DEATHBRINGER": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    },
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "DEATHS_DOOR": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DEBILITATE": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "DEBRIS": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DEBT": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "DECAY": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "DECISIONS_DECISIONS": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DEEP_STRETCH": [
+    {
+     "kind": "power",
+     "id": "STRETCH"
+    }
+   ],
+   "DEFEND_DEFECT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DEFEND_FOOL": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DEFEND_IRONCLAD": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DEFEND_NECROBINDER": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DEFEND_REGENT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DEFEND_SILENT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DEFILE": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DEFLECT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DEFRAGMENT": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    }
+   ],
+   "DEFY": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DELAY": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DEMESNE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DEMON_FORM": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "DEMONIC_SHIELD": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DEPRECATED_CARD": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DEVOUR_LIFE": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    },
+    {
+     "kind": "static",
+     "id": "SUMMON_STATIC"
+    }
+   ],
+   "DIRGE": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    },
+    {
+     "kind": "card",
+     "id": "SOUL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DISCOVERY": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DISLIKE_YOU": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    }
+   ],
+   "DISMANTLE": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "DISTRACTION": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DIVINE_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "DODGE_AND_ROLL": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DOMINATE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DOUBLE_ENERGY": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DOUBT": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "DOWSING": [
+    {
+     "kind": "card",
+     "id": "ABUNDANCE"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "DRAMATIC_ENTRANCE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "DREDGE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "DRUM_OF_BATTLE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DUALCAST": [
+    {
+     "kind": "static",
+     "id": "EVOKE"
+    }
+   ],
+   "DYING_STAR": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ECHO_FORM": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ECSTASY": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "card",
+     "id": "JOY"
+    }
+   ],
+   "EIDOLON": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ENCORE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "END_OF_DAYS": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "ENERGY_SURGE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ENFEEBLING_TOUCH": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ENNUI": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    }
+   ],
+   "ENRAPTURE": [
+    {
+     "kind": "power",
+     "id": "VIGOR"
+    },
+    {
+     "kind": "power",
+     "id": "STRETCH"
+    }
+   ],
+   "ENSEMBLE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ENTHRALLED": [
+    {
+     "kind": "keyword",
+     "id": "ETERNAL"
+    }
+   ],
+   "ENTRENCH": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ENTROPY": [
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "ENVENOM": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "EPIC_RETRIEVAL": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "EQUILIBRIUM": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ERADICATE": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "ESCAPE_PLAN": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ETERNAL_ARMOR": [
+    {
+     "kind": "power",
+     "id": "PLATING"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "EVIL_EYE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "EXPECT_A_FIGHT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "EXPERTISE": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "EXPLOSIVE_ARROWS": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    }
+   ],
+   "EXPOSE": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "power",
+     "id": "ARTIFACT"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "FADE": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "FALLING_STAR": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "FAN_OF_KNIVES": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    }
+   ],
+   "FASTEN": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FEAR": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "FEED": [
+    {
+     "kind": "static",
+     "id": "FATAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "FEEDING_FRENZY": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "FEEL_NO_PAIN": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FIEND_FIRE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "FIGHT_ME": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "FIGHT_THROUGH": [
+    {
+     "kind": "card",
+     "id": "WOUND"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FINESSE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FISTICUFFS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FLAK_CANNON": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "FLAME_BARRIER": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FLICK_FLACK": [
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    }
+   ],
+   "FLORESCENCE": [
+    {
+     "kind": "card",
+     "id": "THE_SHOT"
+    }
+   ],
+   "FOCUSED_STRIKE": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    }
+   ],
+   "FOLLY": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETERNAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "FOOLISH_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    }
+   ],
+   "FOOTWORK": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "FORBIDDEN_GRIMOIRE": [
+    {
+     "kind": "keyword",
+     "id": "ETERNAL"
+    }
+   ],
+   "FORGOTTEN_RITUAL": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "FRANTIC_ESCAPE": [
+    {
+     "kind": "power",
+     "id": "SANDPIT"
+    }
+   ],
+   "FRIENDSHIP": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "FUEL": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "FURNACE": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "FUSION": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "PLASMA_ORB"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "GAMMA_BLAST": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "GATHER_LIGHT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "GENETIC_ALGORITHM": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "GLACIER": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "GLASSWORK": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "GLASS_ORB"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "GLIMPSE_BEYOND": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "GLITTERSTREAM": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "GO_FOR_THE_EYES": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "GOLD_AXE": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "GRAVE_WARDEN": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "GRAVEBLAST": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "GREED": [
+    {
+     "kind": "keyword",
+     "id": "ETERNAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "GROWTH": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "GUARDS": [
+    {
+     "kind": "card",
+     "id": "MINION_SACRIFICE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "GUILTY": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "GUNK_UP": [
+    {
+     "kind": "card",
+     "id": "SLIMED"
+    }
+   ],
+   "HAILSTORM": [
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    }
+   ],
+   "HAMMER_TIME": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "HAND_OF_GREED": [
+    {
+     "kind": "static",
+     "id": "FATAL"
+    }
+   ],
+   "HAND_TRICK": [
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "HARMONIC_SHIELD": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "HAUNT": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    }
+   ],
+   "HAVOC": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "HAZE": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    },
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "HEAVY_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ],
+   "HEGEMONY": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "HELIX_DRILL": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "HELLO_WORLD": [
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "HIBERNATE": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "HIDDEN_DAGGERS": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    }
+   ],
+   "HIDDEN_GEM": [
+    {
+     "kind": "static",
+     "id": "REPLAY_STATIC"
+    }
+   ],
+   "HIDDEN_ROOTS": [
+    {
+     "kind": "power",
+     "id": "STRETCH"
+    }
+   ],
+   "HIGH_FIVE": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "HOBBLING_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "HOLOGRAM": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "HONING": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    }
+   ],
+   "HOTFIX": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "HOWL_FROM_BEYOND": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "HUDDLE_UP": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "HYPERBEAM": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    }
+   ],
+   "I_AM_INVINCIBLE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ICE_LANCE": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    }
+   ],
+   "IGNITION": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "PLASMA_ORB"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "IMITATION_LEARNING": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "IMPERVIOUS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "INFECTION": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "INFERNAL_BLADE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "INFINITE_BLADES": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "INFLAME": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "INJURY": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "INTERCEPT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "INVOKE": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    },
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "IRON_WAVE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "JACK_OF_ALL_TRADES": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "JEST": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "JOY": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "JUDGEMENT": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "JUGGERNAUT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "JUGGLING": [
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "JUSTICE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "KI_HOP": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    }
+   ],
+   "KI_REST": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "KI_WHIP": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "KNIFE_TRAP": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    }
+   ],
+   "KNOW_THY_PLACE": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "LANTERN_KEY": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "LEADING_STRIKE": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    }
+   ],
+   "LEAP": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "LEG_SWEEP": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "LEGION_OF_BONE": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    }
+   ],
+   "LETHALITY": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "LIFT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "LIGHTNING_ROD": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "LOST_LUTE": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "LULLABY": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "LUMINESCE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "MACHINE_LEARNING": [
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "MAD_SCIENCE": [
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "MALAISE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "MANGLE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "MANIFEST_AUTHORITY": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "MASTER_OF_STRATEGY": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "MASTER_PLANNER": [
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    }
+   ],
+   "MELANCHOLY": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "MELODIC_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "MEMENTO_MORI": [
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    }
+   ],
+   "METAMORPHOSIS": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "METEOR_SHOWER": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "METEOR_STRIKE": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "PLASMA_ORB"
+    }
+   ],
+   "MIGHTY_SHIELD": [
+    {
+     "kind": "card",
+     "id": "DAZED"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "MIGHTY_WEAPON": [
+    {
+     "kind": "card",
+     "id": "DAZED"
+    }
+   ],
+   "MIMIC": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "MIND_BLAST": [
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "MINION_DIVE_BOMB": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "MINION_SACRIFICE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "MINION_STRIKE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "MIRAGE": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "MISERY": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "MOLTEN_FIST": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "MONARCHS_GAZE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "MONOLOGUE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "MOTIF": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "MOURNING_BLOW": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    }
+   ],
+   "MULTI_CAST": [
+    {
+     "kind": "static",
+     "id": "EVOKE"
+    }
+   ],
+   "MYTHIC_FORM": [
+    {
+     "kind": "static",
+     "id": "TAROT"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "NAIL": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    },
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "NECRO_MASTERY": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    }
+   ],
+   "NEGATIVE_PULSE": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "NEOWS_FURY": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "NEUROSURGE": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    },
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "NEUTRALIZE": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "NEUTRON_AEGIS": [
+    {
+     "kind": "power",
+     "id": "PLATING"
+    }
+   ],
+   "NIGHTMARE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "NO_ESCAPE": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "NOCK": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ],
+   "NORMALITY": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "NOT_YET": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "NOXIOUS_FUMES": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "NULL": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "DARK_ORB"
+    }
+   ],
+   "OBLIVION": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "OFFERING": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "OPTIMISM": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "ORBIT": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "OUTBREAK": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "OUTMANEUVER": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "OVERCLOCK": [
+    {
+     "kind": "card",
+     "id": "BURN"
+    }
+   ],
+   "PAGESTORM": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "PANIC_BUTTON": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "PARRY": [
+    {
+     "kind": "card",
+     "id": "SOVEREIGN_BLADE"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "PARSE": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "PARTICLE_WALL": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "PATTER": [
+    {
+     "kind": "power",
+     "id": "VIGOR"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "PHANTOM_BLADES": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "PIERCING_WAIL": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "PILLAR_OF_CREATION": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "POISONED_STAB": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "POOR_SLEEP": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "PREP_TIME": [
+    {
+     "kind": "power",
+     "id": "VIGOR"
+    }
+   ],
+   "PRIMAL_FORCE": [
+    {
+     "kind": "card",
+     "id": "GIANT_ROCK"
+    }
+   ],
+   "PRODUCTION": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "PROLONG": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "PROWESS": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "PULL_AGGRO": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "PULL_FROM_BELOW": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "PUNCH_OF_JOY": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "card",
+     "id": "JOY"
+    }
+   ],
+   "PURITY": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "PUTREFY": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "PYRE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "QUADCAST": [
+    {
+     "kind": "static",
+     "id": "EVOKE"
+    }
+   ],
+   "QUICK_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    }
+   ],
+   "QUIETUS": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "QUIVER": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "RAGE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "RAIN_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    }
+   ],
+   "RAINBOW": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    },
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    },
+    {
+     "kind": "orb",
+     "id": "DARK_ORB"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "RALLY": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "REANIMATE": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "REAP": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "REAPER_FORM": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "REAVE": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    }
+   ],
+   "REBOOT": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "RECALL": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "REFINE_BLADE": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "REFLECT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "REFLEX": [
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    }
+   ],
+   "REFRACT": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "GLASS_ORB"
+    }
+   ],
+   "REGRET": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "RELAX": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "REPEAT_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    }
+   ],
+   "RESONANCE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "RESTLESSNESS": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "RHYTHM_STRIKE": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "RICOCHET": [
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    }
+   ],
+   "RIGHT_HAND_HAND": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "ROYAL_GAMBLE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "RUMMAGE": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    }
+   ],
+   "RUPTURE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "SACRIFICE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SADNESS": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "SALVO": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SCAVENGE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SCOURGE": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "SCRAWL": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SCULPTING_STRIKE": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "SEANCE": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SECOND_WIND": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SECRET_TECHNIQUE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SECRET_WEAPON": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SEEKING_EDGE": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "SELF_DEPRECATE": [
+    {
+     "kind": "card",
+     "id": "JOY"
+    },
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    }
+   ],
+   "SENTRY_MODE": [
+    {
+     "kind": "card",
+     "id": "SWEEPING_GAZE"
+    }
+   ],
+   "SERRATED_ARROWS": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    }
+   ],
+   "SETUP_STRIKE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "SEVERANCE": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    }
+   ],
+   "SHADOW_SHIELD": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "DARK_ORB"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SHADOWMELD": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SHAME": [
+    {
+     "kind": "power",
+     "id": "FRAIL"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "SHARED_FATE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SHATTER": [
+    {
+     "kind": "static",
+     "id": "EVOKE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SHIV": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SHOCKWAVE": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SHOW_OFF": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SHROUD": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SHRUG_IT_OFF": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SIC_EM": [
+    {
+     "kind": "static",
+     "id": "SUMMON_STATIC"
+    }
+   ],
+   "SIDESTEP": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "SIGNAL_BOOST": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SKY_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "SLIMED": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SNAKEBITE": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SNAP": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SNEAKY": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    }
+   ],
+   "SONG_PATH": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    }
+   ],
+   "SOOT": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "SORROWFUL_STRIKE": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    }
+   ],
+   "SOUL": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SOUL_STORM": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    }
+   ],
+   "SOULBOUND": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "SOVEREIGN_BLADE": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SOW": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SPEEDSTER": [
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "SPINNER": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "GLASS_ORB"
+    }
+   ],
+   "SPIRIT_OF_ASH": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SPOILS_MAP": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "SPOILS_OF_BATTLE": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "SPORE_MIND": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SPUR": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SQUASH": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "STACK": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "STEADY_CADENCE": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "STONE_ARMOR": [
+    {
+     "kind": "power",
+     "id": "PLATING"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "STORM": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "STORM_OF_STEEL": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    }
+   ],
+   "STRENGTH": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SUCKER_PUNCH": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "SUMMON_FORTH": [
+    {
+     "kind": "forge"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SUNDER": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "SUPERCRITICAL": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SUPPRESS": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "SURVIVOR": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SWEEPING_GAZE": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SWORD_SAGE": [
+    {
+     "kind": "card_with_tips",
+     "id": "SOVEREIGN_BLADE"
+    },
+    {
+     "kind": "static",
+     "id": "REPLAY_STATIC"
+    }
+   ],
+   "SYNCHRONIZE": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    }
+   ],
+   "TACTICIAN": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    }
+   ],
+   "TAUNT": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "TEMPERANCE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "TEMPEST": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "TERRAFORMING": [
+    {
+     "kind": "power",
+     "id": "VIGOR"
+    }
+   ],
+   "TESLA_COIL": [
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "THE_CHARIOT": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_DEVIL": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_EMPEROR": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_EMPRESS": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_FOOL": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_GAMBIT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "THE_HANGED_MAN": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_HERMIT": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_HIEROPHANT": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_HIGH_PRIESTESS": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "THE_HUNT": [
+    {
+     "kind": "static",
+     "id": "FATAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_LOVERS": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_MAGICIAN": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_MOON": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_SCYTHE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_SMITH": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "THE_STAR": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_SUN": [
+    {
+     "kind": "card_with_tips",
+     "id": "SOOT"
+    },
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_TOWER": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THE_WORLD": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THINKING_AHEAD": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THRASH": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "THUNDER": [
+    {
+     "kind": "static",
+     "id": "EVOKE"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "THUNDERCLAP": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "TIMES_UP": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "TORIC_TOUGHNESS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "TOXIC": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "TRACKING": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "TRANSFIGURE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "static",
+     "id": "REPLAY_STATIC"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "TRASH_TO_TREASURE": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    }
+   ],
+   "TREMBLE": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "TRICK_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    }
+   ],
+   "TRUE_GRIT": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "TUNE": [
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "TURBO": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "card",
+     "id": "VOID"
+    }
+   ],
+   "TWIN_SHOT": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    }
+   ],
+   "TYRANNY": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    }
+   ],
+   "ULTIMATE_DEFEND": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "UNDEATH": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "UNDERWORLD": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "UNMOVABLE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "UNTOUCHABLE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "keyword",
+     "id": "SLY"
+    }
+   ],
+   "UP_MY_SLEEVE": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    }
+   ],
+   "UPPERCUT": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "UPROOT": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "VEILPIERCER": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "VICIOUS": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "VIOLENT_CHORD": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    }
+   ],
+   "VITRIOL": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    }
+   ],
+   "VOID": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "VOID_FORM": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "VOLTAIC": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "WAH_BLAST": [
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "WAH_CHO": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "WAH_CHO_KI": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "WAH_HAMMER": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    }
+   ],
+   "WAH_SYMPHONY": [
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "WAH_TOUCH": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "WASTE_AWAY": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "WHEEL_OF_FORTUNE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "WHISTLE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "WHISTLING_ARROWS": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "WHITE_NOISE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "WISH": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "WISP": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "WITHER": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "WOUND": [
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "WRAITH_FORM": [
+    {
+     "kind": "power",
+     "id": "INTANGIBLE"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "WREST": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    }
+   ],
+   "WRITHE": [
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    },
+    {
+     "kind": "keyword",
+     "id": "UNPLAYABLE"
+    }
+   ],
+   "WROUGHT_IN_WAR": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "YAH": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "YOGA": [
+    {
+     "kind": "power",
+     "id": "STRETCH"
+    }
+   ],
+   "ZAP": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ]
+  },
+  "relic": {
+   "AKABEKO": [
+    {
+     "kind": "power",
+     "id": "VIGOR"
+    }
+   ],
+   "ANCHOR": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ART_OF_WAR": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "BAG_OF_MARBLES": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "BELT_BUCKLE": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "BIG_HAT": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "BIIIG_HUG": [
+    {
+     "kind": "card_with_tips",
+     "id": "SOOT"
+    }
+   ],
+   "BIZARRE_LAMP": [
+    {
+     "kind": "card",
+     "id": "JOY"
+    },
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    }
+   ],
+   "BLESSED_ANTLER": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "DAZED"
+    }
+   ],
+   "BLOOD_SOAKED_ROSE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "ENTHRALLED"
+    }
+   ],
+   "BOOK_REPAIR_KNIFE": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "BOOKMARK": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "BOOMING_CONCH": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "BOUND_PHYLACTERY": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    }
+   ],
+   "BREAD": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "BRIMSTONE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "BRONZE_SCALES": [
+    {
+     "kind": "power",
+     "id": "THORNS"
+    }
+   ],
+   "BURNING_STICKS": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "BYRDINE": [
+    {
+     "kind": "card_with_tips",
+     "id": "BYRD_SWOOP"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "GOD_BYRD"
+    }
+   ],
+   "BYRDPIP": [
+    {
+     "kind": "card_with_tips",
+     "id": "BYRD_SWOOP"
+    }
+   ],
+   "CALLING_BELL": [
+    {
+     "kind": "card_with_tips",
+     "id": "CURSE_OF_THE_BELL"
+    }
+   ],
+   "CANDELABRA": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "CAPTAINS_WHEEL": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CHANDELIER": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "CHOICES_PARADOX": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "CLAWS": [
+    {
+     "kind": "card_with_tips",
+     "id": "MAUL"
+    }
+   ],
+   "CLOAK_CLASP": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CONDUCTORS_BATON": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "CRACKED_CORE": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "CURSED_PEARL": [
+    {
+     "kind": "card_with_tips",
+     "id": "GREED"
+    }
+   ],
+   "DATA_DISK": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    }
+   ],
+   "DIAMOND_DIADEM": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DISTINGUISHED_CAPE": [
+    {
+     "kind": "card_with_tips",
+     "id": "APPARITION"
+    }
+   ],
+   "DOWSING_ROD": [
+    {
+     "kind": "card_with_tips",
+     "id": "DOWSING"
+    }
+   ],
+   "ECTOPLASM": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "ELECTRIC_SHRYMP": [
+    {
+     "kind": "enchantment",
+     "id": "IMBUED"
+    }
+   ],
+   "EMBER_TEA": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "EXERCISE_MAT": [
+    {
+     "kind": "power",
+     "id": "STRETCH"
+    }
+   ],
+   "FAKE_ANCHOR": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FAKE_HAPPY_FLOWER": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "FAKE_ORICHALCUM": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FAKE_SNECKO_EYE": [
+    {
+     "kind": "power",
+     "id": "CONFUSED"
+    }
+   ],
+   "FAKE_VENERABLE_TEA_SET": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "FENCING_MANUAL": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "FERTILIZER": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "FRESNEL_LENS": [
+    {
+     "kind": "enchantment",
+     "id": "NIMBLE"
+    }
+   ],
+   "FUNERARY_MASK": [
+    {
+     "kind": "card_with_tips",
+     "id": "SOUL"
+    }
+   ],
+   "GALACTIC_DUST": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "GHOST_SEED": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "GIRYA": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "GLITTER": [
+    {
+     "kind": "enchantment",
+     "id": "GLAM"
+    }
+   ],
+   "GNARLED_HAMMER": [
+    {
+     "kind": "enchantment",
+     "id": "SHARP"
+    }
+   ],
+   "GORGET": [
+    {
+     "kind": "power",
+     "id": "PLATING"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "GREMLIN_HORN": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "HAND_DRILL": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "HAPPY_FLOWER": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "HEFTY_TABLET": [
+    {
+     "kind": "card_with_tips",
+     "id": "INJURY"
+    }
+   ],
+   "HELICAL_DART": [
+    {
+     "kind": "card_with_tips",
+     "id": "SHIV"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "HORN_CLEAT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "INFUSED_CORE": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "INTIMIDATING_HELMET": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "IVORY_TILE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "JEWELRY_BOX": [
+    {
+     "kind": "card_with_tips",
+     "id": "APOTHEOSIS"
+    }
+   ],
+   "JOSS_PAPER": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "KIFUDA": [
+    {
+     "kind": "enchantment",
+     "id": "ADROIT"
+    }
+   ],
+   "KUNAI": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "LANTERN": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "LEAFY_POULTICE": [
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    }
+   ],
+   "MEAT_CLEAVER": [
+    {
+     "kind": "static",
+     "id": "COOK"
+    }
+   ],
+   "MIGHTY_WINGS": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "MINI_REGENT": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "MUSIC_BOX": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "NEOWS_SACRIFICE": [
+    {
+     "kind": "potion",
+     "id": "AMBERGRIS"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "GUILTY"
+    }
+   ],
+   "NEOWS_TORMENT": [
+    {
+     "kind": "card_with_tips",
+     "id": "NEOWS_FURY"
+    }
+   ],
+   "NEW_LEAF": [
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    }
+   ],
+   "NINJA_SCROLL": [
+    {
+     "kind": "card_with_tips",
+     "id": "SHIV"
+    }
+   ],
+   "NUNCHAKU": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "NUTRITIOUS_SOUP": [
+    {
+     "kind": "enchantment",
+     "id": "TEZCATARAS_EMBER"
+    }
+   ],
+   "OCARINA": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "ODDLY_SMOOTH_STONE": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "ORICHALCUM": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ORNAMENTAL_FAN": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "PAELS_CLAW": [
+    {
+     "kind": "enchantment",
+     "id": "GOOPY"
+    }
+   ],
+   "PAELS_EYE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "PAELS_FLESH": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "PAELS_GROWTH": [
+    {
+     "kind": "enchantment",
+     "id": "CLONE"
+    }
+   ],
+   "PAELS_HORN": [
+    {
+     "kind": "card_with_tips",
+     "id": "RELAX"
+    }
+   ],
+   "PAELS_LEGION": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "PAELS_TEARS": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "PAPER_KRANE": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "PAPER_PHROG": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "PETRIFIED_TOAD": [
+    {
+     "kind": "potion",
+     "id": "POTION_SHAPED_ROCK"
+    }
+   ],
+   "PHILOSOPHERS_STONE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "PHYLACTERY_UNBOUND": [
+    {
+     "kind": "static",
+     "id": "SUMMON_STATIC"
+    }
+   ],
+   "PRESERVED_FOG": [
+    {
+     "kind": "card_with_tips",
+     "id": "FOLLY"
+    }
+   ],
+   "PRISMATIC_GEM": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "PUMPKIN_CANDLE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "PUNCH_DAGGER": [
+    {
+     "kind": "enchantment",
+     "id": "MOMENTUM"
+    }
+   ],
+   "RADIANT_PEARL": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "LUMINESCE"
+    }
+   ],
+   "RAINBOW_RING": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "RED_MASK": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "RED_SKULL": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "REPTILE_TRINKET": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "RINGING_TRIANGLE": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "RIPPLE_BASIN": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ROYAL_STAMP": [
+    {
+     "kind": "enchantment",
+     "id": "ROYALLY_APPROVED"
+    }
+   ],
+   "RUINED_HELMET": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "SEAL_OF_GOLD": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "SELF_FORMING_CLAY": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SERE_TALON": [
+    {
+     "kind": "card_with_tips",
+     "id": "WISH"
+    }
+   ],
+   "SHURIKEN": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "SILKEN_TRESS": [
+    {
+     "kind": "enchantment",
+     "id": "GLAM"
+    }
+   ],
+   "SLING_OF_COURAGE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "SNECKO_EYE": [
+    {
+     "kind": "power",
+     "id": "CONFUSED"
+    }
+   ],
+   "SNECKO_SKULL": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "SONG_BOW": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ],
+   "SOZU": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "SPARKLING_ROUGE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "SPIKED_GAUNTLETS": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "STORYBOOK": [
+    {
+     "kind": "card_with_tips",
+     "id": "BRIGHTEST_FLAME"
+    }
+   ],
+   "STORYTELLER": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ],
+   "STURDY_CLAMP": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SWORD_OF_JADE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "SYMBIOTIC_VIRUS": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "DARK_ORB"
+    }
+   ],
+   "TANXS_WHISTLE": [
+    {
+     "kind": "card_with_tips",
+     "id": "WHISTLE"
+    }
+   ],
+   "TEA_OF_DISCOURTESY": [
+    {
+     "kind": "card_with_tips",
+     "id": "DAZED"
+    }
+   ],
+   "THE_ABACUS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "TOASTY_MITTENS": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    },
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "TORMENTOUS_COLLAR": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "TOUGH_BANDAGES": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "TRI_BOOMERANG": [
+    {
+     "kind": "enchantment",
+     "id": "INSTINCT"
+    }
+   ],
+   "TUNING_FORK": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "TWINE": [
+    {
+     "kind": "static",
+     "id": "ARROW"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "TWISTED_FUNNEL": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "UNDYING_SIGIL": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "VAJRA": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "VAMBRACE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "VELVET_CHOKER": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "VENERABLE_TEA_SET": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "VERY_HOT_COCOA": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "VITRUVIAN_MINION": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "WHISPERING_EARRING": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "WHITTLING_KNIFE": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ]
+  },
+  "potion": {
+   "ASHWATER": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "BLOCK_POTION": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BONE_BREW": [
+    {
+     "kind": "static",
+     "id": "SUMMON_DYNAMIC"
+    }
+   ],
+   "CRYSTALLINE_EUPHORIA": [
+    {
+     "kind": "card",
+     "id": "JOY"
+    },
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    }
+   ],
+   "CUNNING_POTION": [
+    {
+     "kind": "card",
+     "id": "SHIV",
+     "upgrade": true
+    }
+   ],
+   "CURE_ALL": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "DEXTERITY_POTION": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "ENERGY_POTION": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "ESSENCE_OF_DARKNESS": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "DARK_ORB"
+    }
+   ],
+   "FLEX_POTION": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "FOCUS_POTION": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    }
+   ],
+   "FORTIFIER": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FYSH_OIL": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "GHOST_IN_A_JAR": [
+    {
+     "kind": "power",
+     "id": "INTANGIBLE"
+    }
+   ],
+   "GLOWWATER_POTION": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "HEART_OF_IRON": [
+    {
+     "kind": "power",
+     "id": "PLATING"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "KINGS_COURAGE": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "LIQUID_BRONZE": [
+    {
+     "kind": "power",
+     "id": "THORNS"
+    }
+   ],
+   "LUCKY_TONIC": [
+    {
+     "kind": "power",
+     "id": "BUFFER"
+    }
+   ],
+   "MAZALETHS_GIFT": [
+    {
+     "kind": "power",
+     "id": "RITUAL"
+    },
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "POISON_POTION": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "POT_OF_GHOULS": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    }
+   ],
+   "POTION_OF_BINDING": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "POTION_OF_DOOM": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "PRECISION_POTION": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ],
+   "RADIANT_TINCTURE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "REGEN_POTION": [
+    {
+     "kind": "power",
+     "id": "REGEN"
+    }
+   ],
+   "SHACKLING_POTION": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "SHIP_IN_A_BOTTLE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SOLDIERS_STEW": [
+    {
+     "kind": "static",
+     "id": "REPLAY_STATIC"
+    }
+   ],
+   "SPEED_POTION": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "STABLE_SERUM": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "STRENGTH_POTION": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "VULNERABLE_POTION": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "WEAK_POTION": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ]
+  },
+  "power": {
+   "ACCELERANT": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "AEONGLASS_DOMINION": [
+    {
+     "kind": "card_with_tips",
+     "id": "WITHER"
+    }
+   ],
+   "AFTERIMAGE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ALL_IS_WELL": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ARCHERY": [
+    {
+     "kind": "power",
+     "id": "AIM"
+    }
+   ],
+   "ARSENAL": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "BARRICADE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BIASED_COGNITION": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    }
+   ],
+   "BLOCK_NEXT_TURN": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BLUR": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "BORROWED_TIME": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "CALL_OF_THE_VOID": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "CHAINS_OF_BINDING": [
+    {
+     "kind": "affliction",
+     "id": "BOUND"
+    }
+   ],
+   "COLOSSUS": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "COMPOST": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "CONCOCT": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "CONQUEROR": [
+    {
+     "kind": "card_with_tips",
+     "id": "SOVEREIGN_BLADE"
+    }
+   ],
+   "COOLANT": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CORROSIVE_WAVE": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "CORRUPTION": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "COUNTDOWN": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "COVERING_FIRE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CRAB_RAGE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CRIMSON_MANTLE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "CRUELTY": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "CURL_UP": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "DANSE_MACABRE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "DARK_EMBRACE": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "DEBILITATE": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "DEMESNE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "DEMON_FORM": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "DEVOUR_LIFE": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    },
+    {
+     "kind": "static",
+     "id": "SUMMON_STATIC"
+    }
+   ],
+   "DEXTERITY": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "ECSTASY": [
+    {
+     "kind": "card",
+     "id": "SADNESS"
+    },
+    {
+     "kind": "card",
+     "id": "JOY"
+    }
+   ],
+   "ENERGY_NEXT_TURN": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "ENTROPY": [
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    }
+   ],
+   "ENVENOM": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "EXPLOSIVE_ARROWS": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    }
+   ],
+   "FASTEN": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FEEL_NO_PAIN": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FRAIL": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "FRIENDSHIP": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "FURNACE": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "GALVANIC": [
+    {
+     "kind": "affliction",
+     "id": "GALVANIZED"
+    }
+   ],
+   "HAILSTORM": [
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    }
+   ],
+   "HAMMER_TIME": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "HANG": [
+    {
+     "kind": "card",
+     "id": "HANG"
+    }
+   ],
+   "HEX": [
+    {
+     "kind": "affliction",
+     "id": "HEXED"
+    },
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "HIBERNATE": [
+    {
+     "kind": "orb",
+     "id": "FROST_ORB"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "HIDDEN_ROOTS": [
+    {
+     "kind": "power",
+     "id": "STRETCH"
+    }
+   ],
+   "HIGH_VOLTAGE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "INFINITE_BLADES": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    }
+   ],
+   "LAGAVULIN_MATRIARCH_DOMINION": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "LIGHTNING_ROD": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "LOST_LUTE": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "LULLABY": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "MONOLOGUE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "MOTIF": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    },
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "MYTHIC_FORM": [
+    {
+     "kind": "static",
+     "id": "TAROT"
+    }
+   ],
+   "NEUROSURGE": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "NO_BLOCK": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "NOXIOUS_FUMES": [
+    {
+     "kind": "power",
+     "id": "POISON"
+    }
+   ],
+   "ORBIT": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "PAGESTORM": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "PAINFUL_STABS": [
+    {
+     "kind": "card_with_tips",
+     "id": "WOUND"
+    }
+   ],
+   "PERSONAL_HIVE": [
+    {
+     "kind": "card",
+     "id": "DAZED"
+    }
+   ],
+   "PHANTOM_BLADES": [
+    {
+     "kind": "card",
+     "id": "SHIV"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "PILLAR_OF_CREATION": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "PLATING": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "PLOW": [
+    {
+     "kind": "static",
+     "id": "STUN"
+    },
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "POSSESS_SPEED": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "POSSESS_STRENGTH": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "PYRE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "RADIANCE": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "RAGE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "RAVENOUS": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "static",
+     "id": "STUN"
+    }
+   ],
+   "REAPER_FORM": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "RITUAL": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "RUPTURE": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "SEEKING_EDGE": [
+    {
+     "kind": "forge"
+    }
+   ],
+   "SELF_FORMING_CLAY": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SENTRY_MODE": [
+    {
+     "kind": "card",
+     "id": "SWEEPING_GAZE"
+    }
+   ],
+   "SERRATED_ARROWS": [
+    {
+     "kind": "power",
+     "id": "IMPALED"
+    }
+   ],
+   "SHADOWMELD": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SHRIEK": [
+    {
+     "kind": "static",
+     "id": "STUN"
+    }
+   ],
+   "SHROUD": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "SIC_EM": [
+    {
+     "kind": "static",
+     "id": "SUMMON_STATIC"
+    }
+   ],
+   "SKITTISH": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SNEAKY": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SONG_PATH": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    },
+    {
+     "kind": "static",
+     "id": "CHO_MELODY"
+    }
+   ],
+   "SOULBOUND": [
+    {
+     "kind": "card",
+     "id": "SOUL"
+    }
+   ],
+   "SPINNER": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "GLASS_ORB"
+    }
+   ],
+   "SPIRIT_OF_ASH": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "STORM": [
+    {
+     "kind": "static",
+     "id": "CHANNELING"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "STRETCH": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SUCK": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "SUMMON_NEXT_TURN": [
+    {
+     "kind": "static",
+     "id": "SUMMON_STATIC"
+    }
+   ],
+   "SWORD_SAGE": [
+    {
+     "kind": "card_with_tips",
+     "id": "SOVEREIGN_BLADE"
+    },
+    {
+     "kind": "static",
+     "id": "REPLAY_STATIC"
+    }
+   ],
+   "TEMPORARY_DEXTERITY": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "TEMPORARY_FOCUS": [
+    {
+     "kind": "power",
+     "id": "FOCUS"
+    }
+   ],
+   "TEMPORARY_STRENGTH": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "TEMPORARY_THORNS": [
+    {
+     "kind": "power",
+     "id": "THORNS"
+    }
+   ],
+   "TENDER": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "TERRITORIAL": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "THUNDER": [
+    {
+     "kind": "static",
+     "id": "EVOKE"
+    },
+    {
+     "kind": "orb",
+     "id": "LIGHTNING_ORB"
+    }
+   ],
+   "TORIC_TOUGHNESS": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "TRACKING": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "TUNE": [
+    {
+     "kind": "static",
+     "id": "KI_MELODY"
+    }
+   ],
+   "TYRANNY": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "UNDERWORLD": [
+    {
+     "kind": "power",
+     "id": "DOOM"
+    }
+   ],
+   "UNMOVABLE": [
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "VEILPIERCER": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "VICIOUS": [
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    }
+   ],
+   "VIOLENT_CHORD": [
+    {
+     "kind": "static",
+     "id": "WAH_MELODY"
+    }
+   ],
+   "VITAL_SPARK": [
+    {
+     "kind": "affliction",
+     "id": "TAINTED"
+    },
+    {
+     "kind": "power",
+     "id": "TAINTED"
+    }
+   ],
+   "WASTE_AWAY": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "WRAITH_FORM": [
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    }
+   ],
+   "YAH": [
+    {
+     "kind": "static",
+     "id": "ENERGY"
+    }
+   ],
+   "YOU_ARE_MINE": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "power",
+     "id": "FRAIL"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ]
+  },
+  "enchantment": {
+   "GLAM": [
+    {
+     "kind": "static",
+     "id": "REPLAY_DYNAMIC"
+    }
+   ],
+   "GOOPY": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "INKY": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    }
+   ],
+   "ROYALLY_APPROVED": [
+    {
+     "kind": "keyword",
+     "id": "INNATE"
+    },
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "SOULS_POWER": [
+    {
+     "kind": "keyword",
+     "id": "EXHAUST"
+    }
+   ],
+   "SPIRAL": [
+    {
+     "kind": "static",
+     "id": "REPLAY_DYNAMIC"
+    }
+   ],
+   "STEADY": [
+    {
+     "kind": "keyword",
+     "id": "RETAIN"
+    }
+   ],
+   "TEZCATARAS_EMBER": [
+    {
+     "kind": "keyword",
+     "id": "ETERNAL"
+    }
+   ]
+  },
+  "affliction": {
+   "HEXED": [
+    {
+     "kind": "keyword",
+     "id": "ETHEREAL"
+    }
+   ],
+   "TAINTED": [
+    {
+     "kind": "power",
+     "id": "TAINTED"
+    }
+   ]
+  },
+  "orb": {},
+  "modifier": {},
+  "event": {
+   "AROMA_OF_CHAOS.pages.INITIAL.options.LET_GO": [
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    }
+   ],
+   "BUGSLAYER.pages.INITIAL.options.EXTERMINATION": [
+    {
+     "kind": "card_with_tips",
+     "id": "EXTERMINATE"
+    }
+   ],
+   "BUGSLAYER.pages.INITIAL.options.SQUASH": [
+    {
+     "kind": "card_with_tips",
+     "id": "SQUASH"
+    }
+   ],
+   "BYRDONIS_NEST.pages.INITIAL.options.TAKE": [
+    {
+     "kind": "card_with_tips",
+     "id": "BYRDONIS_EGG"
+    }
+   ],
+   "COLOSSAL_FLOWER.pages.REACH_DEEPER_2.options.POLLINOUS_CORE": [
+    {
+     "kind": "relic",
+     "id": "POLLINOUS_CORE"
+    }
+   ],
+   "CRYSTAL_SPHERE.pages.INITIAL.options.PAYMENT_PLAN": [
+    {
+     "kind": "card_with_tips",
+     "id": "DEBT"
+    }
+   ],
+   "DROWNING_BEACON.pages.INITIAL.options.CLIMB": [
+    {
+     "kind": "relic",
+     "id": "FRESNEL_LENS"
+    }
+   ],
+   "FIELD_OF_MAN_SIZED_HOLES.pages.INITIAL.options.RESIST": [
+    {
+     "kind": "card_with_tips",
+     "id": "NORMALITY"
+    }
+   ],
+   "FIELD_OF_MAN_SIZED_HOLES.pages.INITIAL.options.ENTER_YOUR_HOLE": [
+    {
+     "kind": "enchantment",
+     "id": "PERFECT_FIT"
+    }
+   ],
+   "GRAVE_OF_THE_FORGOTTEN.pages.INITIAL.options.CONFRONT": [
+    {
+     "kind": "enchantment",
+     "id": "SOULS_POWER"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "DECAY"
+    }
+   ],
+   "GRAVE_OF_THE_FORGOTTEN.pages.INITIAL.options.ACCEPT": [
+    {
+     "kind": "relic",
+     "id": "FORGOTTEN_SOUL"
+    }
+   ],
+   "LOST_WISP.pages.INITIAL.options.CLAIM": [
+    {
+     "kind": "card_with_tips",
+     "id": "DECAY"
+    }
+   ],
+   "LUMINOUS_CHOIR.pages.INITIAL.options.REACH_INTO_THE_FLESH": [
+    {
+     "kind": "card_with_tips",
+     "id": "SPORE_MIND"
+    }
+   ],
+   "MORPHIC_GROVE.pages.INITIAL.options.GROUP": [
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    }
+   ],
+   "POTION_COURIER.pages.INITIAL.options.GRAB_POTIONS": [
+    {
+     "kind": "potion",
+     "id": "FOUL_POTION"
+    }
+   ],
+   "PUNCH_OFF.pages.INITIAL.options.NAB": [
+    {
+     "kind": "card_with_tips",
+     "id": "INJURY"
+    }
+   ],
+   "REFLECTIONS.pages.INITIAL.options.SHATTER": [
+    {
+     "kind": "card_with_tips",
+     "id": "BAD_LUCK"
+    }
+   ],
+   "ROOM_FULL_OF_CHEESE.pages.INITIAL.options.SEARCH": [
+    {
+     "kind": "relic",
+     "id": "CHOSEN_CHEESE"
+    }
+   ],
+   "ROUND_TEA_PARTY.pages.INITIAL.options.ENJOY_TEA": [
+    {
+     "kind": "relic",
+     "id": "ROYAL_POISON"
+    }
+   ],
+   "SAPPHIRE_SEED.pages.INITIAL.options.PLANT": [
+    {
+     "kind": "enchantment",
+     "id": "SOWN"
+    }
+   ],
+   "SELF_HELP_BOOK.pages.INITIAL.options.READ_THE_BACK": [
+    {
+     "kind": "enchantment",
+     "id": "SHARP"
+    }
+   ],
+   "SELF_HELP_BOOK.pages.INITIAL.options.READ_PASSAGE": [
+    {
+     "kind": "enchantment",
+     "id": "NIMBLE"
+    }
+   ],
+   "SHRINE_OF_THE_WARLORD.pages.INITIAL.options.TAKE_WEAPON": [
+    {
+     "kind": "card_with_tips",
+     "id": "MIGHTY_WEAPON"
+    }
+   ],
+   "SHRINE_OF_THE_WARLORD.pages.INITIAL.options.TAKE_SHIELD": [
+    {
+     "kind": "card_with_tips",
+     "id": "MIGHTY_SHIELD"
+    }
+   ],
+   "SHRINE_OF_THE_WARLORD.pages.INITIAL.options.TAKE_WINGS": [
+    {
+     "kind": "card_with_tips",
+     "id": "MIGHTY_WEAPON"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "MIGHTY_SHIELD"
+    },
+    {
+     "kind": "relic",
+     "id": "MIGHTY_WINGS"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "CLUMSY"
+    }
+   ],
+   "SPIRALING_WHIRLPOOL.pages.INITIAL.options.OBSERVE": [
+    {
+     "kind": "enchantment",
+     "id": "SPIRAL"
+    }
+   ],
+   "SPIRIT_GRAFTER.pages.INITIAL.options.LET_IT_IN": [
+    {
+     "kind": "card_with_tips",
+     "id": "METAMORPHOSIS"
+    }
+   ],
+   "STONE_OF_ALL_TIME.pages.INITIAL.options.PUSH": [
+    {
+     "kind": "enchantment",
+     "id": "VIGOROUS"
+    }
+   ],
+   "SUNKEN_STATUE.pages.INITIAL.options.GRAB_SWORD": [
+    {
+     "kind": "relic",
+     "id": "SWORD_OF_STONE"
+    }
+   ],
+   "SUNKEN_TREASURY.pages.INITIAL.options.SECOND_CHEST": [
+    {
+     "kind": "card_with_tips",
+     "id": "GREED"
+    }
+   ],
+   "SYMBIOTE.pages.INITIAL.options.APPROACH": [
+    {
+     "kind": "enchantment",
+     "id": "CORRUPTED"
+    }
+   ],
+   "SYMBIOTE.pages.INITIAL.options.KILL_WITH_FIRE": [
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    }
+   ],
+   "TEA_MASTER.pages.INITIAL.options.BONE_TEA": [
+    {
+     "kind": "relic",
+     "id": "BONE_TEA"
+    }
+   ],
+   "TEA_MASTER.pages.INITIAL.options.EMBER_TEA": [
+    {
+     "kind": "relic",
+     "id": "EMBER_TEA"
+    }
+   ],
+   "TEA_MASTER.pages.INITIAL.options.TEA_OF_DISCOURTESY": [
+    {
+     "kind": "relic",
+     "id": "TEA_OF_DISCOURTESY"
+    }
+   ],
+   "THE_LEGENDS_WERE_TRUE.pages.INITIAL.options.NAB_THE_MAP": [
+    {
+     "kind": "card_with_tips",
+     "id": "SPOILS_MAP"
+    }
+   ],
+   "THERMAE_NONUPEIPE.pages.INITIAL.options.DRINK_WATERS": [
+    {
+     "kind": "card",
+     "id": "GUILTY"
+    }
+   ],
+   "THIS_OR_THAT.pages.INITIAL.options.ORNATE": [
+    {
+     "kind": "card_with_tips",
+     "id": "CLUMSY"
+    }
+   ],
+   "TRIAL.pages.MERCHANT.options.GUILTY": [
+    {
+     "kind": "card_with_tips",
+     "id": "REGRET"
+    }
+   ],
+   "TRIAL.pages.MERCHANT.options.INNOCENT": [
+    {
+     "kind": "card_with_tips",
+     "id": "SHAME"
+    }
+   ],
+   "TRIAL.pages.NOBLE.options.INNOCENT": [
+    {
+     "kind": "card_with_tips",
+     "id": "REGRET"
+    }
+   ],
+   "TRIAL.pages.NONDESCRIPT.options.GUILTY": [
+    {
+     "kind": "card_with_tips",
+     "id": "DOUBT"
+    }
+   ],
+   "TRIAL.pages.NONDESCRIPT.options.INNOCENT": [
+    {
+     "kind": "card_with_tips",
+     "id": "DOUBT"
+    },
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    }
+   ],
+   "UNREST_SITE.pages.INITIAL.options.REST": [
+    {
+     "kind": "card_with_tips",
+     "id": "POOR_SLEEP"
+    }
+   ],
+   "WAR_HISTORIAN_REPY.pages.INITIAL.options.UNLOCK_CAGE": [
+    {
+     "kind": "relic",
+     "id": "HISTORY_COURSE"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "LANTERN_KEY"
+    }
+   ],
+   "WAR_HISTORIAN_REPY.pages.INITIAL.options.UNLOCK_CHEST": [
+    {
+     "kind": "card_with_tips",
+     "id": "LANTERN_KEY"
+    }
+   ],
+   "WATERFALL_OF_OBVIOUS_SECRETS.pages.ENTER.options.BE_NICE": [
+    {
+     "kind": "card_with_tips",
+     "id": "DINGY_DAGGER"
+    }
+   ],
+   "WATERFALL_OF_OBVIOUS_SECRETS.pages.ENTER.options.BEAT_UP": [
+    {
+     "kind": "card_with_tips",
+     "id": "GUILTY"
+    }
+   ],
+   "WATERLOGGED_SCRIPTORIUM.pages.INITIAL.options.TENTACLE_QUILL": [
+    {
+     "kind": "enchantment",
+     "id": "STEADY"
+    }
+   ],
+   "WATERLOGGED_SCRIPTORIUM.pages.INITIAL.options.PRICKLY_SPONGE": [
+    {
+     "kind": "enchantment",
+     "id": "STEADY"
+    }
+   ],
+   "WELLSPRING.pages.INITIAL.options.BATHE": [
+    {
+     "kind": "card_with_tips",
+     "id": "GUILTY"
+    }
+   ],
+   "WHISPERING_HOLLOW.pages.INITIAL.options.HUG": [
+    {
+     "kind": "static",
+     "id": "TRANSFORM"
+    }
+   ],
+   "WOOD_CARVINGS.pages.INITIAL.options.SNAKE": [
+    {
+     "kind": "enchantment",
+     "id": "SLITHER"
+    }
+   ],
+   "WOOD_CARVINGS.pages.INITIAL.options.BIRD": [
+    {
+     "kind": "card_with_tips",
+     "id": "PECK"
+    }
+   ],
+   "WOOD_CARVINGS.pages.INITIAL.options.TORUS": [
+    {
+     "kind": "card_with_tips",
+     "id": "TORIC_TOUGHNESS"
+    }
+   ],
+   "WUPPY_IN_TROUBLE.pages.INITIAL.options.HELP_IMMEDIATELY": [
+    {
+     "kind": "card_with_tips",
+     "id": "INJURY"
+    }
+   ],
+   "ZEN_WEAVER.pages.INITIAL.options.BREATHING_TECHNIQUES": [
+    {
+     "kind": "card_with_tips",
+     "id": "ENLIGHTENMENT"
+    }
+   ]
+  }
+ }
+}

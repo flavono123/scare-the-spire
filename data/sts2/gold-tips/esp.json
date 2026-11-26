@@ -1,0 +1,4166 @@
+{
+ "affliction:BOUND": {
+  "Vínculo": "affliction:BOUND"
+ },
+ "affliction:HEXED": {
+  "Evanescencia": "keyword:ETHEREAL"
+ },
+ "affliction:SMOG": {
+  "habilidades": null
+ },
+ "affliction:TAINTED": {
+  "corrupción": "affliction:TAINTED"
+ },
+ "ancient:VAKUU": {
+  "Vakuu": null
+ },
+ "ascension:BLITZ": {
+  "mazo": null
+ },
+ "ascension:DREAD": {
+  "Marchitamiento": null,
+  "Vislumbrar": null,
+  "debilitamiento": null,
+  "destreza": null,
+  "fragilidad": null,
+  "fuerza": null,
+  "mazo de robo": null,
+  "ritual": null,
+  "vulnerabilidad": null
+ },
+ "ascension:DREAD_RULE_02": {
+  "mazo": null
+ },
+ "ascension:LEVEL_01": {
+  "élite": null
+ },
+ "ascension:LEVEL_03": {
+  "oro": null
+ },
+ "ascension:LEVEL_10": {
+  "acto": null
+ },
+ "badge:KACHING": {
+  "oro": null
+ },
+ "badge:MONEY_MONEY": {
+  "oro": null
+ },
+ "card:ABRASIVE": {
+  "destreza": "power:DEXTERITY",
+  "espinas": "power:THORNS"
+ },
+ "card:ABUNDANCE": {
+  "mano": null,
+  "mejorados": null,
+  "poderes": null
+ },
+ "card:ACCELERANT": {
+  "Veneno": "power:POISON"
+ },
+ "card:ACCURACY": {
+  "Navaja": "card:SHIV"
+ },
+ "card:ADAPTIVE_STRIKE": {
+  "pila de descarte": null
+ },
+ "card:AFTERIMAGE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:AFTERLIFE": {
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:AGGRESSION": {
+  "mano": null,
+  "mejoras": null,
+  "pila de descarte": null
+ },
+ "card:ALL_FOR_ONE": {
+  "mano": null,
+  "pila de descarte": null
+ },
+ "card:ALL_IS_WELL": {
+  "Tristeza": "card:SADNESS",
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:ANGER": {
+  "pila de descarte": null
+ },
+ "card:ANGUISH": {
+  "Tristeza": "card:SADNESS"
+ },
+ "card:ANOINTED": {
+  "mano": null,
+  "mazo de robo": null,
+  "raras": null
+ },
+ "card:ANTICIPATE": {
+  "destreza": "power:DEXTERITY"
+ },
+ "card:APOTHEOSIS": {
+  "Mejoras": null
+ },
+ "card:APPARITION": {
+  "intangibilidad": "power:INTANGIBLE"
+ },
+ "card:ARCHERY": {
+  "puntería": "power:AIM"
+ },
+ "card:ARMAMENTS": {
+  "Mejoras": null,
+  "bloqueo": "keyword:BLOCK",
+  "mano": null
+ },
+ "card:ARSENAL": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:ASHEN_STRIKE": {
+  "pila de agotamiento": null
+ },
+ "card:ASSASSINATE": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:BACKFLIP": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:BALL_LIGHTNING": {
+  "Canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "card:BANSHEES_CRY": {
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "card:BARRAGE": {
+  "canalizado": null
+ },
+ "card:BARRICADE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:BASH": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:BEACON_OF_HOPE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:BEAM_CELL": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:BEAT_DOWN": {
+  "pila de descarte": null
+ },
+ "card:BEAT_INTO_SHAPE": {
+  "Forjas": null,
+  "forja": null
+ },
+ "card:BECKON": {
+  "mano": null
+ },
+ "card:BEGONE": {
+  "Golpe de esbirro": "card:MINION_STRIKE",
+  "Golpe de esbirro+": "card:MINION_STRIKE",
+  "mano": null,
+  "transformarla": null
+ },
+ "card:BIASED_COGNITION": {
+  "concentración": "power:FOCUS"
+ },
+ "card:BIG_BANG": {
+  "forja": null
+ },
+ "card:BLADE_DANCE": {
+  "carta de Navaja": null,
+  "mano": null,
+  "plural:Navaja": null
+ },
+ "card:BLADE_OF_INK": {
+  "cartas de Navaja": null,
+  "mano": null,
+  "plural:Navaja": null
+ },
+ "card:BLADE_SYMPHONY": {
+  "cartas de navaja": null,
+  "mano": null,
+  "plural:carta de navaja": null
+ },
+ "card:BLAZE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:BLIGHT_STRIKE": {
+  "condena": "power:DOOM"
+ },
+ "card:BLOOD_WALL": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:BLOSSOM_SHOT": {
+  "Disparas": null,
+  "flexibilidad": "power:STRETCH"
+ },
+ "card:BLOT_OUT_THE_SKY": {
+  "disparar": null,
+  "mano": null
+ },
+ "card:BLUR": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:BODYGUARD": {
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:BODY_SLAM": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:BOLAS": {
+  "mano": null
+ },
+ "card:BOMBARDMENT": {
+  "pila de agotamiento": null
+ },
+ "card:BONE_SHARDS": {
+  "Puro Hueso": null,
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:BOOST_AWAY": {
+  "Deslumbre": "card:DAZED",
+  "bloqueo": "keyword:BLOCK",
+  "pila de descarte": null
+ },
+ "card:BOOT_SEQUENCE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:BOUNCE": {
+  "flexibilidad": "power:STRETCH",
+  "mano": null
+ },
+ "card:BOUNCING_FLASK": {
+  "veneno": "power:POISON"
+ },
+ "card:BOW_SMACK": {
+  "flechado": "power:IMPALED"
+ },
+ "card:BRACE": {
+  "puntería": "power:AIM"
+ },
+ "card:BRAND": {
+  "Agotas": null,
+  "fuerza": "power:STRENGTH"
+ },
+ "card:BREAK": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:BRIGHTEN_UP": {
+  "Júbilo": "card:JOY",
+  "Tristeza": "card:SADNESS",
+  "mano": null
+ },
+ "card:BUBBLE_BUBBLE": {
+  "veneno": "power:POISON"
+ },
+ "card:BULK_UP": {
+  "destreza": "power:DEXTERITY",
+  "fuerza": "power:STRENGTH"
+ },
+ "card:BULLET_TIME": {
+  "mano": null
+ },
+ "card:BULLY": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:BULWARK": {
+  "bloqueo": "keyword:BLOCK",
+  "forja": null
+ },
+ "card:BUNDLE_OF_JOY": {
+  "mano": null
+ },
+ "card:BURN": {
+  "mano": null
+ },
+ "card:BURNING_PACT": {
+  "Agotas": null
+ },
+ "card:BYRDONIS_EGG": {
+  "punto de descanso": null
+ },
+ "card:CALAMITY": {
+  "mano": null
+ },
+ "card:CALCIFY": {
+  "Puro Hueso": null
+ },
+ "card:CALCULATED_GAMBLE": {
+  "mano": null
+ },
+ "card:CALL_OF_THE_VOID": {
+  "evanescencia": "keyword:ETHEREAL",
+  "mano": null
+ },
+ "card:CAPTURE_SPIRIT": {
+  "cartas de Alma": null,
+  "mazo de robo": null,
+  "plural:Alma": null
+ },
+ "card:CASCADE": {
+  "mazo de robo": null
+ },
+ "card:CATASTROPHE": {
+  "mazo de robo": null
+ },
+ "card:CHAOS": {
+  "Canalizas": null
+ },
+ "card:CHARGE": {
+  "mazo de robo": null,
+  "transformar": null
+ },
+ "card:CHARGE_BATTERY": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:CHILD_OF_THE_STARS": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:CHILL": {
+  "Canalizas": null,
+  "escarcha": "keyword:FROST_ORB"
+ },
+ "card:CHO_BARBS": {
+  "bloqueo": "keyword:BLOCK",
+  "espinas": "power:THORNS"
+ },
+ "card:CHO_CHORUS": {
+  "bloqueo": "keyword:BLOCK",
+  "mano": null
+ },
+ "card:CHO_FIRM": {
+  "bloqueo": "keyword:BLOCK",
+  "flecha": "keyword:ARROW"
+ },
+ "card:CHO_KI": {
+  "bloqueo": "keyword:BLOCK",
+  "flexibilidad": "power:STRETCH"
+ },
+ "card:CHO_LIMBS": {
+  "Melodía Ki": "keyword:KI_MELODY",
+  "Melodía Wah": "keyword:WAH_MELODY",
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:CHO_READY": {
+  "bloqueo": "keyword:BLOCK",
+  "puntería": "power:AIM"
+ },
+ "card:CHRYSALIS": {
+  "mazo de robo": null
+ },
+ "card:CINDER": {
+  "Agotas": null
+ },
+ "card:CLASH": {
+  "mano": null
+ },
+ "card:CLEANSE": {
+  "Agotas": null,
+  "invocación": "keyword:SUMMON_STATIC",
+  "mazo de robo": null
+ },
+ "card:CLOAK_AND_DAGGER": {
+  "bloqueo": "keyword:BLOCK",
+  "carta de Navaja": null,
+  "mano": null,
+  "plural:Navaja": null
+ },
+ "card:CLOAK_OF_STARS": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:CODA": {
+  "melodía": null
+ },
+ "card:COLD_SNAP": {
+  "Canalizas": null,
+  "escarcha": "keyword:FROST_ORB"
+ },
+ "card:COLLISION_COURSE": {
+  "Escombros": "card:DEBRIS",
+  "mano": null
+ },
+ "card:COLOSSUS": {
+  "bloqueo": "keyword:BLOCK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:COMET": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:COMPACT": {
+  "Gasolina": "card:FUEL",
+  "Gasolina+": "card:FUEL",
+  "Transformas": null,
+  "bloqueo": "keyword:BLOCK",
+  "mano": null
+ },
+ "card:CONCOCT": {
+  "veneno": "power:POISON"
+ },
+ "card:CONQUEROR": {
+  "Espada del soberano": "card:SOVEREIGN_BLADE",
+  "forja": null
+ },
+ "card:CONSTELLATION": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:CONSUMING_SHADOW": {
+  "Canalizas": null,
+  "descargas": null,
+  "oscuridad": "keyword:DARK_ORB"
+ },
+ "card:CONVERGENCE": {
+  "Retienes": null,
+  "mano": null
+ },
+ "card:COOLANT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:COOLHEADED": {
+  "Canalizas": null,
+  "escarcha": "keyword:FROST_ORB"
+ },
+ "card:COORDINATE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:CORROSIVE_WAVE": {
+  "veneno": "power:POISON"
+ },
+ "card:CORRUPTION": {
+  "agotará": null
+ },
+ "card:COSMIC_INDIFFERENCE": {
+  "bloqueo": "keyword:BLOCK",
+  "mazo de robo": null,
+  "pila de descarte": null
+ },
+ "card:COUNTDOWN": {
+  "condena": "power:DOOM"
+ },
+ "card:COVERING_FIRE": {
+  "bloqueo": "keyword:BLOCK",
+  "disparas": null
+ },
+ "card:CRASH_LANDING": {
+  "Escombros": "card:DEBRIS",
+  "mano": null
+ },
+ "card:CREATIVE_AI": {
+  "mano": null
+ },
+ "card:CRIMSON_MANTLE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:CRUELTY": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:CRUSH_UNDER": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:DANSE_MACABRE": {
+  "bloqueo": null
+ },
+ "card:DARKNESS": {
+  "Canalizas": null,
+  "oscuridad": "keyword:DARK_ORB"
+ },
+ "card:DARK_EMBRACE": {
+  "agotar": null
+ },
+ "card:DARK_SHACKLES": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:DASH": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEADLY_POISON": {
+  "veneno": "power:POISON"
+ },
+ "card:DEATH": {
+  "condena": "power:DOOM"
+ },
+ "card:DEATHBRINGER": {
+  "condena": "power:DOOM",
+  "debilitamiento": "power:WEAK"
+ },
+ "card:DEATHS_DOOR": {
+  "bloqueo": "keyword:BLOCK",
+  "condena": "power:DOOM"
+ },
+ "card:DEBILITATE": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:DEBT": {
+  "mano": null,
+  "oro": null
+ },
+ "card:DECAY": {
+  "mano": null
+ },
+ "card:DECISIONS_DECISIONS": {
+  "mano": null
+ },
+ "card:DEEP_STRETCH": {
+  "flexiblidad": null
+ },
+ "card:DEFEND_DEFECT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEFEND_FOOL": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEFEND_IRONCLAD": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEFEND_NECROBINDER": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEFEND_REGENT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEFEND_SILENT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEFLECT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEFRAGMENT": {
+  "concentración": "power:FOCUS"
+ },
+ "card:DEFY": {
+  "bloqueo": "keyword:BLOCK",
+  "debilitamiento": "power:WEAK"
+ },
+ "card:DELAY": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEMONIC_SHIELD": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DEMON_FORM": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:DEPRECATED_CARD": {
+  "mazo": null
+ },
+ "card:DESPAIR": {
+  "bloqueo": null,
+  "condena": null
+ },
+ "card:DEVOUR_LIFE": {
+  "Alma": "card:SOUL",
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:DIRGE": {
+  "Alma": "card:SOUL",
+  "Alma+": "card:SOUL",
+  "invocación": "keyword:SUMMON_STATIC",
+  "mazo de robo": null
+ },
+ "card:DISCOVERY": {
+  "mano": null
+ },
+ "card:DISLIKE_YOU": {
+  "disparos": null
+ },
+ "card:DISMANTLE": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:DISTRACTION": {
+  "mano": null
+ },
+ "card:DIVINE_SHOT": {
+  "Disparas": null,
+  "flecha": "keyword:ARROW"
+ },
+ "card:DODGE_AND_ROLL": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:DOMINATE": {
+  "fuerza": "power:STRENGTH",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:DOUBT": {
+  "debilitamiento": "power:WEAK",
+  "mano": null
+ },
+ "card:DOWSING": {
+  "Abundancia": "card:ABUNDANCE",
+  "¿?": null
+ },
+ "card:DRAIN_POWER": {
+  "Mejoras": null,
+  "pila de descarte": null
+ },
+ "card:DREDGE": {
+  "mano": null,
+  "pila de descarte": null
+ },
+ "card:DRUM_OF_BATTLE": {
+  "agotas": null
+ },
+ "card:DUALCAST": {
+  "Descargas": null
+ },
+ "card:DUAL_WIELD": {
+  "mano": null
+ },
+ "card:DYING_STAR": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:ECSTASY": {
+  "Júbilo": "card:JOY",
+  "Tristeza": "card:SADNESS",
+  "mano": null,
+  "transformas": null
+ },
+ "card:EIDOLON": {
+  "evanescencia": "keyword:ETHEREAL",
+  "pila de agotamiento": null
+ },
+ "card:END_OF_DAYS": {
+  "condena": "power:DOOM"
+ },
+ "card:ENFEEBLING_TOUCH": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:ENLIGHTENMENT": {
+  "mano": null
+ },
+ "card:ENNUI": {
+  "Tristeza": "card:SADNESS",
+  "mano": null
+ },
+ "card:ENRAPTURE": {
+  "flexibilidad": "power:STRETCH",
+  "vigor": "power:VIGOR"
+ },
+ "card:ENTHRALLED": {
+  "mano": null
+ },
+ "card:ENTRENCH": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:ENTROPY": {
+  "mano": null,
+  "transformas": null
+ },
+ "card:ENVENOM": {
+  "veneno": "power:POISON"
+ },
+ "card:EPIC_RETRIEVAL": {
+  "flecha": "keyword:ARROW",
+  "quita": null
+ },
+ "card:EQUILIBRIUM": {
+  "Retienes": null,
+  "bloqueo": "keyword:BLOCK",
+  "mano": null
+ },
+ "card:ESCAPE_PLAN": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:ETERNAL_ARMOR": {
+  "revestimiento": "power:PLATING"
+ },
+ "card:EVIL_EYE": {
+  "agotaste": null,
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:EXPECT_A_FIGHT": {
+  "bloqueo": "keyword:BLOCK",
+  "mano": null
+ },
+ "card:EXPERTISE": {
+  "Retienes": null,
+  "mano": null
+ },
+ "card:EXPLOSIVE_ARROWS": {
+  "flechas": null
+ },
+ "card:EXPOSE": {
+  "artefactos": null,
+  "bloqueo": "keyword:BLOCK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:FADE": {
+  "destreza": "power:DEXTERITY"
+ },
+ "card:FALLING_STAR": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:FAN_OF_KNIVES": {
+  "cartas de Navaja": null,
+  "mano": null
+ },
+ "card:FASTEN": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:FEAR": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:FEED": {
+  "fatal": "keyword:FATAL"
+ },
+ "card:FEEDING_FRENZY": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:FEEL_NO_PAIN": {
+  "agotar": null,
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:FERAL": {
+  "mano": null
+ },
+ "card:FETCH": {
+  "Puro Hueso": null
+ },
+ "card:FIEND_FIRE": {
+  "Agotas": null,
+  "agotada": null,
+  "mano": null
+ },
+ "card:FIGHT_ME": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:FIGHT_THROUGH": {
+  "Herida": "card:WOUND",
+  "bloqueo": "keyword:BLOCK",
+  "pila de descarte": null
+ },
+ "card:FINESSE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:FISTICUFFS": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:FLAK_CANNON": {
+  "Agotas": null,
+  "agotada": null
+ },
+ "card:FLAME_BARRIER": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:FLATTEN": {
+  "Puro Hueso": null
+ },
+ "card:FLECHETTES": {
+  "mano": null
+ },
+ "card:FOCUSED_STRIKE": {
+  "concentración": "power:FOCUS"
+ },
+ "card:FOOLISH_SHOT": {
+  "Disparas": null,
+  "flecha": "keyword:ARROW"
+ },
+ "card:FOOTWORK": {
+  "destreza": "power:DEXTERITY"
+ },
+ "card:FORBIDDEN_GRIMOIRE": {
+  "mazo": null
+ },
+ "card:FOREGONE_CONCLUSION": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:FORGOTTEN_RITUAL": {
+  "agotaste": null
+ },
+ "card:FRANTIC_ESCAPE": {
+  "arenas movedizas": "power:SANDPIT"
+ },
+ "card:FRIENDSHIP": {
+  "fuerza": null
+ },
+ "card:FURNACE": {
+  "forja": null
+ },
+ "card:FUSION": {
+  "Canalizas": null,
+  "plasma": "keyword:PLASMA_ORB"
+ },
+ "card:GAMMA_BLAST": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:GATHER_LIGHT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:GENETIC_ALGORITHM": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:GHOST_EATER": {
+  "condena": null
+ },
+ "card:GLACIER": {
+  "Canalizas": null,
+  "bloqueo": "keyword:BLOCK",
+  "escarcha": "keyword:FROST_ORB"
+ },
+ "card:GLASSWORK": {
+  "Canalizas": null,
+  "bloqueo": "keyword:BLOCK",
+  "vidrio": "keyword:GLASS_ORB"
+ },
+ "card:GLIMMER": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:GLIMPSE_BEYOND": {
+  "cartas de Alma": null,
+  "mazos de robo": null,
+  "plural:Alma": null
+ },
+ "card:GLITTERSTREAM": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:GOOD_INSTINCTS": {
+  "bloqueo": null
+ },
+ "card:GO_FOR_THE_EYES": {
+  "debilitamiento": "power:WEAK"
+ },
+ "card:GRAND_FINALE": {
+  "mazo de robo": null
+ },
+ "card:GRAVEBLAST": {
+  "mano": null,
+  "pila de descarte": null
+ },
+ "card:GRAVE_WARDEN": {
+  "Alma": "card:SOUL",
+  "bloqueo": "keyword:BLOCK",
+  "mazo de robo": null
+ },
+ "card:GUARDS": {
+  "Sacrificio de esbirros": "card:MINION_SACRIFICE",
+  "Sacrificio de esbirros+": "card:MINION_SACRIFICE",
+  "Transformas": null,
+  "mano": null,
+  "transformarás": null
+ },
+ "card:GUILTY": {
+  "mazo": null
+ },
+ "card:GUNK_UP": {
+  "Babeado": "card:SLIMED",
+  "pila de descarte": null
+ },
+ "card:HAILSTORM": {
+  "escarcha": "keyword:FROST_ORB"
+ },
+ "card:HAMMER_TIME": {
+  "forja": null,
+  "también lo harán": null
+ },
+ "card:HAND_OF_GREED": {
+  "fatal": "keyword:FATAL",
+  "oro": null
+ },
+ "card:HAND_TRICK": {
+  "astucia": "keyword:SLY",
+  "bloqueo": "keyword:BLOCK",
+  "mano": null
+ },
+ "card:HANG": {
+  "Cuelgue": "card:HANG"
+ },
+ "card:HAUNT": {
+  "Alma": "card:SOUL"
+ },
+ "card:HAVOC": {
+  "agota": null,
+  "mazo de robo": null
+ },
+ "card:HAZE": {
+  "debilitamiento": "power:WEAK",
+  "veneno": "power:POISON"
+ },
+ "card:HEADBUTT": {
+  "mazo de robo": null,
+  "pila de descarte": null
+ },
+ "card:HEAVY_SHOT": {
+  "Disparas": null,
+  "Puntería": "power:AIM",
+  "flecha": "keyword:ARROW"
+ },
+ "card:HEIRLOOM_HAMMER": {
+  "mano": null
+ },
+ "card:HELLO_WORLD": {
+  "mano": null
+ },
+ "card:HIBERNATE": {
+  "bloqueo": "keyword:BLOCK",
+  "escarcha": "keyword:FROST_ORB"
+ },
+ "card:HIDDEN_DAGGERS": {
+  "mano": null
+ },
+ "card:HIDDEN_GEM": {
+  "mazo de robo": null,
+  "rejugada": "keyword:REPLAY"
+ },
+ "card:HIDDEN_ROOTS": {
+  "flexibilidad": "power:STRETCH"
+ },
+ "card:HIGH_FIVE": {
+  "Puro Hueso": null,
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:HOBBLING_SHOT": {
+  "Disparas": null,
+  "debilitamiento": "power:WEAK",
+  "flecha": "keyword:ARROW",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:HOLOGRAM": {
+  "bloqueo": "keyword:BLOCK",
+  "mano": null,
+  "pila de descarte": null
+ },
+ "card:HOTFIX": {
+  "concentración": "power:FOCUS"
+ },
+ "card:HOWL_FROM_BEYOND": {
+  "pila de agotamiento": null
+ },
+ "card:HYPERBEAM": {
+  "concentración": "power:FOCUS"
+ },
+ "card:ICE_LANCE": {
+  "Canalizas": null,
+  "escarcha": "keyword:FROST_ORB"
+ },
+ "card:IGNITION": {
+  "canaliza": null,
+  "plasma": "keyword:PLASMA_ORB"
+ },
+ "card:IMMORTALITY": {
+  "intangibilidad": null
+ },
+ "card:IMPALE": {
+  "veneno": null
+ },
+ "card:IMPATIENCE": {
+  "mano": null
+ },
+ "card:IMPERVIOUS": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:INFECTION": {
+  "mano": null
+ },
+ "card:INFERNAL_BLADE": {
+  "mano": null
+ },
+ "card:INFINITE_BLADES": {
+  "Navaja": "card:SHIV",
+  "mano": null
+ },
+ "card:INFLAME": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:INTERCEPT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:INVOKE": {
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:IRON_WAVE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:I_AM_INVINCIBLE": {
+  "bloqueo": "keyword:BLOCK",
+  "mazo de robo": null
+ },
+ "card:JACKPOT": {
+  "mano": null,
+  "mejorada(s)": null
+ },
+ "card:JACK_OF_ALL_TRADES": {
+  "mano": null
+ },
+ "card:JEST": {
+  "Tristeza": "card:SADNESS",
+  "bloqueo": "keyword:BLOCK",
+  "mano": null
+ },
+ "card:JUGGERNAUT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:JUGGLING": {
+  "ataque": null,
+  "mano": null
+ },
+ "card:KI_CHANT": {
+  "mano": null,
+  "pila de descarte": null
+ },
+ "card:KI_HOP": {
+  "flechado": "power:IMPALED"
+ },
+ "card:KI_REST": {
+  "Melodía Cho": "keyword:CHO_MELODY",
+  "Melodía Wah": "keyword:WAH_MELODY",
+  "mano": null,
+  "retienes": null
+ },
+ "card:KNIFE_TRAP": {
+  "Mejoras": null,
+  "carta de Navaja": null,
+  "cartas de Navaja": null,
+  "pila de agotamiento": null,
+  "plural:Navaja": null
+ },
+ "card:KNOW_THY_PLACE": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:LARGESSE": {
+  "mano": null,
+  "mejorada": null
+ },
+ "card:LEADING_STRIKE": {
+  "cartas de Navaja": null,
+  "mano": null,
+  "plural:Navaja": null
+ },
+ "card:LEAP": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:LEGION_OF_BONE": {
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:LEG_SWEEP": {
+  "bloqueo": "keyword:BLOCK",
+  "debilitamiento": "power:WEAK"
+ },
+ "card:LIFT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:LIGHTNING_ROD": {
+  "bloqueo": "keyword:BLOCK",
+  "canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "card:LOCKED_IN": {
+  "disparo": null,
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:LOST_LUTE": {
+  "mazo de robo": null,
+  "melodía": null
+ },
+ "card:LULLABY": {
+  "bloqueo": "keyword:BLOCK",
+  "melodías": null
+ },
+ "card:MAD_SCIENCE": {
+  "bloqueo": null,
+  "debilitamiento": null,
+  "destreza": null,
+  "fuerza": null,
+  "mano": null,
+  "mejoras": null,
+  "vulnerabilidad": null
+ },
+ "card:MAKE_IT_SO": {
+  "mano": null
+ },
+ "card:MALAISE": {
+  "debilitamiento": "power:WEAK",
+  "fuerza": "power:STRENGTH"
+ },
+ "card:MANGLE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:MANIFEST_AUTHORITY": {
+  "bloqueo": "keyword:BLOCK",
+  "mano": null,
+  "mejorada": null
+ },
+ "card:MASTER_PLANNER": {
+  "astucia": "keyword:SLY"
+ },
+ "card:MAUL": {
+  "Devorar": "card:MAUL"
+ },
+ "card:MAYHEM": {
+  "mazo de robo": null
+ },
+ "card:MELANCHOLY": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:MELODIC_SHOT": {
+  "Disparas": null,
+  "flecha": "keyword:ARROW",
+  "melodía": null
+ },
+ "card:METAMORPHOSIS": {
+  "mazo de robo": null
+ },
+ "card:METEOR_SHOWER": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:METEOR_STRIKE": {
+  "Canalizas": null,
+  "plasma": "keyword:PLASMA_ORB"
+ },
+ "card:MIDNIGHT": {
+  "agotada": null
+ },
+ "card:MIGHTY_SHIELD": {
+  "Deslumbre": "card:DAZED",
+  "bloqueo": "keyword:BLOCK",
+  "mazo de robo": null
+ },
+ "card:MIGHTY_WEAPON": {
+  "Deslumbre": "card:DAZED",
+  "mazo de robo": null
+ },
+ "card:MIMIC": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:MIND_BLAST": {
+  "mazo de robo": null
+ },
+ "card:MINION_SACRIFICE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:MIRAGE": {
+  "bloqueo": "keyword:BLOCK",
+  "veneno": "power:POISON"
+ },
+ "card:MOLTEN_FIST": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:MONARCHS_GAZE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:MONOLOGUE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:MOTIF": {
+  "melodía": null
+ },
+ "card:MOURNING_BLOW": {
+  "Tristeza": "card:SADNESS",
+  "mano": null
+ },
+ "card:MULTI_CAST": {
+  "Descargas": null
+ },
+ "card:NECRO_MASTERY": {
+  "Puro Hueso": null,
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:NEGATIVE_PULSE": {
+  "bloqueo": "keyword:BLOCK",
+  "condena": "power:DOOM"
+ },
+ "card:NEOWS_FURY": {
+  "mano": null,
+  "pila de descarte": null
+ },
+ "card:NEUROSURGE": {
+  "condena": "power:DOOM"
+ },
+ "card:NEUTRALIZE": {
+  "debilitamiento": "power:WEAK"
+ },
+ "card:NEUTRON_AEGIS": {
+  "revestimiento": "power:PLATING"
+ },
+ "card:NIGHTMARE": {
+  "mano": null
+ },
+ "card:NOCK": {
+  "puntería": "power:AIM"
+ },
+ "card:NOSTALGIA": {
+  "mazo de robo": null
+ },
+ "card:NOXIOUS_FUMES": {
+  "veneno": "power:POISON"
+ },
+ "card:NO_ESCAPE": {
+  "condena": "power:DOOM"
+ },
+ "card:NULL": {
+  "Canalizas": null,
+  "debilitamiento": "power:WEAK",
+  "oscuridad": "keyword:DARK_ORB"
+ },
+ "card:OBLIVION": {
+  "condena": "power:DOOM"
+ },
+ "card:OFF_BY_ONE": {
+  "mano": null
+ },
+ "card:OUTBREAK": {
+  "veneno": "power:POISON"
+ },
+ "card:OUTRAGE": {
+  "pila de descarte": null
+ },
+ "card:OVERCLOCK": {
+  "Quemadura": "card:BURN",
+  "pila de descarte": null
+ },
+ "card:PACTS_END": {
+  "pila de agotamiento": null
+ },
+ "card:PAELS_STRIKE": {
+  "mazo": null
+ },
+ "card:PAGESTORM": {
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "card:PANIC_BUTTON": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:PARRY": {
+  "Espada del soberano": "card:SOVEREIGN_BLADE",
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:PARTICLE_WALL": {
+  "bloqueo": "keyword:BLOCK",
+  "mano": null
+ },
+ "card:PATTER": {
+  "bloqueo": "keyword:BLOCK",
+  "vigor": "power:VIGOR"
+ },
+ "card:PHANTOM_BLADES": {
+  "Navaja": "card:SHIV",
+  "cartas de Navaja": null,
+  "retención": "keyword:RETAIN"
+ },
+ "card:PHOTON_CUT": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:PIERCING_WAIL": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:PILLAR_OF_CREATION": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:POISONED_STAB": {
+  "veneno": "power:POISON"
+ },
+ "card:POKE": {
+  "Puro Hueso": null
+ },
+ "card:PRECISE_CUT": {
+  "mano": null
+ },
+ "card:PREP_TIME": {
+  "vigor": "power:VIGOR"
+ },
+ "card:PRIMAL_FORCE": {
+  "Roca gigante": "card:GIANT_ROCK",
+  "Roca gigante+": "card:GIANT_ROCK",
+  "mano": null
+ },
+ "card:PROLONG": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:PROTECTOR": {
+  "PV máx.": null,
+  "Puro Hueso": null
+ },
+ "card:PROWESS": {
+  "destreza": "power:DEXTERITY",
+  "fuerza": "power:STRENGTH"
+ },
+ "card:PULL_AGGRO": {
+  "bloqueo": "keyword:BLOCK",
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:PULL_FROM_BELOW": {
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "card:PURITY": {
+  "agotar": null,
+  "mano": null
+ },
+ "card:PUTREFY": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:QUADCAST": {
+  "Descargas": null
+ },
+ "card:QUASAR": {
+  "mano": null,
+  "mejoradas": null
+ },
+ "card:QUICK_SHOT": {
+  "Disparas": null,
+  "flecha": "keyword:ARROW"
+ },
+ "card:QUIVER": {
+  "flechas adicionales": null,
+  "plural:flecha adicional": null
+ },
+ "card:RAGE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:RAINBOW": {
+  "Canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB",
+  "escarcha": "keyword:FROST_ORB",
+  "oscuridad": "keyword:DARK_ORB"
+ },
+ "card:RAIN_SHOT": {
+  "Disparas": null,
+  "flecha": "keyword:ARROW"
+ },
+ "card:RALLY": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:RATTLE": {
+  "Puro Hueso": null
+ },
+ "card:REANIMATE": {
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:REAPER_FORM": {
+  "condena": "power:DOOM"
+ },
+ "card:REAVE": {
+  "Alma": "card:SOUL",
+  "Alma+": "card:SOUL",
+  "mazo de robo": null
+ },
+ "card:REBOOT": {
+  "mazo de robo": null
+ },
+ "card:REBOUND": {
+  "mazo de robo": null
+ },
+ "card:REFINE_BLADE": {
+  "forja": null
+ },
+ "card:REFLECT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:REFRACT": {
+  "Canalizas": null,
+  "vidrio": "keyword:GLASS_ORB"
+ },
+ "card:REGRET": {
+  "mano": null
+ },
+ "card:RELAX": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:REPEAT_SHOT": {
+  "Disparas": null,
+  "flecha": "keyword:ARROW"
+ },
+ "card:RESONANCE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:RESTLESSNESS": {
+  "mano": null
+ },
+ "card:RHYTHM_STRIKE": {
+  "melodía": null
+ },
+ "card:RIGHT_HAND_HAND": {
+  "Puro Hueso": null,
+  "mano": null,
+  "pila de descarte": null
+ },
+ "card:ROYALTIES": {
+  "oro": null
+ },
+ "card:RUMMAGE": {
+  "Tristeza": "card:SADNESS",
+  "mano": null
+ },
+ "card:RUPTURE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:SACRIFICE": {
+  "Puro Hueso": null,
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:SALVO": {
+  "Retienes": null,
+  "mano": null
+ },
+ "card:SCAVENGE": {
+  "Agotas": null
+ },
+ "card:SCOURGE": {
+  "condena": "power:DOOM"
+ },
+ "card:SCRAWL": {
+  "mano": null
+ },
+ "card:SCULPTING_STRIKE": {
+  "evanescencia": "keyword:ETHEREAL",
+  "mano": null
+ },
+ "card:SEANCE": {
+  "Alma": "card:SOUL",
+  "mazo de robo": null
+ },
+ "card:SECOND_WIND": {
+  "Agotas": null,
+  "bloqueo": "keyword:BLOCK",
+  "mano": null,
+  "que agotes": null
+ },
+ "card:SECRET_TECHNIQUE": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:SECRET_WEAPON": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:SEEKER_STRIKE": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:SEEKING_EDGE": {
+  "Espada del soberano": "card:SOVEREIGN_BLADE",
+  "forja": null
+ },
+ "card:SENTRY_MODE": {
+  "Mirada amenazante": "card:SWEEPING_GAZE",
+  "mano": null
+ },
+ "card:SERRATED_ARROWS": {
+  "flechados": null
+ },
+ "card:SETUP_STRIKE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:SEVERANCE": {
+  "Alma": "card:SOUL",
+  "mano": null,
+  "mazo de robo": null,
+  "pila de descarte": null
+ },
+ "card:SHADOWMELD": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:SHADOW_SHIELD": {
+  "Canalizas": null,
+  "bloqueo": "keyword:BLOCK",
+  "oscuridad": "keyword:DARK_ORB"
+ },
+ "card:SHADOW_STEP": {
+  "mano": null
+ },
+ "card:SHAME": {
+  "fragilidad": "power:FRAIL",
+  "mano": null
+ },
+ "card:SHARED_FATE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "card:SHARP_EDGE": {
+  "Navaja": null,
+  "mejorarás": null
+ },
+ "card:SHATTER": {
+  "Descargas": null
+ },
+ "card:SHINING_STRIKE": {
+  "mazo de robo": null
+ },
+ "card:SHOCKWAVE": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:SHOW_OFF": {
+  "puntería": "power:AIM"
+ },
+ "card:SHROUD": {
+  "bloqueo": "keyword:BLOCK",
+  "condena": "power:DOOM"
+ },
+ "card:SHRUG_IT_OFF": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:SIC_EM": {
+  "Puro Hueso": null,
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:SIMPLETON": {
+  "mano": null
+ },
+ "card:SKY_SHOT": {
+  "Disparas": null,
+  "flecha": "keyword:ARROW"
+ },
+ "card:SNAKEBITE": {
+  "veneno": "power:POISON"
+ },
+ "card:SNAP": {
+  "Puro Hueso": null,
+  "mano": null,
+  "retención": "keyword:RETAIN"
+ },
+ "card:SNEAKY": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:SONG_PATH": {
+  "Melodía Cho": "keyword:CHO_MELODY",
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:SOULBOUND": {
+  "alma": "card:SOUL",
+  "mazo de robo": null
+ },
+ "card:SOUL_STORM": {
+  "Alma": "card:SOUL",
+  "pila de agotamiento": null
+ },
+ "card:SOVEREIGN_BLADE": {
+  "bloqueo": null
+ },
+ "card:SPECTRUM_SHIFT": {
+  "mano": null
+ },
+ "card:SPINNER": {
+  "Canalizas": null,
+  "canalizas": null,
+  "vidrio": "keyword:GLASS_ORB"
+ },
+ "card:SPIRIT_OF_ASH": {
+  "bloqueo": "keyword:BLOCK",
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "card:SPLASH": {
+  "mano": null,
+  "mejoradas": null
+ },
+ "card:SPOILS_MAP": {
+  "oro": null
+ },
+ "card:SPOILS_OF_BATTLE": {
+  "forja": null
+ },
+ "card:SPUR": {
+  "Puro Hueso": null,
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "card:SQUASH": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:SQUEEZE": {
+  "Puro Hueso": null
+ },
+ "card:STACK": {
+  "bloqueo": "keyword:BLOCK",
+  "pila de descarte": null
+ },
+ "card:STAMPEDE": {
+  "mano": null
+ },
+ "card:STAR_BLAST": {
+  "bloqueo": null
+ },
+ "card:STAR_SHIELD": {
+  "bloqueo": null
+ },
+ "card:STEADY_CADENCE": {
+  "melodía": null
+ },
+ "card:STOKE": {
+  "Agotas": null,
+  "mano": null,
+  "mejorada": null,
+  "que agotes": null
+ },
+ "card:STONE_ARMOR": {
+  "revestimiento": "power:PLATING"
+ },
+ "card:STORM": {
+  "canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "card:STORM_OF_STEEL": {
+  "Navaja": "card:SHIV",
+  "Navaja+": "card:SHIV",
+  "mano": null
+ },
+ "card:STRATAGEM": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:STRENGTH": {
+  "fuerza": "card:STRENGTH"
+ },
+ "card:SUCKER_PUNCH": {
+  "debilitamiento": "power:WEAK"
+ },
+ "card:SUMMON_FORTH": {
+  "Espada del soberano": "card:SOVEREIGN_BLADE",
+  "forja": null,
+  "mano": null
+ },
+ "card:SUPPRESS": {
+  "debilitamiento": "power:WEAK"
+ },
+ "card:SURVIVOR": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:SWEEPING_GAZE": {
+  "Puro Hueso": null
+ },
+ "card:SWORD_SAGE": {
+  "Espada del soberano": "card:SOVEREIGN_BLADE",
+  "rejugada": "keyword:REPLAY"
+ },
+ "card:SYNCHRONIZE": {
+  "concentración": "power:FOCUS"
+ },
+ "card:TAUNT": {
+  "bloqueo": "keyword:BLOCK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:TEMPERANCE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:TEMPEST": {
+  "Canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "card:TERRAFORMING": {
+  "vigor": "power:VIGOR"
+ },
+ "card:TESLA_COIL": {
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "card:TEZCATARAS_MIGHT": {
+  "fuerza": null
+ },
+ "card:THE_DEVIL": {
+  "Agotas": null,
+  "Mejoras": null,
+  "agotada": null,
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:THE_EMPRESS": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:THE_FOOL": {
+  "mano": null
+ },
+ "card:THE_GAMBIT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:THE_HERMIT": {
+  "agotan": null,
+  "maldiciones": null
+ },
+ "card:THE_HUNT": {
+  "fatal": "keyword:FATAL"
+ },
+ "card:THE_LOVERS": {
+  "mano": null
+ },
+ "card:THE_MAGICIAN": {
+  "Canalizas": null
+ },
+ "card:THE_MOON": {
+  "Navaja": "card:SHIV",
+  "Navaja+": "card:SHIV",
+  "mano": null
+ },
+ "card:THE_SMITH": {
+  "forja": null
+ },
+ "card:THE_WORLD": {
+  "mano": null,
+  "pila de descarte": null
+ },
+ "card:THINKING_AHEAD": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:THRASH": {
+  "Agotas": null,
+  "mano": null
+ },
+ "card:THRUMMING_HATCHET": {
+  "mano": null
+ },
+ "card:THUNDER": {
+  "descargar electricidad": null
+ },
+ "card:THUNDERCLAP": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:TIMES_UP": {
+  "condena": "power:DOOM"
+ },
+ "card:TORIC_TOUGHNESS": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:TOXIC": {
+  "mano": null
+ },
+ "card:TRACKING": {
+  "debilitamiento": "power:WEAK"
+ },
+ "card:TRAINING_STRIKE": {
+  "fatal": null
+ },
+ "card:TRANSFIGURE": {
+  "mano": null,
+  "rejugada": "keyword:REPLAY"
+ },
+ "card:TRASH_TO_TREASURE": {
+  "canalizas": null
+ },
+ "card:TREMBLE": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:TRUE_GRIT": {
+  "Agotas": null,
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:TURBO": {
+  "Vacío": "card:VOID",
+  "pila de descarte": null
+ },
+ "card:TUTOR": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:TYRANNY": {
+  "agotas": null,
+  "mano": null
+ },
+ "card:ULTIMATE_DEFEND": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:UNDEATH": {
+  "bloqueo": "keyword:BLOCK",
+  "pila de descarte": null
+ },
+ "card:UNDERWORLD": {
+  "condena": "power:DOOM"
+ },
+ "card:UNLEASH": {
+  "Puro Hueso": null
+ },
+ "card:UNMOVABLE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:UNTOUCHABLE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:UPPERCUT": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:UPROAR": {
+  "mazo de robo": null
+ },
+ "card:UPROOT": {
+  "flechado": "power:IMPALED",
+  "quitas": null,
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:UP_MY_SLEEVE": {
+  "cartas de Navaja": null,
+  "mano": null,
+  "plural:Navaja": null
+ },
+ "card:VEILPIERCER": {
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "card:VETERAN": {
+  "bloqueo": null,
+  "fuerza": null
+ },
+ "card:VICIOUS": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:VIOLENT_CHORD": {
+  "Melodía Wah": "keyword:WAH_MELODY"
+ },
+ "card:VOLTAIC": {
+  "Canalizas": null,
+  "Canalizas electricidad": null,
+  "canalizado": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "card:WAH_BLAST": {
+  "Melodía Cho": "keyword:CHO_MELODY",
+  "Melodía Ki": "keyword:KI_MELODY"
+ },
+ "card:WAH_CHO": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "card:WAH_HAMMER": {
+  "flechados": null
+ },
+ "card:WAH_TOUCH": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "card:WARP_SPACE": {
+  "mazo de robo": null
+ },
+ "card:WELL_LAID_PLANS": {
+  "mano": null
+ },
+ "card:WHEEL_OF_FORTUNE": {
+  "mano": null
+ },
+ "card:WHISTLE": {
+  "Aturdes": null
+ },
+ "card:WHISTLING_ARROWS": {
+  "bloqueo": "keyword:BLOCK",
+  "disparas": null,
+  "flecha": "keyword:ARROW",
+  "mano": null,
+  "pila de descarte": null
+ },
+ "card:WHITE_NOISE": {
+  "mano": null
+ },
+ "card:WISH": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "card:WITHER": {
+  "mano": null
+ },
+ "card:WRAITH_FORM": {
+  "destreza": "power:DEXTERITY",
+  "intangibilidad": "power:INTANGIBLE"
+ },
+ "card:WREST": {
+  "flechado": "power:IMPALED",
+  "quitas": null
+ },
+ "card:WROUGHT_IN_WAR": {
+  "forja": null
+ },
+ "card:YAH": {
+  "flecha": "keyword:ARROW",
+  "quitas": null
+ },
+ "card:YOGA": {
+  "flexibilidad": "power:STRETCH"
+ },
+ "card:ZAP": {
+  "Canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "character:FOOL": {
+  "Torre": null
+ },
+ "character:NECROBINDER": {
+  "Puro Hueso": null
+ },
+ "enchantment:ADROIT": {
+  "bloqueo": null
+ },
+ "enchantment:CLONE": {
+  "puntos de descanso": null
+ },
+ "enchantment:GLAM": {
+  "rejugar": "keyword:REPLAY"
+ },
+ "enchantment:GOOPY": {
+  "agotamiento": "keyword:EXHAUST",
+  "bloqueo": null
+ },
+ "enchantment:INKY": {
+  "debilitamiento": "power:WEAK"
+ },
+ "enchantment:NIMBLE": {
+  "bloqueo": null
+ },
+ "enchantment:PERFECT_FIT": {
+  "mazo de robo": null
+ },
+ "enchantment:ROYALLY_APPROVED": {
+  "innatismo": "keyword:INNATE",
+  "retención": "keyword:RETAIN"
+ },
+ "enchantment:SOULS_POWER": {
+  "agotamiento": "keyword:EXHAUST"
+ },
+ "enchantment:SPIRAL": {
+  "rejugada": null
+ },
+ "enchantment:STEADY": {
+  "retención": "keyword:RETAIN"
+ },
+ "enchantment:TEZCATARAS_EMBER": {
+  "inmutabilidad": "keyword:ETERNAL"
+ },
+ "encounter:NEOW_CHOICE": {
+  "Elección de Neow:": null
+ },
+ "epoch:BLITZ_EPOCH": {
+  "Incursión": null,
+  "oro se vaporizó": null
+ },
+ "epoch:COLORLESS1_EPOCH": {
+  "Torre": null
+ },
+ "epoch:COLORLESS2_EPOCH": {
+  "bestias fantásticas": null
+ },
+ "epoch:COLORLESS5_EPOCH": {
+  "oro": null
+ },
+ "epoch:CUSTOM_AND_SEEDS_EPOCH": {
+  "acto": null,
+  "«semillas ancestrales»": null
+ },
+ "epoch:DAILY_RUN_EPOCH": {
+  "Torre": null,
+  "acto": null
+ },
+ "epoch:DARV_EPOCH": {
+  "ancestrales": null
+ },
+ "epoch:DEFECT2_EPOCH": {
+  "acto": null
+ },
+ "epoch:DEFECT3_EPOCH": {
+  "acto": null
+ },
+ "epoch:DEFECT4_EPOCH": {
+  "Torre": null,
+  "acto": null
+ },
+ "epoch:DEFECT7_EPOCH": {
+  "tesoros": null
+ },
+ "epoch:EVENT1_EPOCH": {
+  "Torre": null
+ },
+ "epoch:EVENT2_EPOCH": {
+  "Torre": null
+ },
+ "epoch:EVENT3_EPOCH": {
+  "árboles ancestrales": null
+ },
+ "epoch:FOOL1_EPOCH": {
+  "Torre": null
+ },
+ "epoch:FOOL2_EPOCH": {
+  "acto": null
+ },
+ "epoch:FOOL3_EPOCH": {
+  "acto": null
+ },
+ "epoch:FOOL4_EPOCH": {
+  "acto": null
+ },
+ "epoch:IRONCLAD2_EPOCH": {
+  "Torre": null,
+  "acto": null
+ },
+ "epoch:IRONCLAD3_EPOCH": {
+  "acto": null
+ },
+ "epoch:IRONCLAD4_EPOCH": {
+  "acto": null
+ },
+ "epoch:IRONCLAD6_EPOCH": {
+  "Torre": null
+ },
+ "epoch:IRONCLAD7_EPOCH": {
+  "Torre": null
+ },
+ "epoch:NECROBINDER2_EPOCH": {
+  "acto": null
+ },
+ "epoch:NECROBINDER3_EPOCH": {
+  "Informe de incidentes": null,
+  "acto": null
+ },
+ "epoch:NECROBINDER4_EPOCH": {
+  "acto": null,
+  "artefactos curiosos": null
+ },
+ "epoch:NECROBINDER7_EPOCH": {
+  "Pael": null
+ },
+ "epoch:POTION1_EPOCH": {
+  "Torre": null
+ },
+ "epoch:POTION2_EPOCH": {
+  "Torre": null
+ },
+ "epoch:REGENT2_EPOCH": {
+  "acto": null
+ },
+ "epoch:REGENT3_EPOCH": {
+  "Torre": null,
+  "acto": null
+ },
+ "epoch:REGENT4_EPOCH": {
+  "El Monarca de Estelaria": null,
+  "acto": null
+ },
+ "epoch:REGENT7_EPOCH": {
+  "Tanx": null
+ },
+ "epoch:RELIC1_EPOCH": {
+  "bestias fantásticas": null
+ },
+ "epoch:RELIC2_EPOCH": {
+  "ancestral": null
+ },
+ "epoch:SILENT1_EPOCH": {
+  "Torre": null
+ },
+ "epoch:SILENT2_EPOCH": {
+  "acto": null
+ },
+ "epoch:SILENT3_EPOCH": {
+  "acto": null
+ },
+ "epoch:SILENT4_EPOCH": {
+  "acto": null
+ },
+ "epoch:SILENT5_EPOCH": {
+  "Torre": null
+ },
+ "epoch:UNDERDOCKS_EPOCH": {
+  "Muelles Funestos": null,
+  "Torre": null
+ },
+ "event:AMALGAMATOR": {
+  "Defensa": null,
+  "Golpe": null,
+  "mazo": null,
+  "vórtice giratorio de sigilos brillantes": null
+ },
+ "event:AROMA_OF_CHAOS": {
+  "Mejoras": null,
+  "Transformas": null,
+  "enfrentándote a enemigos formidables": null,
+  "mazo": null
+ },
+ "event:BATTLEWORN_DUMMY": {
+  "FÁBRICA": null,
+  "Mejoras": null,
+  "poción": null,
+  "reliquia": null
+ },
+ "event:BRAIN_LEECH": {
+  "mazo": null
+ },
+ "event:BUGSLAYER": {
+  "mazo": null,
+  "poderoso y rudo guerrero": null,
+  "técnica Aplastabichos": null,
+  "técnica Exterminio": null
+ },
+ "event:BYRDONIS_NEST": {
+  "huevo desprotegido": null,
+  "mazo": null
+ },
+ "event:COLORFUL_PHILOSOPHERS": {
+  "EL MEJOR": null,
+  "Fragmento prismático": null
+ },
+ "event:COLOSSAL_FLOWER": {
+  "Núcleo polinoso": "relic:POLLINOUS_CORE",
+  "néctar": null,
+  "néctar de alta calidad": null,
+  "néctar dorado": null,
+  "oro": null
+ },
+ "event:CRYSTAL_SPHERE": {
+  "adivinación grande": null,
+  "adivinación pequeña": null,
+  "lectura de bola de cristal": null,
+  "oro": null
+ },
+ "event:DENSE_VEGETATION": {
+  "algo se retuerce": null,
+  "oro": null
+ },
+ "event:DOLL_ROOM": {
+  "reliquia de muñeca": null,
+  "reliquias de muñeca": null
+ },
+ "event:DOORS_OF_LIGHT_AND_DARK": {
+  "Mejoras": null,
+  "Te adentras hacia la luz...": null,
+  "fortalece": null,
+  "mazo": null,
+  "portero bien vestido": null
+ },
+ "event:DROWNING_BEACON": {
+  "lente": null,
+  "sala del fanal": null
+ },
+ "event:ENDLESS_CONVEYOR": {
+  "Festín frenético": null,
+  "Mejoras": null,
+  "Transformas": null,
+  "mazo": null,
+  "oro": null,
+  "poción": null
+ },
+ "event:FIELD_OF_MAN_SIZED_HOLES": {
+  "Encantas": null,
+  "luz tenue": null,
+  "mazo": null
+ },
+ "event:GRAVE_OF_THE_FORGOTTEN": {
+  "Agotamiento": null,
+  "encantar": null,
+  "mazo": null
+ },
+ "event:HUNGRY_FOR_MUSHROOMS": {
+  "entrenar sin parar": null
+ },
+ "event:INFESTED_AUTOMATON": {
+  "carta de costo 0": null,
+  "descarga eléctrica": null,
+  "poder": null
+ },
+ "event:JUNGLE_MAZE_ADVENTURE": {
+  "oro": null,
+  "recuerdos increíbles": null
+ },
+ "event:LOST_WISP": {
+  "mazo": null,
+  "oro": null
+ },
+ "event:LUMINOUS_CHOIR": {
+  "mazo": null,
+  "oro": null,
+  "reliquia": null
+ },
+ "event:MORPHIC_GROVE": {
+  "Transformas": null,
+  "oro": null
+ },
+ "event:POTION_COURIER": {
+  "plural:poción fétida": null,
+  "pociones fétidas": null,
+  "poción infrecuente": null,
+  "repartidor de pociones": null
+ },
+ "event:PUNCH_OFF": {
+  "constructos": null,
+  "constructos pugilistas": null,
+  "mazo": null,
+  "mejores recompensas": null,
+  "reliquia": null
+ },
+ "event:RANWID_THE_ELDER": {
+  "oro": null,
+  "reliquia": null,
+  "reliquias": null
+ },
+ "event:REFLECTIONS": {
+  "mazo": null
+ },
+ "event:ROOM_FULL_OF_CHEESE": {
+  "Queso elegido": "relic:CHOSEN_CHEESE",
+  "comunes": null,
+  "mazo": null
+ },
+ "event:ROUND_TEA_PARTY": {
+  "comandantes": null,
+  "corona dorada": null,
+  "entrada": null,
+  "reliquia": null
+ },
+ "event:SAPPHIRE_SEED": {
+  "Encantas": null,
+  "Mejoras": null,
+  "aumentar enormemente tu resistencia": null,
+  "colores se intensifican": null,
+  "mazo": null
+ },
+ "event:SELF_HELP_BOOK": {
+  "encantarla": null,
+  "encantarlo": null,
+  "encantarse": null
+ },
+ "event:SHRINE_OF_THE_WARLORD": {
+  "artefactos únicos": null,
+  "mazo": null
+ },
+ "event:SLIPPERY_BRIDGE": {
+  "NOOOOoooo.": null,
+  "mazo": null
+ },
+ "event:SPIRALING_WHIRLPOOL": {
+  "Defensa": null,
+  "Encantas": null,
+  "Golpe": null,
+  "mazo": null,
+  "núcleo": null,
+  "reliquia": null,
+  "—Gracias, Espiral.": null
+ },
+ "event:SPIRIT_GRAFTER": {
+  "Mejoras": null,
+  "Metamorfosis": "card:METAMORPHOSIS",
+  "luz": null,
+  "mazo": null
+ },
+ "event:STONE_OF_ALL_TIME": {
+  "Encantas": null,
+  "Roca omnitemporal": null
+ },
+ "event:SUNKEN_STATUE": {
+  "ofrendas": null,
+  "oro": null,
+  "resplandece": null,
+  "resplandezca": null
+ },
+ "event:SUNKEN_TREASURY": {
+  "Primer cofre:": null,
+  "Segundo cofre:": null,
+  "cofres": null,
+  "oro": null
+ },
+ "event:SYMBIOTE": {
+  "Encantas": null,
+  "transformarla": null
+ },
+ "event:TABLET_OF_TRUTH": {
+  "Mejoras": null,
+  "palabra final": null,
+  "verdad": null
+ },
+ "event:TEA_MASTER": {
+  "1.": null,
+  "2.": null,
+  "3.": null,
+  "4.": null,
+  "5.": null,
+  "oro": null,
+  "precio prémium": null
+ },
+ "event:THERMAE_NONUPEIPE": {
+  "mazo": null,
+  "oro": null
+ },
+ "event:THE_FUTURE_OF_POTIONS": {
+  "mejorada": null
+ },
+ "event:THE_LANTERN_KEY": {
+  "caballero misterioso": null,
+  "oro": null
+ },
+ "event:THE_LEGENDS_WERE_TRUE": {
+  "Mapa del tesoro": "card:SPOILS_MAP",
+  "poción": null
+ },
+ "event:THIS_OR_THAT": {
+  "bolsa de riquezas sospechosa": null,
+  "mazo": null,
+  "oro": null,
+  "reliquia": null
+ },
+ "event:TINKER_TIME": {
+  "debilitamiento": null,
+  "destreza": null,
+  "fuerza": null,
+  "mano": null,
+  "mazo": null,
+  "mejoras": null,
+  "vulnerabilidad": null
+ },
+ "event:TRASH_HEAP": {
+  "objetos valiosos olvidados": null,
+  "oro": null,
+  "reliquia": null,
+  "reliquia del pasado": null,
+  "tesoros exóticos": null
+ },
+ "event:TRIAL": {
+  "Decide": null,
+  "Mejoras": null,
+  "Transformas": null,
+  "arco dorado": null,
+  "juicio": null,
+  "mazo": null,
+  "noble": null,
+  "noble poderoso": null,
+  "oro": null,
+  "reliquias": null,
+  "silla deliberante": null,
+  "soborno": null,
+  "supremo árbitro de la corte": null
+ },
+ "event:UNREST_SITE": {
+  "cajita": null,
+  "punto de descanso": null,
+  "reliquia": null
+ },
+ "event:WAR_HISTORIAN_REPY": {
+  "Clase de historia": "relic:HISTORY_COURSE",
+  "Llave ígnea": "card:LANTERN_KEY",
+  "cofre": null,
+  "cofre del tesoro": null,
+  "grueso tomo de cuero": null,
+  "pociones": null,
+  "reliquias": null
+ },
+ "event:WATERFALL_OF_OBVIOUS_SECRETS": {
+  "Navaja gastada": null,
+  "mazo": null,
+  "oro": null,
+  "rara": null
+ },
+ "event:WATERLOGGED_SCRIPTORIUM": {
+  "Encantas": null,
+  "esponja espinosa": null,
+  "oro": null,
+  "pluma tentacular": null,
+  "utensilios": null
+ },
+ "event:WELCOME_TO_WONGOS": {
+  "insignia de mejor clientela Wongo": null,
+  "oro": null,
+  "puntos Wongo": null,
+  "reliquia común": null,
+  "reliquias": null
+ },
+ "event:WELLSPRING": {
+  "mazo": null,
+  "motas brillantes": null,
+  "poción": null
+ },
+ "event:WHISPERING_HOLLOW": {
+  "oro": null,
+  "pociones": null,
+  "te transforma": null,
+  "transformarla": null
+ },
+ "event:WOOD_CARVINGS": {
+  "Encantas": null,
+  "transformarla": null
+ },
+ "event:WUPPY_IN_TROUBLE": {
+  "camakrilito": null,
+  "mazo": null
+ },
+ "event:ZEN_WEAVER": {
+  "Iluminación": "card:ENLIGHTENMENT",
+  "mazo": null,
+  "oro": null
+ },
+ "intent:ATTACK": {
+  "atacar": null
+ },
+ "intent:BUFF": {
+  "mejora": null
+ },
+ "intent:CARD_DEBUFF": {
+  "aflicciones": null
+ },
+ "intent:DEBUFF": {
+  "desmejora": null
+ },
+ "intent:DEBUFF_STRONG": {
+  "desmejora": null
+ },
+ "intent:DEFEND": {
+  "bloquear": null
+ },
+ "intent:ESCAPE": {
+  "escapar": null
+ },
+ "intent:HEAL": {
+  "curarse": null
+ },
+ "intent:STATUS": {
+  "estado": null
+ },
+ "intent:SUMMON": {
+  "monstruos": null
+ },
+ "intent:UNKNOWN": {
+  "inciertos": null
+ },
+ "keyword:ARROW": {
+  "flechada": null,
+  "flechar": null,
+  "quitarla": null
+ },
+ "keyword:CARD_REWARD": {
+  "mazo": null
+ },
+ "keyword:CHANNELING": {
+  "descarga": null
+ },
+ "keyword:COOK": {
+  "Quitas": null,
+  "mazo": null,
+  "punto de descanso": null
+ },
+ "keyword:DREAD_ROTATION": {
+  "racha de rotación": null
+ },
+ "keyword:ENERGY": {
+  "mano": null
+ },
+ "keyword:ETERNAL": {
+  "mazo": null
+ },
+ "keyword:ETHEREAL": {
+  "agota": null,
+  "mano": null
+ },
+ "keyword:FORGE": {
+  "Espada del soberano": null,
+  "forja": null,
+  "mano": null
+ },
+ "keyword:INNATE": {
+  "mano": null
+ },
+ "keyword:REPLAY": {
+  "Rejugada": null
+ },
+ "keyword:ROOM_ELITE": {
+  "reliquia": null
+ },
+ "keyword:ROOM_MERCHANT": {
+  "oro": null
+ },
+ "keyword:ROOM_REST": {
+  "mejorar": null
+ },
+ "keyword:ROOM_TREASURE": {
+  "oro": null,
+  "reliquias": null
+ },
+ "keyword:ROOM_UNKNOWN_MERCHANT": {
+  "oro": null
+ },
+ "keyword:SLY": {
+  "mano": null
+ },
+ "keyword:SUMMON_DYNAMIC": {
+  "Puro Hueso": null
+ },
+ "keyword:SUMMON_STATIC": {
+  "Puro Hueso": null
+ },
+ "modifier:ALL_STAR": {
+  "incoloras": null
+ },
+ "modifier:BIG_GAME_HUNTER": {
+  "raras": null
+ },
+ "modifier:MIDAS": {
+  "puntos de descanso": null
+ },
+ "modifier:MURDEROUS": {
+  "fuerza": null
+ },
+ "modifier:NIGHT_TERRORS": {
+  "puntos de descanso": null
+ },
+ "modifier:TERMINAL": {
+  "revestimiento": null
+ },
+ "monster:GREMLIN_MERC": {
+  "¡Dinero!": null
+ },
+ "orb:DARK_ORB": {
+  "Descarga:": null,
+  "Pasiva:": null,
+  "descargase": null
+ },
+ "orb:FROST_ORB": {
+  "Descarga:": null,
+  "Pasiva:": null,
+  "bloqueo": null
+ },
+ "orb:GLASS_ORB": {
+  "Descarga:": null,
+  "Pasiva:": null
+ },
+ "orb:LIGHTNING_ORB": {
+  "Descarga:": null,
+  "Pasiva:": null
+ },
+ "orb:PLASMA_ORB": {
+  "Descarga:": null,
+  "Pasiva:": null,
+  "concentración": null
+ },
+ "potion:ASHWATER": {
+  "Agotas": null,
+  "agotar": null,
+  "mano": null
+ },
+ "potion:ATTACK_POTION": {
+  "mano": null
+ },
+ "potion:BLESSING_OF_THE_FORGE": {
+  "Mejoras": null,
+  "mano": null
+ },
+ "potion:BLOCK_POTION": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "potion:BONE_BREW": {
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "potion:BOTTLED_POTENTIAL": {
+  "mazo de robo": null
+ },
+ "potion:BOTTLED_SONG": {
+  "mano": null
+ },
+ "potion:COLORLESS_POTION": {
+  "mano": null
+ },
+ "potion:COSMIC_CONCOCTION": {
+  "mano": null,
+  "mejoradas": null,
+  "plural:mejorada": null
+ },
+ "potion:CRYSTALLINE_EUPHORIA": {
+  "Júbilo": "card:JOY",
+  "Tristeza": "card:SADNESS",
+  "mano": null
+ },
+ "potion:CUNNING_POTION": {
+  "mano": null,
+  "mejoradas": null,
+  "plural:mejorada": null
+ },
+ "potion:DEXTERITY_POTION": {
+  "destreza": "power:DEXTERITY"
+ },
+ "potion:DISTILLED_CHAOS": {
+  "mazo de robo": null
+ },
+ "potion:DROPLET_OF_PRECOGNITION": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "potion:ESSENCE_OF_DARKNESS": {
+  "Canalizas": null,
+  "espacio de orbe": null,
+  "oscuridad": "keyword:DARK_ORB"
+ },
+ "potion:FLEX_POTION": {
+  "fuerza": "power:STRENGTH"
+ },
+ "potion:FOCUS_POTION": {
+  "concentración": "power:FOCUS"
+ },
+ "potion:FORTIFIER": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "potion:FOUL_POTION": {
+  "Comerciante": null,
+  "oro": null
+ },
+ "potion:FYSH_OIL": {
+  "destreza": "power:DEXTERITY",
+  "fuerza": "power:STRENGTH"
+ },
+ "potion:GHOST_IN_A_JAR": {
+  "intangibilidad": "power:INTANGIBLE"
+ },
+ "potion:GLOWWATER_POTION": {
+  "Agotas": null,
+  "mano": null
+ },
+ "potion:HEART_OF_IRON": {
+  "revestimiento": "power:PLATING"
+ },
+ "potion:KINGS_COURAGE": {
+  "forja": null
+ },
+ "potion:LIQUID_BRONZE": {
+  "espinas": "power:THORNS"
+ },
+ "potion:LIQUID_MEMORIES": {
+  "mano": null,
+  "pila de descarte": null
+ },
+ "potion:LUCKY_TONIC": {
+  "búfer": "power:BUFFER"
+ },
+ "potion:MAZALETHS_GIFT": {
+  "ritual": "power:RITUAL"
+ },
+ "potion:OROBIC_ACID": {
+  "mano": null
+ },
+ "potion:POISON_POTION": {
+  "veneno": "power:POISON"
+ },
+ "potion:POTION_OF_BINDING": {
+  "debilitamiento": "power:WEAK",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "potion:POTION_OF_CAPACITY": {
+  "espacios de orbe": null,
+  "plural:espacio de orbe": null
+ },
+ "potion:POTION_OF_DOOM": {
+  "condena": "power:DOOM"
+ },
+ "potion:POT_OF_GHOULS": {
+  "cartas de Alma": null,
+  "mano": null,
+  "plural:Alma": null
+ },
+ "potion:POWER_POTION": {
+  "mano": null
+ },
+ "potion:PRECISION_POTION": {
+  "puntería": "power:AIM"
+ },
+ "potion:REGEN_POTION": {
+  "regeneración": "power:REGEN"
+ },
+ "potion:SHACKLING_POTION": {
+  "fuerza": "power:STRENGTH"
+ },
+ "potion:SHIP_IN_A_BOTTLE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "potion:SKILL_POTION": {
+  "mano": null
+ },
+ "potion:SNECKO_OIL": {
+  "mano": null
+ },
+ "potion:SOLDIERS_STEW": {
+  "golpe": null,
+  "rejugada": "keyword:REPLAY"
+ },
+ "potion:SPEED_POTION": {
+  "destreza": "power:DEXTERITY"
+ },
+ "potion:STABLE_SERUM": {
+  "Retienes": null,
+  "mano": null
+ },
+ "potion:STRENGTH_POTION": {
+  "fuerza": "power:STRENGTH"
+ },
+ "potion:TOUCH_OF_INSANITY": {
+  "mano": null
+ },
+ "potion:VULNERABLE_POTION": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "potion:WEAK_POTION": {
+  "debilitamiento": "power:WEAK"
+ },
+ "power:ACCELERANT": {
+  "Veneno": "power:POISON"
+ },
+ "power:ACCURACY": {
+  "Navaja": null
+ },
+ "power:ADAPTATION": {
+  "bloqueo": null,
+  "destreza": null
+ },
+ "power:AEONGLASS_DOMINION": {
+  "Marchitamiento": "card:WITHER",
+  "mazo de robo": null
+ },
+ "power:AFTERIMAGE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:AGGRESSION": {
+  "las mejora": null,
+  "mano": null,
+  "mejora": null,
+  "pila de descarte": null,
+  "plural:la mejora": null
+ },
+ "power:AIM": {
+  "flecha": null
+ },
+ "power:ALL_IS_WELL": {
+  "Tristeza": "card:SADNESS",
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:ARCHERY": {
+  "puntería": "power:AIM"
+ },
+ "power:ARSENAL": {
+  "fuerza": "power:STRENGTH"
+ },
+ "power:ARTIFACT": {
+  "Niegas": null
+ },
+ "power:AUTOMATION": {
+  "energía": null
+ },
+ "power:BARRICADE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:BEACON_OF_HOPE": {
+  "bloqueo": null
+ },
+ "power:BIASED_COGNITION": {
+  "concentración": "power:FOCUS"
+ },
+ "power:BLOCK_NEXT_TURN": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:BLUR": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:BURROWED": {
+  "aturdimiento": null,
+  "bloqueo": null
+ },
+ "power:CALAMITY": {
+  "mano": null
+ },
+ "power:CALCIFY": {
+  "Puro Hueso": null
+ },
+ "power:CALL_OF_THE_VOID": {
+  "evanescencia": "keyword:ETHEREAL",
+  "mano": null
+ },
+ "power:CHAINS_OF_BINDING": {
+  "vínculo": "affliction:BOUND"
+ },
+ "power:CHILD_OF_THE_STARS": {
+  "bloqueo": null
+ },
+ "power:COLOSSUS": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "power:COMPOST": {
+  "energía": "keyword:ENERGY"
+ },
+ "power:CONCOCT": {
+  "veneno": "power:POISON"
+ },
+ "power:CONQUEROR": {
+  "Espada del soberano": "card:SOVEREIGN_BLADE"
+ },
+ "power:CONSUMING_SHADOW": {
+  "descarga": null
+ },
+ "power:CONTRACTILITY": {
+  "bloqueo": null
+ },
+ "power:COOLANT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:CORROSIVE_WAVE": {
+  "veneno": "power:POISON"
+ },
+ "power:CORRUPTION": {
+  "agotas": null
+ },
+ "power:COUNTDOWN": {
+  "condena": "power:DOOM"
+ },
+ "power:COVERING_FIRE": {
+  "bloqueo": "keyword:BLOCK",
+  "disparas": null
+ },
+ "power:CRAB_RAGE": {
+  "bloqueo": "keyword:BLOCK",
+  "fuerza": "power:STRENGTH"
+ },
+ "power:CREATIVE_AI": {
+  "mano": null
+ },
+ "power:CRIMSON_MANTLE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:CRUELTY": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "power:CURL_UP": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:DANSE_MACABRE": {
+  "bloqueo": null
+ },
+ "power:DARK_EMBRACE": {
+  "agota": null
+ },
+ "power:DEBILITATE": {
+  "Vulnerabilidad": "power:VULNERABLE",
+  "debilitamiento": "power:WEAK"
+ },
+ "power:DECREE_OF_ENTROPY": {
+  "mejorada": null,
+  "mejoradas": null
+ },
+ "power:DEMESNE": {
+  "energía": "keyword:ENERGY"
+ },
+ "power:DEMON_FORM": {
+  "fuerza": "power:STRENGTH"
+ },
+ "power:DESPAIR": {
+  "bloqueo": null,
+  "condena": null
+ },
+ "power:DEVOUR_LIFE": {
+  "Alma": "card:SOUL",
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "power:DEXTERITY": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:DEXTERITY_DOWN": {
+  "destreza": null
+ },
+ "power:DIE_FOR_YOU": {
+  "Puro Hueso": null
+ },
+ "power:DISLIKE_YOU": {
+  "disparos": null
+ },
+ "power:ECSTASY": {
+  "Júbilo": "card:JOY",
+  "Tristeza": "card:SADNESS",
+  "mano": null,
+  "transforma": null
+ },
+ "power:ENERGY_NEXT_TURN": {
+  "energía": "keyword:ENERGY"
+ },
+ "power:ENNUI": {
+  "Tristeza": null,
+  "mano": null
+ },
+ "power:ENRAGE": {
+  "fuerza": null
+ },
+ "power:ENTROPY": {
+  "mano": null,
+  "transforma": null
+ },
+ "power:ENVENOM": {
+  "veneno": "power:POISON"
+ },
+ "power:EXPLOSIVE_ARROWS": {
+  "flechas": null
+ },
+ "power:FAN_OF_KNIVES": {
+  "Navaja": null
+ },
+ "power:FASTEN": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:FEEL_NO_PAIN": {
+  "agotar": null,
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:FERAL": {
+  "mano": null
+ },
+ "power:FLUTTER": {
+  "50 %": null,
+  "aturdir": null
+ },
+ "power:FOCUS_DOWN": {
+  "concentración": null
+ },
+ "power:FORBIDDEN_GRIMOIRE": {
+  "mazo": null
+ },
+ "power:FOREGONE_CONCLUSION": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "power:FRAIL": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:FRIENDSHIP": {
+  "energía": "keyword:ENERGY"
+ },
+ "power:FURNACE": {
+  "forja": null
+ },
+ "power:GALVANIC": {
+  "galvanismo": "power:GALVANIC"
+ },
+ "power:HAILSTORM": {
+  "escarcha": "keyword:FROST_ORB"
+ },
+ "power:HAMMER_TIME": {
+  "forja": null,
+  "lo harán": null
+ },
+ "power:HANG": {
+  "Cuelgue": "power:HANG"
+ },
+ "power:HAUNT": {
+  "Alma": null
+ },
+ "power:HEIST": {
+  "oro": null
+ },
+ "power:HELLO_WORLD": {
+  "mano": null
+ },
+ "power:HEX": {
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "power:HIBERNATE": {
+  "bloqueo": "keyword:BLOCK",
+  "escarcha": "keyword:FROST_ORB"
+ },
+ "power:HIDDEN_ROOTS": {
+  "flexibilidad": "power:STRETCH"
+ },
+ "power:HIGH_VOLTAGE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "power:HONING": {
+  "flechas": null
+ },
+ "power:IMBALANCED": {
+  "aturdirá": null
+ },
+ "power:IMPALED": {
+  "flecha": null,
+  "flechado": "power:IMPALED",
+  "quita": null,
+  "quitará": null
+ },
+ "power:IMPROVEMENT": {
+  "mejoras": null
+ },
+ "power:INFINITE_BLADES": {
+  "Navaja": "card:SHIV",
+  "mano": null
+ },
+ "power:JUGGERNAUT": {
+  "bloqueo": null
+ },
+ "power:JUGGLING": {
+  "mano": null
+ },
+ "power:LAGAVULIN_MATRIARCH_DOMINION": {
+  "destreza": "power:DEXTERITY",
+  "fuerza": "power:STRENGTH"
+ },
+ "power:LIGHTNING_ROD": {
+  "canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "power:LOST_LUTE": {
+  "mazo de robo": null,
+  "melodía": null
+ },
+ "power:LULLABY": {
+  "bloqueo": "keyword:BLOCK",
+  "melodías": null
+ },
+ "power:MASTER_PLANNER": {
+  "astucia": null
+ },
+ "power:MAYHEM": {
+  "mazo de robo": null
+ },
+ "power:MELANCHOLY": {
+  "condena": null
+ },
+ "power:MONARCHS_GAZE": {
+  "fuerza": null
+ },
+ "power:MONOLOGUE": {
+  "Strength": null,
+  "fuerza": "power:STRENGTH"
+ },
+ "power:MOTIF": {
+  "melodía": null
+ },
+ "power:MYTHIC_FORM": {
+  "Tarot": "keyword:TAROT",
+  "mano": null
+ },
+ "power:NECRO_MASTERY": {
+  "Puro Hueso": null
+ },
+ "power:NEMESIS": {
+  "intangibilidad": null
+ },
+ "power:NEUROSURGE": {
+  "condena": "power:DOOM"
+ },
+ "power:NIGHTMARE": {
+  "mano": null
+ },
+ "power:NOSTALGIA": {
+  "mazo de robo": null
+ },
+ "power:NOXIOUS_FUMES": {
+  "veneno": "power:POISON"
+ },
+ "power:NO_BLOCK": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:NO_ESCAPE": {
+  "condena": null
+ },
+ "power:OBLIVION": {
+  "condena": null
+ },
+ "power:ORB_GENERATOR": {
+  "orbes": null
+ },
+ "power:PAGESTORM": {
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "power:PAINFUL_STABS": {
+  "Herida": "card:WOUND",
+  "cartas de Herida": null,
+  "pila de descarte": null,
+  "plural:carta de Herida": null
+ },
+ "power:PAPER_CUTS": {
+  "PV máx.": null
+ },
+ "power:PARRY": {
+  "Espada del soberano": null,
+  "bloqueo": null
+ },
+ "power:PERSONAL_HIVE": {
+  "Deslumbre": "card:DAZED",
+  "mazo de robo": null
+ },
+ "power:PHANTOM_BLADES": {
+  "Navaja": "card:SHIV",
+  "retención": "keyword:RETAIN"
+ },
+ "power:PILLAR_OF_CREATION": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:PLATING": {
+  "Revestimiento": "power:PLATING",
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:PLOW": {
+  "aturdirá": null,
+  "fuerza": "power:STRENGTH"
+ },
+ "power:POISON": {
+  "veneno": "power:POISON"
+ },
+ "power:POSSESS_SPEED": {
+  "destreza": "power:DEXTERITY"
+ },
+ "power:POSSESS_STRENGTH": {
+  "fuerza": "power:STRENGTH"
+ },
+ "power:PREP_TIME": {
+  "vigor": null
+ },
+ "power:PYRE": {
+  "energía": "keyword:ENERGY"
+ },
+ "power:RADIANCE": {
+  "energía": "keyword:ENERGY"
+ },
+ "power:RAGE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:RAMPART": {
+  "bloqueo": null
+ },
+ "power:RAVENOUS": {
+  "aturdirá": null,
+  "fuerza": "power:STRENGTH"
+ },
+ "power:READ_THE_BONES": {
+  "invocación": null
+ },
+ "power:REAPER_FORM": {
+  "condena": "power:DOOM"
+ },
+ "power:REBOUND": {
+  "mazo de robo": null
+ },
+ "power:REFLECTIVE_FORTRESS": {
+  "bloqueas": null
+ },
+ "power:REGEN": {
+  "Regeneración": "power:REGEN",
+  "regeneración": "power:REGEN"
+ },
+ "power:RESERVES": {
+  "energía": null
+ },
+ "power:RESTORE_DEXTERITY": {
+  "destreza": null
+ },
+ "power:RESTORE_FOCUS": {
+  "concentración": null
+ },
+ "power:RETAIN_HAND": {
+  "Retienes": null,
+  "mano": null
+ },
+ "power:RITUAL": {
+  "fuerza": "power:STRENGTH"
+ },
+ "power:ROYALTIES": {
+  "oro": null
+ },
+ "power:RUPTURE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "power:SANDPIT": {
+  "El Insaciable": null
+ },
+ "power:SEEKING_EDGE": {
+  "Espada del soberano": "card:SOVEREIGN_BLADE"
+ },
+ "power:SELF_FORMING_CLAY": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:SENTRY_MODE": {
+  "Mirada amenazante": "card:SWEEPING_GAZE",
+  "mano": null
+ },
+ "power:SERRATED_ARROWS": {
+  "flechados": null
+ },
+ "power:SHADOWMELD": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:SHARP_EDGE": {
+  "Navaja": null,
+  "mejorarás": null
+ },
+ "power:SHOW_OFF": {
+  "ostentación": "power:SHOW_OFF",
+  "puntería": null
+ },
+ "power:SHRIEK": {
+  "aturdirá": null
+ },
+ "power:SHROUD": {
+  "bloqueo": null,
+  "condena": "power:DOOM"
+ },
+ "power:SIC_EM": {
+  "Puro Hueso": null,
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "power:SIMPLETON": {
+  "mano": null
+ },
+ "power:SKITTISH": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:SNEAKY": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:SOAR": {
+  "50 %": null
+ },
+ "power:SONG_PATH": {
+  "Melodía Cho": "keyword:CHO_MELODY",
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:SOULBOUND": {
+  "alma": "card:SOUL",
+  "cartas de almas": null,
+  "mazo de robo": null,
+  "plural:carta de alma": null
+ },
+ "power:SOW": {
+  "Retienes": null,
+  "mano": null
+ },
+ "power:SPECTRUM_SHIFT": {
+  "mano": null
+ },
+ "power:SPINNER": {
+  "canaliza": null,
+  "vidrio": "keyword:GLASS_ORB"
+ },
+ "power:SPIRIT_OF_ASH": {
+  "bloqueo": "keyword:BLOCK",
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "power:STAMPEDE": {
+  "mano": null
+ },
+ "power:STORM": {
+  "canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "power:STRATAGEM": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "power:STRETCH": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:SUCK": {
+  "fuerza": "power:STRENGTH"
+ },
+ "power:SUMMON_NEXT_TURN": {
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "power:SWORD_SAGE": {
+  "Espada del soberano": "card:SOVEREIGN_BLADE",
+  "rejugada": "keyword:REPLAY"
+ },
+ "power:TANGLED": {
+  "energía": null
+ },
+ "power:TAUNT": {
+  "vulnerabilidad": null
+ },
+ "power:TEMPORARY_DEXTERITY": {
+  "destreza": "power:DEXTERITY"
+ },
+ "power:TEMPORARY_DEXTERITY_DOWN": {
+  "destreza": null
+ },
+ "power:TEMPORARY_FOCUS": {
+  "concentración": "power:FOCUS"
+ },
+ "power:TEMPORARY_FOCUS_DOWN": {
+  "concentración": null
+ },
+ "power:TEMPORARY_STRENGTH": {
+  "fuerza": "power:STRENGTH"
+ },
+ "power:TEMPORARY_STRENGTH_DOWN": {
+  "fuerza": null
+ },
+ "power:TEMPORARY_THORNS": {
+  "espinas": "power:THORNS"
+ },
+ "power:TENDER": {
+  "destreza": "power:DEXTERITY",
+  "fuerza": "power:STRENGTH"
+ },
+ "power:TERRITORIAL": {
+  "fuerza": "power:STRENGTH"
+ },
+ "power:TEZCATARAS_BLIGHT": {
+  "fuerza": null
+ },
+ "power:THIEVERY": {
+  "oro": null
+ },
+ "power:THUNDER": {
+  "descargar electricidad": null
+ },
+ "power:TORIC_TOUGHNESS": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:TRACKING": {
+  "debilitamiento": "power:WEAK"
+ },
+ "power:TRASH_TO_TREASURE": {
+  "canalizas": null
+ },
+ "power:TYRANNY": {
+  "agota": null,
+  "mano": null
+ },
+ "power:UNDERWORLD": {
+  "condena": "power:DOOM"
+ },
+ "power:UNMOVABLE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "power:UNSTEADY": {
+  "aturdirá": null
+ },
+ "power:VEILPIERCER": {
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "power:VICIOUS": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "power:VIOLENT_CHORD": {
+  "Melodía Wah": "keyword:WAH_MELODY"
+ },
+ "power:VITAL_SPARK": {
+  "corrupción": "affliction:TAINTED",
+  "habilidades": null
+ },
+ "power:WASTE_AWAY": {
+  "energía": "keyword:ENERGY"
+ },
+ "power:WELL_LAID_PLANS": {
+  "mano": null
+ },
+ "power:WINGED_JUMP": {
+  "vulnerabilidad": null
+ },
+ "power:WITHERING_PRESENCE": {
+  "Marchitamiento": null,
+  "mano": null
+ },
+ "power:WRAITH_FORM": {
+  "destreza": "power:DEXTERITY"
+ },
+ "power:WUPPYS_LOYALTY": {
+  "Camakrilito": null
+ },
+ "power:YAH": {
+  "flecha": null,
+  "quitas": null
+ },
+ "power:YOU_ARE_MINE": {
+  "debilitamiento": "power:WEAK",
+  "fragilidad": "power:FRAIL",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "relic:AKABEKO": {
+  "vigor": "power:VIGOR"
+ },
+ "relic:ALCHEMICAL_COFFER": {
+  "pociones": null,
+  "poción": null
+ },
+ "relic:AMETHYST_AUBERGINE": {
+  "oro": null
+ },
+ "relic:ANCHOR": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:ARCANE_SCROLL": {
+  "carta rara": null,
+  "mazo": null
+ },
+ "relic:ARCHAIC_TOOTH": {
+  "Transformas": null,
+  "transformas": null
+ },
+ "relic:ASTROLABE": {
+  "Transformas": null,
+  "mejoras": null,
+  "transformas": null
+ },
+ "relic:BAG_OF_MARBLES": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "relic:BATH_ROBES": {
+  "jefe": null
+ },
+ "relic:BEAUTIFUL_BRACELET": {
+  "Encanta": null,
+  "encanta": null,
+  "mazo": null
+ },
+ "relic:BELLOWS": {
+  "Mejoras": null,
+  "mano": null
+ },
+ "relic:BELT_BUCKLE": {
+  "destreza": "power:DEXTERITY",
+  "pociones": null
+ },
+ "relic:BIG_HAT": {
+  "evanescencia": "keyword:ETHEREAL",
+  "mano": null
+ },
+ "relic:BIIIG_HUG": {
+  "Hollín": "card:SOOT",
+  "mazo": null,
+  "mazo de robo": null
+ },
+ "relic:BING_BONG": {
+  "mazo": null
+ },
+ "relic:BIZARRE_LAMP": {
+  "Júbilo": "card:JOY",
+  "Tristeza": "card:SADNESS",
+  "mano": null
+ },
+ "relic:BLACK_STAR": {
+  "enemigos élite": null
+ },
+ "relic:BLESSED_ANTLER": {
+  "Deslumbre": "card:DAZED",
+  "mazo de robo": null
+ },
+ "relic:BLOOD_SOAKED_ROSE": {
+  "mazo": null
+ },
+ "relic:BONE_FLUTE": {
+  "Puro Hueso": null,
+  "bloqueo": null
+ },
+ "relic:BONE_TEA": {
+  "mejoras": null
+ },
+ "relic:BOOKMARK": {
+  "retención": "keyword:RETAIN"
+ },
+ "relic:BOOK_OF_FIVE_RINGS": {
+  "mazo": null
+ },
+ "relic:BOOK_REPAIR_KNIFE": {
+  "condena": "power:DOOM"
+ },
+ "relic:BOOMING_CONCH": {
+  "élite": null
+ },
+ "relic:BOUND_PHYLACTERY": {
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "relic:BOWLER_HAT": {
+  "oro": null
+ },
+ "relic:BRIMSTONE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:BRONZE_SCALES": {
+  "espinas": "power:THORNS"
+ },
+ "relic:BURNING_STICKS": {
+  "agotes": null,
+  "mano": null
+ },
+ "relic:BYRDINE": {
+  "Ataque de jáparo": "card:BYRD_SWOOP",
+  "Jáparo celestial": "card:GOD_BYRD",
+  "japarina": "relic:BYRDINE",
+  "transforma": null
+ },
+ "relic:BYRDPIP": {
+  "Ataque de jáparo": "card:BYRD_SWOOP",
+  "japarina": null,
+  "punto de descanso": null
+ },
+ "relic:CALLING_BELL": {
+  "reliquias": null
+ },
+ "relic:CAPTAINS_WHEEL": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:CAULDRON": {
+  "plural:poción": null,
+  "pociones": null
+ },
+ "relic:CHARONS_ASHES": {
+  "agotes": null
+ },
+ "relic:CHOICES_PARADOX": {
+  "mano": null,
+  "retención": "keyword:RETAIN"
+ },
+ "relic:CIRCLET": {
+  "Torre": null
+ },
+ "relic:CLAWS": {
+  "Devorar": "card:MAUL",
+  "Transformas": null,
+  "transformarás": null,
+  "transformas": null
+ },
+ "relic:CLOAK_CLASP": {
+  "bloqueo": "keyword:BLOCK",
+  "mano": null
+ },
+ "relic:CONDUCTORS_BATON": {
+  "melodías": null
+ },
+ "relic:CRACKED_CORE": {
+  "canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "relic:CROSSBOW": {
+  "carta de ataque": null,
+  "mano": null
+ },
+ "relic:CURSED_KETTLE": {
+  "enemigo élite": null,
+  "fuerza": null,
+  "élites": null
+ },
+ "relic:CURSED_PEARL": {
+  "oro": null
+ },
+ "relic:DATA_DISK": {
+  "concentración": "power:FOCUS"
+ },
+ "relic:DAUGHTER_OF_THE_WIND": {
+  "bloqueo": null
+ },
+ "relic:DELICATE_FROND": {
+  "pociones": null
+ },
+ "relic:DIAMOND_DIADEM": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:DISTINGUISHED_CAPE": {
+  "cartas de espectral": null,
+  "mazo": null,
+  "plural:carta de espectral": null
+ },
+ "relic:DOLLYS_MIRROR": {
+  "copiar": null,
+  "mazo": null
+ },
+ "relic:DOWSING_ROD": {
+  "Radiestesia": "card:DOWSING",
+  "mazo": null,
+  "radiestesia": "card:DOWSING"
+ },
+ "relic:DRAGON_FRUIT": {
+  "oro": null
+ },
+ "relic:DREAM_CATCHER": {
+  "descanses": null,
+  "mazo": null
+ },
+ "relic:DUSTY_TOME": {
+  "carta ancestral": null
+ },
+ "relic:ECTOPLASM": {
+  "oro": null
+ },
+ "relic:ELECTRIC_SHRYMP": {
+  "Encantas": null,
+  "encantas": null
+ },
+ "relic:EMBER_TEA": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:EMPTY_CAGE": {
+  "mazo": null
+ },
+ "relic:ENDLESS_APPETITE": {
+  "agotes": null,
+  "fuerza": null
+ },
+ "relic:ETERNAL_FEATHER": {
+  "mazo": null,
+  "punto de descanso": null
+ },
+ "relic:EXERCISE_MAT": {
+  "flexibilidad": "power:STRETCH"
+ },
+ "relic:FAKE_ANCHOR": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:FAKE_ORICHALCUM": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:FAKE_VENERABLE_TEA_SET": {
+  "punto de descanso": null
+ },
+ "relic:FENCING_MANUAL": {
+  "forja": null
+ },
+ "relic:FERTILIZER": {
+  "Tristeza": "card:SADNESS",
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:FISHING_ROD": {
+  "mazo": null,
+  "mejora": null
+ },
+ "relic:FORGOTTEN_SOUL": {
+  "agotes": null
+ },
+ "relic:FRAGRANT_MUSHROOM": {
+  "Mejoras": null,
+  "mejoras": null
+ },
+ "relic:FRESNEL_LENS": {
+  "bloqueo": null,
+  "encantas": null,
+  "mazo": null
+ },
+ "relic:FROZEN_EGG": {
+  "mazo": null,
+  "mejoras": null
+ },
+ "relic:FUNERARY_MASK": {
+  "cartas de Alma": null,
+  "mazo de robo": null,
+  "plural:Alma": null
+ },
+ "relic:GALACTIC_DUST": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:GHOST_SEED": {
+  "Defensa": null,
+  "Golpe": null,
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "relic:GIRYA": {
+  "fuerza": "power:STRENGTH",
+  "puntos de descanso": null
+ },
+ "relic:GLASS_EYE": {
+  "comunes": null,
+  "infrecuentes": null,
+  "rara": null
+ },
+ "relic:GLITTER": {
+  "Encantas": null
+ },
+ "relic:GLOWING_ORB": {
+  "enemigos élite": null
+ },
+ "relic:GNARLED_HAMMER": {
+  "encantas": null
+ },
+ "relic:GOLDEN_COMPASS": {
+  "acto": null
+ },
+ "relic:GOLDEN_PEARL": {
+  "oro": null
+ },
+ "relic:GORGET": {
+  "revestimiento": "power:PLATING"
+ },
+ "relic:HAND_DRILL": {
+  "bloqueo": null,
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "relic:HEFTY_TABLET": {
+  "mazo": null
+ },
+ "relic:HELICAL_DART": {
+  "Navaja": "card:SHIV",
+  "destreza": "power:DEXTERITY"
+ },
+ "relic:HORN_CLEAT": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:INFUSED_CORE": {
+  "Electricidad": "keyword:LIGHTNING_ORB",
+  "canalizas": null,
+  "electricidad": "keyword:LIGHTNING_ORB"
+ },
+ "relic:INTIMIDATING_HELMET": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:JEWELED_MASK": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "relic:JEWELRY_BOX": {
+  "Apoteosis": "card:APOTHEOSIS",
+  "mazo": null
+ },
+ "relic:JOSS_PAPER": {
+  "agotes": null
+ },
+ "relic:JUZU_BRACELET": {
+  "¿?": null
+ },
+ "relic:KIFUDA": {
+  "encantas": null
+ },
+ "relic:KUNAI": {
+  "destreza": "power:DEXTERITY"
+ },
+ "relic:LARGE_CAPSULE": {
+  "Defensa": null,
+  "Golpe": null,
+  "mazo": null,
+  "plural:reliquia": null,
+  "reliquias": null
+ },
+ "relic:LAVA_LAMP": {
+  "mejoras": null
+ },
+ "relic:LAVA_ROCK": {
+  "acto": null,
+  "reliquias": null
+ },
+ "relic:LEAD_PAPERWEIGHT": {
+  "mazo": null
+ },
+ "relic:LEAFY_POULTICE": {
+  "Defensa": null,
+  "Golpe": null,
+  "Transformas": null,
+  "transformas": null
+ },
+ "relic:LORDS_PARASOL": {
+  "Comerciante": null
+ },
+ "relic:LOST_COFFER": {
+  "poción": null
+ },
+ "relic:LUCKY_FYSH": {
+  "mazo": null,
+  "oro": null
+ },
+ "relic:MASSIVE_SCROLL": {
+  "cartas de modo coop.": null,
+  "mazo": null
+ },
+ "relic:MAW_BANK": {
+  "oro": null
+ },
+ "relic:MEAT_CLEAVER": {
+  "cocinar": "keyword:COOK"
+ },
+ "relic:METRONOME": {
+  "canalices": null,
+  "orbes": null
+ },
+ "relic:MIGHTY_WINGS": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:MINIATURE_CANNON": {
+  "mejoradas": null
+ },
+ "relic:MINIATURE_TENT": {
+  "puntos de descanso": null
+ },
+ "relic:MINI_REGENT": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:MOLTEN_EGG": {
+  "mazo": null,
+  "mejoras": null
+ },
+ "relic:MUMMIFIED_HAND": {
+  "mano": null
+ },
+ "relic:MUSIC_BOX": {
+  "evanescencia": "keyword:ETHEREAL"
+ },
+ "relic:MYSTERIOUS_COCOON": {
+  "Empalar": null,
+  "Golpe de entreno": null
+ },
+ "relic:MYSTIC_LIGHTER": {
+  "encantadas": null
+ },
+ "relic:NEOWS_BONES": {
+  "mazo": null,
+  "plural:reliquia de Neow": null,
+  "reliquias de Neow": null
+ },
+ "relic:NEOWS_SACRIFICE": {
+  "mazo": null,
+  "ámbar gris": "potion:AMBERGRIS"
+ },
+ "relic:NEOWS_TALISMAN": {
+  "Defensa": null,
+  "Golpe": null,
+  "Mejoras": null,
+  "mejoras": null
+ },
+ "relic:NEOWS_TORMENT": {
+  "Furia de Neow": "card:NEOWS_FURY",
+  "mazo": null
+ },
+ "relic:NEW_LEAF": {
+  "Transformas": null,
+  "transformas": null
+ },
+ "relic:NINJA_SCROLL": {
+  "cartas de Navaja": null,
+  "mano": null,
+  "plural:Navaja": null
+ },
+ "relic:NUTRITIOUS_SOUP": {
+  "Encantas": null,
+  "Golpe": null,
+  "encantas": null,
+  "mazo": null
+ },
+ "relic:OBSIDIAN_VICE": {
+  "mano": null
+ },
+ "relic:OCARINA": {
+  "mano": null
+ },
+ "relic:ODDLY_SMOOTH_STONE": {
+  "destreza": "power:DEXTERITY"
+ },
+ "relic:OLD_COIN": {
+  "oro": null
+ },
+ "relic:ORANGE_DOUGH": {
+  "mano": null
+ },
+ "relic:ORICHALCUM": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:ORNAMENTAL_FAN": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:PAELS_CLAW": {
+  "Defensa": null,
+  "Encantas": null,
+  "encantas": null
+ },
+ "relic:PAELS_EYE": {
+  "agotas": null,
+  "mano": null
+ },
+ "relic:PAELS_GROWTH": {
+  "Encantas": null,
+  "encantas": null
+ },
+ "relic:PAELS_HORN": {
+  "Relajación": "card:RELAX",
+  "mazo": null
+ },
+ "relic:PAELS_LEGION": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:PAELS_TOOTH": {
+  "mazo": null,
+  "mejorada": null
+ },
+ "relic:PAELS_WING": {
+  "reliquia": null
+ },
+ "relic:PANDORAS_BOX": {
+  "Caja de Pandora": "relic:PANDORAS_BOX",
+  "Defensa": null,
+  "Golpe": null,
+  "Transformas": null
+ },
+ "relic:PANTOGRAPH": {
+  "jefe": null
+ },
+ "relic:PAPER_KRANE": {
+  "debilitamiento": "power:WEAK"
+ },
+ "relic:PAPER_PHROG": {
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "relic:PARRYING_SHIELD": {
+  "bloqueo": null
+ },
+ "relic:PERMAFROST": {
+  "bloqueo": null
+ },
+ "relic:PETRIFIED_TOAD": {
+  "Roca con forma de poción": "potion:POTION_SHAPED_ROCK"
+ },
+ "relic:PHIAL_HOLSTER": {
+  "plural:poción": null,
+  "pociones": null
+ },
+ "relic:PHILOSOPHERS_STONE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:PHYLACTERY_UNBOUND": {
+  "invocación": "keyword:SUMMON_STATIC"
+ },
+ "relic:PLANISPHERE": {
+  "¿?": null
+ },
+ "relic:POMANDER": {
+  "Mejoras": null,
+  "mejoras": null
+ },
+ "relic:POWER_CELL": {
+  "mano": null,
+  "mazo de robo": null
+ },
+ "relic:PRECARIOUS_SHEARS": {
+  "mazo": null
+ },
+ "relic:PRECISE_SCISSORS": {
+  "mazo": null
+ },
+ "relic:PRESERVED_FOG": {
+  "mazo": null
+ },
+ "relic:PUMPKIN_CANDLE": {
+  "encenderse": null,
+  "puntos de descanso": null
+ },
+ "relic:PUNCH_DAGGER": {
+  "encantas": null
+ },
+ "relic:RADIANT_PEARL": {
+  "cartas de Luminiscencia": null,
+  "mano": null,
+  "plural:Luminiscencia": null
+ },
+ "relic:RAINBOW_RING": {
+  "destreza": "power:DEXTERITY",
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:RAZOR_TOOTH": {
+  "mejoras": null
+ },
+ "relic:RED_MASK": {
+  "debilitamiento": "power:WEAK"
+ },
+ "relic:RED_SKULL": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:REGALITE": {
+  "bloqueo": null
+ },
+ "relic:REGAL_PILLOW": {
+  "descansar": null
+ },
+ "relic:REPTILE_TRINKET": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:RINGING_TRIANGLE": {
+  "Retienes": null,
+  "mano": null
+ },
+ "relic:RIPPLE_BASIN": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:ROYAL_STAMP": {
+  "encantarla": null,
+  "mazo": null
+ },
+ "relic:RUINED_HELMET": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:RUNIC_CAPACITOR": {
+  "espacios de orbe": null
+ },
+ "relic:RUNIC_PYRAMID": {
+  "mano": null
+ },
+ "relic:SAI": {
+  "bloqueo": null
+ },
+ "relic:SAND_CASTLE": {
+  "mejoras": null
+ },
+ "relic:SCREAMING_FLAGON": {
+  "mano": null
+ },
+ "relic:SCROLL_BOXES": {
+  "mazo": null
+ },
+ "relic:SEAL_OF_GOLD": {
+  "oro": null
+ },
+ "relic:SEA_GLASS": {
+  "mazo": null
+ },
+ "relic:SELF_FORMING_CLAY": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:SERE_TALON": {
+  "mazo": null
+ },
+ "relic:SHOVEL": {
+  "puntos de descanso": null,
+  "reliquia": null
+ },
+ "relic:SHURIKEN": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:SIGNET_RING": {
+  "oro": null
+ },
+ "relic:SILKEN_TRESS": {
+  "Encantas": null,
+  "oro": null
+ },
+ "relic:SILVER_CRUCIBLE": {
+  "Mejoras": null
+ },
+ "relic:SLING_OF_COURAGE": {
+  "fuerza": "power:STRENGTH",
+  "élite": null
+ },
+ "relic:SMALL_CAPSULE": {
+  "reliquia": null
+ },
+ "relic:SNECKO_SKULL": {
+  "veneno": "power:POISON"
+ },
+ "relic:SONG_BOW": {
+  "puntería": "power:AIM"
+ },
+ "relic:SOZU": {
+  "pociones": null
+ },
+ "relic:SPARKLING_ROUGE": {
+  "destreza": "power:DEXTERITY",
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:STONE_CRACKER": {
+  "mazo de robo": null,
+  "mejoras": null
+ },
+ "relic:STONE_HUMIDIFIER": {
+  "descansar": null,
+  "punto de descanso": null
+ },
+ "relic:STORYBOOK": {
+  "Llama resplandeciente": "card:BRIGHTEST_FLAME",
+  "mazo": null
+ },
+ "relic:STORYTELLER": {
+  "puntería": "power:AIM"
+ },
+ "relic:STURDY_CLAMP": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:SWORD_OF_JADE": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:SWORD_OF_STONE": {
+  "enemigos élite": null,
+  "plural:enemigo élite": null,
+  "reliquia": null
+ },
+ "relic:SYMBIOTIC_VIRUS": {
+  "canalizas": null,
+  "oscuridad": "keyword:DARK_ORB"
+ },
+ "relic:TANXS_WHISTLE": {
+  "Silbido": "card:WHISTLE",
+  "mazo": null
+ },
+ "relic:TEA_OF_DISCOURTESY": {
+  "Deslumbre": "card:DAZED",
+  "mazo de robo": null
+ },
+ "relic:THE_ABACUS": {
+  "bloqueo": "keyword:BLOCK",
+  "mazo de robo": null
+ },
+ "relic:TINY_MAILBOX": {
+  "descansar": null,
+  "pociones": null
+ },
+ "relic:TOASTY_MITTENS": {
+  "agotas": null,
+  "fuerza": "power:STRENGTH",
+  "mano": null
+ },
+ "relic:TOOLBOX": {
+  "mano": null
+ },
+ "relic:TORMENTOUS_COLLAR": {
+  "debilitamiento": "power:WEAK"
+ },
+ "relic:TOUCH_OF_OROBAS": {
+  "ancestral": null,
+  "reliquia": null
+ },
+ "relic:TOUGH_BANDAGES": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:TOXIC_EGG": {
+  "mazo": null,
+  "mejorarás": null
+ },
+ "relic:TOY_BOX": {
+  "plural:reliquia": null,
+  "reliquia de cera": null,
+  "reliquias": null
+ },
+ "relic:TRI_BOOMERANG": {
+  "encantas": null,
+  "mazo": null
+ },
+ "relic:TUNING_FORK": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:TWINE": {
+  "bloqueo": "keyword:BLOCK",
+  "flecha": "keyword:ARROW",
+  "quitas": null
+ },
+ "relic:TWISTED_FUNNEL": {
+  "veneno": "power:POISON"
+ },
+ "relic:UNCEASING_TOP": {
+  "mano": null
+ },
+ "relic:UNDYING_SIGIL": {
+  "condena": "power:DOOM"
+ },
+ "relic:UNSETTLING_LAMP": {
+  "desmejora": null
+ },
+ "relic:VAJRA": {
+  "fuerza": "power:STRENGTH"
+ },
+ "relic:VAMBRACE": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:VENERABLE_TEA_SET": {
+  "punto de descanso": null
+ },
+ "relic:VEXING_PUZZLEBOX": {
+  "mano": null
+ },
+ "relic:VITRUVIAN_MINION": {
+  "bloqueo": "keyword:BLOCK"
+ },
+ "relic:WAR_HAMMER": {
+  "enemigo élite": null,
+  "mejoras": null
+ },
+ "relic:WAR_PAINT": {
+  "mejoras": null
+ },
+ "relic:WHETSTONE": {
+  "mejoras": null
+ },
+ "relic:WHITE_BEAST_STATUE": {
+  "pociones": null
+ },
+ "relic:WHITE_STAR": {
+  "enemigos élites": null,
+  "rara": null
+ },
+ "relic:WHITTLING_KNIFE": {
+  "pila de descarte": null,
+  "puntería": "power:AIM"
+ },
+ "relic:WING_CHARM": {
+  "Encantas": null
+ },
+ "relic:WONGOS_MYSTERY_TICKET": {
+  "plural:reliquia": null,
+  "reliquias": null
+ },
+ "relic:WUPPY": {
+  "Camakrilito": "relic:WUPPY"
+ },
+ "relic:YUMMY_COOKIE": {
+  "Mejoras": null,
+  "mejoras": null
+ }
+}

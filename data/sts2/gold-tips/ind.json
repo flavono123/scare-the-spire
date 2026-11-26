@@ -1,0 +1,4252 @@
+{
+ "affliction:BOUND": {
+  "Terhubung": "affliction:BOUND"
+ },
+ "affliction:HEXED": {
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "affliction:SMOG": {
+  "Teknik": null
+ },
+ "affliction:TAINTED": {
+  "Noda": "affliction:TAINTED"
+ },
+ "ancient:NEOW": {
+  "“Ki...!”": null
+ },
+ "ancient:VAKUU": {
+  "Vakuu": null
+ },
+ "ascension:BLITZ": {
+  "Dekmu": null
+ },
+ "ascension:DREAD": {
+  "Hasut": null,
+  "Kekuatan": null,
+  "Ketangkasan": null,
+  "Lapisan": null,
+  "Layu": null,
+  "Lemah": null,
+  "Licin": null,
+  "Rentan": null,
+  "Retak": null,
+  "Ritual": null,
+  "Tumpukan Ambil": null
+ },
+ "ascension:DREAD_RULE_02": {
+  "Dekmu": null
+ },
+ "ascension:LEVEL_01": {
+  "Elit": null
+ },
+ "ascension:LEVEL_03": {
+  "Emas": null
+ },
+ "ascension:LEVEL_10": {
+  "Babak": null
+ },
+ "badge:KACHING": {
+  "Emas": null
+ },
+ "badge:MONEY_MONEY": {
+  "Emas": null
+ },
+ "card:ABRASIVE": {
+  "Duri": "power:THORNS",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "card:ABUNDANCE": {
+  "Ditingkatkan": null,
+  "Kuasa": null,
+  "Tanganmu": null
+ },
+ "card:ACCELERANT": {
+  "Racun": "power:POISON"
+ },
+ "card:ACCURACY": {
+  "Belati": "card:SHIV"
+ },
+ "card:ADAPTIVE_STRIKE": {
+  "Tumpukan Singkirmu": null
+ },
+ "card:AFTERIMAGE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:AFTERLIFE": {
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "card:AGGRESSION": {
+  "Tanganmu": null,
+  "Tingkatkan": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:ALL_FOR_ONE": {
+  "Tanganmu": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:ALL_IS_WELL": {
+  "Blok": "keyword:BLOCK",
+  "Murung": "card:SADNESS"
+ },
+ "card:ANGER": {
+  "Tumpukan Singkirmu": null
+ },
+ "card:ANGUISH": {
+  "Murung": "card:SADNESS"
+ },
+ "card:ANOINTED": {
+  "Langka": null,
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:ANTICIPATE": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "card:APOTHEOSIS": {
+  "Tingkatkan": null
+ },
+ "card:APPARITION": {
+  "Tembus": "power:INTANGIBLE"
+ },
+ "card:ARCHERY": {
+  "Bidik": "power:AIM"
+ },
+ "card:ARMAMENTS": {
+  "Blok": "keyword:BLOCK",
+  "Tanganmu": null,
+  "Tingkatkan": null
+ },
+ "card:ARROW_STAB": {
+  "Bidik": "power:AIM"
+ },
+ "card:ARSENAL": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:ASHEN_STRIKE": {
+  "Tumpukan Hangusmu": null
+ },
+ "card:ASSASSINATE": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:BACKFLIP": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BALL_LIGHTNING": {
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:BANSHEES_CRY": {
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "card:BARRAGE": {
+  "Tersalurkan": null
+ },
+ "card:BARRICADE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BASH": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:BEACON_OF_HOPE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BEAM_CELL": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:BEAT_DOWN": {
+  "Tumpukan Singkirmu": null
+ },
+ "card:BEAT_INTO_SHAPE": {
+  "Menempa": null,
+  "Tempa": "keyword:FORGE"
+ },
+ "card:BECKON": {
+  "Tanganmu": null
+ },
+ "card:BEGONE": {
+  "Ditransformasi": null,
+  "Tanganmu": null,
+  "Tebasan Budak": "card:MINION_STRIKE",
+  "Tebasan Budak+": "card:MINION_STRIKE"
+ },
+ "card:BIASED_COGNITION": {
+  "Fokus": "power:FOCUS"
+ },
+ "card:BIG_BANG": {
+  "Tempa": "keyword:FORGE"
+ },
+ "card:BLADE_DANCE": {
+  "Belati": "card:SHIV",
+  "Tanganmu": null,
+  "plural:Belati": null
+ },
+ "card:BLADE_OF_INK": {
+  "Belati": "card:SHIV",
+  "Tanganmu": null,
+  "plural:Belati": null
+ },
+ "card:BLADE_SYMPHONY": {
+  "Belati": "card:SHIV",
+  "Tangan": null,
+  "plural:Belati": null
+ },
+ "card:BLAZE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:BLIGHT_STRIKE": {
+  "Maut": "power:DOOM"
+ },
+ "card:BLOOD_WALL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BLOSSOM_SHOT": {
+  "Peregangan": "power:STRETCH",
+  "Tembak": null
+ },
+ "card:BLOT_OUT_THE_SKY": {
+  "Menembak": null,
+  "Tanganmu": null
+ },
+ "card:BLUR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BODYGUARD": {
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "card:BODY_SLAM": {
+  "Blokmu": null
+ },
+ "card:BOLAS": {
+  "Tanganmu": null
+ },
+ "card:BOMBARDMENT": {
+  "Tumpukan Hangusmu": null
+ },
+ "card:BONE_SHARDS": {
+  "Blok": "keyword:BLOCK",
+  "Osty": null
+ },
+ "card:BOOST_AWAY": {
+  "Blok": "keyword:BLOCK",
+  "Pusing": "card:DAZED",
+  "Tumpukan Singkirmu": null
+ },
+ "card:BOOT_SEQUENCE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BOUNCE": {
+  "Peregangan": "power:STRETCH",
+  "Tanganmu": null
+ },
+ "card:BOUNCING_FLASK": {
+  "Racun": "power:POISON"
+ },
+ "card:BOW_SMACK": {
+  "Tertusuk": "power:IMPALED"
+ },
+ "card:BRACE": {
+  "Bidik": "power:AIM"
+ },
+ "card:BRAND": {
+  "Hanguskan": null,
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:BREAK": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:BRIGHTEN_UP": {
+  "Murung": "card:SADNESS",
+  "Riang": "card:JOY",
+  "Tanganmu": null
+ },
+ "card:BUBBLE_BUBBLE": {
+  "Racun": "power:POISON"
+ },
+ "card:BULK_UP": {
+  "Kekuatan": "power:STRENGTH",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "card:BULLET_TIME": {
+  "Tanganmu": null
+ },
+ "card:BULLY": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:BULWARK": {
+  "Blok": "keyword:BLOCK",
+  "Tempa": "keyword:FORGE"
+ },
+ "card:BUNDLE_OF_JOY": {
+  "Tanganmu": null
+ },
+ "card:BURN": {
+  "Tanganmu": null
+ },
+ "card:BURNING_PACT": {
+  "Hanguskan": null
+ },
+ "card:BYRDONIS_EGG": {
+  "Peristirahatan": null
+ },
+ "card:CALAMITY": {
+  "Tanganmu": null
+ },
+ "card:CALCIFY": {
+  "Osty": null
+ },
+ "card:CALCULATED_GAMBLE": {
+  "Tanganmu": null
+ },
+ "card:CALL_OF_THE_VOID": {
+  "Rapuh": "keyword:ETHEREAL",
+  "Tanganmu": null
+ },
+ "card:CAPTURE_SPIRIT": {
+  "Jiwa": "card:SOUL",
+  "Tumpukan Ambil": null,
+  "plural:Jiwa": null
+ },
+ "card:CASCADE": {
+  "Tumpukan Ambil": null
+ },
+ "card:CATASTROPHE": {
+  "Tumpukan Ambil": null
+ },
+ "card:CHAOS": {
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:CHARGE": {
+  "Ditransformasi": null,
+  "Tumpukan Ambil": null
+ },
+ "card:CHARGE_BATTERY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CHILD_OF_THE_STARS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CHILL": {
+  "Es": "keyword:FROST_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:CHO_BARBS": {
+  "Blok": "keyword:BLOCK",
+  "Duri": "power:THORNS"
+ },
+ "card:CHO_CHORUS": {
+  "Blok": "keyword:BLOCK",
+  "Tanganmu": null
+ },
+ "card:CHO_FIRM": {
+  "Blok": "keyword:BLOCK",
+  "Panah": "keyword:ARROW"
+ },
+ "card:CHO_KI": {
+  "Blok": "keyword:BLOCK",
+  "Peregangan": "power:STRETCH"
+ },
+ "card:CHO_LIMBS": {
+  "Blok": "keyword:BLOCK",
+  "Melodi Ki": "keyword:KI_MELODY",
+  "Melodi Wah": "keyword:WAH_MELODY"
+ },
+ "card:CHO_READY": {
+  "Bidik": "power:AIM",
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CHRYSALIS": {
+  "Tumpukan Ambil": null
+ },
+ "card:CINDER": {
+  "Hanguskan": null
+ },
+ "card:CLASH": {
+  "Tanganmu": null
+ },
+ "card:CLEANSE": {
+  "Hanguskan": null,
+  "Panggil": "keyword:SUMMON_STATIC",
+  "Tumpukan Ambil": null
+ },
+ "card:CLOAK_AND_DAGGER": {
+  "Belati": "card:SHIV",
+  "Blok": "keyword:BLOCK",
+  "Tanganmu": null,
+  "plural:Belati": null
+ },
+ "card:CLOAK_OF_STARS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CODA": {
+  "Melodi": null
+ },
+ "card:COLD_SNAP": {
+  "Es": "keyword:FROST_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:COLLISION_COURSE": {
+  "Puing": "card:DEBRIS",
+  "Tanganmu": null
+ },
+ "card:COLOSSUS": {
+  "Blok": "keyword:BLOCK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:COMET": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:COMPACT": {
+  "Bahan Bakar": "card:FUEL",
+  "Bahan Bakar+": "card:FUEL",
+  "Blok": "keyword:BLOCK",
+  "Tanganmu": null,
+  "Transformasikan": null
+ },
+ "card:CONCOCT": {
+  "Racun": "power:POISON"
+ },
+ "card:CONQUEROR": {
+  "Pedang Penguasa": "card:SOVEREIGN_BLADE",
+  "Tempa": "keyword:FORGE"
+ },
+ "card:CONSTELLATION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CONSUMING_SHADOW": {
+  "Gelap": "keyword:DARK_ORB",
+  "Picu": "keyword:EVOKE",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:CONVERGENCE": {
+  "Pertahankan": "keyword:RETAIN",
+  "Tanganmu": null
+ },
+ "card:COOLANT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:COOLHEADED": {
+  "Es": "keyword:FROST_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:COORDINATE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:CORROSIVE_WAVE": {
+  "Racun": "power:POISON"
+ },
+ "card:CORRUPTION": {
+  "Hanguskan": null
+ },
+ "card:COSMIC_INDIFFERENCE": {
+  "Blok": "keyword:BLOCK",
+  "Tumpukan Ambil": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:COUNTDOWN": {
+  "Maut": "power:DOOM"
+ },
+ "card:COVERING_FIRE": {
+  "Blok": "keyword:BLOCK",
+  "Menembak": null
+ },
+ "card:CRASH_LANDING": {
+  "Puing": "card:DEBRIS",
+  "Tanganmu": null
+ },
+ "card:CREATIVE_AI": {
+  "Tanganmu": null
+ },
+ "card:CRIMSON_MANTLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CRUELTY": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:CRUSH_UNDER": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:DANSE_MACABRE": {
+  "Blok": null
+ },
+ "card:DARKNESS": {
+  "Gelap": "keyword:DARK_ORB",
+  "Kegelapan": "card:DARKNESS",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:DARK_EMBRACE": {
+  "Hangus": "keyword:EXHAUST"
+ },
+ "card:DARK_SHACKLES": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:DASH": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEADLY_POISON": {
+  "Racun": "power:POISON"
+ },
+ "card:DEATH": {
+  "Maut": "power:DOOM"
+ },
+ "card:DEATHBRINGER": {
+  "Lemah": "power:WEAK",
+  "Maut": "power:DOOM"
+ },
+ "card:DEATHS_DOOR": {
+  "Blok": "keyword:BLOCK",
+  "Maut": "power:DOOM"
+ },
+ "card:DEBILITATE": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:DEBT": {
+  "Emas": null,
+  "Tanganmu": null
+ },
+ "card:DECAY": {
+  "Tanganmu": null
+ },
+ "card:DECISIONS_DECISIONS": {
+  "Tanganmu": null
+ },
+ "card:DEEP_STRETCH": {
+  "Peregangan": "power:STRETCH"
+ },
+ "card:DEFEND_DEFECT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_FOOL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_IRONCLAD": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_NECROBINDER": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_REGENT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_SILENT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFLECT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFRAGMENT": {
+  "Fokus": "power:FOCUS"
+ },
+ "card:DEFY": {
+  "Blok": "keyword:BLOCK",
+  "Lemah": "power:WEAK"
+ },
+ "card:DELAY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEMONIC_SHIELD": {
+  "Blok": "keyword:BLOCK",
+  "Blokmu": null
+ },
+ "card:DEMON_FORM": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:DEPRECATED_CARD": {
+  "Dekmu": null
+ },
+ "card:DESPAIR": {
+  "Blok": null,
+  "Maut": null
+ },
+ "card:DEVOUR_LIFE": {
+  "Jiwa": "card:SOUL",
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "card:DIRGE": {
+  "Jiwa": "card:SOUL",
+  "Jiwa+": "card:SOUL",
+  "Panggil": "keyword:SUMMON_STATIC",
+  "Tumpukan Ambil": null
+ },
+ "card:DISCOVERY": {
+  "Tanganmu": null
+ },
+ "card:DISLIKE_YOU": {
+  "Tembakan": null
+ },
+ "card:DISMANTLE": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:DISTRACTION": {
+  "Tanganmu": null
+ },
+ "card:DIVINE_SHOT": {
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:DODGE_AND_ROLL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DOMINATE": {
+  "Kekuatan": "power:STRENGTH",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:DOUBT": {
+  "Lemah": "power:WEAK",
+  "Tanganmu": null
+ },
+ "card:DOWSING": {
+  "?": null,
+  "Kelimpahan": "card:ABUNDANCE"
+ },
+ "card:DRAIN_POWER": {
+  "Tingkatkan": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:DREDGE": {
+  "Tanganmu": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:DRUM_OF_BATTLE": {
+  "Hangus": "keyword:EXHAUST"
+ },
+ "card:DUALCAST": {
+  "Picu": "keyword:EVOKE"
+ },
+ "card:DUAL_WIELD": {
+  "Tanganmu": null
+ },
+ "card:DYING_STAR": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:ECSTASY": {
+  "Murung": "card:SADNESS",
+  "Riang": "card:JOY",
+  "Tanganmu": null,
+  "Transformasikan": null
+ },
+ "card:EIDOLON": {
+  "Rapuh": "keyword:ETHEREAL",
+  "Tumpukan Hangusmu": null
+ },
+ "card:END_OF_DAYS": {
+  "Maut": "power:DOOM"
+ },
+ "card:ENFEEBLING_TOUCH": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:ENLIGHTENMENT": {
+  "Tanganmu": null
+ },
+ "card:ENNUI": {
+  "Murung": "card:SADNESS",
+  "Tanganmu": null
+ },
+ "card:ENRAPTURE": {
+  "Bugar": "power:VIGOR",
+  "Peregangan": "power:STRETCH"
+ },
+ "card:ENTHRALLED": {
+  "Tanganmu": null
+ },
+ "card:ENTRENCH": {
+  "Blokmu": null
+ },
+ "card:ENTROPY": {
+  "Tanganmu": null,
+  "Transformasikan": null
+ },
+ "card:ENVENOM": {
+  "Racun": "power:POISON"
+ },
+ "card:EPIC_RETRIEVAL": {
+  "Melepas": null,
+  "Panah": "keyword:ARROW"
+ },
+ "card:EQUILIBRIUM": {
+  "Blok": "keyword:BLOCK",
+  "Pertahankan": "keyword:RETAIN",
+  "Tanganmu": null
+ },
+ "card:ESCAPE_PLAN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:ETERNAL_ARMOR": {
+  "Lapisan": "power:PLATING"
+ },
+ "card:EVIL_EYE": {
+  "Blok": "keyword:BLOCK",
+  "Menghanguskan": null
+ },
+ "card:EXPECT_A_FIGHT": {
+  "Blok": "keyword:BLOCK",
+  "Tanganmu": null
+ },
+ "card:EXPERTISE": {
+  "Pertahankan": "keyword:RETAIN",
+  "Tanganmu": null
+ },
+ "card:EXPLOSIVE_ARROWS": {
+  "Menusuk": null
+ },
+ "card:EXPOSE": {
+  "Artefak": "power:ARTIFACT",
+  "Blok": "keyword:BLOCK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:FADE": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "card:FALLING_STAR": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:FAN_OF_KNIVES": {
+  "Belati": "card:SHIV",
+  "Tanganmu": null
+ },
+ "card:FASTEN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:FEAR": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:FEED": {
+  "Fatal": "keyword:FATAL"
+ },
+ "card:FEEDING_FRENZY": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:FEEL_NO_PAIN": {
+  "Blok": "keyword:BLOCK",
+  "Dihanguskan": null
+ },
+ "card:FERAL": {
+  "Tanganmu": null
+ },
+ "card:FETCH": {
+  "Osty": null
+ },
+ "card:FIEND_FIRE": {
+  "Hangus": "keyword:EXHAUST",
+  "Hanguskan": null,
+  "Tanganmu": null
+ },
+ "card:FIGHT_ME": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:FIGHT_THROUGH": {
+  "Blok": "keyword:BLOCK",
+  "Luka": "card:WOUND",
+  "Tumpukan Singkirmu": null
+ },
+ "card:FINESSE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:FISTICUFFS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:FLAK_CANNON": {
+  "Hangus": "keyword:EXHAUST",
+  "Hanguskan": null
+ },
+ "card:FLAME_BARRIER": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:FLATTEN": {
+  "Osty": null
+ },
+ "card:FLECHETTES": {
+  "Tanganmu": null
+ },
+ "card:FLORESCENCE": {
+  "Ditransformasikan": null,
+  "Panah Pamungkas": "card:THE_SHOT",
+  "Panah Pamungkas+": "card:THE_SHOT"
+ },
+ "card:FOCUSED_STRIKE": {
+  "Fokus": "power:FOCUS"
+ },
+ "card:FOOLISH_SHOT": {
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:FOOTWORK": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "card:FORBIDDEN_GRIMOIRE": {
+  "Dekmu": null
+ },
+ "card:FOREGONE_CONCLUSION": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:FORGOTTEN_RITUAL": {
+  "Menghanguskan": null
+ },
+ "card:FRANTIC_ESCAPE": {
+  "Lubang Pasir": "power:SANDPIT"
+ },
+ "card:FRIENDSHIP": {
+  "Kekuatan": null
+ },
+ "card:FURNACE": {
+  "Tempa": "keyword:FORGE"
+ },
+ "card:FUSION": {
+  "Plasma": "keyword:PLASMA_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:GAMMA_BLAST": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:GATHER_LIGHT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:GENETIC_ALGORITHM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:GHOST_EATER": {
+  "Maut": null
+ },
+ "card:GLACIER": {
+  "Blok": "keyword:BLOCK",
+  "Es": "keyword:FROST_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:GLASSWORK": {
+  "Blok": "keyword:BLOCK",
+  "Kaca": "keyword:GLASS_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:GLIMMER": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:GLIMPSE_BEYOND": {
+  "Jiwa": "card:SOUL",
+  "Tumpukan Ambil": null,
+  "plural:Jiwa": null
+ },
+ "card:GLITTERSTREAM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:GOOD_INSTINCTS": {
+  "Blok": null
+ },
+ "card:GO_FOR_THE_EYES": {
+  "Lemah": "power:WEAK"
+ },
+ "card:GRAND_FINALE": {
+  "Tumpukan Ambil": null
+ },
+ "card:GRAVEBLAST": {
+  "Tanganmu": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:GRAVE_WARDEN": {
+  "Blok": "keyword:BLOCK",
+  "Jiwa": "card:SOUL",
+  "Tumpukan Ambil": null
+ },
+ "card:GROWTH": {
+  "Blok": "keyword:BLOCK",
+  "Murung": "card:SADNESS",
+  "Tanganmu": null,
+  "Transformasikan": null
+ },
+ "card:GUARDS": {
+  "Ditransformasi": null,
+  "Pengorbanan Budak": "card:MINION_SACRIFICE",
+  "Pengorbanan Budak+": "card:MINION_SACRIFICE",
+  "Tanganmu": null,
+  "Transformasi": null
+ },
+ "card:GUILTY": {
+  "Dekmu": null
+ },
+ "card:GUNK_UP": {
+  "Slime": "card:SLIMED",
+  "Tumpukan Singkirmu": null
+ },
+ "card:HAILSTORM": {
+  "Es": "keyword:FROST_ORB"
+ },
+ "card:HAMMER_TIME": {
+  "Menempa": null,
+  "Tempa": "keyword:FORGE"
+ },
+ "card:HAND_OF_GREED": {
+  "Emas": null,
+  "Fatal": "keyword:FATAL"
+ },
+ "card:HAND_TRICK": {
+  "Blok": "keyword:BLOCK",
+  "Lihai": "keyword:SLY",
+  "Tanganmu": null
+ },
+ "card:HARMONIC_SHIELD": {
+  "Blok": "keyword:BLOCK",
+  "Melodi": null
+ },
+ "card:HAUNT": {
+  "Jiwa": "card:SOUL"
+ },
+ "card:HAVOC": {
+  "Hanguskan": null,
+  "Tumpukan Ambil": null
+ },
+ "card:HAZE": {
+  "Lemah": "power:WEAK",
+  "Racun": "power:POISON"
+ },
+ "card:HEADBUTT": {
+  "Tumpukan Ambil": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:HEAVY_SHOT": {
+  "Bidik": "power:AIM",
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:HEIRLOOM_HAMMER": {
+  "Tanganmu": null
+ },
+ "card:HELLO_WORLD": {
+  "Tanganmu": null
+ },
+ "card:HIBERNATE": {
+  "Blok": "keyword:BLOCK",
+  "Es": "keyword:FROST_ORB"
+ },
+ "card:HIDDEN_DAGGERS": {
+  "Tanganmu": null
+ },
+ "card:HIDDEN_GEM": {
+  "Tumpukan Ambil": null,
+  "Ulangi": "keyword:REPLAY"
+ },
+ "card:HIDDEN_ROOTS": {
+  "Peregangan": "power:STRETCH"
+ },
+ "card:HIGH_FIVE": {
+  "Osty": null,
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:HOBBLING_SHOT": {
+  "Lemah": "power:WEAK",
+  "Panah": "keyword:ARROW",
+  "Rentan": "power:VULNERABLE",
+  "Tembak": null
+ },
+ "card:HOLOGRAM": {
+  "Blok": "keyword:BLOCK",
+  "Tanganmu": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:HONING": {
+  "Panah": "keyword:ARROW"
+ },
+ "card:HOTFIX": {
+  "Fokus": "power:FOCUS"
+ },
+ "card:HOWL_FROM_BEYOND": {
+  "Tumpukan Hangusmu": null
+ },
+ "card:HYPERBEAM": {
+  "Fokus": "power:FOCUS"
+ },
+ "card:ICE_LANCE": {
+  "Es": "keyword:FROST_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:IGNITION": {
+  "Menyalurkan": null,
+  "Plasma": "keyword:PLASMA_ORB"
+ },
+ "card:IMMORTALITY": {
+  "Tembus": null
+ },
+ "card:IMPALE": {
+  "Racun": null
+ },
+ "card:IMPATIENCE": {
+  "Tanganmu": null
+ },
+ "card:IMPERVIOUS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:INFECTION": {
+  "Tanganmu": null
+ },
+ "card:INFERNAL_BLADE": {
+  "Tanganmu": null
+ },
+ "card:INFINITE_BLADES": {
+  "Belati": "card:SHIV",
+  "Tanganmu": null
+ },
+ "card:INFLAME": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:INTERCEPT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:INVOKE": {
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "card:IRON_WAVE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:I_AM_INVINCIBLE": {
+  "Blok": "keyword:BLOCK",
+  "Tumpukan Ambil": null
+ },
+ "card:JACKPOT": {
+  "Ditingkatkan": null,
+  "Tanganmu": null
+ },
+ "card:JACK_OF_ALL_TRADES": {
+  "Tanganmu": null
+ },
+ "card:JEST": {
+  "Blok": "keyword:BLOCK",
+  "Murung": "card:SADNESS",
+  "Tanganmu": null
+ },
+ "card:JUGGERNAUT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:JUGGLING": {
+  "Serangan": null,
+  "Tanganmu": null
+ },
+ "card:KI_CHANT": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:KI_HOP": {
+  "Tertusuk": "power:IMPALED"
+ },
+ "card:KI_REST": {
+  "Melodi Cho": "keyword:CHO_MELODY",
+  "Melodi Wah": "keyword:WAH_MELODY",
+  "Pertahankan": "keyword:RETAIN",
+  "Tanganmu": null
+ },
+ "card:KNIFE_TRAP": {
+  "Belati": "card:SHIV",
+  "Tingkatkan": null,
+  "Tumpukan Hangusmu": null,
+  "plural:Belati": null
+ },
+ "card:KNOW_THY_PLACE": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:LARGESSE": {
+  "Ditingkatkan": null,
+  "Tangan": null
+ },
+ "card:LEADING_STRIKE": {
+  "Belati": "card:SHIV",
+  "Tanganmu": null,
+  "plural:Belati": null
+ },
+ "card:LEAP": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:LEGION_OF_BONE": {
+  "Memanggil": null
+ },
+ "card:LEG_SWEEP": {
+  "Blok": "keyword:BLOCK",
+  "Lemah": "power:WEAK"
+ },
+ "card:LIFT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:LIGHTNING_ROD": {
+  "Blok": "keyword:BLOCK",
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:LOCKED_IN": {
+  "Menembak": null,
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:LOST_LUTE": {
+  "Melodi": null,
+  "Tumpukan Ambil": null
+ },
+ "card:LULLABY": {
+  "Blok": "keyword:BLOCK",
+  "Melodi": null
+ },
+ "card:MAD_SCIENCE": {
+  "Blok": null,
+  "Kekuatan": null,
+  "Ketangkasan": null,
+  "Lemah": null,
+  "Rentan": null,
+  "Tanganmu": null,
+  "Tingkatkan": null
+ },
+ "card:MAKE_IT_SO": {
+  "Tanganmu": null
+ },
+ "card:MALAISE": {
+  "Kekuatan": "power:STRENGTH",
+  "Lemah": "power:WEAK"
+ },
+ "card:MANGLE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:MANIFEST_AUTHORITY": {
+  "Blok": "keyword:BLOCK",
+  "Ditingkatkan": null,
+  "Tanganmu": null
+ },
+ "card:MASTER_PLANNER": {
+  "Lihai": "keyword:SLY"
+ },
+ "card:MAYHEM": {
+  "Tumpukan Ambil": null
+ },
+ "card:MELANCHOLY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:MELODIC_SHOT": {
+  "Melodi": null,
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:METAMORPHOSIS": {
+  "Tumpukan Ambil": null
+ },
+ "card:METEOR_SHOWER": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:METEOR_STRIKE": {
+  "Plasma": "keyword:PLASMA_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:MIDNIGHT": {
+  "Dihanguskan": null
+ },
+ "card:MIGHTY_SHIELD": {
+  "Blok": "keyword:BLOCK",
+  "Pusing": "card:DAZED",
+  "Tumpukan Ambil": null
+ },
+ "card:MIGHTY_WEAPON": {
+  "Pusing": "card:DAZED",
+  "Tumpukan Ambil": null
+ },
+ "card:MIMIC": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:MIND_BLAST": {
+  "Tumpukan Ambil": null
+ },
+ "card:MINION_SACRIFICE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:MIRAGE": {
+  "Blok": "keyword:BLOCK",
+  "Racun": "power:POISON"
+ },
+ "card:MOLTEN_FIST": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:MONARCHS_GAZE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:MONOLOGUE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:MOTIF": {
+  "Melodi": null
+ },
+ "card:MOURNING_BLOW": {
+  "Murung": "card:SADNESS",
+  "Tanganmu": null
+ },
+ "card:MULTI_CAST": {
+  "Picu": "keyword:EVOKE"
+ },
+ "card:MYTHIC_FORM": {
+  "Tanganmu": null,
+  "Tarot": "keyword:TAROT"
+ },
+ "card:MY_SHINIES": {
+  "Emas": null
+ },
+ "card:NAIL": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE",
+  "Tertusuk": "power:IMPALED"
+ },
+ "card:NECRO_MASTERY": {
+  "Osty": null,
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "card:NEGATIVE_PULSE": {
+  "Blok": "keyword:BLOCK",
+  "Maut": "power:DOOM"
+ },
+ "card:NEOWS_FURY": {
+  "Tanganmu": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:NEUROSURGE": {
+  "Maut": "power:DOOM"
+ },
+ "card:NEUTRALIZE": {
+  "Lemah": "power:WEAK"
+ },
+ "card:NEUTRON_AEGIS": {
+  "Lapisan": "power:PLATING"
+ },
+ "card:NIGHTMARE": {
+  "Tanganmu": null
+ },
+ "card:NOCK": {
+  "Bidik": "power:AIM"
+ },
+ "card:NOSTALGIA": {
+  "Tumpukan Ambil": null
+ },
+ "card:NOXIOUS_FUMES": {
+  "Racun": "power:POISON"
+ },
+ "card:NO_ESCAPE": {
+  "Maut": "power:DOOM"
+ },
+ "card:NULL": {
+  "Gelap": "keyword:DARK_ORB",
+  "Lemah": "power:WEAK",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:OBLIVION": {
+  "Maut": "power:DOOM"
+ },
+ "card:OFF_BY_ONE": {
+  "Tanganmu": null
+ },
+ "card:OPTIMISM": {
+  "Dihanguskan": null,
+  "Hanguskan": null,
+  "Murung": "card:SADNESS",
+  "Tanganmu": null
+ },
+ "card:OUTBREAK": {
+  "Racun": "power:POISON"
+ },
+ "card:OUTRAGE": {
+  "Tumpukan Singkir": null
+ },
+ "card:OVERCLOCK": {
+  "Bakar": "card:BURN",
+  "Tumpukan Singkirmu": null
+ },
+ "card:PACTS_END": {
+  "Tumpukan Hangusmu": null
+ },
+ "card:PAELS_STRIKE": {
+  "Dekmu": null
+ },
+ "card:PAGESTORM": {
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "card:PANIC_BUTTON": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:PARRY": {
+  "Blok": "keyword:BLOCK",
+  "Pedang Penguasa": "card:SOVEREIGN_BLADE"
+ },
+ "card:PARTICLE_WALL": {
+  "Blok": "keyword:BLOCK",
+  "Tanganmu": null
+ },
+ "card:PATTER": {
+  "Blok": "keyword:BLOCK",
+  "Bugar": "power:VIGOR"
+ },
+ "card:PHANTOM_BLADES": {
+  "Belati": "card:SHIV",
+  "Pertahankan": "keyword:RETAIN"
+ },
+ "card:PHOTON_CUT": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:PIERCING_WAIL": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:PILLAR_OF_CREATION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:POISONED_STAB": {
+  "Racun": "power:POISON"
+ },
+ "card:POKE": {
+  "Osty": null
+ },
+ "card:PRECISE_CUT": {
+  "Tanganmu": null
+ },
+ "card:PREP_TIME": {
+  "Bugar": "power:VIGOR"
+ },
+ "card:PRIMAL_FORCE": {
+  "Batu Raksasa": "card:GIANT_ROCK",
+  "Batu Raksasa+": "card:GIANT_ROCK",
+  "Tanganmu": null
+ },
+ "card:PROLONG": {
+  "Blok": "keyword:BLOCK",
+  "Blokmu": null
+ },
+ "card:PROTECTOR": {
+  "HP Maksimal": null,
+  "Osty": null
+ },
+ "card:PROWESS": {
+  "Kekuatan": "power:STRENGTH",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "card:PULL_AGGRO": {
+  "Blok": "keyword:BLOCK",
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "card:PULL_FROM_BELOW": {
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "card:PUNCH_OF_JOY": {
+  "Murung": "card:SADNESS",
+  "Riang": "card:JOY",
+  "Tanganmu": null,
+  "Transformasikan": null
+ },
+ "card:PURITY": {
+  "Dihanguskan": null,
+  "Tanganmu": null
+ },
+ "card:PUTREFY": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:QUADCAST": {
+  "Picu": "keyword:EVOKE"
+ },
+ "card:QUASAR": {
+  "Ditingkatkan": null,
+  "Tanganmu": null
+ },
+ "card:QUICK_SHOT": {
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:QUIETUS": {
+  "Tembakanmu": null
+ },
+ "card:QUIVER": {
+  "Panah": "keyword:ARROW"
+ },
+ "card:RAGE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:RAINBOW": {
+  "Es": "keyword:FROST_ORB",
+  "Gelap": "keyword:DARK_ORB",
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:RAIN_SHOT": {
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:RALLY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:RATTLE": {
+  "Osty": null
+ },
+ "card:REANIMATE": {
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "card:REAPER_FORM": {
+  "Maut": "power:DOOM"
+ },
+ "card:REAVE": {
+  "Jiwa": "card:SOUL",
+  "Jiwa+": "card:SOUL",
+  "Tumpukan Ambil": null
+ },
+ "card:REBOOT": {
+  "Tumpukan Ambil": null
+ },
+ "card:REBOUND": {
+  "Tumpukan Ambil": null
+ },
+ "card:RECALL": {
+  "Lepas": null,
+  "Tertusuk": "power:IMPALED"
+ },
+ "card:REFINE_BLADE": {
+  "Tempa": "keyword:FORGE"
+ },
+ "card:REFLECT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:REFRACT": {
+  "Kaca": "keyword:GLASS_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:REGRET": {
+  "Tanganmu": null
+ },
+ "card:RELAX": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:REPEAT_SHOT": {
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:RESONANCE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:RESTLESSNESS": {
+  "Tanganmu": null
+ },
+ "card:RHYTHM_STRIKE": {
+  "Melodi": null
+ },
+ "card:RIGHT_HAND_HAND": {
+  "Osty": null,
+  "Tanganmu": null,
+  "Tumpukan Singkir": null
+ },
+ "card:ROYALTIES": {
+  "Emas": null
+ },
+ "card:RUMMAGE": {
+  "Murung": "card:SADNESS",
+  "Tanganmu": null
+ },
+ "card:RUPTURE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:SACRIFICE": {
+  "Blok": "keyword:BLOCK",
+  "Osty": null
+ },
+ "card:SALVO": {
+  "Pertahankan": "keyword:RETAIN",
+  "Tanganmu": null
+ },
+ "card:SCAVENGE": {
+  "Hanguskan": null
+ },
+ "card:SCOURGE": {
+  "Maut": "power:DOOM"
+ },
+ "card:SCRAWL": {
+  "Tanganmu": null
+ },
+ "card:SCULPTING_STRIKE": {
+  "Rapuh": "keyword:ETHEREAL",
+  "Tanganmu": null
+ },
+ "card:SEANCE": {
+  "Jiwa": "card:SOUL",
+  "Tumpukan Ambil": null
+ },
+ "card:SECOND_WIND": {
+  "Blok": "keyword:BLOCK",
+  "Hangus": "keyword:EXHAUST",
+  "Hanguskan": null,
+  "Tanganmu": null
+ },
+ "card:SECRET_TECHNIQUE": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:SECRET_WEAPON": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:SEEKER_STRIKE": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:SEEKING_EDGE": {
+  "Pedang Penguasa": "card:SOVEREIGN_BLADE",
+  "Tempa": "keyword:FORGE"
+ },
+ "card:SELF_DEPRECATE": {
+  "Murung": "card:SADNESS",
+  "Riang": "card:JOY",
+  "Tangan": null,
+  "Tanganmu": null
+ },
+ "card:SENTRY_MODE": {
+  "Tanganmu": null,
+  "Tatapan Menyapu": "card:SWEEPING_GAZE"
+ },
+ "card:SERRATED_ARROWS": {
+  "Tertusuk": "power:IMPALED"
+ },
+ "card:SETUP_STRIKE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:SEVERANCE": {
+  "Jiwa": "card:SOUL",
+  "Tangan": null,
+  "Tumpukan Ambil": null,
+  "Tumpukan Singkir": null
+ },
+ "card:SHADOWMELD": {
+  "Blokmu": null
+ },
+ "card:SHADOW_SHIELD": {
+  "Blok": "keyword:BLOCK",
+  "Gelap": "keyword:DARK_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:SHADOW_STEP": {
+  "Tanganmu": null
+ },
+ "card:SHAME": {
+  "Retak": "power:FRAIL",
+  "Tanganmu": null
+ },
+ "card:SHARED_FATE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "card:SHARP_EDGE": {
+  "Belati": null,
+  "Tingkatkan": null
+ },
+ "card:SHATTER": {
+  "Picu": "keyword:EVOKE"
+ },
+ "card:SHINING_STRIKE": {
+  "Tumpukan Ambil": null
+ },
+ "card:SHOCKWAVE": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:SHOW_OFF": {
+  "Bidik": "power:AIM"
+ },
+ "card:SHROUD": {
+  "Blok": "keyword:BLOCK",
+  "Maut": "power:DOOM"
+ },
+ "card:SHRUG_IT_OFF": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:SIC_EM": {
+  "Osty": null,
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "card:SIMPLETON": {
+  "Tanganmu": null
+ },
+ "card:SKY_SHOT": {
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:SNAKEBITE": {
+  "Racun": "power:POISON"
+ },
+ "card:SNAP": {
+  "Osty": null,
+  "Pertahankan": "keyword:RETAIN",
+  "Tanganmu": null
+ },
+ "card:SNEAKY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:SONG_PATH": {
+  "Blok": "keyword:BLOCK",
+  "Melodi Cho": "keyword:CHO_MELODY"
+ },
+ "card:SOULBOUND": {
+  "Jiwa": "card:SOUL",
+  "Tumpukan Ambil": null
+ },
+ "card:SOUL_STORM": {
+  "Jiwa": "card:SOUL",
+  "Tumpukan Hangusmu": null
+ },
+ "card:SOVEREIGN_BLADE": {
+  "Blok": null
+ },
+ "card:SPECTRUM_SHIFT": {
+  "Tanganmu": null
+ },
+ "card:SPINNER": {
+  "Kaca": "keyword:GLASS_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:SPIRIT_OF_ASH": {
+  "Blok": "keyword:BLOCK",
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "card:SPLASH": {
+  "Ditingkatkan": null,
+  "Tanganmu": null
+ },
+ "card:SPOILS_MAP": {
+  "Emas": null
+ },
+ "card:SPOILS_OF_BATTLE": {
+  "Tempa": "keyword:FORGE"
+ },
+ "card:SPUR": {
+  "Osty": null,
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "card:SQUASH": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:SQUEEZE": {
+  "Osty": null
+ },
+ "card:STACK": {
+  "Blok": "keyword:BLOCK",
+  "Tumpukan Singkirmu": null
+ },
+ "card:STAMPEDE": {
+  "Tanganmu": null
+ },
+ "card:STAR_BLAST": {
+  "Blok": null
+ },
+ "card:STAR_SHIELD": {
+  "Blok": null
+ },
+ "card:STEADY_CADENCE": {
+  "Melodi": null
+ },
+ "card:STOKE": {
+  "Ditingkatkan": null,
+  "Hangus": null,
+  "Hanguskan": null,
+  "Tanganmu": null
+ },
+ "card:STONE_ARMOR": {
+  "Lapisan": "power:PLATING"
+ },
+ "card:STORM": {
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:STORM_OF_STEEL": {
+  "Belati": "card:SHIV",
+  "Belati+": "card:SHIV",
+  "Tanganmu": null
+ },
+ "card:STRATAGEM": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:STRENGTH": {
+  "Kekuatan": "card:STRENGTH"
+ },
+ "card:SUCKER_PUNCH": {
+  "Lemah": "power:WEAK"
+ },
+ "card:SUMMON_FORTH": {
+  "Pedang Penguasa": "card:SOVEREIGN_BLADE",
+  "Tanganmu": null,
+  "Tempa": "keyword:FORGE"
+ },
+ "card:SUPPRESS": {
+  "Lemah": "power:WEAK"
+ },
+ "card:SURVIVOR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:SWEEPING_GAZE": {
+  "Osty": null
+ },
+ "card:SWORD_SAGE": {
+  "Pedang Penguasa": "card:SOVEREIGN_BLADE",
+  "Ulangi": "keyword:REPLAY"
+ },
+ "card:SYNCHRONIZE": {
+  "Fokus": "power:FOCUS"
+ },
+ "card:TAUNT": {
+  "Blok": "keyword:BLOCK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:TEMPERANCE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:TEMPEST": {
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:TERRAFORMING": {
+  "Bugar": "power:VIGOR"
+ },
+ "card:TESLA_COIL": {
+  "Petir": "keyword:LIGHTNING_ORB"
+ },
+ "card:TEZCATARAS_MIGHT": {
+  "Kekuatan": null
+ },
+ "card:THE_DEVIL": {
+  "Dihanguskan": null,
+  "Hanguskan": null,
+  "Tanganmu": null,
+  "Tingkatkan": null,
+  "Tumpukan Ambil": null
+ },
+ "card:THE_EMPRESS": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:THE_FOOL": {
+  "Tanganmu": null
+ },
+ "card:THE_GAMBIT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:THE_HERMIT": {
+  "Hangus": "keyword:EXHAUST",
+  "Kutukan": null
+ },
+ "card:THE_HIEROPHANT": {
+  "Tanganmu": null
+ },
+ "card:THE_HUNT": {
+  "Fatal": "keyword:FATAL"
+ },
+ "card:THE_LOVERS": {
+  "Tanganmu": null
+ },
+ "card:THE_MAGICIAN": {
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:THE_MOON": {
+  "Belati": "card:SHIV",
+  "Belati+": "card:SHIV",
+  "Tanganmu": null
+ },
+ "card:THE_SHOT": {
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:THE_SMITH": {
+  "Tempa": "keyword:FORGE"
+ },
+ "card:THE_SUN": {
+  "Jelaga": "card:SOOT",
+  "Tumpukan Ambil": null
+ },
+ "card:THE_WORLD": {
+  "Tanganmu": null,
+  "Tumpukan Singkir": null
+ },
+ "card:THINKING_AHEAD": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:THRASH": {
+  "Hanguskan": null,
+  "Tanganmu": null
+ },
+ "card:THRUMMING_HATCHET": {
+  "Tanganmu": null
+ },
+ "card:THUNDER": {
+  "Memicu Petir": null
+ },
+ "card:THUNDERCLAP": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:TIMES_UP": {
+  "Maut": "power:DOOM"
+ },
+ "card:TORIC_TOUGHNESS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:TOXIC": {
+  "Tanganmu": null
+ },
+ "card:TRACKING": {
+  "Lemah": "power:WEAK"
+ },
+ "card:TRAINING_STRIKE": {
+  "Fatal": null
+ },
+ "card:TRANSFIGURE": {
+  "Tanganmu": null,
+  "Ulangi": "keyword:REPLAY"
+ },
+ "card:TRASH_TO_TREASURE": {
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "card:TREMBLE": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:TRICK_SHOT": {
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:TRUE_GRIT": {
+  "Blok": "keyword:BLOCK",
+  "Hanguskan": null
+ },
+ "card:TUNE": {
+  "Melodi Ki": "keyword:KI_MELODY",
+  "Tanganmu": null,
+  "Tingkatkan": null
+ },
+ "card:TURBO": {
+  "Hampa": "card:VOID",
+  "Tumpukan Singkirmu": null
+ },
+ "card:TUTOR": {
+  "Tangan": null,
+  "Tumpukan Ambil": null
+ },
+ "card:TWIN_SHOT": {
+  "Panah": "keyword:ARROW",
+  "Tembak": null
+ },
+ "card:TYRANNY": {
+  "Hanguskan": null,
+  "Tanganmu": null
+ },
+ "card:ULTIMATE_DEFEND": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:UNDEATH": {
+  "Blok": "keyword:BLOCK",
+  "Tumpukan Singkirmu": null
+ },
+ "card:UNDERWORLD": {
+  "Maut": "power:DOOM"
+ },
+ "card:UNLEASH": {
+  "Osty": null
+ },
+ "card:UNMOVABLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:UNTOUCHABLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:UPPERCUT": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:UPROAR": {
+  "Tumpukan Ambil": null
+ },
+ "card:UPROOT": {
+  "Lepas": null,
+  "Rentan": "power:VULNERABLE",
+  "Tertusuk": "power:IMPALED"
+ },
+ "card:UP_MY_SLEEVE": {
+  "Belati": "card:SHIV",
+  "Tanganmu": null,
+  "plural:Belati": null
+ },
+ "card:VEILPIERCER": {
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "card:VETERAN": {
+  "Blok": null,
+  "Kekuatan": null
+ },
+ "card:VICIOUS": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:VIOLENT_CHORD": {
+  "Melodi Wah": "keyword:WAH_MELODY"
+ },
+ "card:VITRIOL": {
+  "Lemah": "power:WEAK",
+  "Murung": "card:SADNESS",
+  "Tanganmu": null
+ },
+ "card:VOLTAIC": {
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING",
+  "Salurkan Petir": null,
+  "Tersalurkan": null
+ },
+ "card:WAH_BLAST": {
+  "Melodi Cho": "keyword:CHO_MELODY",
+  "Melodi Ki": "keyword:KI_MELODY"
+ },
+ "card:WAH_CHO": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:WAH_CHO_KI": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:WAH_HAMMER": {
+  "Tertusuk": "power:IMPALED"
+ },
+ "card:WAH_KI": {
+  "Tumpukan Ambil": null,
+  "Tumpukan Singkirmu": null
+ },
+ "card:WAH_TOUCH": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "card:WARP_SPACE": {
+  "Tumpukan Ambil": null
+ },
+ "card:WELL_LAID_PLANS": {
+  "Tanganmu": null
+ },
+ "card:WHEEL_OF_FORTUNE": {
+  "Tanganmu": null
+ },
+ "card:WHISTLE": {
+  "Linglung": null
+ },
+ "card:WHISTLING_ARROWS": {
+  "Blok": "keyword:BLOCK",
+  "Menembak": null,
+  "Panah": "keyword:ARROW",
+  "Tanganmu": null,
+  "Tumpukan Singkir": null
+ },
+ "card:WHITE_NOISE": {
+  "Tanganmu": null
+ },
+ "card:WISH": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "card:WITHER": {
+  "Tanganmu": null
+ },
+ "card:WRAITH_FORM": {
+  "Ketangkasan": "power:DEXTERITY",
+  "Tembus": "power:INTANGIBLE"
+ },
+ "card:WREST": {
+  "Lepas": null,
+  "Tertusuk": "power:IMPALED"
+ },
+ "card:WROUGHT_IN_WAR": {
+  "Tempa": "keyword:FORGE"
+ },
+ "card:YAH": {
+  "Melepas": null,
+  "Panah": "keyword:ARROW"
+ },
+ "card:YOGA": {
+  "Peregangan": "power:STRETCH"
+ },
+ "card:ZAP": {
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "character:FOOL": {
+  "Spire": null
+ },
+ "character:NECROBINDER": {
+  "Osty": null
+ },
+ "enchantment:ADROIT": {
+  "Blok": null
+ },
+ "enchantment:CLONE": {
+  "Peristirahatan": null
+ },
+ "enchantment:GLAM": {
+  "Ulangi": "keyword:REPLAY"
+ },
+ "enchantment:GOOPY": {
+  "Blok": null,
+  "Hangus": "keyword:EXHAUST"
+ },
+ "enchantment:INKY": {
+  "Lemah": "power:WEAK"
+ },
+ "enchantment:NIMBLE": {
+  "Blok": null
+ },
+ "enchantment:PERFECT_FIT": {
+  "Tumpukan Ambil": null
+ },
+ "enchantment:ROYALLY_APPROVED": {
+  "Awal": null,
+  "Pertahankan": "keyword:RETAIN"
+ },
+ "enchantment:SOULS_POWER": {
+  "Hangus": "keyword:EXHAUST"
+ },
+ "enchantment:SPIRAL": {
+  "Ulangi": "keyword:REPLAY"
+ },
+ "enchantment:STEADY": {
+  "Pertahankan": "keyword:RETAIN"
+ },
+ "enchantment:TEZCATARAS_EMBER": {
+  "Abadi": "keyword:ETERNAL"
+ },
+ "encounter:NEOW_CHOICE": {
+  "Pilihan Neow:": null
+ },
+ "epoch:BLITZ_EPOCH": {
+  "Kilat": null,
+  "emas menguap": null
+ },
+ "epoch:COLORLESS1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:COLORLESS2_EPOCH": {
+  "Makhluk Khayal": null
+ },
+ "epoch:COLORLESS5_EPOCH": {
+  "Emas": null
+ },
+ "epoch:CUSTOM_AND_SEEDS_EPOCH": {
+  "Babak": null,
+  "“Benih Ancient”": null
+ },
+ "epoch:DAILY_RUN_EPOCH": {
+  "Babak": null,
+  "Spire": null
+ },
+ "epoch:DARV_EPOCH": {
+  "Ancient": null
+ },
+ "epoch:DEFECT2_EPOCH": {
+  "Babak": null
+ },
+ "epoch:DEFECT3_EPOCH": {
+  "Babak": null
+ },
+ "epoch:DEFECT4_EPOCH": {
+  "Babak": null,
+  "Spire": null
+ },
+ "epoch:DEFECT7_EPOCH": {
+  "harta": null
+ },
+ "epoch:EVENT1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:EVENT2_EPOCH": {
+  "Spire": null
+ },
+ "epoch:EVENT3_EPOCH": {
+  "Pohon Ancient": null
+ },
+ "epoch:FOOL1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:FOOL2_EPOCH": {
+  "Babak": null
+ },
+ "epoch:FOOL3_EPOCH": {
+  "Babak": null
+ },
+ "epoch:FOOL4_EPOCH": {
+  "Babak": null
+ },
+ "epoch:IRONCLAD2_EPOCH": {
+  "Babak": null,
+  "Spire": null
+ },
+ "epoch:IRONCLAD3_EPOCH": {
+  "Babak": null
+ },
+ "epoch:IRONCLAD4_EPOCH": {
+  "Babak": null
+ },
+ "epoch:IRONCLAD6_EPOCH": {
+  "Spire": null
+ },
+ "epoch:IRONCLAD7_EPOCH": {
+  "Spire": null
+ },
+ "epoch:NECROBINDER2_EPOCH": {
+  "Babak": null
+ },
+ "epoch:NECROBINDER3_EPOCH": {
+  "Babak": null,
+  "Laporan Insiden": null
+ },
+ "epoch:NECROBINDER4_EPOCH": {
+  "Babak": null,
+  "pusaka menarik": null
+ },
+ "epoch:NECROBINDER7_EPOCH": {
+  "Pael": null
+ },
+ "epoch:POTION1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:POTION2_EPOCH": {
+  "Spire": null
+ },
+ "epoch:REGENT2_EPOCH": {
+  "Babak": null
+ },
+ "epoch:REGENT3_EPOCH": {
+  "Babak": null,
+  "Spire": null
+ },
+ "epoch:REGENT4_EPOCH": {
+  "Babak": null,
+  "Regent dari Starris": null
+ },
+ "epoch:REGENT7_EPOCH": {
+  "Tanx": null
+ },
+ "epoch:RELIC1_EPOCH": {
+  "Makhluk Khayal": null
+ },
+ "epoch:RELIC2_EPOCH": {
+  "Ancient": null
+ },
+ "epoch:SILENT1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:SILENT2_EPOCH": {
+  "Babak": null
+ },
+ "epoch:SILENT3_EPOCH": {
+  "Babak": null
+ },
+ "epoch:SILENT4_EPOCH": {
+  "Babak": null
+ },
+ "epoch:SILENT5_EPOCH": {
+  "Spire": null
+ },
+ "epoch:UNDERDOCKS_EPOCH": {
+  "Pelabuhan": null,
+  "Spire": null
+ },
+ "event:AMALGAMATOR": {
+  "Dekmu": null,
+  "Tahan": null,
+  "Tebas": null,
+  "pusaran simbol menyala": null
+ },
+ "event:AROMA_OF_CHAOS": {
+  "Dek": null,
+  "Dekmu": null,
+  "Tingkatkan": null,
+  "Transformasikan": null,
+  "berduel dengan lawan kuat": null
+ },
+ "event:BATTLEWORN_DUMMY": {
+  "PABRIK": null,
+  "Pusaka": null,
+  "Ramuan": null,
+  "Tingkatkan": null
+ },
+ "event:BRAIN_LEECH": {
+  "Dekmu": null
+ },
+ "event:BUGSLAYER": {
+  "Dekmu": null,
+  "Pria Petarung Tangguh": null,
+  "Teknik Melumat": null,
+  "Teknik Pembasmian": null
+ },
+ "event:BYRDONIS_NEST": {
+  "Dekmu": null,
+  "sebuah telur tak terjaga": null
+ },
+ "event:COLORFUL_PHILOSOPHERS": {
+  "Prismatic Shard": null,
+  "TERBAIK": null
+ },
+ "event:COLOSSAL_FLOWER": {
+  "Emas": null,
+  "Inti Berserbuksari": "relic:POLLINOUS_CORE",
+  "Nektar emas": null,
+  "nektar": null,
+  "nektar berkualitas tinggi": null,
+  "nektar emas": null
+ },
+ "event:CRYSTAL_SPHERE": {
+  "Emas": null,
+  "Ramalan Besar": null,
+  "Ramalan Kecil": null,
+  "ramalan Bola Kristal": null
+ },
+ "event:DENSE_VEGETATION": {
+  "Emas": null,
+  "sesuatu yang menggeliat": null
+ },
+ "event:DOLL_ROOM": {
+  "Pusaka Boneka": null
+ },
+ "event:DOORS_OF_LIGHT_AND_DARK": {
+  "Dekmu": null,
+  "Didalam cahaya terang...": null,
+  "Tingkatkan": null,
+  "menguatkan": null,
+  "penjaga pintu berpenampilan rapi": null
+ },
+ "event:DROWNING_BEACON": {
+  "lensanya": null,
+  "ruang lenduri": null
+ },
+ "event:ENDLESS_CONVEYOR": {
+  "Dekmu": null,
+  "Emas": null,
+  "Makan Gila": null,
+  "Ramuan": null,
+  "Tingkatkan": null,
+  "Transformasikan": null
+ },
+ "event:FIELD_OF_MAN_SIZED_HOLES": {
+  "Dekmu": null,
+  "Efek": null,
+  "cahaya": null
+ },
+ "event:GRAVE_OF_THE_FORGOTTEN": {
+  "Dekmu": null,
+  "Efek": null,
+  "Hangus": null
+ },
+ "event:HUNGRY_FOR_MUSHROOMS": {
+  "berlatih keras": null
+ },
+ "event:INFESTED_AUTOMATON": {
+  "Kuasa": null,
+  "kartu berharga 0": null,
+  "tersetrum": null
+ },
+ "event:JUNGLE_MAZE_ADVENTURE": {
+  "Emas": null,
+  "sungguh Hebat": null
+ },
+ "event:LOST_WISP": {
+  "Dekmu": null,
+  "Emas": null,
+  "emas": null
+ },
+ "event:LUMINOUS_CHOIR": {
+  "Dek": null,
+  "Dekmu": null,
+  "Emas": null,
+  "Pusaka": null
+ },
+ "event:MORPHIC_GROVE": {
+  "Emas": null,
+  "Transformasikan": null,
+  "emasmu": null
+ },
+ "event:POTION_COURIER": {
+  "Kurir Ramuan": null,
+  "Ramuan Busuk": "potion:FOUL_POTION",
+  "Ramuan Tidak Biasa": null,
+  "plural:Ramuan Busuk": null
+ },
+ "event:PUNCH_OFF": {
+  "Dekmu": null,
+  "Jarahan Lebih": null,
+  "Mesin": null,
+  "Mesin Tinju": null,
+  "Pusaka": null
+ },
+ "event:RANWID_THE_ELDER": {
+  "Pusaka": null,
+  "emasnya": null
+ },
+ "event:REFLECTIONS": {
+  "Dekmu": null
+ },
+ "event:ROOM_FULL_OF_CHEESE": {
+  "Biasa": null,
+  "Dekmu": null,
+  "Keju Terpilih": "relic:CHOSEN_CHEESE"
+ },
+ "event:ROUND_TEA_PARTY": {
+  "Pusaka": null,
+  "biaya masuknya": null,
+  "komandan": null,
+  "mahkota emas": null
+ },
+ "event:SAPPHIRE_SEED": {
+  "Dekmu": null,
+  "Efek": null,
+  "Tingkatkan": null,
+  "meningkatkan ketahanan": null,
+  "warna lebih tajam": null
+ },
+ "event:SELF_HELP_BOOK": {
+  "Efek": null
+ },
+ "event:SHRINE_OF_THE_WARLORD": {
+  "Dekmu": null,
+  "pusaka": null
+ },
+ "event:SLIPPERY_BRIDGE": {
+  "Dekmu": null,
+  "TIDAAAAooo": null
+ },
+ "event:SPIRALING_WHIRLPOOL": {
+  "Dekmu": null,
+  "Dirimu": null,
+  "Efek": null,
+  "Pusaka": null,
+  "Tahan": null,
+  "Tebas": null,
+  "“Terima kasih, Spiral.”": null
+ },
+ "event:SPIRIT_GRAFTER": {
+  "Dekmu": null,
+  "Metamorfosis": "card:METAMORPHOSIS",
+  "Tingkatkan": null,
+  "sinar": null
+ },
+ "event:STONE_OF_ALL_TIME": {
+  "Batu Sepanjang Masa": null,
+  "Efek": null
+ },
+ "event:SUNKEN_STATUE": {
+  "Emas": null,
+  "berkilau": null,
+  "persembahan": null
+ },
+ "event:SUNKEN_TREASURY": {
+  "Emas": null,
+  "Peti Kedua:": null,
+  "Peti Pertama:": null,
+  "emas": null,
+  "peti": null
+ },
+ "event:SYMBIOTE": {
+  "Efek": null,
+  "Transformasikan": null
+ },
+ "event:TABLET_OF_TRUTH": {
+  "Kata Terakhir": null,
+  "Kebenaran": null,
+  "Tingkatkan": null
+ },
+ "event:TEA_MASTER": {
+  "1.": null,
+  "2.": null,
+  "3.": null,
+  "4.": null,
+  "5.": null,
+  "Emas": null,
+  "harga tinggi": null
+ },
+ "event:THERMAE_NONUPEIPE": {
+  "Dekmu": null,
+  "Emas": null
+ },
+ "event:THE_FUTURE_OF_POTIONS": {
+  "Ditingkatkan": null
+ },
+ "event:THE_LANTERN_KEY": {
+  "Emas": null,
+  "Kesatria Misterius": null
+ },
+ "event:THE_LEGENDS_WERE_TRUE": {
+  "Peta Jarahan": "card:SPOILS_MAP",
+  "Ramuan": null
+ },
+ "event:THIS_OR_THAT": {
+  "Dekmu": null,
+  "Emas": null,
+  "Pusaka": null,
+  "sekantong emas mencurigakan": null
+ },
+ "event:TINKER_TIME": {
+  "Dekmu": null,
+  "Kekuatan": null,
+  "Ketangkasan": null,
+  "Lemah": null,
+  "Rentan": null,
+  "Tanganmu": null,
+  "Tingkatkan": null
+ },
+ "event:TRASH_HEAP": {
+  "Emas": null,
+  "Pusaka": null,
+  "barang berharga terlupakan": null,
+  "harta eksotis": null,
+  "pusaka masa lalu": null
+ },
+ "event:TRIAL": {
+  "Dekmu": null,
+  "Emas": null,
+  "Hakim Tinggi Pengadilan": null,
+  "Kursi Pembuat Keputusan": null,
+  "Pengadilan": null,
+  "Pusaka": null,
+  "Sogokan": null,
+  "Tingkatkan": null,
+  "Transformasikan": null,
+  "bagsawan penguasa": null,
+  "bangsawan": null,
+  "bangsawan penguasa": null,
+  "emas...": null,
+  "lengkung emas": null,
+  "putuskan": null
+ },
+ "event:UNREST_SITE": {
+  "Peristirahatan": null,
+  "Pusaka": null,
+  "kotak kecil": null
+ },
+ "event:WAR_HISTORIAN_REPY": {
+  "Catatan Sejarah": "relic:HISTORY_COURSE",
+  "Kunci Lentera": "card:LANTERN_KEY",
+  "Pusaka": null,
+  "Ramuan": null,
+  "kitab kulit tebal": null,
+  "peti": null,
+  "peti harta": null,
+  "pusaka": null,
+  "ramuan": null
+ },
+ "event:WATERFALL_OF_OBVIOUS_SECRETS": {
+  "Belati Sederhana": null,
+  "Dekmu": null,
+  "Emas": null,
+  "Langka": null
+ },
+ "event:WATERLOGGED_SCRIPTORIUM": {
+  "Efek": null,
+  "Emas": null,
+  "pena kusut": null,
+  "peralatan": null,
+  "spons berduri": null
+ },
+ "event:WELCOME_TO_WONGOS": {
+  "Emas": null,
+  "Lencana Apresiasi Pelanggan Wongo": null,
+  "Poin Wongo": null,
+  "Pusaka": null,
+  "Pusaka Biasa": null
+ },
+ "event:WELLSPRING": {
+  "Dekmu": null,
+  "Ramuan": null,
+  "bintik bercahaya": null
+ },
+ "event:WHISPERING_HOLLOW": {
+  "Emas": null,
+  "Ramuan": null,
+  "Transformasikan": null,
+  "emas": null,
+  "mengubah": null
+ },
+ "event:WOOD_CARVINGS": {
+  "Efek": null,
+  "Transformasikan": null
+ },
+ "event:WUPPY_IN_TROUBLE": {
+  "Dekmu": null,
+  "Wuppy": null
+ },
+ "event:ZEN_WEAVER": {
+  "Dek": null,
+  "Dekmu": null,
+  "Emas": null,
+  "Pencerahan": "card:ENLIGHTENMENT",
+  "emas": null
+ },
+ "intent:ATTACK": {
+  "Menyerang": null
+ },
+ "intent:BUFF": {
+  "Efek": null
+ },
+ "intent:CARD_DEBUFF": {
+  "Penyakit": null
+ },
+ "intent:DEBUFF": {
+  "Efek": null
+ },
+ "intent:DEBUFF_STRONG": {
+  "Efek": null
+ },
+ "intent:DEFEND": {
+  "Blok": null
+ },
+ "intent:ESCAPE": {
+  "Lari": null
+ },
+ "intent:HEAL": {
+  "Menyembuhkan": null
+ },
+ "intent:STATUS": {
+  "Status": null
+ },
+ "intent:SUMMON": {
+  "Monster": null
+ },
+ "intent:UNKNOWN": {
+  "Tak Diketahui": null
+ },
+ "keyword:ARROW": {
+  "Melepasnya": null,
+  "Menusuk": null,
+  "Tertusuk": null
+ },
+ "keyword:CARD_REWARD": {
+  "Dekmu": null
+ },
+ "keyword:CHANNELING": {
+  "Terpicu": null
+ },
+ "keyword:COOK": {
+  "Buang": null,
+  "Dekmu": null,
+  "Peristirahatan": null
+ },
+ "keyword:DREAD_ROTATION": {
+  "Rentetan Bergantian": null
+ },
+ "keyword:ENERGY": {
+  "Tanganmu": null
+ },
+ "keyword:ETERNAL": {
+  "Dekmu": null
+ },
+ "keyword:ETHEREAL": {
+  "Hangus": null,
+  "Tangan": null
+ },
+ "keyword:FORGE": {
+  "Pedang Penguasa": null,
+  "Tanganmu": null,
+  "Tempa": null
+ },
+ "keyword:INNATE": {
+  "Tangan": null
+ },
+ "keyword:REPLAY": {
+  "Ulangi": null
+ },
+ "keyword:ROOM_ELITE": {
+  "Pusaka": null
+ },
+ "keyword:ROOM_MERCHANT": {
+  "Emas": null
+ },
+ "keyword:ROOM_REST": {
+  "Tingkatkan": null
+ },
+ "keyword:ROOM_TREASURE": {
+  "Emas": null,
+  "Pusaka": null
+ },
+ "keyword:ROOM_UNKNOWN_MERCHANT": {
+  "Emas": null
+ },
+ "keyword:SLY": {
+  "Tangan": null
+ },
+ "keyword:SUMMON_DYNAMIC": {
+  "Osty": null
+ },
+ "keyword:SUMMON_STATIC": {
+  "Osty": null
+ },
+ "modifier:ALL_STAR": {
+  "kartu tak-berwarna": null
+ },
+ "modifier:BIG_GAME_HUNTER": {
+  "Langka": null
+ },
+ "modifier:MIDAS": {
+  "Peristirahatan": null
+ },
+ "modifier:MURDEROUS": {
+  "Kekuatan": null
+ },
+ "modifier:NIGHT_TERRORS": {
+  "Peristirahatan": null
+ },
+ "modifier:TERMINAL": {
+  "Lapisan": null
+ },
+ "monster:GREMLIN_MERC": {
+  "Uang!": null
+ },
+ "orb:DARK_ORB": {
+  "Pasif:": null,
+  "Picu:": null,
+  "Terpicu": null
+ },
+ "orb:FROST_ORB": {
+  "Blok": null,
+  "Pasif:": null,
+  "Picu:": null
+ },
+ "orb:GLASS_ORB": {
+  "Pasif:": null,
+  "Picu:": null
+ },
+ "orb:LIGHTNING_ORB": {
+  "Pasif:": null,
+  "Picu:": null
+ },
+ "orb:PLASMA_ORB": {
+  "Focus": null,
+  "Pasif:": null,
+  "Picu:": null
+ },
+ "potion:ASHWATER": {
+  "Hanguskan": null,
+  "Tanganmu": null
+ },
+ "potion:ATTACK_POTION": {
+  "Tangan": null
+ },
+ "potion:BLESSING_OF_THE_FORGE": {
+  "Tangan": null,
+  "Tingkatkan": null
+ },
+ "potion:BLOCK_POTION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "potion:BONE_BREW": {
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "potion:BOTTLED_POTENTIAL": {
+  "Tumpukan Ambil": null
+ },
+ "potion:BOTTLED_SONG": {
+  "Tanganmu": null
+ },
+ "potion:COLORLESS_POTION": {
+  "Tangan": null
+ },
+ "potion:COSMIC_CONCOCTION": {
+  "Ditingkatkan": null,
+  "Tangan": null
+ },
+ "potion:CRYSTALLINE_EUPHORIA": {
+  "Murung": "card:SADNESS",
+  "Riang": "card:JOY",
+  "Tanganmu": null
+ },
+ "potion:CUNNING_POTION": {
+  "Belati Ditingkatkan": null,
+  "Tangan": null,
+  "plural:Belati Ditingkatkan": null
+ },
+ "potion:DEXTERITY_POTION": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "potion:DISTILLED_CHAOS": {
+  "Tumpukan Ambil": null
+ },
+ "potion:DROPLET_OF_PRECOGNITION": {
+  "Tangan": null,
+  "Tumpukan Ambil": null
+ },
+ "potion:ESSENCE_OF_DARKNESS": {
+  "Gelap": "keyword:DARK_ORB",
+  "Tambahkan": null,
+  "Tempat Bola": null
+ },
+ "potion:FLEX_POTION": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "potion:FOCUS_POTION": {
+  "Fokus": "power:FOCUS"
+ },
+ "potion:FORTIFIER": {
+  "Blok": "keyword:BLOCK"
+ },
+ "potion:FOUL_POTION": {
+  "Emas": null,
+  "Pedagang": null
+ },
+ "potion:FYSH_OIL": {
+  "Kekuatan": "power:STRENGTH",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "potion:GHOST_IN_A_JAR": {
+  "Tembus": "power:INTANGIBLE"
+ },
+ "potion:GLOWWATER_POTION": {
+  "Hanguskan": null,
+  "Tanganmu": null
+ },
+ "potion:HEART_OF_IRON": {
+  "Lapisan": "power:PLATING"
+ },
+ "potion:KINGS_COURAGE": {
+  "Tempa": "keyword:FORGE"
+ },
+ "potion:LIQUID_BRONZE": {
+  "Duri": "power:THORNS"
+ },
+ "potion:LIQUID_MEMORIES": {
+  "Tanganmu": null,
+  "Tumpukan Singkir": null
+ },
+ "potion:LUCKY_TONIC": {
+  "Pengaman": "power:BUFFER"
+ },
+ "potion:MAZALETHS_GIFT": {
+  "Ritual": "power:RITUAL"
+ },
+ "potion:OROBIC_ACID": {
+  "Tangan": null
+ },
+ "potion:POISON_POTION": {
+  "Racun": "power:POISON"
+ },
+ "potion:POTION_OF_BINDING": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "potion:POTION_OF_CAPACITY": {
+  "Tempat Bola": null,
+  "plural:Tempat Bola": null
+ },
+ "potion:POTION_OF_DOOM": {
+  "Maut": "power:DOOM"
+ },
+ "potion:POT_OF_GHOULS": {
+  "Jiwa": "card:SOUL",
+  "Tangan": null,
+  "plural:Jiwa": null
+ },
+ "potion:POWER_POTION": {
+  "Tangan": null
+ },
+ "potion:PRECISION_POTION": {
+  "Bidik": "power:AIM"
+ },
+ "potion:REGEN_POTION": {
+  "Regenerasi": "power:REGEN"
+ },
+ "potion:SHACKLING_POTION": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "potion:SHIP_IN_A_BOTTLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "potion:SKILL_POTION": {
+  "Tangan": null
+ },
+ "potion:SNECKO_OIL": {
+  "Tanganmu": null
+ },
+ "potion:SOLDIERS_STEW": {
+  "Tebas": null,
+  "Ulangi": "keyword:REPLAY"
+ },
+ "potion:SPEED_POTION": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "potion:STABLE_SERUM": {
+  "Pertahankan": "keyword:RETAIN",
+  "Tanganmu": null
+ },
+ "potion:STRENGTH_POTION": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "potion:TOUCH_OF_INSANITY": {
+  "Tanganmu": null
+ },
+ "potion:VULNERABLE_POTION": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "potion:WEAK_POTION": {
+  "Lemah": "power:WEAK"
+ },
+ "power:ACCELERANT": {
+  "Racun": "power:POISON"
+ },
+ "power:ACCURACY": {
+  "Belati": null
+ },
+ "power:ADAPTATION": {
+  "Blok": null,
+  "Ketangkasan": null
+ },
+ "power:AEONGLASS_DOMINION": {
+  "Layu": "card:WITHER",
+  "Tumpukan Ambil": null
+ },
+ "power:AFTERIMAGE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:AGGRESSION": {
+  "Tanganmu": null,
+  "Tingkatkan": null,
+  "Tumpukan Singkir": null
+ },
+ "power:AIM": {
+  "Panahmu": null
+ },
+ "power:ALL_IS_WELL": {
+  "Blok": "keyword:BLOCK",
+  "Murung": "card:SADNESS"
+ },
+ "power:ARCHERY": {
+  "Bidik": "power:AIM"
+ },
+ "power:ARSENAL": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:ARTIFACT": {
+  "Mencegah": null
+ },
+ "power:AUTOMATION": {
+  "Energy": null
+ },
+ "power:BARRICADE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:BEACON_OF_HOPE": {
+  "Blok": null
+ },
+ "power:BIASED_COGNITION": {
+  "Fokus": "power:FOCUS"
+ },
+ "power:BLOCK_NEXT_TURN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:BLUR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:BURROWED": {
+  "Blok": null,
+  "Linglung": null
+ },
+ "power:CALAMITY": {
+  "Tanganmu": null
+ },
+ "power:CALCIFY": {
+  "Osty": null
+ },
+ "power:CALL_OF_THE_VOID": {
+  "Rapuh": "keyword:ETHEREAL",
+  "Tanganmu": null
+ },
+ "power:CHAINS_OF_BINDING": {
+  "Terhubung": "affliction:BOUND"
+ },
+ "power:CHILD_OF_THE_STARS": {
+  "Blok": null
+ },
+ "power:COLOSSUS": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "power:COMPOST": {
+  "Energi": "keyword:ENERGY"
+ },
+ "power:CONCOCT": {
+  "Racun": "power:POISON"
+ },
+ "power:CONQUEROR": {
+  "Pedang Penguasa": "card:SOVEREIGN_BLADE"
+ },
+ "power:CONSUMING_SHADOW": {
+  "Picu": null
+ },
+ "power:CONTRACTILITY": {
+  "Blok": null
+ },
+ "power:COOLANT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:CORROSIVE_WAVE": {
+  "Racun": "power:POISON"
+ },
+ "power:CORRUPTION": {
+  "Hanguskan": null
+ },
+ "power:COUNTDOWN": {
+  "Maut": "power:DOOM"
+ },
+ "power:COVERING_FIRE": {
+  "Blok": "keyword:BLOCK",
+  "Menembak": null
+ },
+ "power:CRAB_RAGE": {
+  "Blok": "keyword:BLOCK",
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:CREATIVE_AI": {
+  "Tanganmu": null
+ },
+ "power:CRIMSON_MANTLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:CRUELTY": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "power:CURL_UP": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:DAMPEN": {
+  "Tingkatnya": null
+ },
+ "power:DANSE_MACABRE": {
+  "Blok": null
+ },
+ "power:DARK_EMBRACE": {
+  "Hangus": "keyword:EXHAUST"
+ },
+ "power:DEBILITATE": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE"
+ },
+ "power:DECREE_OF_ENTROPY": {
+  "Ditingkatkan": null
+ },
+ "power:DEMESNE": {
+  "Energi": "keyword:ENERGY"
+ },
+ "power:DEMON_FORM": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:DESPAIR": {
+  "Blok": null,
+  "Maut": null
+ },
+ "power:DEVOUR_LIFE": {
+  "Jiwa": "card:SOUL",
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "power:DEXTERITY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:DEXTERITY_DOWN": {
+  "Ketangkasan": null
+ },
+ "power:DIE_FOR_YOU": {
+  "Osty": null
+ },
+ "power:DISLIKE_YOU": {
+  "Tembakan": null
+ },
+ "power:ECSTASY": {
+  "Murung": "card:SADNESS",
+  "Riang": "card:JOY",
+  "Tanganmu": null,
+  "Transformasikan": null
+ },
+ "power:ENERGY_NEXT_TURN": {
+  "Energi": "keyword:ENERGY"
+ },
+ "power:ENNUI": {
+  "Murung": null,
+  "Tanganmu": null
+ },
+ "power:ENRAGE": {
+  "Kekuatan": null
+ },
+ "power:ENTROPY": {
+  "Tanganmu": null,
+  "Transformasikan": null
+ },
+ "power:ENVENOM": {
+  "Racun": "power:POISON"
+ },
+ "power:EXPLOSIVE_ARROWS": {
+  "Menusuk": null
+ },
+ "power:FAN_OF_KNIVES": {
+  "Belati": null
+ },
+ "power:FASTEN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:FEEL_NO_PAIN": {
+  "Blok": "keyword:BLOCK",
+  "Dihanguskan": null
+ },
+ "power:FERAL": {
+  "Tanganmu": null
+ },
+ "power:FLUTTER": {
+  "50%": null,
+  "Linglung": null
+ },
+ "power:FOCUS_DOWN": {
+  "Fokus": null
+ },
+ "power:FORBIDDEN_GRIMOIRE": {
+  "Dekmu": null
+ },
+ "power:FOREGONE_CONCLUSION": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "power:FRAIL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:FRIENDSHIP": {
+  "Energi": "keyword:ENERGY"
+ },
+ "power:FURNACE": {
+  "Tempa": "keyword:FORGE"
+ },
+ "power:GALVANIC": {
+  "Menyetrum": "affliction:GALVANIZED"
+ },
+ "power:HAILSTORM": {
+  "Es": "keyword:FROST_ORB"
+ },
+ "power:HAMMER_TIME": {
+  "Menempa": null,
+  "Tempa": "keyword:FORGE"
+ },
+ "power:HANG": {
+  "Gantung": "power:HANG"
+ },
+ "power:HARD_TO_KILL": {
+  "Eksoskeleton": null
+ },
+ "power:HAUNT": {
+  "Jiwa": null
+ },
+ "power:HEIST": {
+  "Emas": null
+ },
+ "power:HELLO_WORLD": {
+  "Hand": null
+ },
+ "power:HEX": {
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "power:HIBERNATE": {
+  "Blok": "keyword:BLOCK",
+  "Es": "keyword:FROST_ORB"
+ },
+ "power:HIDDEN_ROOTS": {
+  "Peregangan": "power:STRETCH"
+ },
+ "power:HIGH_VOLTAGE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:HONING": {
+  "Panah": null
+ },
+ "power:IMBALANCED": {
+  "Linglung": null
+ },
+ "power:IMPALED": {
+  "Panah": null,
+  "Panahnya": null,
+  "Terlepas": null,
+  "Tertusuk": "power:IMPALED"
+ },
+ "power:IMPROVEMENT": {
+  "Tingkatkan": null
+ },
+ "power:INFINITE_BLADES": {
+  "Belati": "card:SHIV",
+  "Tanganmu": null
+ },
+ "power:JUGGERNAUT": {
+  "Blok": null
+ },
+ "power:JUGGLING": {
+  "Tanganmu": null
+ },
+ "power:LAGAVULIN_MATRIARCH_DOMINION": {
+  "Kekuatan": "power:STRENGTH",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "power:LIGHTNING_ROD": {
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "power:LOST_LUTE": {
+  "Melodi": null,
+  "Tumpukan Ambil": null
+ },
+ "power:LULLABY": {
+  "Blok": "keyword:BLOCK",
+  "Melodi": null
+ },
+ "power:MASTER_PLANNER": {
+  "Lihai": null
+ },
+ "power:MAYHEM": {
+  "Tumpukan Ambil": null
+ },
+ "power:MELANCHOLY": {
+  "Maut": null
+ },
+ "power:MONARCHS_GAZE": {
+  "Kekuatan": null
+ },
+ "power:MONOLOGUE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:MOTIF": {
+  "Melodi": null
+ },
+ "power:MYTHIC_FORM": {
+  "Tanganmu": null,
+  "Tarot": "keyword:TAROT"
+ },
+ "power:NECRO_MASTERY": {
+  "Osty": null
+ },
+ "power:NEMESIS": {
+  "Tembus": null
+ },
+ "power:NEUROSURGE": {
+  "Maut": "power:DOOM"
+ },
+ "power:NIGHTMARE": {
+  "Tanganmu": null
+ },
+ "power:NOSTALGIA": {
+  "Tumpukan Ambil": null
+ },
+ "power:NOXIOUS_FUMES": {
+  "Racun": "power:POISON"
+ },
+ "power:NO_BLOCK": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:NO_ESCAPE": {
+  "Maut": null
+ },
+ "power:OBLIVION": {
+  "Maut": null
+ },
+ "power:ORB_GENERATOR": {
+  "Bola": null
+ },
+ "power:PAGESTORM": {
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "power:PAINFUL_STABS": {
+  "Luka": "card:WOUND",
+  "Tumpukan Singkir": null,
+  "plural:Luka": null
+ },
+ "power:PAPER_CUTS": {
+  "HP Maksimal": null
+ },
+ "power:PARRY": {
+  "Blok": null,
+  "Pedang Penguasa": null
+ },
+ "power:PERSONAL_HIVE": {
+  "Pusing": "card:DAZED",
+  "Tumpukan Ambil": null
+ },
+ "power:PHANTOM_BLADES": {
+  "Belati": "card:SHIV",
+  "Pertahankan": "keyword:RETAIN"
+ },
+ "power:PILLAR_OF_CREATION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:PLATING": {
+  "Blok": "keyword:BLOCK",
+  "Lapisan": "power:PLATING"
+ },
+ "power:PLOW": {
+  "Kekuatan": "power:STRENGTH",
+  "Linglung": "keyword:STUN"
+ },
+ "power:POISON": {
+  "Racun": "power:POISON"
+ },
+ "power:POSSESS_SPEED": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "power:POSSESS_STRENGTH": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:PREP_TIME": {
+  "Bugar": null
+ },
+ "power:PYRE": {
+  "Energi": "keyword:ENERGY"
+ },
+ "power:QUIETUS": {
+  "Tembakanmu": null
+ },
+ "power:RADIANCE": {
+  "Energi": "keyword:ENERGY"
+ },
+ "power:RAGE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:RAMPART": {
+  "Blok": null
+ },
+ "power:RAVENOUS": {
+  "Kekuatan": "power:STRENGTH",
+  "Linglung": "keyword:STUN"
+ },
+ "power:READ_THE_BONES": {
+  "Panggil": null
+ },
+ "power:REAPER_FORM": {
+  "Maut": "power:DOOM"
+ },
+ "power:REBOUND": {
+  "Tumpukan Ambil": null
+ },
+ "power:REFLECTIVE_FORTRESS": {
+  "Mengeblok": null
+ },
+ "power:REGEN": {
+  "Regenerasi": "power:REGEN"
+ },
+ "power:RESERVES": {
+  "Energy": null
+ },
+ "power:RESTORE_DEXTERITY": {
+  "Ketangkasan": null
+ },
+ "power:RESTORE_FOCUS": {
+  "Fokus": null
+ },
+ "power:RETAIN_HAND": {
+  "Pertahankan": null,
+  "Tanganmu": null
+ },
+ "power:RITUAL": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:ROYALTIES": {
+  "Emas": null
+ },
+ "power:RUPTURE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:SANDPIT": {
+  "Yang Tak Terpuaskan": null
+ },
+ "power:SEEKING_EDGE": {
+  "Pedang Penguasa": "card:SOVEREIGN_BLADE"
+ },
+ "power:SELF_FORMING_CLAY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:SENTRY_MODE": {
+  "Tanganmu": null,
+  "Tatapan Menyapu": "card:SWEEPING_GAZE"
+ },
+ "power:SERRATED_ARROWS": {
+  "Tertusuk": "power:IMPALED"
+ },
+ "power:SHADOWMELD": {
+  "Blokmu": null
+ },
+ "power:SHARP_EDGE": {
+  "Belati": null,
+  "Tingkatkan": null
+ },
+ "power:SHOW_OFF": {
+  "Bidik": null,
+  "Pamer": "power:SHOW_OFF"
+ },
+ "power:SHRIEK": {
+  "Linglung": "keyword:STUN"
+ },
+ "power:SHROUD": {
+  "Blok": null,
+  "Maut": "power:DOOM"
+ },
+ "power:SIC_EM": {
+  "Osty": null,
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "power:SIMPLETON": {
+  "Tanganmu": null
+ },
+ "power:SKITTISH": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:SNEAKY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:SOAR": {
+  "50%": null
+ },
+ "power:SONG_PATH": {
+  "Blok": "keyword:BLOCK",
+  "Melodi Cho": "keyword:CHO_MELODY"
+ },
+ "power:SOULBOUND": {
+  "Jiwa": "card:SOUL",
+  "Tumpukan Ambil": null,
+  "plural:Jiwa": null
+ },
+ "power:SOW": {
+  "Pertahankan": null,
+  "Tanganmu": null
+ },
+ "power:SPECTRUM_SHIFT": {
+  "Tanganmu": null
+ },
+ "power:SPINNER": {
+  "Kaca": "keyword:GLASS_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "power:SPIRIT_OF_ASH": {
+  "Blok": "keyword:BLOCK",
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "power:STAMPEDE": {
+  "Tanganmu": null
+ },
+ "power:STORM": {
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "power:STRATAGEM": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "power:STRETCH": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:SUCK": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:SUMMON_NEXT_TURN": {
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "power:SWORD_SAGE": {
+  "Pedang Penguasa": "card:SOVEREIGN_BLADE",
+  "Ulangi": "keyword:REPLAY"
+ },
+ "power:TANGLED": {
+  "Energi": null
+ },
+ "power:TAUNT": {
+  "Rentan": null
+ },
+ "power:TEMPORARY_DEXTERITY": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "power:TEMPORARY_DEXTERITY_DOWN": {
+  "Ketangkasan": null
+ },
+ "power:TEMPORARY_FOCUS": {
+  "Fokus": "power:FOCUS"
+ },
+ "power:TEMPORARY_FOCUS_DOWN": {
+  "Fokus": null
+ },
+ "power:TEMPORARY_STRENGTH": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:TEMPORARY_STRENGTH_DOWN": {
+  "Kekuatan": null
+ },
+ "power:TEMPORARY_THORNS": {
+  "Duri": "power:THORNS"
+ },
+ "power:TENDER": {
+  "Kekuatan": "power:STRENGTH",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "power:TERRITORIAL": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "power:TEZCATARAS_BLIGHT": {
+  "Kekuatan": null
+ },
+ "power:THIEVERY": {
+  "Emas": null
+ },
+ "power:THUNDER": {
+  "Memicu Petir": null
+ },
+ "power:TORIC_TOUGHNESS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:TRACKING": {
+  "Lemah": "power:WEAK"
+ },
+ "power:TRASH_TO_TREASURE": {
+  "Salurkan": null
+ },
+ "power:TUNE": {
+  "Melodi Ki": "keyword:KI_MELODY",
+  "Tanganmu": null,
+  "Tingkatkan": null
+ },
+ "power:TYRANNY": {
+  "Hanguskan": null,
+  "Tanganmu": null
+ },
+ "power:UNDERWORLD": {
+  "Maut": "power:DOOM"
+ },
+ "power:UNMOVABLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:UNSTEADY": {
+  "Linglung": null
+ },
+ "power:VEILPIERCER": {
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "power:VICIOUS": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "power:VIOLENT_CHORD": {
+  "Melodi Wah": "keyword:WAH_MELODY"
+ },
+ "power:VITAL_SPARK": {
+  "Noda": "affliction:TAINTED",
+  "Teknik": null
+ },
+ "power:WASTE_AWAY": {
+  "Energi": "keyword:ENERGY"
+ },
+ "power:WELL_LAID_PLANS": {
+  "Tanganmu": null
+ },
+ "power:WINGED_JUMP": {
+  "Rentan": null
+ },
+ "power:WITHERING_PRESENCE": {
+  "Layu": null,
+  "Tanganmu": null
+ },
+ "power:WRAITH_FORM": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "power:WUPPYS_LOYALTY": {
+  "Wuppy": null
+ },
+ "power:YAH": {
+  "Melepas": null,
+  "Panah": null
+ },
+ "power:YOU_ARE_MINE": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE",
+  "Retak": "power:FRAIL"
+ },
+ "relic:AKABEKO": {
+  "Bugar": "power:VIGOR"
+ },
+ "relic:ALCHEMICAL_COFFER": {
+  "Ramuan": null
+ },
+ "relic:AMETHYST_AUBERGINE": {
+  "Emas": null
+ },
+ "relic:ANCHOR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:ARCANE_SCROLL": {
+  "Dekmu": null,
+  "Kartu Langka": null
+ },
+ "relic:ARCHAIC_TOOTH": {
+  "Transformasikan": null
+ },
+ "relic:ASTROLABE": {
+  "Tingkatkan": null,
+  "Transformasikan": null
+ },
+ "relic:BAG_OF_MARBLES": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "relic:BATH_ROBES": {
+  "Bos": null
+ },
+ "relic:BEAUTIFUL_BRACELET": {
+  "Dek": null,
+  "Efek": null
+ },
+ "relic:BELLOWS": {
+  "Ditingkatkan": null,
+  "Tangan": null
+ },
+ "relic:BELT_BUCKLE": {
+  "Ketangkasan": "power:DEXTERITY",
+  "Ramuan": null
+ },
+ "relic:BIG_HAT": {
+  "Rapuh": "keyword:ETHEREAL",
+  "Tanganmu": null
+ },
+ "relic:BIIIG_HUG": {
+  "Dekmu": null,
+  "Jelaga": "card:SOOT",
+  "Tumpukan Ambil": null
+ },
+ "relic:BING_BONG": {
+  "Dekmu": null
+ },
+ "relic:BIZARRE_LAMP": {
+  "Murung": "card:SADNESS",
+  "Riang": "card:JOY",
+  "Tanganmu": null
+ },
+ "relic:BLACK_STAR": {
+  "Elit": null
+ },
+ "relic:BLESSED_ANTLER": {
+  "Pusing": "card:DAZED",
+  "Tumpukan Ambil": null
+ },
+ "relic:BLOOD_SOAKED_ROSE": {
+  "Dekmu": null
+ },
+ "relic:BONE_FLUTE": {
+  "Blok": null,
+  "Osty": null
+ },
+ "relic:BONE_TEA": {
+  "Tingkatkan": null
+ },
+ "relic:BOOKMARK": {
+  "Dipertahankan": null
+ },
+ "relic:BOOK_OF_FIVE_RINGS": {
+  "Dekmu": null
+ },
+ "relic:BOOK_REPAIR_KNIFE": {
+  "Maut": "power:DOOM"
+ },
+ "relic:BOOMING_CONCH": {
+  "Elit": null
+ },
+ "relic:BOUND_PHYLACTERY": {
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "relic:BOWLER_HAT": {
+  "Emas": null
+ },
+ "relic:BRIMSTONE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:BRONZE_SCALES": {
+  "Duri": "power:THORNS"
+ },
+ "relic:BURNING_STICKS": {
+  "Menghanguskan": null,
+  "Tanganmu": null
+ },
+ "relic:BYRDINE": {
+  "Byurung": "relic:BYRDINE",
+  "Dewa Byurung": "card:GOD_BYRD",
+  "Sambaran Byurung": "card:BYRD_SWOOP",
+  "Transformasikan": null
+ },
+ "relic:BYRDPIP": {
+  "Peristirahatan": null,
+  "Sambaran Byurung": "card:BYRD_SWOOP",
+  "Unggyas": "relic:BYRDPIP"
+ },
+ "relic:CALLING_BELL": {
+  "Pusaka": null
+ },
+ "relic:CAPTAINS_WHEEL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:CAULDRON": {
+  "Ramuan": null,
+  "plural:Ramuan": null
+ },
+ "relic:CHARONS_ASHES": {
+  "Menghanguskan": null
+ },
+ "relic:CHOICES_PARADOX": {
+  "Pertahankan": "keyword:RETAIN",
+  "Tanganmu": null
+ },
+ "relic:CIRCLET": {
+  "Spire": null
+ },
+ "relic:CLAWS": {
+  "Terkam": "card:MAUL",
+  "Transformasikan": null
+ },
+ "relic:CLOAK_CLASP": {
+  "Blok": "keyword:BLOCK",
+  "Tanganmu": null
+ },
+ "relic:CONDUCTORS_BATON": {
+  "Melodi": null
+ },
+ "relic:CRACKED_CORE": {
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "relic:CROSSBOW": {
+  "Serangan": null,
+  "Tanganmu": null
+ },
+ "relic:CURSED_KETTLE": {
+  "Elit": null,
+  "Kekuatan": null
+ },
+ "relic:CURSED_PEARL": {
+  "Emas": null
+ },
+ "relic:DATA_DISK": {
+  "Fokus": "power:FOCUS"
+ },
+ "relic:DAUGHTER_OF_THE_WIND": {
+  "Blok": null
+ },
+ "relic:DELICATE_FROND": {
+  "Ramuan": null
+ },
+ "relic:DIAMOND_DIADEM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:DISTINGUISHED_CAPE": {
+  "Arwah": "card:APPARITION",
+  "Dekmu": null,
+  "plural:Arwah": null
+ },
+ "relic:DOLLYS_MIRROR": {
+  "Dekmu": null,
+  "Disalin": null
+ },
+ "relic:DOWSING_ROD": {
+  "Dekmu": null,
+  "Pelacak": "card:DOWSING"
+ },
+ "relic:DRAGON_FRUIT": {
+  "Emas": null
+ },
+ "relic:DREAM_CATCHER": {
+  "Dekmu": null,
+  "Rehat": null
+ },
+ "relic:DUSTY_TOME": {
+  "Kartu Ancient": null
+ },
+ "relic:ECTOPLASM": {
+  "Emas": null
+ },
+ "relic:ELECTRIC_SHRYMP": {
+  "Efek": null
+ },
+ "relic:EMBER_TEA": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:EMPTY_CAGE": {
+  "Dekmu": null
+ },
+ "relic:ENDLESS_APPETITE": {
+  "Kekuatan": null,
+  "Menghanguskan": null
+ },
+ "relic:ETERNAL_FEATHER": {
+  "Dekmu": null,
+  "Peristirahatan": null
+ },
+ "relic:EXERCISE_MAT": {
+  "Peregangan": "power:STRETCH"
+ },
+ "relic:FAKE_ANCHOR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:FAKE_ORICHALCUM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:FAKE_VENERABLE_TEA_SET": {
+  "Peristirahatan": null
+ },
+ "relic:FENCING_MANUAL": {
+  "Tempa": "keyword:FORGE"
+ },
+ "relic:FERTILIZER": {
+  "Kekuatan": "power:STRENGTH",
+  "Murung": "card:SADNESS"
+ },
+ "relic:FISHING_ROD": {
+  "Dekmu": null,
+  "Tingkatkan": null
+ },
+ "relic:FORGOTTEN_SOUL": {
+  "Menghanguskan": null
+ },
+ "relic:FRAGRANT_MUSHROOM": {
+  "Tingkatkan": null
+ },
+ "relic:FRESNEL_LENS": {
+  "Blok": null,
+  "Dekmu": null,
+  "Efek": null
+ },
+ "relic:FROZEN_EGG": {
+  "Dekmu": null,
+  "Tingkatkan": null
+ },
+ "relic:FUNERARY_MASK": {
+  "Jiwa": "card:SOUL",
+  "Tumpukan Ambil": null,
+  "plural:Jiwa": null
+ },
+ "relic:GALACTIC_DUST": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:GHOST_SEED": {
+  "Rapuh": "keyword:ETHEREAL",
+  "Tahan": null,
+  "Tebas": null
+ },
+ "relic:GIRYA": {
+  "Kekuatan": "power:STRENGTH",
+  "Peristirahatan": null
+ },
+ "relic:GLASS_EYE": {
+  "Biasa": null,
+  "Langka": null,
+  "Tidak biasa": null
+ },
+ "relic:GLITTER": {
+  "Efek": null
+ },
+ "relic:GLOWING_ORB": {
+  "Elit": null
+ },
+ "relic:GNARLED_HAMMER": {
+  "Efek": null
+ },
+ "relic:GOLDEN_COMPASS": {
+  "Babak": null
+ },
+ "relic:GOLDEN_PEARL": {
+  "Emas": null
+ },
+ "relic:GORGET": {
+  "Lapisan": "power:PLATING"
+ },
+ "relic:HAND_DRILL": {
+  "Blok": null,
+  "Rentan": "power:VULNERABLE"
+ },
+ "relic:HEFTY_TABLET": {
+  "Dekmu": null
+ },
+ "relic:HELICAL_DART": {
+  "Belati": "card:SHIV",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "relic:HORN_CLEAT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:INFUSED_CORE": {
+  "Petir": "keyword:LIGHTNING_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "relic:INTIMIDATING_HELMET": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:JEWELED_MASK": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "relic:JEWELRY_BOX": {
+  "Apoteosis": "card:APOTHEOSIS",
+  "Dekmu": null
+ },
+ "relic:JOSS_PAPER": {
+  "Menghanguskan": null
+ },
+ "relic:JUZU_BRACELET": {
+  "?": null
+ },
+ "relic:KIFUDA": {
+  "Efek": null
+ },
+ "relic:KUNAI": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "relic:LARGE_CAPSULE": {
+  "Dekmu": null,
+  "Pusaka": null,
+  "Tahan": null,
+  "Tebas": null,
+  "plural:Pusaka": null
+ },
+ "relic:LAVA_LAMP": {
+  "Tingkatkan": null
+ },
+ "relic:LAVA_ROCK": {
+  "Babak": null,
+  "Pusaka": null
+ },
+ "relic:LEAD_PAPERWEIGHT": {
+  "Dekmu": null
+ },
+ "relic:LEAFY_POULTICE": {
+  "Tahan": null,
+  "Tebas": null,
+  "Transformasikan": null
+ },
+ "relic:LORDS_PARASOL": {
+  "Pedagang": null
+ },
+ "relic:LOST_COFFER": {
+  "Ramuan": null
+ },
+ "relic:LUCKY_FYSH": {
+  "Dekmu": null,
+  "Emas": null
+ },
+ "relic:MASSIVE_SCROLL": {
+  "Dekmu": null,
+  "Kartu Multi Pemain": null,
+  "Kartu Multi pemain": null
+ },
+ "relic:MAW_BANK": {
+  "Emas": null
+ },
+ "relic:MEAT_CLEAVER": {
+  "Masak": "keyword:COOK"
+ },
+ "relic:METRONOME": {
+  "Bola": null,
+  "Menyalurkan": null
+ },
+ "relic:MIGHTY_WINGS": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:MINIATURE_CANNON": {
+  "Ditingkatkan": null
+ },
+ "relic:MINIATURE_TENT": {
+  "Peristirahatan": null
+ },
+ "relic:MINI_REGENT": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:MOLTEN_EGG": {
+  "Dekmu": null,
+  "Tingkatkan": null
+ },
+ "relic:MUMMIFIED_HAND": {
+  "Tanganmu": null
+ },
+ "relic:MUSIC_BOX": {
+  "Rapuh": "keyword:ETHEREAL"
+ },
+ "relic:MYSTERIOUS_COCOON": {
+  "Tebas Latihan": null,
+  "Tikam": null
+ },
+ "relic:MYSTIC_LIGHTER": {
+  "Efek": null
+ },
+ "relic:NEOWS_BONES": {
+  "Dekmu": null,
+  "Pusaka Neow": null,
+  "plural:Pusaka Neow": null
+ },
+ "relic:NEOWS_SACRIFICE": {
+  "Ambar": "potion:AMBERGRIS",
+  "Dekmu": null
+ },
+ "relic:NEOWS_TALISMAN": {
+  "Tahan": null,
+  "Tebas": null,
+  "Tingkatkan": null
+ },
+ "relic:NEOWS_TORMENT": {
+  "Amarah Neow": "card:NEOWS_FURY",
+  "Dekmu": null
+ },
+ "relic:NEW_LEAF": {
+  "Transformasikan": null
+ },
+ "relic:NINJA_SCROLL": {
+  "Belati": "card:SHIV",
+  "Tanganmu": null,
+  "plural:Belati": null
+ },
+ "relic:NUTRITIOUS_SOUP": {
+  "Dekmu": null,
+  "Efek": null,
+  "Tebas": null
+ },
+ "relic:OBSIDIAN_VICE": {
+  "Tanganmu": null
+ },
+ "relic:OCARINA": {
+  "Tanganmu": null
+ },
+ "relic:ODDLY_SMOOTH_STONE": {
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "relic:OLD_COIN": {
+  "Emas": null
+ },
+ "relic:ORANGE_DOUGH": {
+  "Tanganmu": null
+ },
+ "relic:ORICHALCUM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:ORNAMENTAL_FAN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:PAELS_CLAW": {
+  "Efek": null,
+  "Tahan": null
+ },
+ "relic:PAELS_EYE": {
+  "Hanguskan": null,
+  "Tanganmu": null
+ },
+ "relic:PAELS_GROWTH": {
+  "Efek": null
+ },
+ "relic:PAELS_HORN": {
+  "Dekmu": null,
+  "Santai": "card:RELAX"
+ },
+ "relic:PAELS_LEGION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:PAELS_TOOTH": {
+  "Dekmu": null,
+  "Ditingkatkan": null
+ },
+ "relic:PAELS_WING": {
+  "Pusaka": null
+ },
+ "relic:PANDORAS_BOX": {
+  "Kotak Pandora": "relic:PANDORAS_BOX",
+  "Tahan": null,
+  "Tebas": null,
+  "Transformasikan": null
+ },
+ "relic:PANTOGRAPH": {
+  "Bos": null
+ },
+ "relic:PAPER_KRANE": {
+  "Lemah": "power:WEAK"
+ },
+ "relic:PAPER_PHROG": {
+  "Rentan": "power:VULNERABLE"
+ },
+ "relic:PARRYING_SHIELD": {
+  "Blok": null
+ },
+ "relic:PERMAFROST": {
+  "Blok": null
+ },
+ "relic:PETRIFIED_TOAD": {
+  "Batu Berbentuk Ramuan": "potion:POTION_SHAPED_ROCK"
+ },
+ "relic:PHIAL_HOLSTER": {
+  "Ramuan": null,
+  "plural:Ramuan": null
+ },
+ "relic:PHILOSOPHERS_STONE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:PHYLACTERY_UNBOUND": {
+  "Panggil": "keyword:SUMMON_STATIC"
+ },
+ "relic:PLANISPHERE": {
+  "?": null
+ },
+ "relic:POMANDER": {
+  "Tingkatkan": null
+ },
+ "relic:POWER_CELL": {
+  "Tanganmu": null,
+  "Tumpukan Ambil": null
+ },
+ "relic:PRECARIOUS_SHEARS": {
+  "Dekmu": null
+ },
+ "relic:PRECISE_SCISSORS": {
+  "Dekmu": null
+ },
+ "relic:PRESERVED_FOG": {
+  "Dekmu": null
+ },
+ "relic:PUMPKIN_CANDLE": {
+  "Disulut": null,
+  "Peristirahatan": null
+ },
+ "relic:PUNCH_DAGGER": {
+  "Efek": null
+ },
+ "relic:RADIANT_PEARL": {
+  "Cerah": "card:LUMINESCE",
+  "Tanganmu": null,
+  "plural:Cerah": null
+ },
+ "relic:RAINBOW_RING": {
+  "Kekuatan": "power:STRENGTH",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "relic:RAZOR_TOOTH": {
+  "Tingkatkan": null
+ },
+ "relic:RED_MASK": {
+  "Lemah": "power:WEAK"
+ },
+ "relic:RED_SKULL": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:REGALITE": {
+  "Blok": null
+ },
+ "relic:REGAL_PILLOW": {
+  "Rehat": null
+ },
+ "relic:REPTILE_TRINKET": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:RINGING_TRIANGLE": {
+  "Pertahankan": "keyword:RETAIN",
+  "Tanganmu": null
+ },
+ "relic:RIPPLE_BASIN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:ROYAL_STAMP": {
+  "Dekmu": null,
+  "Efek": null
+ },
+ "relic:RUINED_HELMET": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:RUNIC_CAPACITOR": {
+  "Tempat Bola": null
+ },
+ "relic:RUNIC_PYRAMID": {
+  "Tanganmu": null
+ },
+ "relic:SAI": {
+  "Blok": null
+ },
+ "relic:SAND_CASTLE": {
+  "Tingkatkan": null
+ },
+ "relic:SCREAMING_FLAGON": {
+  "Tanganmu": null
+ },
+ "relic:SCROLL_BOXES": {
+  "Dekmu": null
+ },
+ "relic:SEAL_OF_GOLD": {
+  "Emas": null
+ },
+ "relic:SEA_GLASS": {
+  "Dekmu": null
+ },
+ "relic:SELF_FORMING_CLAY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:SERE_TALON": {
+  "Dekmu": null
+ },
+ "relic:SHOVEL": {
+  "Peristirahatan": null,
+  "Pusaka": null
+ },
+ "relic:SHURIKEN": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:SIGNET_RING": {
+  "Emas": null
+ },
+ "relic:SILKEN_TRESS": {
+  "Efek": null,
+  "Emas": null
+ },
+ "relic:SILVER_CRUCIBLE": {
+  "Ditingkatkan": null
+ },
+ "relic:SLING_OF_COURAGE": {
+  "Elit": null,
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:SMALL_CAPSULE": {
+  "Pusaka": null
+ },
+ "relic:SNECKO_SKULL": {
+  "Racun": "power:POISON"
+ },
+ "relic:SONG_BOW": {
+  "Bidik": "power:AIM"
+ },
+ "relic:SOZU": {
+  "Ramuan": null
+ },
+ "relic:SPARKLING_ROUGE": {
+  "Kekuatan": "power:STRENGTH",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "relic:STONE_CRACKER": {
+  "Tingkatkan": null,
+  "Tumpukan Ambil": null
+ },
+ "relic:STONE_HUMIDIFIER": {
+  "Peristirahatan": null,
+  "Rehat": null
+ },
+ "relic:STORYBOOK": {
+  "Api Paling Terang": "card:BRIGHTEST_FLAME",
+  "Dekmu": null
+ },
+ "relic:STORYTELLER": {
+  "Bidik": "power:AIM"
+ },
+ "relic:STURDY_CLAMP": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:SWORD_OF_JADE": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:SWORD_OF_STONE": {
+  "Elit": null,
+  "Pusaka": null,
+  "plural:Elit": null
+ },
+ "relic:SYMBIOTIC_VIRUS": {
+  "Gelap": "keyword:DARK_ORB",
+  "Salurkan": "keyword:CHANNELING"
+ },
+ "relic:TANXS_WHISTLE": {
+  "Dekmu": null,
+  "Siulan": "card:WHISTLE"
+ },
+ "relic:TEA_OF_DISCOURTESY": {
+  "Pusing": "card:DAZED",
+  "Tumpukan Ambil": null
+ },
+ "relic:THE_ABACUS": {
+  "Blok": "keyword:BLOCK",
+  "Tumpukan Ambil": null
+ },
+ "relic:TINY_MAILBOX": {
+  "Ramuan": null,
+  "Rehat": null
+ },
+ "relic:TOASTY_MITTENS": {
+  "Hanguskan": null,
+  "Kekuatan": "power:STRENGTH",
+  "Tanganmu": null
+ },
+ "relic:TOOLBOX": {
+  "Tanganmu": null
+ },
+ "relic:TORMENTOUS_COLLAR": {
+  "Lemah": "power:WEAK"
+ },
+ "relic:TOUCH_OF_OROBAS": {
+  "Ancient": null,
+  "Pusaka": null
+ },
+ "relic:TOUGH_BANDAGES": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:TOXIC_EGG": {
+  "Dekmu": null,
+  "Tingkatkan": null
+ },
+ "relic:TOY_BOX": {
+  "Pusaka Lilin": null,
+  "plural:Pusaka Lilin": null
+ },
+ "relic:TRI_BOOMERANG": {
+  "Dekmu": null,
+  "Efek": null
+ },
+ "relic:TUNING_FORK": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:TWINE": {
+  "Blok": "keyword:BLOCK",
+  "Melepas": null,
+  "Panah": "keyword:ARROW"
+ },
+ "relic:TWISTED_FUNNEL": {
+  "Racun": "power:POISON"
+ },
+ "relic:UNCEASING_TOP": {
+  "Tangan": null
+ },
+ "relic:UNDYING_SIGIL": {
+  "Maut": "power:DOOM"
+ },
+ "relic:UNSETTLING_LAMP": {
+  "Memberi Efek": null
+ },
+ "relic:VAJRA": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "relic:VAMBRACE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:VENERABLE_TEA_SET": {
+  "Peristirahatan": null
+ },
+ "relic:VEXING_PUZZLEBOX": {
+  "Tanganmu": null
+ },
+ "relic:VITRUVIAN_MINION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:WAR_HAMMER": {
+  "Elit": null,
+  "Tingkatkan": null
+ },
+ "relic:WAR_PAINT": {
+  "Tingkatkan": null
+ },
+ "relic:WHETSTONE": {
+  "Tingkatkan": null
+ },
+ "relic:WHITE_BEAST_STATUE": {
+  "Ramuan": null
+ },
+ "relic:WHITE_STAR": {
+  "Elit": null,
+  "Langka": null
+ },
+ "relic:WHITTLING_KNIFE": {
+  "Bidik": "power:AIM",
+  "Tumpukan Ambil": null
+ },
+ "relic:WING_CHARM": {
+  "Efek": null
+ },
+ "relic:WONGOS_MYSTERY_TICKET": {
+  "Pusaka": null,
+  "plural:Pusaka": null
+ },
+ "relic:WUPPY": {
+  "Wuppy": "relic:WUPPY"
+ },
+ "relic:YUMMY_COOKIE": {
+  "Tingkatkan": null
+ }
+}

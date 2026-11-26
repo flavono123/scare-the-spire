@@ -1,0 +1,3407 @@
+{
+ "affliction:BOUND": {
+  "พันธะ": "affliction:BOUND"
+ },
+ "affliction:HEXED": {
+  "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "affliction:SMOG": {
+  "ทักษะ": null
+ },
+ "affliction:TAINTED": {
+  "ปนเปื้อน": "affliction:TAINTED"
+ },
+ "ascension:DREAD": {
+  "กองจั่ว": null,
+  "เหี่ยวเฉา": null
+ },
+ "ascension:LEVEL_01": {
+  "ลูกพี่": null
+ },
+ "ascension:LEVEL_03": {
+  "ทอง": null
+ },
+ "ascension:LEVEL_10": {
+  "องก์": null
+ },
+ "badge:KACHING": {
+  "ทอง": null
+ },
+ "badge:MONEY_MONEY": {
+  "ทอง": null
+ },
+ "card:ABRASIVE": {
+  "ความชำนาญ": "power:DEXTERITY",
+  "หนาม": "power:THORNS"
+ },
+ "card:ABUNDANCE": {
+  "พลัง": null,
+  "มือ": null,
+  "แบบพัฒนาแล้ว": null
+ },
+ "card:ACCELERANT": {
+  "พิษ": "power:POISON"
+ },
+ "card:ACCURACY": {
+  "มีดสั้น": "card:SHIV"
+ },
+ "card:ADAPTIVE_STRIKE": {
+  "กองทิ้ง": null
+ },
+ "card:AFTERIMAGE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:AFTERLIFE": {
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:AGGRESSION": {
+  "กองทิ้ง": null,
+  "พัฒนา": null,
+  "มือ": null
+ },
+ "card:ALL_FOR_ONE": {
+  "กองทิ้ง": null,
+  "มือ": null
+ },
+ "card:ANGER": {
+  "กองทิ้ง": null
+ },
+ "card:ANOINTED": {
+  "กองจั่ว": null,
+  "มือ": null,
+  "หายาก": null
+ },
+ "card:ANTICIPATE": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "card:APOTHEOSIS": {
+  "พัฒนา": null
+ },
+ "card:APPARITION": {
+  "ไร้ตัวตน": "power:INTANGIBLE"
+ },
+ "card:ARMAMENTS": {
+  "บล็อก": "keyword:BLOCK",
+  "พัฒนา": null,
+  "มือ": null
+ },
+ "card:ARSENAL": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:ASHEN_STRIKE": {
+  "กองสลาย": null
+ },
+ "card:ASSASSINATE": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:BACKFLIP": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:BALL_LIGHTNING": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "card:BANSHEES_CRY": {
+  "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "card:BARRICADE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:BASH": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:BEACON_OF_HOPE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:BEAM_CELL": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:BEAT_DOWN": {
+  "กองทิ้ง": null
+ },
+ "card:BEAT_INTO_SHAPE": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:BECKON": {
+  "มือ": null
+ },
+ "card:BEGONE": {
+  "บริวารจู่โจม": "card:MINION_STRIKE",
+  "บริวารจู่โจม+": "card:MINION_STRIKE",
+  "มือ": null,
+  "แปรสภาพ": null
+ },
+ "card:BIASED_COGNITION": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "card:BIG_BANG": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:BLADE_DANCE": {
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "card:BLADE_OF_INK": {
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "card:BLADE_SYMPHONY": {
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "card:BLAZE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:BLIGHT_STRIKE": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:BLOOD_WALL": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:BLUR": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:BODYGUARD": {
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:BODY_SLAM": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:BOLAS": {
+  "มือ": null
+ },
+ "card:BOMBARDMENT": {
+  "กองสลาย": null
+ },
+ "card:BONE_SHARDS": {
+  "น้าผี": null,
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:BOOST_AWAY": {
+  "กองทิ้ง": null,
+  "ความมึนงง": "card:DAZED",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:BOOT_SEQUENCE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:BOUNCING_FLASK": {
+  "พิษ": "power:POISON"
+ },
+ "card:BRAND": {
+  "ความแข็งแรง": "power:STRENGTH",
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:BREAK": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:BUBBLE_BUBBLE": {
+  "พิษ": "power:POISON"
+ },
+ "card:BULK_UP": {
+  "ความชำนาญ": "power:DEXTERITY",
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:BULLET_TIME": {
+  "มือ": null
+ },
+ "card:BULLY": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:BULWARK": {
+  "บล็อก": "keyword:BLOCK",
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:BUNDLE_OF_JOY": {
+  "มือ": null
+ },
+ "card:BURN": {
+  "มือ": null
+ },
+ "card:BURNING_PACT": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:BYRDONIS_EGG": {
+  "จุดพัก": null
+ },
+ "card:CALAMITY": {
+  "มือ": null
+ },
+ "card:CALCIFY": {
+  "น้าผี": null
+ },
+ "card:CALCULATED_GAMBLE": {
+  "มือ": null
+ },
+ "card:CALL_OF_THE_VOID": {
+  "กึ่งสลาย": "keyword:ETHEREAL",
+  "มือ": null
+ },
+ "card:CAPTURE_SPIRIT": {
+  "กองจั่ว": null,
+  "วิญญาณ": "card:SOUL"
+ },
+ "card:CASCADE": {
+  "กองจั่ว": null
+ },
+ "card:CATASTROPHE": {
+  "กองจั่ว": null
+ },
+ "card:CHAOS": {
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:CHARGE": {
+  "กองจั่ว": null,
+  "บริวารทิ้งระเบิด": "card:MINION_DIVE_BOMB",
+  "บริวารทิ้งระเบิด+": "card:MINION_DIVE_BOMB",
+  "แปรสภาพ": null
+ },
+ "card:CHARGE_BATTERY": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:CHILD_OF_THE_STARS": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:CHILL": {
+  "น้ำแข็ง": "keyword:FROST_ORB",
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:CHRYSALIS": {
+  "กองจั่ว": null
+ },
+ "card:CINDER": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:CLASH": {
+  "มือ": null
+ },
+ "card:CLEANSE": {
+  "กองจั่ว": null,
+  "สลาย": "keyword:EXHAUST",
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:CLOAK_AND_DAGGER": {
+  "บล็อก": "keyword:BLOCK",
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "card:CLOAK_OF_STARS": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:COLD_SNAP": {
+  "น้ำแข็ง": "keyword:FROST_ORB",
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:COLLISION_COURSE": {
+  "มือ": null,
+  "เศษซาก": "card:DEBRIS"
+ },
+ "card:COLOSSUS": {
+  "จุดอ่อน": "power:VULNERABLE",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:COMET": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:COMPACT": {
+  "บล็อก": "keyword:BLOCK",
+  "มือ": null,
+  "เชื้อเพลิง": "card:FUEL",
+  "เชื้อเพลิง+": "card:FUEL",
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "card:CONCOCT": {
+  "พิษ": "power:POISON"
+ },
+ "card:CONQUEROR": {
+  "พระแสงอาญาสิทธิ์": "card:SOVEREIGN_BLADE",
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:CONSTELLATION": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:CONSUMING_SHADOW": {
+  "ความมืด": "keyword:DARK_ORB",
+  "ปลุกเสก": "keyword:CHANNELING",
+  "ปล่อยพลัง": "keyword:EVOKE"
+ },
+ "card:CONVERGENCE": {
+  "คงสภาพ": "keyword:RETAIN",
+  "มือ": null
+ },
+ "card:COOLANT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:COOLHEADED": {
+  "น้ำแข็ง": "keyword:FROST_ORB",
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:COORDINATE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:CORROSIVE_WAVE": {
+  "พิษ": "power:POISON"
+ },
+ "card:CORRUPTION": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:COSMIC_INDIFFERENCE": {
+  "กองจั่ว": null,
+  "กองทิ้ง": null,
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:COUNTDOWN": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:CRASH_LANDING": {
+  "มือ": null,
+  "เศษซาก": "card:DEBRIS"
+ },
+ "card:CREATIVE_AI": {
+  "มือ": null
+ },
+ "card:CRIMSON_MANTLE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:CRUELTY": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:CRUSH_UNDER": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:DANSE_MACABRE": {
+  "บล็อก": null
+ },
+ "card:DARKNESS": {
+  "ความมืด": "keyword:DARK_ORB",
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:DARK_EMBRACE": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:DARK_SHACKLES": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:DASH": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEADLY_POISON": {
+  "พิษ": "power:POISON"
+ },
+ "card:DEATHBRINGER": {
+  "ความอ่อนแอ": "power:WEAK",
+  "อายุขัย": "power:DOOM"
+ },
+ "card:DEATHS_DOOR": {
+  "บล็อก": "keyword:BLOCK",
+  "อายุขัย": "power:DOOM"
+ },
+ "card:DEBILITATE": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:DEBT": {
+  "ทอง": null,
+  "มือ": null
+ },
+ "card:DECAY": {
+  "มือ": null
+ },
+ "card:DECISIONS_DECISIONS": {
+  "มือ": null
+ },
+ "card:DEFEND_DEFECT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEFEND_IRONCLAD": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEFEND_NECROBINDER": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEFEND_REGENT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEFEND_SILENT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEFLECT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEFRAGMENT": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "card:DEFY": {
+  "ความอ่อนแอ": "power:WEAK",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DELAY": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEMONIC_SHIELD": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEMON_FORM": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:DEPRECATED_CARD": {
+  "กองการ์ด": null
+ },
+ "card:DESPAIR": {
+  "บล็อก": null,
+  "อายุขัย": null
+ },
+ "card:DEVOUR_LIFE": {
+  "วิญญาณ": "card:SOUL",
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:DIRGE": {
+  "กองจั่ว": null,
+  "วิญญาณ": "card:SOUL",
+  "วิญญาณ+": "card:SOUL",
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:DISCOVERY": {
+  "มือ": null
+ },
+ "card:DISTRACTION": {
+  "มือ": null
+ },
+ "card:DODGE_AND_ROLL": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:DOMINATE": {
+  "ความแข็งแรง": "power:STRENGTH",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:DOUBT": {
+  "ความอ่อนแอ": "power:WEAK",
+  "มือ": null
+ },
+ "card:DOWSING": {
+  "?": null,
+  "Abundance": null
+ },
+ "card:DRAIN_POWER": {
+  "กองทิ้ง": null,
+  "พัฒนา": null
+ },
+ "card:DREDGE": {
+  "กองทิ้ง": null,
+  "มือ": null
+ },
+ "card:DRUM_OF_BATTLE": {
+  "ถูกสลาย": null
+ },
+ "card:DUALCAST": {
+  "ปล่อยพลัง": "keyword:EVOKE"
+ },
+ "card:DUAL_WIELD": {
+  "มือ": null
+ },
+ "card:DYING_STAR": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:EIDOLON": {
+  "กองสลาย": null,
+  "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "card:END_OF_DAYS": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:ENFEEBLING_TOUCH": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:ENLIGHTENMENT": {
+  "มือ": null
+ },
+ "card:ENTHRALLED": {
+  "มือ": null
+ },
+ "card:ENTRENCH": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:ENTROPY": {
+  "มือ": null,
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "card:ENVENOM": {
+  "พิษ": "power:POISON"
+ },
+ "card:EQUILIBRIUM": {
+  "Block": null,
+  "คงสภาพ": "keyword:RETAIN",
+  "มือ": null
+ },
+ "card:ESCAPE_PLAN": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:ETERNAL_ARMOR": {
+  "เกราะโลหะ": "power:PLATING"
+ },
+ "card:EVIL_EYE": {
+  "บล็อก": "keyword:BLOCK",
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:EXPECT_A_FIGHT": {
+  "บล็อก": "keyword:BLOCK",
+  "มือ": null
+ },
+ "card:EXPERTISE": {
+  "คงสภาพ": "keyword:RETAIN",
+  "มือ": null
+ },
+ "card:EXPOSE": {
+  "จุดอ่อน": "power:VULNERABLE",
+  "บล็อก": "keyword:BLOCK",
+  "อาคม": "power:ARTIFACT"
+ },
+ "card:FADE": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "card:FALLING_STAR": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:FAN_OF_KNIVES": {
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "card:FASTEN": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:FEAR": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:FEED": {
+  "สังหาร": "keyword:FATAL"
+ },
+ "card:FEEDING_FRENZY": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:FEEL_NO_PAIN": {
+  "บล็อก": "keyword:BLOCK",
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:FERAL": {
+  "มือ": null
+ },
+ "card:FETCH": {
+  "น้าผี": null
+ },
+ "card:FIEND_FIRE": {
+  "ถูกสลาย": null,
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:FIGHT_THROUGH": {
+  "กองทิ้ง": null,
+  "บล็อก": "keyword:BLOCK",
+  "บาดแผล": "card:WOUND"
+ },
+ "card:FINESSE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:FISTICUFFS": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:FLAME_BARRIER": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:FLATTEN": {
+  "น้าผี": null
+ },
+ "card:FOCUSED_STRIKE": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "card:FOOTWORK": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "card:FORBIDDEN_GRIMOIRE": {
+  "กองการ์ด": null
+ },
+ "card:FOREGONE_CONCLUSION": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:FORGOTTEN_RITUAL": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:FRANTIC_ESCAPE": {
+  "บ่อทราย": "power:SANDPIT"
+ },
+ "card:FRIENDSHIP": {
+  "ความแข็งแรง": null
+ },
+ "card:FURNACE": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:FUSION": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "พลาสมา": "keyword:PLASMA_ORB"
+ },
+ "card:GAMMA_BLAST": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:GATHER_LIGHT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:GENETIC_ALGORITHM": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:GHOST_EATER": {
+  "อายุขัย": null
+ },
+ "card:GLACIER": {
+  "น้ำแข็ง": "keyword:FROST_ORB",
+  "บล็อก": "keyword:BLOCK",
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:GLASSWORK": {
+  "บล็อก": "keyword:BLOCK",
+  "ปลุกเสก": "keyword:CHANNELING",
+  "แก้ว": "keyword:GLASS_ORB"
+ },
+ "card:GLIMMER": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:GLIMPSE_BEYOND": {
+  "กองจั่ว": null,
+  "วิญญาณ": "card:SOUL"
+ },
+ "card:GLITTERSTREAM": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:GOOD_INSTINCTS": {
+  "บล็อก": null
+ },
+ "card:GO_FOR_THE_EYES": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "card:GRAND_FINALE": {
+  "กองจั่ว": null
+ },
+ "card:GRAVEBLAST": {
+  "กองทิ้ง": null,
+  "มือ": null
+ },
+ "card:GRAVE_WARDEN": {
+  "กองจั่ว": null,
+  "บล็อก": "keyword:BLOCK",
+  "วิญญาณ": "card:SOUL"
+ },
+ "card:GUARDS": {
+  "บริวารสละชีพ": "card:MINION_SACRIFICE",
+  "บริวารสละชีพ+": "card:MINION_SACRIFICE",
+  "มือ": null,
+  "แปรสภาพ": null
+ },
+ "card:GUILTY": {
+  "กองการ์ด": null
+ },
+ "card:HAILSTORM": {
+  "น้ำแข็ง": "keyword:FROST_ORB"
+ },
+ "card:HAMMER_TIME": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:HAND_OF_GREED": {
+  "ทอง": null,
+  "สังหาร": "keyword:FATAL"
+ },
+ "card:HAND_TRICK": {
+  "บล็อก": "keyword:BLOCK",
+  "มือ": null,
+  "เล่ห์เหลี่ยม": "keyword:SLY"
+ },
+ "card:HAUNT": {
+  "วิญญาณ": "card:SOUL"
+ },
+ "card:HAVOC": {
+  "กองจั่ว": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:HAZE": {
+  "ความอ่อนแอ": "power:WEAK",
+  "พิษ": "power:POISON"
+ },
+ "card:HEADBUTT": {
+  "กองจั่ว": null,
+  "กองทิ้ง": null
+ },
+ "card:HEIRLOOM_HAMMER": {
+  "มือ": null
+ },
+ "card:HELLO_WORLD": {
+  "มือ": null
+ },
+ "card:HIBERNATE": {
+  "น้ำแข็ง": "keyword:FROST_ORB",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:HIDDEN_DAGGERS": {
+  "มีดสั้น": "card:SHIV",
+  "มีดสั้น+": "card:SHIV",
+  "มือ": null
+ },
+ "card:HIDDEN_GEM": {
+  "กองจั่ว": null,
+  "เล่นซ้ำ": "keyword:REPLAY"
+ },
+ "card:HIGH_FIVE": {
+  "จุดอ่อน": "power:VULNERABLE",
+  "น้าผี": null
+ },
+ "card:HOLOGRAM": {
+  "กองทิ้ง": null,
+  "บล็อก": "keyword:BLOCK",
+  "มือ": null
+ },
+ "card:HOTFIX": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "card:HOWL_FROM_BEYOND": {
+  "กองสลาย": null
+ },
+ "card:HYPERBEAM": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "card:ICE_LANCE": {
+  "น้ำแข็ง": "keyword:FROST_ORB",
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:IGNITION": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "พลาสมา": "keyword:PLASMA_ORB"
+ },
+ "card:IMMORTALITY": {
+  "ไร้ตัวตน": null
+ },
+ "card:IMPALE": {
+  "พิษ": null
+ },
+ "card:IMPATIENCE": {
+  "มือ": null
+ },
+ "card:IMPERVIOUS": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:INFECTION": {
+  "มือ": null
+ },
+ "card:INFERNAL_BLADE": {
+  "มือ": null
+ },
+ "card:INFINITE_BLADES": {
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "card:INFLAME": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:INTERCEPT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:INVOKE": {
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:IRON_WAVE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:I_AM_INVINCIBLE": {
+  "กองจั่ว": null,
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:JACKPOT": {
+  "มือ": null,
+  "แบบพัฒนาแล้ว": null
+ },
+ "card:JACK_OF_ALL_TRADES": {
+  "มือ": null
+ },
+ "card:JUGGERNAUT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:JUGGLING": {
+  "มือ": null,
+  "โจมตี": null
+ },
+ "card:KNIFE_TRAP": {
+  "กองสลาย": null,
+  "พัฒนา": null,
+  "มีดสั้น": "card:SHIV"
+ },
+ "card:KNOW_THY_PLACE": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:LARGESSE": {
+  "มือ": null,
+  "แบบพัฒนาแล้ว": null
+ },
+ "card:LEADING_STRIKE": {
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "card:LEAP": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:LEGION_OF_BONE": {
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:LEG_SWEEP": {
+  "ความอ่อนแอ": "power:WEAK",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:LIFT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:LIGHTNING_ROD": {
+  "บล็อก": "keyword:BLOCK",
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "card:MAD_SCIENCE": {
+  "ความชำนาญ": null,
+  "ความอ่อนแอ": null,
+  "ความแข็งแรง": null,
+  "จุดอ่อน": null,
+  "บล็อก": null,
+  "พัฒนา": null,
+  "มือ": null
+ },
+ "card:MAKE_IT_SO": {
+  "มือ": null
+ },
+ "card:MALAISE": {
+  "ความอ่อนแอ": "power:WEAK",
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:MANGLE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:MANIFEST_AUTHORITY": {
+  "บล็อก": "keyword:BLOCK",
+  "มือ": null,
+  "แบบพัฒนาแล้ว": null
+ },
+ "card:MASTER_PLANNER": {
+  "เล่ห์เหลี่ยม": "keyword:SLY"
+ },
+ "card:MAYHEM": {
+  "กองจั่ว": null
+ },
+ "card:MELANCHOLY": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:METAMORPHOSIS": {
+  "กองจั่ว": null
+ },
+ "card:METEOR_SHOWER": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:METEOR_STRIKE": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "พลาสมา": "keyword:PLASMA_ORB"
+ },
+ "card:MIDNIGHT": {
+  "ถูกสลาย": null
+ },
+ "card:MIMIC": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:MIND_BLAST": {
+  "กองจั่ว": null
+ },
+ "card:MINION_SACRIFICE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:MIRAGE": {
+  "บล็อก": "keyword:BLOCK",
+  "พิษ": "power:POISON"
+ },
+ "card:MOLTEN_FIST": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:MONARCHS_GAZE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:MONOLOGUE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:MULTI_CAST": {
+  "ปล่อยพลัง": "keyword:EVOKE"
+ },
+ "card:NECRO_MASTERY": {
+  "น้าผี": null,
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:NEGATIVE_PULSE": {
+  "บล็อก": "keyword:BLOCK",
+  "อายุขัย": "power:DOOM"
+ },
+ "card:NEOWS_FURY": {
+  "กองทิ้ง": null,
+  "มือ": null
+ },
+ "card:NEUROSURGE": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:NEUTRALIZE": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "card:NEUTRON_AEGIS": {
+  "เกราะโลหะ": "power:PLATING"
+ },
+ "card:NIGHTMARE": {
+  "มือ": null
+ },
+ "card:NOSTALGIA": {
+  "กองจั่ว": null
+ },
+ "card:NOXIOUS_FUMES": {
+  "พิษ": "power:POISON"
+ },
+ "card:NO_ESCAPE": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:NULL": {
+  "ความมืด": "keyword:DARK_ORB",
+  "ความอ่อนแอ": "power:WEAK",
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:OBLIVION": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:OFF_BY_ONE": {
+  "มือ": null
+ },
+ "card:OUTBREAK": {
+  "พิษ": "power:POISON"
+ },
+ "card:OUTRAGE": {
+  "กองทิ้ง": null
+ },
+ "card:OVERCLOCK": {
+  "กองทิ้ง": null,
+  "เผาไหม้": "card:BURN"
+ },
+ "card:PACTS_END": {
+  "กองสลาย": null
+ },
+ "card:PAELS_STRIKE": {
+  "กองการ์ด": null
+ },
+ "card:PAGESTORM": {
+  "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "card:PANIC_BUTTON": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:PARRY": {
+  "บล็อก": "keyword:BLOCK",
+  "พระแสงอาญาสิทธิ์": "card:SOVEREIGN_BLADE"
+ },
+ "card:PARTICLE_WALL": {
+  "บล็อก": "keyword:BLOCK",
+  "มือ": null
+ },
+ "card:PATTER": {
+  "ความกำยำ": "power:VIGOR",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:PHANTOM_BLADES": {
+  "คงสภาพ": "keyword:RETAIN",
+  "มีดสั้น": "card:SHIV"
+ },
+ "card:PHOTON_CUT": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:PIERCING_WAIL": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:PILLAR_OF_CREATION": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:POISONED_STAB": {
+  "พิษ": "power:POISON"
+ },
+ "card:POKE": {
+  "น้าผี": null
+ },
+ "card:PRECISE_CUT": {
+  "มือ": null
+ },
+ "card:PREP_TIME": {
+  "ความกำยำ": "power:VIGOR"
+ },
+ "card:PRIMAL_FORCE": {
+  "มือ": null,
+  "หินยักษ์": "card:GIANT_ROCK",
+  "หินยักษ์+": "card:GIANT_ROCK"
+ },
+ "card:PROLONG": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:PROTECTOR": {
+  "HP สูงสุด": null,
+  "น้าผี": null
+ },
+ "card:PROWESS": {
+  "ความชำนาญ": "power:DEXTERITY",
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:PULL_AGGRO": {
+  "บล็อก": "keyword:BLOCK",
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:PURITY": {
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:PUTREFY": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:QUADCAST": {
+  "ปล่อยพลัง": "keyword:EVOKE"
+ },
+ "card:QUASAR": {
+  "มือ": null,
+  "แบบพัฒนาแล้ว": null
+ },
+ "card:RAGE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:RAINBOW": {
+  "ความมืด": "keyword:DARK_ORB",
+  "น้ำแข็ง": "keyword:FROST_ORB",
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "card:RALLY": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:REANIMATE": {
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:REAPER_FORM": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:REAVE": {
+  "กองจั่ว": null,
+  "วิญญาณ": "card:SOUL",
+  "วิญญาณ+": "card:SOUL"
+ },
+ "card:REBOOT": {
+  "กองจั่ว": null
+ },
+ "card:REBOUND": {
+  "กองจั่ว": null
+ },
+ "card:REFINE_BLADE": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:REFLECT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:REGRET": {
+  "มือ": null
+ },
+ "card:RELAX": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:RESONANCE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:RESTLESSNESS": {
+  "มือ": null
+ },
+ "card:RIGHT_HAND_HAND": {
+  "กองทิ้ง": null,
+  "น้าผี": null,
+  "มือ": null
+ },
+ "card:ROYALTIES": {
+  "ทอง": null
+ },
+ "card:RUPTURE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:SACRIFICE": {
+  "น้าผี": null,
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:SALVO": {
+  "คงสภาพ": "keyword:RETAIN",
+  "มือ": null
+ },
+ "card:SCAVENGE": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:SCOURGE": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:SCRAWL": {
+  "มือ": null
+ },
+ "card:SCULPTING_STRIKE": {
+  "กึ่งสลาย": "keyword:ETHEREAL",
+  "มือ": null
+ },
+ "card:SEANCE": {
+  "กองจั่ว": null,
+  "วิญญาณ": "card:SOUL"
+ },
+ "card:SECOND_WIND": {
+  "ถูกสลาย": null,
+  "บล็อก": "keyword:BLOCK",
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:SECRET_TECHNIQUE": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:SECRET_WEAPON": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:SEEKER_STRIKE": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:SEEKING_EDGE": {
+  "พระแสงอาญาสิทธิ์": "card:SOVEREIGN_BLADE",
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:SENTRY_MODE": {
+  "กวาดสายตา": "card:SWEEPING_GAZE",
+  "มือ": null
+ },
+ "card:SETUP_STRIKE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:SEVERANCE": {
+  "กองจั่ว": null,
+  "กองทิ้ง": null,
+  "มือ": null,
+  "วิญญาณ": "card:SOUL"
+ },
+ "card:SHADOWMELD": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:SHADOW_SHIELD": {
+  "ความมืด": "keyword:DARK_ORB",
+  "บล็อก": "keyword:BLOCK",
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:SHADOW_STEP": {
+  "มือ": null
+ },
+ "card:SHAME": {
+  "ความบอบบาง": "power:FRAIL",
+  "มือ": null
+ },
+ "card:SHARED_FATE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "card:SHARP_EDGE": {
+  "พัฒนา": null,
+  "มีดสั้น": null
+ },
+ "card:SHATTER": {
+  "ปล่อยพลัง": "keyword:EVOKE"
+ },
+ "card:SHINING_STRIKE": {
+  "กองจั่ว": null
+ },
+ "card:SHOCKWAVE": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:SHROUD": {
+  "บล็อก": "keyword:BLOCK",
+  "อายุขัย": "power:DOOM"
+ },
+ "card:SHRUG_IT_OFF": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:SIC_EM": {
+  "น้าผี": null,
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:SNAKEBITE": {
+  "พิษ": "power:POISON"
+ },
+ "card:SNAP": {
+  "คงสภาพ": "keyword:RETAIN",
+  "น้าผี": null,
+  "มือ": null
+ },
+ "card:SNEAKY": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:SOULBOUND": {
+  "กองจั่ว": null,
+  "วิญญาณ": "card:SOUL"
+ },
+ "card:SOUL_STORM": {
+  "กองสลาย": null,
+  "วิญญาณ": "card:SOUL"
+ },
+ "card:SPECTRUM_SHIFT": {
+  "มือ": null
+ },
+ "card:SPINNER": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "แก้ว": "keyword:GLASS_ORB"
+ },
+ "card:SPIRIT_OF_ASH": {
+  "กึ่งสลาย": "keyword:ETHEREAL",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:SPLASH": {
+  "มือ": null,
+  "แบบพัฒนาแล้ว": null
+ },
+ "card:SPOILS_MAP": {
+  "ทอง": null
+ },
+ "card:SPOILS_OF_BATTLE": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:SPUR": {
+  "น้าผี": null,
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:SQUASH": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:SQUEEZE": {
+  "น้าผี": null
+ },
+ "card:STACK": {
+  "กองทิ้ง": null,
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:STAMPEDE": {
+  "มือ": null
+ },
+ "card:STAR_BLAST": {
+  "บล็อก": null
+ },
+ "card:STAR_SHIELD": {
+  "บล็อก": null
+ },
+ "card:STOKE": {
+  "มือ": null,
+  "สลาย": null,
+  "แบบพัฒนาแล้ว": null
+ },
+ "card:STONE_ARMOR": {
+  "เกราะโลหะ": "power:PLATING"
+ },
+ "card:STORM": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "card:STORM_OF_STEEL": {
+  "มีดสั้น": "card:SHIV",
+  "มีดสั้น+": "card:SHIV",
+  "มือ": null
+ },
+ "card:STRATAGEM": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:SUCKER_PUNCH": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "card:SUMMON_FORTH": {
+  "พระแสงอาญาสิทธิ์": "card:SOVEREIGN_BLADE",
+  "มือ": null,
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:SUPPRESS": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "card:SURVIVOR": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:SWEEPING_GAZE": {
+  "น้าผี": null
+ },
+ "card:SWORD_SAGE": {
+  "พระแสงอาญาสิทธิ์": "card:SOVEREIGN_BLADE",
+  "เล่นซ้ำ": "keyword:REPLAY"
+ },
+ "card:SYNCHRONIZE": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "card:TAUNT": {
+  "จุดอ่อน": "power:VULNERABLE",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:TEMPEST": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "card:TERRAFORMING": {
+  "ความกำยำ": "power:VIGOR"
+ },
+ "card:TESLA_COIL": {
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "card:TEZCATARAS_MIGHT": {
+  "ความแข็งแรง": null
+ },
+ "card:THE_GAMBIT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:THE_HUNT": {
+  "สังหาร": "keyword:FATAL"
+ },
+ "card:THE_SMITH": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:THINKING_AHEAD": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:THRUMMING_HATCHET": {
+  "มือ": null
+ },
+ "card:THUNDER": {
+  "ปล่อยพลังสายฟ้า": null
+ },
+ "card:THUNDERCLAP": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:TIMES_UP": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:TORIC_TOUGHNESS": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:TOXIC": {
+  "มือ": null
+ },
+ "card:TRACKING": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "card:TRAINING_STRIKE": {
+  "สังหาร": null
+ },
+ "card:TRANSFIGURE": {
+  "มือ": null,
+  "เล่นซ้ำ": "keyword:REPLAY"
+ },
+ "card:TRASH_TO_TREASURE": {
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "card:TREMBLE": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:TRUE_GRIT": {
+  "บล็อก": "keyword:BLOCK",
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:TURBO": {
+  "กองทิ้ง": null,
+  "ความว่างเปล่า": "card:VOID"
+ },
+ "card:TUTOR": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:TYRANNY": {
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "card:ULTIMATE_DEFEND": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:UNDEATH": {
+  "กองทิ้ง": null,
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:UNDERWORLD": {
+  "อายุขัย": "power:DOOM"
+ },
+ "card:UNLEASH": {
+  "น้าผี": null
+ },
+ "card:UNMOVABLE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:UNTOUCHABLE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "card:UPPERCUT": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:UPROAR": {
+  "กองจั่ว": null
+ },
+ "card:UP_MY_SLEEVE": {
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "card:VEILPIERCER": {
+  "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "card:VETERAN": {
+  "ความแข็งแรง": null,
+  "บล็อก": null
+ },
+ "card:VICIOUS": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:VOLTAIC": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "ปลุกเสกสายฟ้า": null,
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "card:WARP_SPACE": {
+  "กองจั่ว": null
+ },
+ "card:WELL_LAID_PLANS": {
+  "มือ": null
+ },
+ "card:WHISTLE": {
+  "สตัน": null
+ },
+ "card:WHITE_NOISE": {
+  "มือ": null
+ },
+ "card:WISH": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "card:WITHER": {
+  "มือ": null
+ },
+ "card:WRAITH_FORM": {
+  "ความชำนาญ": "power:DEXTERITY",
+  "ไร้ตัวตน": "power:INTANGIBLE"
+ },
+ "card:WROUGHT_IN_WAR": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:ZAP": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "enchantment:ADROIT": {
+  "บล็อก": null
+ },
+ "enchantment:CLONE": {
+  "จุดพัก": null
+ },
+ "enchantment:GLAM": {
+  "เล่นซ้ำ": "keyword:REPLAY"
+ },
+ "enchantment:GOOPY": {
+  "บล็อก": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "enchantment:INKY": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "enchantment:NIMBLE": {
+  "บล็อก": null
+ },
+ "enchantment:PERFECT_FIT": {
+  "กองจั่ว": null
+ },
+ "enchantment:ROYALLY_APPROVED": {
+  "คงสภาพ": "keyword:RETAIN",
+  "ติดตัว": "keyword:INNATE"
+ },
+ "enchantment:SOULS_POWER": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "enchantment:SPIRAL": {
+  "เล่นซ้ำ": "keyword:REPLAY"
+ },
+ "enchantment:STEADY": {
+  "คงสภาพ": "keyword:RETAIN"
+ },
+ "enchantment:TEZCATARAS_EMBER": {
+  "นิรันดร์": "keyword:ETERNAL"
+ },
+ "epoch:DARV_EPOCH": {
+  "เทพโบราณ": null
+ },
+ "epoch:NECROBINDER2_EPOCH": {
+  "องก์": null
+ },
+ "epoch:NECROBINDER3_EPOCH": {
+  "องก์": null
+ },
+ "epoch:NECROBINDER4_EPOCH": {
+  "องก์": null
+ },
+ "event:AMALGAMATOR": {
+  "กองการ์ด": null,
+  "จู่โจม": null,
+  "ป้องกัน": null,
+  "สัญลักษณ์เรืองแสงหมุนวน": null
+ },
+ "event:AROMA_OF_CHAOS": {
+  "กองการ์ด": null,
+  "ดวลกับศัตรูเก่งๆ": null,
+  "พัฒนา": null,
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "event:BATTLEWORN_DUMMY": {
+  "ขวดยา": null,
+  "พัฒนา": null,
+  "เครื่องราง": null,
+  "โรงงาน": null
+ },
+ "event:BRAIN_LEECH": {
+  "กองการ์ด": null
+ },
+ "event:BUGSLAYER": {
+  "กองการ์ด": null,
+  "นักรบแข็งแกร่งทรงพลัง": null,
+  "วิชาบดขยี้": null,
+  "วิชาล้างผลาญ": null
+ },
+ "event:BYRDONIS_NEST": {
+  "กองการ์ด": null,
+  "ไข่ไร้การป้องกัน": null
+ },
+ "event:COLORFUL_PHILOSOPHERS": {
+  "ชิ้นผลึกปริซึม": null,
+  "ดีที่สุด": null
+ },
+ "event:COLOSSAL_FLOWER": {
+  "ก้อนน้ำหวานคุณภาพดี": null,
+  "ทอง": null,
+  "น้ำหวาน": null,
+  "น้ำหวานทองคำ": null,
+  "แกนละอองเรณู": "relic:POLLINOUS_CORE"
+ },
+ "event:CRYSTAL_SPHERE": {
+  "ทอง": null,
+  "ทำนายเล็ก": null,
+  "ทำนายใหญ่": null,
+  "ลูกแก้ววิเศษ": null
+ },
+ "event:DENSE_VEGETATION": {
+  "ทอง": null,
+  "อะไรบางอย่างที่ดิ้นไปมา": null
+ },
+ "event:DOLL_ROOM": {
+  "เครื่องรางตุ๊กตา": null
+ },
+ "event:DOORS_OF_LIGHT_AND_DARK": {
+  "กองการ์ด": null,
+  "ทวารบาลผู้แต่งกายดี 1 นาย": null,
+  "พัฒนา": null,
+  "มุ่งสู่แสงสว่าง...": null,
+  "เสริมกำลัง": null
+ },
+ "event:DROWNING_BEACON": {
+  "ห้องโคมไฟ": null,
+  "เลนส์": null
+ },
+ "event:ENDLESS_CONVEYOR": {
+  "กองการ์ด": null,
+  "ขวดยา": null,
+  "ทอง": null,
+  "พัฒนา": null,
+  "สวาปามบ้าคลั่ง": null,
+  "แปรสภาพ": null
+ },
+ "event:FIELD_OF_MAN_SIZED_HOLES": {
+  "กองการ์ด": null,
+  "ร่ายมนตร์": null,
+  "แสงจางๆ": null
+ },
+ "event:GRAVE_OF_THE_FORGOTTEN": {
+  "กองการ์ด": null,
+  "ร่ายมนตร์": null,
+  "สลาย": null
+ },
+ "event:HUNGRY_FOR_MUSHROOMS": {
+  "ฝึกซ้อมอย่างเคร่งครัด": null
+ },
+ "event:INFESTED_AUTOMATON": {
+  "กระแสไฟฟ้า": null,
+  "การ์ดค่าร่าย 0": null,
+  "พลัง": null
+ },
+ "event:JUNGLE_MAZE_ADVENTURE": {
+  "ความทรงจำอันยิ่งใหญ่": null,
+  "ทอง": null
+ },
+ "event:LOST_WISP": {
+  "กองการ์ด": null,
+  "ทอง": null
+ },
+ "event:LUMINOUS_CHOIR": {
+  "กองการ์ด": null,
+  "ทอง": null,
+  "เครื่องราง": null
+ },
+ "event:MORPHIC_GROVE": {
+  "ทอง": null,
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "event:POTION_COURIER": {
+  "ขวดยาไม่ธรรมดา": null,
+  "น้ำยาเสีย": "potion:FOUL_POTION",
+  "ผู้ขนส่งขวดยา": null
+ },
+ "event:PUNCH_OFF": {
+  "กองการ์ด": null,
+  "จักรกล": null,
+  "จักรกลชกต่อย": null,
+  "รางวัลที่ดีขึ้น": null,
+  "เครื่องราง": null
+ },
+ "event:RANWID_THE_ELDER": {
+  "ทอง": null,
+  "เครื่องราง": null
+ },
+ "event:REFLECTIONS": {
+  "กองการ์ด": null
+ },
+ "event:ROOM_FULL_OF_CHEESE": {
+  "กองการ์ด": null,
+  "ชีสที่ถูกเลือก": "relic:CHOSEN_CHEESE",
+  "ธรรมดา": null
+ },
+ "event:ROUND_TEA_PARTY": {
+  "ค่าเข้างาน": null,
+  "มงกุฏทองคำ": null,
+  "เครื่องราง": null,
+  "เหล่าผู้บัญชาการ": null
+ },
+ "event:SAPPHIRE_SEED": {
+  "กองการ์ด": null,
+  "พัฒนา": null,
+  "ร่ายมนตร์": null,
+  "สีสันคมชัดขึ้น": null,
+  "เสริมความทนทาน": null
+ },
+ "event:SELF_HELP_BOOK": {
+  "ร่ายมนตร์": null
+ },
+ "event:SLIPPERY_BRIDGE": {
+  "กองการ์ด": null,
+  "ม่ายยยยยยยย": null
+ },
+ "event:SPIRALING_WHIRLPOOL": {
+  "กองการ์ด": null,
+  "จู่โจม": null,
+  "ป้องกัน": null,
+  "ร่ายมนตร์": null,
+  "ศูนย์กลาง": null,
+  "เครื่องราง": null,
+  "“ขอบคุณนะ คุณหมุนวน”": null
+ },
+ "event:SPIRIT_GRAFTER": {
+  "กองการ์ด": null,
+  "พัฒนา": null,
+  "แปรร่างเปลี่ยนรูป": "card:METAMORPHOSIS",
+  "แสง": null
+ },
+ "event:STONE_OF_ALL_TIME": {
+  "ร่ายมนตร์": null,
+  "ศิลาตลอดกาล": null
+ },
+ "event:SUNKEN_STATUE": {
+  "ของถวาย": null,
+  "ทอง": null,
+  "ระยิบระยับ": null
+ },
+ "event:SUNKEN_TREASURY": {
+  "กล่องสมบัติ": null,
+  "กล่องสมบัติใบที่สอง:": null,
+  "กล่องสมบัติใบแรก:": null,
+  "ทอง": null
+ },
+ "event:SYMBIOTE": {
+  "ร่ายมนตร์": null,
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "event:TABLET_OF_TRUTH": {
+  "ความจริง": null,
+  "คำสุดท้าย": null,
+  "พัฒนา": null
+ },
+ "event:TEA_MASTER": {
+  "1.": null,
+  "2.": null,
+  "3.": null,
+  "4.": null,
+  "5.": null,
+  "ทอง": null,
+  "ราคาแบบพรีเมียม": null
+ },
+ "event:THE_FUTURE_OF_POTIONS": {
+  "แบบพัฒนาแล้ว": null
+ },
+ "event:THE_LANTERN_KEY": {
+  "ทอง": null,
+  "อัศวินปริศนา": null
+ },
+ "event:THE_LEGENDS_WERE_TRUE": {
+  "ขวดยา": null,
+  "แผนที่ลายแทงขุมทรัพย์": "card:SPOILS_MAP"
+ },
+ "event:THIS_OR_THAT": {
+  "กองการ์ด": null,
+  "ถุงมีค่าน่าสงสัย": null,
+  "ทอง": null,
+  "เครื่องราง": null
+ },
+ "event:TINKER_TIME": {
+  "กองการ์ด": null,
+  "ความชำนาญ": null,
+  "ความอ่อนแอ": null,
+  "ความแข็งแรง": null,
+  "จุดอ่อน": null,
+  "พัฒนา": null,
+  "มือ": null
+ },
+ "event:TRASH_HEAP": {
+  "ของมีค่าที่ถูกลืม": null,
+  "ทอง": null,
+  "สมบัติแปลกประหลาด": null,
+  "เครื่องราง": null,
+  "เครื่องรางจากอดีต": null
+ },
+ "event:TRIAL": {
+  "กองการ์ด": null,
+  "การไต่สวน": null,
+  "ขุนนาง": null,
+  "ขุนนางมากอำนาจ": null,
+  "ซุ้มโค้งสีทอง": null,
+  "ตัดสิน": null,
+  "ทอง": null,
+  "บัลลังก์แห่งการพิพากษา": null,
+  "ประธานศาลฎีกา": null,
+  "พัฒนา": null,
+  "สินบน": null,
+  "เครื่องราง": null,
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "event:UNREST_SITE": {
+  "กล่องขนาดเล็ก": null,
+  "จุดพัก": null,
+  "เครื่องราง": null
+ },
+ "event:WAR_HISTORIAN_REPY": {
+  "กล่อง": null,
+  "กล่องสมบัติ": null,
+  "กุญแจตะเกียง": "card:LANTERN_KEY",
+  "ขวดยา": null,
+  "ตำราปกหนังเล่มหนา": null,
+  "หลักสูตรประวัติศาสตร์": "relic:HISTORY_COURSE",
+  "เครื่องราง": null
+ },
+ "event:WATERLOGGED_SCRIPTORIUM": {
+  "ทอง": null,
+  "ปากกาขนนกที่บิดงอ": null,
+  "ฟองน้ำหนาม": null,
+  "ร่ายมนตร์": null,
+  "อุปกรณ์ต่างๆ": null
+ },
+ "event:WELCOME_TO_WONGOS": {
+  "คะแนนวองโก้": null,
+  "ทอง": null,
+  "เครื่องราง": null,
+  "เครื่องรางธรรมดา": null,
+  "โล่ลูกค้าผู้ทรงเกียรติของวองโก้": null
+ },
+ "event:WELLSPRING": {
+  "กองการ์ด": null,
+  "ขวดยา": null,
+  "อนุภาคเรืองแสง": null
+ },
+ "event:WHISPERING_HOLLOW": {
+  "ขวดยา": null,
+  "ทอง": null,
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "event:WOOD_CARVINGS": {
+  "ร่ายมนตร์": null,
+  "แปรสภาพ": null
+ },
+ "event:ZEN_WEAVER": {
+  "กองการ์ด": null,
+  "ทอง": null,
+  "รู้แจ้งเห็นจริง": "card:ENLIGHTENMENT"
+ },
+ "intent:ATTACK": {
+  "โจมตี": null
+ },
+ "intent:BUFF": {
+  "ผลพิเศษ": null
+ },
+ "intent:CARD_DEBUFF": {
+  "ผลกัดเซาะ": null
+ },
+ "intent:DEBUFF": {
+  "ผลผิดปกติ": null
+ },
+ "intent:DEBUFF_STRONG": {
+  "ผลพิเศษ": null
+ },
+ "intent:DEFEND": {
+  "บล็อก": null
+ },
+ "intent:ESCAPE": {
+  "หนี": null
+ },
+ "intent:HEAL": {
+  "ฟื้นฟู": null
+ },
+ "intent:STATUS": {
+  "การ์ดสถานะ": null
+ },
+ "intent:SUMMON": {
+  "พวกมอนสเตอร์": null
+ },
+ "intent:UNKNOWN": {
+  "ปริศนา": null
+ },
+ "keyword:CARD_REWARD": {
+  "กองการ์ด": null
+ },
+ "keyword:CHANNELING": {
+  "ปล่อยพลัง": null
+ },
+ "keyword:COOK": {
+  "กองการ์ด": null,
+  "กำจัด": null,
+  "จุดพัก": null
+ },
+ "keyword:ENERGY": {
+  "มือ": null
+ },
+ "keyword:ETERNAL": {
+  "กองการ์ด": null
+ },
+ "keyword:ETHEREAL": {
+  "มือ": null,
+  "สลาย": null
+ },
+ "keyword:FORGE": {
+  "พระแสงอาญาสิทธิ์": null,
+  "มือ": null,
+  "หลอมสร้าง": null
+ },
+ "keyword:INNATE": {
+  "มือ": null
+ },
+ "keyword:REPLAY": {
+  "เล่นซ้ำ": null
+ },
+ "keyword:ROOM_ELITE": {
+  "เครื่องราง": null
+ },
+ "keyword:ROOM_MERCHANT": {
+  "ทอง": null
+ },
+ "keyword:ROOM_REST": {
+  "พัฒนา": null
+ },
+ "keyword:ROOM_TREASURE": {
+  "ทอง": null,
+  "เครื่องราง": null
+ },
+ "keyword:ROOM_UNKNOWN_MERCHANT": {
+  "ทอง": null
+ },
+ "keyword:SLY": {
+  "มือ": null
+ },
+ "keyword:SUMMON_DYNAMIC": {
+  "น้าผี": null
+ },
+ "keyword:SUMMON_STATIC": {
+  "น้าผี": null
+ },
+ "modifier:ALL_STAR": {
+  "การ์ดไร้สี": null
+ },
+ "modifier:BIG_GAME_HUNTER": {
+  "หายาก": null
+ },
+ "modifier:MIDAS": {
+  "จุดพัก": null
+ },
+ "modifier:MURDEROUS": {
+  "ความแข็งแรง": null
+ },
+ "modifier:NIGHT_TERRORS": {
+  "จุดพัก": null
+ },
+ "modifier:TERMINAL": {
+  "เกราะโลหะ": null
+ },
+ "orb:DARK_ORB": {
+  "ต่อเนื่อง:": null,
+  "ปล่อยพลัง": null,
+  "ปล่อยพลัง:": null
+ },
+ "orb:FROST_ORB": {
+  "ต่อเนื่อง:": null,
+  "บล็อก": null,
+  "ปล่อยพลัง:": null
+ },
+ "orb:GLASS_ORB": {
+  "ต่อเนื่อง:": null,
+  "ปล่อยพลัง:": null
+ },
+ "orb:LIGHTNING_ORB": {
+  "ต่อเนื่อง:": null,
+  "ปล่อยพลัง:": null
+ },
+ "orb:PLASMA_ORB": {
+  "ต่อเนื่อง:": null,
+  "ปล่อยพลัง:": null,
+  "โฟกัส": null
+ },
+ "potion:ASHWATER": {
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "potion:ATTACK_POTION": {
+  "มือ": null
+ },
+ "potion:BLESSING_OF_THE_FORGE": {
+  "พัฒนา": null,
+  "มือ": null
+ },
+ "potion:BLOCK_POTION": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "potion:BONE_BREW": {
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "potion:BOTTLED_POTENTIAL": {
+  "กองจั่ว": null
+ },
+ "potion:COLORLESS_POTION": {
+  "มือ": null
+ },
+ "potion:COSMIC_CONCOCTION": {
+  "มือ": null,
+  "แบบพัฒนาแล้ว": null
+ },
+ "potion:CUNNING_POTION": {
+  "มีดสั้นแบบพัฒนาแล้ว": null,
+  "มือ": null
+ },
+ "potion:DEXTERITY_POTION": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "potion:DISTILLED_CHAOS": {
+  "กองจั่ว": null
+ },
+ "potion:DROPLET_OF_PRECOGNITION": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "potion:ESSENCE_OF_DARKNESS": {
+  "ความมืด": "keyword:DARK_ORB",
+  "ช่องเก็บลูกแก้ว": null,
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "potion:FLEX_POTION": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "potion:FOCUS_POTION": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "potion:FORTIFIER": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "potion:FOUL_POTION": {
+  "ทอง": null,
+  "พ่อค้า": null
+ },
+ "potion:FYSH_OIL": {
+  "ความชำนาญ": "power:DEXTERITY",
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "potion:GHOST_IN_A_JAR": {
+  "ไร้ตัวตน": "power:INTANGIBLE"
+ },
+ "potion:GLOWWATER_POTION": {
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "potion:HEART_OF_IRON": {
+  "เกราะโลหะ": "power:PLATING"
+ },
+ "potion:KINGS_COURAGE": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "potion:LIQUID_BRONZE": {
+  "หนาม": "power:THORNS"
+ },
+ "potion:LIQUID_MEMORIES": {
+  "กองทิ้ง": null,
+  "มือ": null
+ },
+ "potion:LUCKY_TONIC": {
+  "ม่านกันชน": "power:BUFFER"
+ },
+ "potion:MAZALETHS_GIFT": {
+  "พิธีกรรม": "power:RITUAL"
+ },
+ "potion:OROBIC_ACID": {
+  "มือ": null
+ },
+ "potion:POISON_POTION": {
+  "พิษ": "power:POISON"
+ },
+ "potion:POTION_OF_BINDING": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "potion:POTION_OF_CAPACITY": {
+  "ช่องเก็บลูกแก้ว": null
+ },
+ "potion:POTION_OF_DOOM": {
+  "อายุขัย": "power:DOOM"
+ },
+ "potion:POT_OF_GHOULS": {
+  "มือ": null,
+  "วิญญาณ": "card:SOUL"
+ },
+ "potion:POWER_POTION": {
+  "มือ": null
+ },
+ "potion:REGEN_POTION": {
+  "การฟื้นพลัง": "power:REGEN"
+ },
+ "potion:SHACKLING_POTION": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "potion:SHIP_IN_A_BOTTLE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "potion:SKILL_POTION": {
+  "มือ": null
+ },
+ "potion:SNECKO_OIL": {
+  "มือ": null
+ },
+ "potion:SOLDIERS_STEW": {
+  "จู่โจม": null,
+  "เล่นซ้ำ": "keyword:REPLAY"
+ },
+ "potion:SPEED_POTION": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "potion:STABLE_SERUM": {
+  "คงสภาพ": "keyword:RETAIN",
+  "มือ": null
+ },
+ "potion:STRENGTH_POTION": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "potion:TOUCH_OF_INSANITY": {
+  "มือ": null
+ },
+ "potion:VULNERABLE_POTION": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "potion:WEAK_POTION": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "power:ACCELERANT": {
+  "พิษ": "power:POISON"
+ },
+ "power:ACCURACY": {
+  "มีดสั้น": null
+ },
+ "power:ADAPTATION": {
+  "ความชำนาญ": null,
+  "บล็อก": null
+ },
+ "power:AEONGLASS_DOMINION": {
+  "กองจั่ว": null,
+  "เหี่ยวเฉา": "card:WITHER"
+ },
+ "power:AFTERIMAGE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:AGGRESSION": {
+  "กองทิ้ง": null,
+  "พัฒนา": null,
+  "มือ": null
+ },
+ "power:ARSENAL": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:ARTIFACT": {
+  "ยกเลิก": null
+ },
+ "power:AUTOMATION": {
+  "พลังงาน": null
+ },
+ "power:BARRICADE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:BEACON_OF_HOPE": {
+  "บล็อก": null
+ },
+ "power:BIASED_COGNITION": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "power:BLOCK_NEXT_TURN": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:BLUR": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:BURROWED": {
+  "ติดสตัน": null,
+  "บล็อก": null
+ },
+ "power:CALAMITY": {
+  "มือ": null
+ },
+ "power:CALCIFY": {
+  "น้าผี": null
+ },
+ "power:CALL_OF_THE_VOID": {
+  "กึ่งสลาย": "keyword:ETHEREAL",
+  "มือ": null
+ },
+ "power:CHAINS_OF_BINDING": {
+  "พันธะ": "affliction:BOUND"
+ },
+ "power:CHILD_OF_THE_STARS": {
+  "บล็อก": null
+ },
+ "power:COLOSSUS": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "power:CONCOCT": {
+  "พิษ": "power:POISON"
+ },
+ "power:CONQUEROR": {
+  "พระแสงอาญาสิทธิ์": "card:SOVEREIGN_BLADE"
+ },
+ "power:CONSUMING_SHADOW": {
+  "ปล่อยพลัง": null
+ },
+ "power:CONTRACTILITY": {
+  "บล็อก": null
+ },
+ "power:COOLANT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:CORROSIVE_WAVE": {
+  "พิษ": "power:POISON"
+ },
+ "power:CORRUPTION": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "power:COUNTDOWN": {
+  "อายุขัย": "power:DOOM"
+ },
+ "power:CRAB_RAGE": {
+  "ความแข็งแรง": "power:STRENGTH",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:CREATIVE_AI": {
+  "มือ": null
+ },
+ "power:CRIMSON_MANTLE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:CRUELTY": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "power:CURL_UP": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:DANSE_MACABRE": {
+  "บล็อก": null
+ },
+ "power:DARK_EMBRACE": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "power:DEBILITATE": {
+  "ความอ่อนแอ": "power:WEAK",
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "power:DECREE_OF_ENTROPY": {
+  "แบบพัฒนาแล้ว": null
+ },
+ "power:DEMESNE": {
+  "พลังงาน": "keyword:ENERGY"
+ },
+ "power:DEMON_FORM": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:DESPAIR": {
+  "บล็อก": null,
+  "อายุขัย": null
+ },
+ "power:DEVOUR_LIFE": {
+  "วิญญาณ": "card:SOUL",
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "power:DEXTERITY": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:DEXTERITY_DOWN": {
+  "ความชำนาญ": null
+ },
+ "power:DIE_FOR_YOU": {
+  "น้าผี": null
+ },
+ "power:ENERGY_NEXT_TURN": {
+  "พลังงาน": "keyword:ENERGY"
+ },
+ "power:ENRAGE": {
+  "ความแข็งแรง": null
+ },
+ "power:ENTROPY": {
+  "มือ": null,
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "power:ENVENOM": {
+  "พิษ": "power:POISON"
+ },
+ "power:FAN_OF_KNIVES": {
+  "มีดสั้น": null
+ },
+ "power:FASTEN": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:FEEL_NO_PAIN": {
+  "บล็อก": "keyword:BLOCK",
+  "สลาย": null
+ },
+ "power:FERAL": {
+  "มือ": null
+ },
+ "power:FLUTTER": {
+  "50%": null,
+  "สตัน": null
+ },
+ "power:FOCUS_DOWN": {
+  "โฟกัส": null
+ },
+ "power:FORBIDDEN_GRIMOIRE": {
+  "กองการ์ด": null
+ },
+ "power:FOREGONE_CONCLUSION": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "power:FRAIL": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:FRIENDSHIP": {
+  "พลังงาน": "keyword:ENERGY"
+ },
+ "power:FURNACE": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "power:GALVANIC": {
+  "กัดกร่อน": "power:GALVANIC"
+ },
+ "power:HAILSTORM": {
+  "น้ำแข็ง": "keyword:FROST_ORB"
+ },
+ "power:HAMMER_TIME": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "power:HANG": {
+  "Hang": null
+ },
+ "power:HAUNT": {
+  "วิญญาณ": null
+ },
+ "power:HEIST": {
+  "ทอง": null
+ },
+ "power:HELLO_WORLD": {
+  "มือ": null
+ },
+ "power:HEX": {
+  "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "power:HIBERNATE": {
+  "น้ำแข็ง": "keyword:FROST_ORB",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:HIGH_VOLTAGE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:IMBALANCED": {
+  "ติดสตัน": null
+ },
+ "power:IMPROVEMENT": {
+  "พัฒนา": null
+ },
+ "power:INFINITE_BLADES": {
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "power:JUGGERNAUT": {
+  "บล็อก": null
+ },
+ "power:JUGGLING": {
+  "มือ": null
+ },
+ "power:LIGHTNING_ROD": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "power:MASTER_PLANNER": {
+  "เล่ห์เหลี่ยม": null
+ },
+ "power:MAYHEM": {
+  "กองจั่ว": null
+ },
+ "power:MELANCHOLY": {
+  "อายุขัย": null
+ },
+ "power:MONARCHS_GAZE": {
+  "ความแข็งแรง": null
+ },
+ "power:MONOLOGUE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:NECRO_MASTERY": {
+  "น้าผี": null
+ },
+ "power:NEMESIS": {
+  "ไร้ตัวตน": null
+ },
+ "power:NEUROSURGE": {
+  "อายุขัย": "power:DOOM"
+ },
+ "power:NIGHTMARE": {
+  "มือ": null
+ },
+ "power:NOSTALGIA": {
+  "กองจั่ว": null
+ },
+ "power:NOXIOUS_FUMES": {
+  "พิษ": "power:POISON"
+ },
+ "power:NO_BLOCK": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:NO_ESCAPE": {
+  "อายุขัย": null
+ },
+ "power:OBLIVION": {
+  "อายุขัย": null
+ },
+ "power:ORB_GENERATOR": {
+  "ลูกแก้ว": null
+ },
+ "power:PAGESTORM": {
+  "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "power:PAINFUL_STABS": {
+  "กองทิ้ง": null,
+  "บาดแผล": "card:WOUND"
+ },
+ "power:PAPER_CUTS": {
+  "HP สูงสุด": null
+ },
+ "power:PARRY": {
+  "บล็อก": null,
+  "พระแสงอาญาสิทธิ์": null
+ },
+ "power:PERSONAL_HIVE": {
+  "กองจั่ว": null,
+  "ความมึนงง": "card:DAZED"
+ },
+ "power:PHANTOM_BLADES": {
+  "คงสภาพ": "keyword:RETAIN",
+  "มีดสั้น": "card:SHIV"
+ },
+ "power:PILLAR_OF_CREATION": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:PLATING": {
+  "บล็อก": "keyword:BLOCK",
+  "เกราะโลหะ": "power:PLATING"
+ },
+ "power:PLOW": {
+  "ความแข็งแรง": "power:STRENGTH",
+  "ติดสตัน": null
+ },
+ "power:POISON": {
+  "พิษ": "power:POISON"
+ },
+ "power:POSSESS_SPEED": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "power:POSSESS_STRENGTH": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:PREP_TIME": {
+  "ความกำยำ": null
+ },
+ "power:PYRE": {
+  "พลังงาน": "keyword:ENERGY"
+ },
+ "power:RADIANCE": {
+  "พลังงาน": "keyword:ENERGY"
+ },
+ "power:RAGE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:RAMPART": {
+  "บล็อก": null
+ },
+ "power:RAVENOUS": {
+  "ความแข็งแรง": "power:STRENGTH",
+  "ติดสตัน": null
+ },
+ "power:READ_THE_BONES": {
+  "อัญเชิญ": null
+ },
+ "power:REAPER_FORM": {
+  "อายุขัย": "power:DOOM"
+ },
+ "power:REBOUND": {
+  "กองจั่ว": null
+ },
+ "power:REFLECTIVE_FORTRESS": {
+  "บล็อก": null
+ },
+ "power:REGEN": {
+  "การฟื้นพลัง": "power:REGEN"
+ },
+ "power:RESERVES": {
+  "พลังงาน": null
+ },
+ "power:RESTORE_DEXTERITY": {
+  "ความชำนาญ": null
+ },
+ "power:RESTORE_FOCUS": {
+  "โฟกัส": null
+ },
+ "power:RETAIN_HAND": {
+  "คงสภาพ": null,
+  "มือ": null
+ },
+ "power:RITUAL": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:ROYALTIES": {
+  "ทอง": null
+ },
+ "power:RUPTURE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:SANDPIT": {
+  "The Insatiable": null
+ },
+ "power:SEEKING_EDGE": {
+  "พระแสงอาญาสิทธิ์": "card:SOVEREIGN_BLADE"
+ },
+ "power:SELF_FORMING_CLAY": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:SENTRY_MODE": {
+  "Sweeping Gaze": null,
+  "มือ": null
+ },
+ "power:SHADOWMELD": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:SHARP_EDGE": {
+  "พัฒนา": null,
+  "มีดสั้น": null
+ },
+ "power:SHRIEK": {
+  "ติดสตัน": null
+ },
+ "power:SHROUD": {
+  "บล็อก": null,
+  "อายุขัย": "power:DOOM"
+ },
+ "power:SIC_EM": {
+  "น้าผี": null,
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "power:SKITTISH": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:SNEAKY": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:SOAR": {
+  "50%": null
+ },
+ "power:SOULBOUND": {
+  "กองจั่ว": null,
+  "วิญญาณ": "card:SOUL"
+ },
+ "power:SOW": {
+  "คงสภาพ": null,
+  "มือ": null
+ },
+ "power:SPECTRUM_SHIFT": {
+  "มือ": null
+ },
+ "power:SPINNER": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "แก้ว": "keyword:GLASS_ORB"
+ },
+ "power:SPIRIT_OF_ASH": {
+  "กึ่งสลาย": "keyword:ETHEREAL",
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:STAMPEDE": {
+  "มือ": null
+ },
+ "power:STORM": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "power:STRATAGEM": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "power:SUCK": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:SUMMON_NEXT_TURN": {
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "power:SWORD_SAGE": {
+  "พระแสงอาญาสิทธิ์": "card:SOVEREIGN_BLADE",
+  "เล่นซ้ำ": "keyword:REPLAY"
+ },
+ "power:TANGLED": {
+  "พลังงาน": null
+ },
+ "power:TAUNT": {
+  "จุดอ่อน": null
+ },
+ "power:TEMPORARY_DEXTERITY": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "power:TEMPORARY_DEXTERITY_DOWN": {
+  "ความชำนาญ": null
+ },
+ "power:TEMPORARY_FOCUS": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "power:TEMPORARY_FOCUS_DOWN": {
+  "โฟกัส": null
+ },
+ "power:TEMPORARY_STRENGTH": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:TEMPORARY_STRENGTH_DOWN": {
+  "ความแข็งแรง": null
+ },
+ "power:TENDER": {
+  "ความชำนาญ": "power:DEXTERITY",
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:TERRITORIAL": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:TEZCATARAS_BLIGHT": {
+  "ความแข็งแรง": null
+ },
+ "power:THIEVERY": {
+  "ทอง": null
+ },
+ "power:THUNDER": {
+  "ปล่อยพลังสายฟ้า": null
+ },
+ "power:TORIC_TOUGHNESS": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:TRACKING": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "power:TRASH_TO_TREASURE": {
+  "ปลุกเสก": null
+ },
+ "power:TYRANNY": {
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "power:UNDERWORLD": {
+  "อายุขัย": "power:DOOM"
+ },
+ "power:UNMOVABLE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "power:UNSTEADY": {
+  "ติดสตัน": null
+ },
+ "power:VEILPIERCER": {
+  "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "power:VICIOUS": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "power:VITAL_SPARK": {
+  "ทักษะ": null,
+  "ปนเปื้อน": "affliction:TAINTED"
+ },
+ "power:WASTE_AWAY": {
+  "พลังงาน": "keyword:ENERGY"
+ },
+ "power:WELL_LAID_PLANS": {
+  "มือ": null
+ },
+ "power:WINGED_JUMP": {
+  "จุดอ่อน": null
+ },
+ "power:WITHERING_PRESENCE": {
+  "มือ": null,
+  "เหี่ยวเฉา": null
+ },
+ "power:WRAITH_FORM": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "relic:AKABEKO": {
+  "ความกำยำ": "power:VIGOR"
+ },
+ "relic:ALCHEMICAL_COFFER": {
+  "ขวดยา": null
+ },
+ "relic:AMETHYST_AUBERGINE": {
+  "ทอง": null
+ },
+ "relic:ANCHOR": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:ARCANE_SCROLL": {
+  "กองการ์ด": null,
+  "การ์ดหายาก": null
+ },
+ "relic:ARCHAIC_TOOTH": {
+  "แปรสภาพ": null
+ },
+ "relic:ASTROLABE": {
+  "พัฒนา": null,
+  "แปรสภาพ": null
+ },
+ "relic:BAG_OF_MARBLES": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "relic:BEAUTIFUL_BRACELET": {
+  "กองการ์ด": null,
+  "ร่ายมนต์": null
+ },
+ "relic:BELLOWS": {
+  "พัฒนา": null,
+  "มือ": null
+ },
+ "relic:BELT_BUCKLE": {
+  "ขวดยา": null,
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "relic:BIG_HAT": {
+  "กึ่งสลาย": "keyword:ETHEREAL",
+  "มือ": null
+ },
+ "relic:BIIIG_HUG": {
+  "กองการ์ด": null,
+  "กองจั่ว": null,
+  "เขม่าควัน": "card:SOOT"
+ },
+ "relic:BING_BONG": {
+  "กองการ์ด": null
+ },
+ "relic:BLACK_STAR": {
+  "ลูกพี่": null
+ },
+ "relic:BLESSED_ANTLER": {
+  "กองจั่ว": null,
+  "ความมึนงง": "card:DAZED"
+ },
+ "relic:BLOOD_SOAKED_ROSE": {
+  "กองการ์ด": null
+ },
+ "relic:BONE_FLUTE": {
+  "น้าผี": null,
+  "บล็อก": null
+ },
+ "relic:BONE_TEA": {
+  "พัฒนา": null
+ },
+ "relic:BOOKMARK": {
+  "คงสภาพ": "keyword:RETAIN"
+ },
+ "relic:BOOK_OF_FIVE_RINGS": {
+  "กองการ์ด": null
+ },
+ "relic:BOOK_REPAIR_KNIFE": {
+  "อายุขัย": "power:DOOM"
+ },
+ "relic:BOOMING_CONCH": {
+  "ลูกพี่": null
+ },
+ "relic:BOUND_PHYLACTERY": {
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "relic:BOWLER_HAT": {
+  "ทอง": null
+ },
+ "relic:BRIMSTONE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:BRONZE_SCALES": {
+  "หนาม": "power:THORNS"
+ },
+ "relic:BURNING_STICKS": {
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "relic:CALLING_BELL": {
+  "เครื่องราง": null
+ },
+ "relic:CAPTAINS_WHEEL": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:CHARONS_ASHES": {
+  "สลาย": null
+ },
+ "relic:CHOICES_PARADOX": {
+  "คงสภาพ": "keyword:RETAIN",
+  "มือ": null
+ },
+ "relic:CIRCLET": {
+  "สไปร์": null
+ },
+ "relic:CLAWS": {
+  "ขย้ำ": "card:MAUL",
+  "แปรสภาพ": null
+ },
+ "relic:CLOAK_CLASP": {
+  "บล็อก": "keyword:BLOCK",
+  "มือ": null
+ },
+ "relic:CRACKED_CORE": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "relic:CROSSBOW": {
+  "มือ": null,
+  "โจมตี": null
+ },
+ "relic:CURSED_KETTLE": {
+  "ความแข็งแรง": null,
+  "ลูกพี่": null
+ },
+ "relic:CURSED_PEARL": {
+  "ทอง": null
+ },
+ "relic:DATA_DISK": {
+  "โฟกัส": "power:FOCUS"
+ },
+ "relic:DAUGHTER_OF_THE_WIND": {
+  "บล็อก": null
+ },
+ "relic:DELICATE_FROND": {
+  "ขวดยา": null
+ },
+ "relic:DIAMOND_DIADEM": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:DISTINGUISHED_CAPE": {
+  "กองการ์ด": null,
+  "กายวิญญาณ": "card:APPARITION"
+ },
+ "relic:DOLLYS_MIRROR": {
+  "กองการ์ด": null,
+  "ทำสำเนา": null
+ },
+ "relic:DOWSING_ROD": {
+  "Dowsing": null,
+  "กองการ์ด": null
+ },
+ "relic:DRAGON_FRUIT": {
+  "ทอง": null
+ },
+ "relic:DREAM_CATCHER": {
+  "กองการ์ด": null,
+  "พักผ่อน": null
+ },
+ "relic:DUSTY_TOME": {
+  "การ์ดเทพโบราณ": null
+ },
+ "relic:ECTOPLASM": {
+  "ทอง": null
+ },
+ "relic:ELECTRIC_SHRYMP": {
+  "ร่ายมนตร์": null
+ },
+ "relic:EMBER_TEA": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:EMPTY_CAGE": {
+  "กองการ์ด": null
+ },
+ "relic:ENDLESS_APPETITE": {
+  "ความแข็งแรง": null,
+  "สลาย": null
+ },
+ "relic:ETERNAL_FEATHER": {
+  "กองการ์ด": null,
+  "จุดพัก": null
+ },
+ "relic:FAKE_ANCHOR": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:FAKE_ORICHALCUM": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:FAKE_VENERABLE_TEA_SET": {
+  "จุดพัก": null
+ },
+ "relic:FENCING_MANUAL": {
+  "หลอมสร้าง": "keyword:FORGE"
+ },
+ "relic:FISHING_ROD": {
+  "กองการ์ด": null,
+  "พัฒนา": null
+ },
+ "relic:FORGOTTEN_SOUL": {
+  "สลาย": null
+ },
+ "relic:FRAGRANT_MUSHROOM": {
+  "พัฒนา": null
+ },
+ "relic:FRESNEL_LENS": {
+  "กองการ์ด": null,
+  "บล็อก": null,
+  "ร่ายมนตร์": null
+ },
+ "relic:FROZEN_EGG": {
+  "กองการ์ด": null,
+  "พัฒนา": null
+ },
+ "relic:FUNERARY_MASK": {
+  "กองจั่ว": null,
+  "วิญญาณ": "card:SOUL"
+ },
+ "relic:GALACTIC_DUST": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:GHOST_SEED": {
+  "กึ่งสลาย": "keyword:ETHEREAL",
+  "จู่โจม": null,
+  "ป้องกัน": null
+ },
+ "relic:GIRYA": {
+  "ความแข็งแรง": "power:STRENGTH",
+  "จุดพัก": null
+ },
+ "relic:GLASS_EYE": {
+  "ธรรมดา": null,
+  "หายาก": null,
+  "ไม่ธรรมดา": null
+ },
+ "relic:GLITTER": {
+  "ร่ายมนตร์": null
+ },
+ "relic:GLOWING_ORB": {
+  "ลูกพี่": null
+ },
+ "relic:GNARLED_HAMMER": {
+  "ร่ายมนตร์": null
+ },
+ "relic:GOLDEN_COMPASS": {
+  "องก์": null
+ },
+ "relic:GOLDEN_PEARL": {
+  "ทอง": null
+ },
+ "relic:GORGET": {
+  "เกราะโลหะ": "power:PLATING"
+ },
+ "relic:HAND_DRILL": {
+  "จุดอ่อน": "power:VULNERABLE",
+  "บล็อก": null
+ },
+ "relic:HEFTY_TABLET": {
+  "กองการ์ด": null
+ },
+ "relic:HELICAL_DART": {
+  "ความชำนาญ": "power:DEXTERITY",
+  "มีดสั้น": "card:SHIV"
+ },
+ "relic:HORN_CLEAT": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:INFUSED_CORE": {
+  "ปลุกเสก": "keyword:CHANNELING",
+  "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "relic:INTIMIDATING_HELMET": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:JEWELED_MASK": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "relic:JEWELRY_BOX": {
+  "กองการ์ด": null,
+  "สภาวะเทียมเทพ": "card:APOTHEOSIS"
+ },
+ "relic:JOSS_PAPER": {
+  "สลาย": "keyword:EXHAUST"
+ },
+ "relic:JUZU_BRACELET": {
+  "?": null
+ },
+ "relic:KIFUDA": {
+  "ร่ายมนตร์": null
+ },
+ "relic:KUNAI": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "relic:LARGE_CAPSULE": {
+  "กองการ์ด": null,
+  "จู่โจม": null,
+  "ป้องกัน": null,
+  "เครื่องราง": null
+ },
+ "relic:LAVA_LAMP": {
+  "พัฒนา": null
+ },
+ "relic:LEAD_PAPERWEIGHT": {
+  "กองการ์ด": null
+ },
+ "relic:LEAFY_POULTICE": {
+  "จู่โจม": null,
+  "ป้องกัน": null,
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "relic:LORDS_PARASOL": {
+  "พ่อค้า": null
+ },
+ "relic:LOST_COFFER": {
+  "ขวดยา": null
+ },
+ "relic:LUCKY_FYSH": {
+  "กองการ์ด": null,
+  "ทอง": null
+ },
+ "relic:MASSIVE_SCROLL": {
+  "กองการ์ด": null,
+  "การ์ดแบบหลายคน": null
+ },
+ "relic:MAW_BANK": {
+  "ทอง": null
+ },
+ "relic:MEAT_CLEAVER": {
+  "ปรุงอาหาร": "keyword:COOK"
+ },
+ "relic:METRONOME": {
+  "ปลุกเสก": null,
+  "ลูกแก้ว": null
+ },
+ "relic:MINIATURE_CANNON": {
+  "พัฒนาแล้ว": null
+ },
+ "relic:MINIATURE_TENT": {
+  "จุดพัก": null
+ },
+ "relic:MINI_REGENT": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:MOLTEN_EGG": {
+  "กองการ์ด": null,
+  "พัฒนา": null
+ },
+ "relic:MUMMIFIED_HAND": {
+  "มือ": null
+ },
+ "relic:MUSIC_BOX": {
+  "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "relic:MYSTERIOUS_COCOON": {
+  "Impale": null,
+  "Training Strike": null
+ },
+ "relic:MYSTIC_LIGHTER": {
+  "ร่ายมนตร์": null
+ },
+ "relic:NEOWS_BONES": {
+  "กองการ์ด": null,
+  "เครื่องรางเนียว": null
+ },
+ "relic:NEOWS_SACRIFICE": {
+  "กองการ์ด": null,
+  "อำพันทะเล": "potion:AMBERGRIS"
+ },
+ "relic:NEOWS_TALISMAN": {
+  "จู่โจม": null,
+  "ป้องกัน": null,
+  "พัฒนา": null
+ },
+ "relic:NEOWS_TORMENT": {
+  "Neow's Fury": null,
+  "กองการ์ด": null
+ },
+ "relic:NEW_LEAF": {
+  "แปรสภาพ": "keyword:TRANSFORM"
+ },
+ "relic:NINJA_SCROLL": {
+  "มีดสั้น": "card:SHIV",
+  "มือ": null
+ },
+ "relic:NUTRITIOUS_SOUP": {
+  "กองการ์ด": null,
+  "จู่โจม": null,
+  "ร่ายมนตร์": null
+ },
+ "relic:ODDLY_SMOOTH_STONE": {
+  "ความชำนาญ": "power:DEXTERITY"
+ },
+ "relic:OLD_COIN": {
+  "ทอง": null
+ },
+ "relic:ORANGE_DOUGH": {
+  "มือ": null
+ },
+ "relic:ORICHALCUM": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:ORNAMENTAL_FAN": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:PAELS_CLAW": {
+  "ป้องกัน": null,
+  "ร่ายมนตร์": null
+ },
+ "relic:PAELS_EYE": {
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "relic:PAELS_GROWTH": {
+  "ร่ายมนต์": null
+ },
+ "relic:PAELS_HORN": {
+  "กองการ์ด": null,
+  "ผ่อนคลาย": "card:RELAX"
+ },
+ "relic:PAELS_LEGION": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:PAELS_TOOTH": {
+  "กองการ์ด": null,
+  "พัฒนา": null
+ },
+ "relic:PAELS_WING": {
+  "เครื่องราง": null
+ },
+ "relic:PANDORAS_BOX": {
+  "กล่องแพนโดรา": "relic:PANDORAS_BOX",
+  "จู่โจม": null,
+  "ป้องกัน": null,
+  "แปรสภาพ": null
+ },
+ "relic:PANTOGRAPH": {
+  "บอส": null
+ },
+ "relic:PAPER_KRANE": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "relic:PAPER_PHROG": {
+  "จุดอ่อน": "power:VULNERABLE"
+ },
+ "relic:PARRYING_SHIELD": {
+  "บล็อก": null
+ },
+ "relic:PERMAFROST": {
+  "บล็อก": null
+ },
+ "relic:PETRIFIED_TOAD": {
+  "หินทรงขวดยา": "potion:POTION_SHAPED_ROCK"
+ },
+ "relic:PHIAL_HOLSTER": {
+  "ขวดยา": null
+ },
+ "relic:PHILOSOPHERS_STONE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:PHYLACTERY_UNBOUND": {
+  "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "relic:PLANISPHERE": {
+  "?": null
+ },
+ "relic:POMANDER": {
+  "พัฒนา": null
+ },
+ "relic:POWER_CELL": {
+  "กองจั่ว": null,
+  "มือ": null
+ },
+ "relic:PRECARIOUS_SHEARS": {
+  "กองการ์ด": null
+ },
+ "relic:PRECISE_SCISSORS": {
+  "กองการ์ด": null
+ },
+ "relic:PRESERVED_FOG": {
+  "กองการ์ด": null
+ },
+ "relic:PUMPKIN_CANDLE": {
+  "จุดพัก": null,
+  "จุดเทียน": null
+ },
+ "relic:PUNCH_DAGGER": {
+  "ร่ายมนตร์": null
+ },
+ "relic:RADIANT_PEARL": {
+  "Luminesce": null,
+  "มือ": null
+ },
+ "relic:RAINBOW_RING": {
+  "ความชำนาญ": "power:DEXTERITY",
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:RAZOR_TOOTH": {
+  "พัฒนา": null
+ },
+ "relic:RED_MASK": {
+  "ความอ่อนแอ": "power:WEAK"
+ },
+ "relic:RED_SKULL": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:REGALITE": {
+  "บล็อก": null
+ },
+ "relic:REGAL_PILLOW": {
+  "พักผ่อน": null
+ },
+ "relic:REPTILE_TRINKET": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:RINGING_TRIANGLE": {
+  "คงสภาพ": "keyword:RETAIN",
+  "มือ": null
+ },
+ "relic:RIPPLE_BASIN": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:ROYAL_STAMP": {
+  "กองการ์ด": null,
+  "ร่ายมนตร์": null
+ },
+ "relic:RUINED_HELMET": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:RUNIC_CAPACITOR": {
+  "ช่องเก็บลูกแก้ว": null
+ },
+ "relic:RUNIC_PYRAMID": {
+  "มือ": null
+ },
+ "relic:SAI": {
+  "บล็อก": null
+ },
+ "relic:SAND_CASTLE": {
+  "พัฒนา": null
+ },
+ "relic:SCREAMING_FLAGON": {
+  "มือ": null
+ },
+ "relic:SCROLL_BOXES": {
+  "กองการ์ด": null
+ },
+ "relic:SEAL_OF_GOLD": {
+  "ทอง": null
+ },
+ "relic:SEA_GLASS": {
+  "กองการ์ด": null
+ },
+ "relic:SELF_FORMING_CLAY": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:SERE_TALON": {
+  "กองการ์ด": null
+ },
+ "relic:SHOVEL": {
+  "จุดพัก": null,
+  "เครื่องราง": null
+ },
+ "relic:SHURIKEN": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:SIGNET_RING": {
+  "ทอง": null
+ },
+ "relic:SILKEN_TRESS": {
+  "ทอง": null,
+  "ร่ายมนตร์": null
+ },
+ "relic:SILVER_CRUCIBLE": {
+  "พัฒนาแล้ว": null
+ },
+ "relic:SLING_OF_COURAGE": {
+  "ความแข็งแรง": "power:STRENGTH",
+  "ลูกพี่": null
+ },
+ "relic:SMALL_CAPSULE": {
+  "เครื่องราง": null
+ },
+ "relic:SNECKO_SKULL": {
+  "พิษ": "power:POISON"
+ },
+ "relic:SOZU": {
+  "ขวดยา": null
+ },
+ "relic:SPARKLING_ROUGE": {
+  "ความชำนาญ": "power:DEXTERITY",
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:STONE_CRACKER": {
+  "กองจั่ว": null,
+  "พัฒนา": null
+ },
+ "relic:STONE_HUMIDIFIER": {
+  "จุดพัก": null,
+  "พักผ่อน": null
+ },
+ "relic:STORYBOOK": {
+  "กองการ์ด": null,
+  "เพลิงที่โชติช่วงที่สุด": "card:BRIGHTEST_FLAME"
+ },
+ "relic:STURDY_CLAMP": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:SWORD_OF_JADE": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:SWORD_OF_STONE": {
+  "ลูกพี่": null,
+  "เครื่องราง": null
+ },
+ "relic:SYMBIOTIC_VIRUS": {
+  "ความมืด": "keyword:DARK_ORB",
+  "ปลุกเสก": "keyword:CHANNELING"
+ },
+ "relic:TANXS_WHISTLE": {
+  "กองการ์ด": null,
+  "เป่านกหวีด": "card:WHISTLE"
+ },
+ "relic:TEA_OF_DISCOURTESY": {
+  "กองจั่ว": null,
+  "ความมึนงง": "card:DAZED"
+ },
+ "relic:THE_ABACUS": {
+  "กองจั่ว": null,
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:TINY_MAILBOX": {
+  "ขวดยา": null,
+  "พักผ่อน": null
+ },
+ "relic:TOASTY_MITTENS": {
+  "ความแข็งแรง": "power:STRENGTH",
+  "มือ": null,
+  "สลาย": "keyword:EXHAUST"
+ },
+ "relic:TOOLBOX": {
+  "มือ": null
+ },
+ "relic:TOUCH_OF_OROBAS": {
+  "เครื่องราง": null,
+  "เทพโบราณ": null
+ },
+ "relic:TOUGH_BANDAGES": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:TOXIC_EGG": {
+  "กองการ์ด": null,
+  "พัฒนา": null
+ },
+ "relic:TOY_BOX": {
+  "เครื่องรางขี้ผึ้ง": null
+ },
+ "relic:TRI_BOOMERANG": {
+  "กองการ์ด": null,
+  "ร่ายมนตร์": null
+ },
+ "relic:TUNING_FORK": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:TWISTED_FUNNEL": {
+  "พิษ": "power:POISON"
+ },
+ "relic:UNCEASING_TOP": {
+  "มือ": null
+ },
+ "relic:UNDYING_SIGIL": {
+  "อายุขัย": "power:DOOM"
+ },
+ "relic:UNSETTLING_LAMP": {
+  "สร้างผลผิดปกติ": null
+ },
+ "relic:VAJRA": {
+  "ความแข็งแรง": "power:STRENGTH"
+ },
+ "relic:VAMBRACE": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:VENERABLE_TEA_SET": {
+  "จุดพัก": null
+ },
+ "relic:VEXING_PUZZLEBOX": {
+  "มือ": null
+ },
+ "relic:VITRUVIAN_MINION": {
+  "บล็อก": "keyword:BLOCK"
+ },
+ "relic:WAR_HAMMER": {
+  "พัฒนา": null,
+  "ลูกพี่": null
+ },
+ "relic:WAR_PAINT": {
+  "พัฒนา": null
+ },
+ "relic:WHETSTONE": {
+  "พัฒนา": null
+ },
+ "relic:WHITE_BEAST_STATUE": {
+  "ขวดยา": null
+ },
+ "relic:WHITE_STAR": {
+  "ลูกพี่": null,
+  "หายาก": null
+ },
+ "relic:WING_CHARM": {
+  "ร่ายมนตร์": null
+ },
+ "relic:WONGOS_MYSTERY_TICKET": {
+  "เครื่องราง": null
+ },
+ "relic:YUMMY_COOKIE": {
+  "พัฒนา": null
+ }
+}
