@@ -14,7 +14,9 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
 import {
   DecisionsDecisionsHand,
+  GRAB_HAND_CHARACTERS,
   type DecisionsHandGoal,
+  type GrabHandCharacter,
 } from "@/components/decisions-decisions/decisions-decisions-hand";
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
 import { DecisionsDecisionsToken } from "@/components/decisions-decisions/decisions-decisions-token";
@@ -233,18 +235,38 @@ type PieceDrag = {
 };
 type PieceFlight = { ghost: HTMLElement; animation: Animation };
 
-/** Bottom center of a piece, cut to the pool's scroll box; null once it is scrolled away. */
+/** Top center of a piece, cut to the pool's scroll box; null once it is scrolled away. */
 function fingertipOn(element: Element): DecisionsHandGoal {
   const rect = element.getBoundingClientRect();
-  let bottom = rect.bottom;
+  let top = rect.top;
   const scroller = element.parentElement?.closest(".overflow-y-auto");
   if (scroller) {
     const box = scroller.getBoundingClientRect();
     if (rect.bottom < box.top + 12 || rect.top > box.bottom - 12) return null;
-    bottom = Math.min(bottom, box.bottom);
+    top = Math.max(top, box.top);
   }
-  if (bottom < 0 || rect.top > window.innerHeight) return null;
-  return { x: rect.left + rect.width / 2, y: bottom - TIP_INSET_PX };
+  if (rect.bottom < 0 || top > window.innerHeight) return null;
+  return { x: rect.left + rect.width / 2, y: top + TIP_INSET_PX, grab: false };
+}
+
+function gripOn(rect: { left: number; top: number; width: number; height: number }): DecisionsHandGoal {
+  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, grab: true };
+}
+
+/** The character most of the pool belongs to; null on a tie or when none does. */
+function dominantCharacter(
+  pool: DecisionsDecisionsResourceRef[],
+  entityMap: Map<string, EntityInfo>,
+): GrabHandCharacter | null {
+  const counts = new Map<GrabHandCharacter, number>();
+  for (const ref of pool) {
+    const entity = entityMap.get(resourceKey(ref));
+    const slug = entity?.cardData?.color ?? entity?.relicData?.pool ?? entity?.potionData?.pool;
+    const character = GRAB_HAND_CHARACTERS.find((item) => item === slug);
+    if (character) counts.set(character, (counts.get(character) ?? 0) + 1);
+  }
+  const [first, second] = [...counts].sort((left, right) => right[1] - left[1]);
+  return first && (!second || first[1] > second[1]) ? first[0] : null;
 }
 
 /**
@@ -707,6 +729,7 @@ export function DecisionsDecisionsComposer({
   }, [entityMap, poolSort, sortedPool]);
   const poolHasUnplacedHidden = boardPool.length < pool.length
     && pool.some((ref) => !placements.some((item) => resourceKey(item) === resourceKey(ref)));
+  const poolCharacter = useMemo(() => dominantCharacter(pool, entityMap), [entityMap, pool]);
   const poolHasCards = useMemo(
     () => pool.some((ref) => ref.type === "card"),
     [pool],
@@ -798,16 +821,18 @@ export function DecisionsDecisionsComposer({
     };
   }, [step]);
 
-  // The hand points at the dragged piece, then the flying one, then the selection.
+  // The hand grips the dragged piece, then the flying one, else points at the selection.
   const handGoal = useCallback((): DecisionsHandGoal => {
     const drag = dragRef.current;
     if (drag) {
-      return {
-        x: drag.x - drag.offsetX + drag.width / 2,
-        y: drag.y - drag.offsetY + drag.height - TIP_INSET_PX,
-      };
+      return gripOn({
+        left: drag.x - drag.offsetX,
+        top: drag.y - drag.offsetY,
+        width: drag.width,
+        height: drag.height,
+      });
     }
-    if (flightRef.current) return fingertipOn(flightRef.current.ghost);
+    if (flightRef.current) return gripOn(flightRef.current.ghost.getBoundingClientRect());
     const key = selectedKeyRef.current;
     const element = key ? pieceElement(key) : null;
     return element ? fingertipOn(element) : null;
@@ -883,50 +908,16 @@ export function DecisionsDecisionsComposer({
       </nav>
       )}
 
-      {(step === "board" || (onClose && !embedded)) && (
-      <div className="flex items-start gap-2">
-        <div className="min-w-0 flex-1 space-y-2">
-          {step === "board" && (
-            <>
-              {!hideNickname && (
-                <input
-                  type="text"
-                  value={nickname}
-                  onChange={(event) => setNickname(event.target.value.slice(0, 20))}
-                  placeholder={copy.nicknamePlaceholder}
-                  maxLength={20}
-                  className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
-                />
-              )}
-              <input
-                type="text"
-                value={title}
-                onChange={(event) => setTitle(event.target.value.slice(0, DECISIONS_DECISIONS_TITLE_MAX_CHARS))}
-                placeholder={copy.titlePlaceholder}
-                maxLength={DECISIONS_DECISIONS_TITLE_MAX_CHARS}
-                className="w-full bg-transparent font-service text-base font-semibold text-foreground outline-none placeholder:text-gray-600"
-              />
-              <input
-                type="text"
-                value={note}
-                onChange={(event) => setNote(event.target.value.slice(0, DECISIONS_DECISIONS_NOTE_MAX_CHARS))}
-                placeholder={copy.notePlaceholder}
-                maxLength={DECISIONS_DECISIONS_NOTE_MAX_CHARS}
-                className="w-full bg-transparent text-sm text-zinc-400 outline-none placeholder:text-gray-600"
-              />
-            </>
-          )}
-        </div>
-        {onClose && !embedded && (
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={copy.close}
-            className="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
+      {onClose && !embedded && (
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={copy.close}
+          className="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
       )}
 
@@ -976,13 +967,41 @@ export function DecisionsDecisionsComposer({
 
       {step === "board" && (
         <>
-          {/* Pieces first (what), then tiers (where): side by side on PC, stacked on mobile. */}
-          <div className="grid gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
-          <section
-            aria-label={copy.unranked}
-            data-decisions-decisions-pool-panel
-            className="space-y-1.5 lg:sticky lg:top-14"
-          >
+          {/*
+            Left: writing, then the tiers; right: pool tools, then the pool. Both
+            second-row boxes start on one line. Stacked on mobile as form, tools,
+            pool, tiers (what before where).
+          */}
+          <div className="grid gap-x-3 gap-y-2 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+          <div className="min-w-0 space-y-2 lg:col-start-1 lg:row-start-1 lg:self-end">
+              {!hideNickname && (
+                <input
+                  type="text"
+                  value={nickname}
+                  onChange={(event) => setNickname(event.target.value.slice(0, 20))}
+                  placeholder={copy.nicknamePlaceholder}
+                  maxLength={20}
+                  className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
+                />
+              )}
+              <input
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value.slice(0, DECISIONS_DECISIONS_TITLE_MAX_CHARS))}
+                placeholder={copy.titlePlaceholder}
+                maxLength={DECISIONS_DECISIONS_TITLE_MAX_CHARS}
+                className="w-full bg-transparent font-service text-base font-semibold text-foreground outline-none placeholder:text-gray-600"
+              />
+              <input
+                type="text"
+                value={note}
+                onChange={(event) => setNote(event.target.value.slice(0, DECISIONS_DECISIONS_NOTE_MAX_CHARS))}
+                placeholder={copy.notePlaceholder}
+                maxLength={DECISIONS_DECISIONS_NOTE_MAX_CHARS}
+                className="w-full bg-transparent text-sm text-zinc-400 outline-none placeholder:text-gray-600"
+              />
+          </div>
+          <div className="min-w-0 space-y-1.5 lg:col-start-2 lg:row-start-1 lg:self-end">
             <PoolTools
               sortLabels={poolHasCards && cardSortLabels ? cardSortLabels : null}
               sort={poolSort}
@@ -1007,6 +1026,12 @@ export function DecisionsDecisionsComposer({
               }}
             />
             <p className="text-[11px] text-zinc-500">{copy.assignHint}</p>
+          </div>
+          <section
+            aria-label={copy.unranked}
+            data-decisions-decisions-pool-panel
+            className="min-w-0 lg:sticky lg:top-14 lg:col-start-2 lg:row-start-2 lg:self-start"
+          >
             <DecisionsDecisionsBoard
               variant="pool"
               rows={rows}
@@ -1020,9 +1045,10 @@ export function DecisionsDecisionsComposer({
               onSelect={toggleSelect}
               onMove={handleMove}
               emptyPoolLabel={poolHasUnplacedHidden ? copy.poolNoMatch : copy.poolAllPlaced}
-              className="lg:max-h-[calc(100dvh-16rem)]"
+              className="lg:max-h-[calc(100dvh-9rem)]"
             />
           </section>
+          <div className="min-w-0 lg:col-start-1 lg:row-start-2">
           <DecisionsDecisionsBoard
             rows={rows}
             placements={placements}
@@ -1068,6 +1094,7 @@ export function DecisionsDecisionsComposer({
             }}
           />
           </div>
+          </div>
           {selectedKey && (
             <TierAssignBar
               rows={rows}
@@ -1079,7 +1106,7 @@ export function DecisionsDecisionsComposer({
               onAssign={assignSelected}
             />
           )}
-          {mounted && <DecisionsDecisionsHand getGoal={handGoal} />}
+          {mounted && <DecisionsDecisionsHand getGoal={handGoal} poolCharacter={poolCharacter} />}
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
