@@ -12,7 +12,6 @@
 | domain-migration-c54d7b | claude/domain-migration-c54d7b | 도메인 이전(레거시 호스트 안내, 리다이렉트, robots/sitemap) | 11커밋, main보다 332 뒤처짐. 2026-10-26 정기 배포에서 제외 |
 | step3-reads | step3/reads | Supabase 이관 3단계: 읽기를 D1으로(`read.<group>` 플래그, 역사 강의서 요약 목록·R3r 원문) | testbed 확인 끝(모든 그룹 `read.<group>` = d1로 둠). `refactor/supabase-exit`에 병합 대기 |
 | supabase-exit | refactor/supabase-exit | Supabase → D1 이관. 계획은 [SUPABASE_EXIT_PLAN.md](../SUPABASE_EXIT_PLAN.md) 7절 | 2~5단계 코드를 2026-11-09 운영에 냈다(`438e5e86`). 운영은 5단계(모든 `source.<group>` = d1, 동기화 꺼짐, 쿠키 신원, 직접 쓰기 닫힘)다. 6단계 클라이언트 정리는 작업 묶음 WP0~WP-W가 병합됐고 WP-Z(WP-B 패치 릴 포함)는 병합 대기, 배포 전 |
-| text-tips | refactor/text-tips | 게임 문구의 금색 단어를 게임 팁 목록에서 결정(`scripts/generate-game-tips.py`, `data/sts2/game-tips.json`·`gold-tips/`), 옆 툴팁·설명 팁을 데이터로, 키워드는 게임 문구 팁 28개로, `/dev/gold-words`, `pnpm game-tips:audit` | 2026-11-26 작업 중. 끝나면 `main`에 merge |
 | step6-* | step6/<묶음> | 6단계 작업 묶음([STEP6_PLAN.md](../supabase-exit/STEP6_PLAN.md) 3절). 묶음마다 `.claude/worktrees/step6-<묶음>` | `step6/wp-z`가 마지막(`step6/patch-reels` 병합). `refactor/supabase-exit`에 병합한 뒤 worktree와 브랜치를 지운다 |
 | supabase-exit | refactor/supabase-exit | Supabase → D1 이관. 계획은 [SUPABASE_EXIT_PLAN.md](../SUPABASE_EXIT_PLAN.md) 7절 | 2~5단계 코드를 2026-11-09 운영에 냈다(`438e5e86`). 운영은 1단계 화면 전환(전 그룹 api)과 2단계 동기화·그림자가 켜져 있다. 3단계부터 계속한다 |
 
@@ -38,6 +37,12 @@
 - 2026-11-25 v0.114.0 패치노트 긴급 배포(`618880a5`~`e4abb706`)에 `f820e6e4..618880a5`의 다른 세션 커밋 약 90개가 같이 나감. 운영 화면에 보이는 것: `nav-story-redesign`(상단바·메뉴·검색·이야기 /stories/<id>·인덱스 /compendium·/toybox·/vexing-puzzlebox·/menu, 커넥션스 /vexing-puzzlebox/connections 이동), `sts1-compendium-remaining-types`와 STS1 관련 레일·조우·의도·점수 페이지, STS2 점수 페이지(`c9442d74`~`a932b362`), 역사 강의 점수 화면(`581ef148`), 몬스터·이벤트 갤러리/목록 토글(`0e46481c`, `50b16da8`), NEW 표시 14일 만료(`1aebb756`). dev 전용: 게임 문구 카탈로그, OG 감사, 우편함 표시. 마이그레이션 없음. 스모크는 위 인덱스·이야기·/patches/0.114.0 응답 200만 봤다. 장소 등록부가 생성 JSON(`borrowed-game-copy`)을 import하는 순환 때문에 깨끗한 체크아웃 CI가 실패해 `2012aa7b`에서 빈 JSON을 먼저 깔고 생성하게 고쳤다.
 
 ## 기능 기대치
+
+### game-text-tips
+- Feature: 게임 문구의 금색 단어는 "팁 있음/없음" 둘 중 하나이고, 게임 코드에서 뽑은 데이터로 정한다(`scripts/generate-game-tips.py` → `data/sts2/game-tips.json`·`data/sts2/gold-tips/<로케일>.json`). 카드·유물·포션·파워·인챈트·고통의 옆 툴팁은 그 요소의 게임 팁 목록 그대로(카드는 금색 단어 이름 매칭 제거, 몬스터 팁 제거). 유물·인챈트·고통·도미니언 설명의 금색 단어는 데이터가 짝지은 팁에만 링크, 나머지 금색·색 글자는 강조만. 백과사전 키워드는 게임 문구가 쓰는 팁 28개(UI 팁 25개 제외, 옛 주소는 키워드 목록으로 308). 지어낸 금색 단어 툴팁 문구 삭제. `/dev/gold-words`는 팁 없는 금색 단어 목록(로케일별). 전수 감사 `pnpm game-tips:audit`는 커밋된 데이터만 읽고 배포 경로에 없다. 한국어 패치 노트의 리젠트 별 7곳은 `[gold:keyword]`로 강조만.
+- Expect: /compendium/cards/coda 옆 툴팁에 와·초·키 선율, /compendium/cards/charge는 하수인 투하 카드 팁만, /compendium/cards/bone_shards는 방어도. /compendium/relics/bag_of_marbles의 "취약"은 취약 파워 링크, /compendium/relics/fishing_rod의 "덱"·"강화"는 강조만. /compendium/keywords 28개, /compendium/keywords/deck → /compendium/keywords 308. /patches/0.100.0의 덱·별은 강조만.
+- QA: `pnpm game-tips:audit`(15개 로케일, 키워드 문구 대조·옆 툴팁 1412목록·금색 단어 전수), 자체 검사 5종, `patch:test`, `bin/ssy tags`(불일치 0), 워크트리 dev 1440에서 위 Expect 화면. 확인 못 함: 메인 사이트 전체 빌드와 Worker 308 실제 응답, 게임 화면과 나란히 놓은 캡처.
+- Commits: `002b46ed`부터, 병합 커밋.
 
 ### patch-deploy-speed
 - Feature: 패치 Worker 배포 가속. patch:html을 코어 수만큼 프로세스로 나눠 렌더(결과물 동일), 매니페스트는 빌드당 한 번 읽음. CI는 scope·patch·main 세 job으로 나뉘고 패치 배포는 자기 대기열(`cloudflare-patch`)이라 다른 push의 main 빌드 뒤에서 기다리지 않는다. main 뒤 패치 재배포는 이 실행의 패치가 live이고 매니페스트가 같으면 건너뛴다. `scripts/patch-worker-deploy.sh`가 버전 메시지에 커밋을 남겨 옛 실행이 새 패치를 덮지 않게 한다. `/patches/latest`(언어별 포함)는 최신 패치로 302.
