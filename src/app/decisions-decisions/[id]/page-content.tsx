@@ -43,8 +43,6 @@ export async function generateDecisionsDecisionsPostMetadata(
 export async function renderDecisionsDecisionsPostPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const gameCopy = await getDecisionsDecisionsGameCopy(gameLocale);
-
   return (
     <div className="relative isolate min-h-[calc(100svh-3rem)]" data-decisions-decisions-page="detail">
       <ServiceBackground
@@ -56,7 +54,6 @@ export async function renderDecisionsDecisionsPostPage(
           <DecisionsDecisionsPostView
             postId=""
             gameLocale={gameLocale}
-            gameCopy={gameCopy}
           />
         </StaticDetailShell>
       </div>

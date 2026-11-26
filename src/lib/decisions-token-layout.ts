@@ -43,6 +43,11 @@ export const DECISIONS_BOARD_TOKEN_VARS_CLASS = [
   "@xl:[--dd-label:64px] @xl:[--dd-pad:8px] @xl:[--dd-gap:4px]",
 ].join(" ");
 
+/** CSS min-height for a tier row: `cards` full card heights plus the row's `py-1`. */
+export function decisionsRowMinHeight(cards: number): string {
+  return `calc(var(--dd-card, ${DECISIONS_DECISIONS_CARD_WIDTH}px) * ${cards * CARD_ASPECT_H} / ${CARD_ASPECT_W} + ${(cards - 1)} * var(--dd-gap, 4px) + 8px)`;
+}
+
 export function decisionsCardHeight(width: number): number {
   return Math.round((width * CARD_ASPECT_H) / CARD_ASPECT_W);
 }

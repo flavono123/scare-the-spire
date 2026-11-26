@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -17,38 +16,27 @@ import { useAuth } from "@/hooks/use-auth";
 import { useDecisionsDecisionsCatalog } from "@/hooks/use-decisions-decisions-catalog";
 import { useDecisionsDecisionsPost } from "@/hooks/use-decisions-decisions-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
-import { useUserProfile } from "@/hooks/use-user-profile";
-import type { DecisionsDecisionsGameCopy } from "@/lib/borrowed-game-copy";
 import { buildDecisionsDecisionsCommentThreadKey } from "@/lib/comment-threads";
 import {
   DECISIONS_DECISIONS_HREF,
   DECISIONS_DECISIONS_TOKEN_SRC,
+  DECISIONS_DECISIONS_WRITE_HREF,
   placedPool,
   sortPoolRefs,
 } from "@/lib/decisions-decisions";
 import type { GameLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import { formatTimeAgo } from "@/lib/relative-time";
-import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import Image from "@/components/ui/static-image";
-
-const DecisionsDecisionsComposerModal = dynamic(
-  () => import("@/components/decisions-decisions/decisions-decisions-composer-modal").then(
-    (mod) => mod.DecisionsDecisionsComposerModal,
-  ),
-  { ssr: false },
-);
 
 export function DecisionsDecisionsPostView({
   postId,
   gameLocale,
-  gameCopy,
   variant = "page",
 }: {
   postId: string;
   gameLocale: GameLocale;
-  gameCopy: DecisionsDecisionsGameCopy;
   variant?: "page" | "embed";
 }) {
   const serviceLocale = useServiceLocale();
@@ -56,15 +44,9 @@ export function DecisionsDecisionsPostView({
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const router = useRouter();
   const { userId, ready, ensureUser } = useAuth();
-  const { post, loading, unavailable, update, remove } = useDecisionsDecisionsPost(postId, userId);
+  const { post, loading, unavailable, remove } = useDecisionsDecisionsPost(postId, userId);
   const catalog = useDecisionsDecisionsCatalog(gameLocale, { includeLegacy: true });
-  const profileFallback = useMemo(
-    () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
-    [copy.defaultNickname],
-  );
-  const { profile } = useUserProfile(profileFallback);
   const [copied, setCopied] = useState(false);
-  const [editing, setEditing] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
   const isEmbed = variant === "embed";
   const indexHref = localizeHrefWithGameLocale(DECISIONS_DECISIONS_HREF, serviceLocale, gameLocale);
@@ -117,7 +99,11 @@ export function DecisionsDecisionsPostView({
             onCopy={handleCopyUrl}
             isAuthor={isAuthor}
             editLabel={copy.edit}
-            onEdit={() => setEditing(true)}
+            onEdit={() => router.push(`${localizeHrefWithGameLocale(
+              DECISIONS_DECISIONS_WRITE_HREF,
+              serviceLocale,
+              gameLocale,
+            )}?edit=${post.id}`)}
             deleteLabel={copy.delete}
             onDelete={() => { void handleDelete(); }}
           />
@@ -149,28 +135,6 @@ export function DecisionsDecisionsPostView({
       </header>
 
       {post.note && <p className="text-sm text-zinc-300 [overflow-wrap:anywhere]">{post.note}</p>}
-
-      {editing && isAuthor && (
-        <DecisionsDecisionsComposerModal
-          entities={catalog.entities}
-          entityMap={catalog.entityMap}
-          stamps={catalog.stamps}
-          gameLocale={gameLocale}
-          serviceLocale={serviceLocale}
-          presetLabels={gameCopy.presetLabels}
-          submitLabel={copy.saveChanges}
-          profileNickname={profile.nickname}
-          initial={post}
-          onClose={() => setEditing(false)}
-          onSubmit={async (values) => {
-            const activeUserId = userId ?? await ensureUser();
-            if (!activeUserId) return false;
-            const next = await update({ ...values, activeUserId });
-            if (next) setEditing(false);
-            return Boolean(next);
-          }}
-        />
-      )}
 
       <TransfigureImageCopyButton
         fileName={`${post.title}.png`}

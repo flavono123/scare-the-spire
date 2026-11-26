@@ -201,6 +201,8 @@ function mainCases() {
     ...page("/pagestorm", "service", "data-pagestorm-page=\"index\""),
     ...page("/colorful-philosophers", "service", "data-colorful-philosophers-page=\"index\""),
     ...page("/pagestorm/write", "service", "data-pagestorm-page=\"write\""),
+    ...page("/decisions-decisions/write", "service", "data-decisions-decisions-page=\"write\""),
+    ...page("/en/decisions-decisions/write", "service"),
     ...page("/c-c-c-combo", "service", "data-combo-page=\"index\""),
     ...page("/en/c-c-c-combo", "service"),
     ...page("/zh/c-c-c-combo", "service"),

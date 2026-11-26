@@ -295,6 +295,15 @@ function checkStaticServicePages(): number {
     "Pagestorm write must not use an unbounded ID shell.",
   );
   assert(
+    staticServicePageAssetPath("/en/decisions-decisions/write", "html")
+      === "/_cf_static_pages/en/decisions-decisions/write.html",
+    "Decisions write must map to a nested static page.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/decisions-decisions/write", "html") === null,
+    "Decisions write must not use an unbounded ID shell.",
+  );
+  assert(
     staticServiceDetailShellAssetPath("/pagestorm/post-id", "html")
       === `/_cf_static_pages/pagestorm/${staticDetailShellSegment}.html`,
     "Pagestorm details must rewrite to the static shell.",

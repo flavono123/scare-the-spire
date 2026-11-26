@@ -76,6 +76,7 @@ const staticServicePageSegments = new Set([
 ]);
 const staticNestedServicePages = [
   ["pagestorm", "write"],
+  ["decisions-decisions", "write"],
 ];
 // Same source as STATIC_EXACT_SERVICE_PAGES in workers/static-page-routing.ts.
 const placeRegistry = JSON.parse(

@@ -134,7 +134,7 @@ export function DecisionsDecisionsToken({
             : isMonster
               ? "w-[var(--dd-monster,48px)]"
               : "w-[var(--dd-icon,40px)]",
-          selected && "ring-1 ring-primary",
+          selected && "ring-2 ring-primary ring-offset-2 ring-offset-black",
         )}
       >
         {entity.type === "card" && entity.cardData ? (

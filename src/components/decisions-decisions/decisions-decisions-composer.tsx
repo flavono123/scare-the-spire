@@ -26,6 +26,8 @@ import {
   stampFilterIds,
   stampPresetIds,
   sortPoolRefs,
+  tierColorBar,
+  tierColorTextClass,
   toggleFilterDim,
   UNRANKED_ROW_ID,
   type DecisionsDecisionsPost,
@@ -39,6 +41,86 @@ import {
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
+
+function refFromKey(key: string): DecisionsDecisionsResourceRef {
+  const [type, id] = key.split(":");
+  return { type, id } as DecisionsDecisionsResourceRef;
+}
+
+/**
+ * Tier buttons for the selected piece (random.gg shows them in a modal; this
+ * bar keeps the board in view and takes number keys).
+ */
+function TierAssignBar({
+  rows,
+  selectedName,
+  currentRowId,
+  serviceLocale,
+  onAssign,
+}: {
+  rows: TierRow[];
+  selectedName: string | null;
+  currentRowId: string | null;
+  serviceLocale: ServiceLocale;
+  onAssign: (rowId: string) => void;
+}) {
+  const copy = serviceMessages[serviceLocale].decisionsDecisions;
+  const disabled = !selectedName;
+  return (
+    <div
+      role="toolbar"
+      aria-label={copy.assignTier}
+      data-decisions-decisions-assign-bar
+      className="sticky bottom-0 z-20 -mx-1 space-y-1.5 rounded-t-lg border border-b-0 border-white/15 bg-zinc-950/95 px-2 py-2 shadow-[0_-8px_24px_rgba(0,0,0,0.45)] backdrop-blur-sm"
+    >
+      <p className="flex flex-wrap items-baseline gap-x-2 text-xs">
+        <span className={cn("font-semibold", selectedName ? "text-primary" : "text-zinc-400")}>
+          {selectedName ?? copy.assignHint}
+        </span>
+        <span className="hidden text-[11px] text-zinc-500 sm:inline">
+          {copy.assignKeys.replace("{count}", String(Math.min(rows.length, 9)))}
+        </span>
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {rows.map((row, index) => {
+          const bar = tierColorBar(row.color);
+          const active = currentRowId === row.id;
+          return (
+            <button
+              key={row.id}
+              type="button"
+              disabled={disabled}
+              aria-pressed={active}
+              onClick={() => onAssign(row.id)}
+              className={cn(
+                "inline-flex min-h-9 min-w-[3.25rem] flex-1 items-center justify-center gap-1.5 rounded-md border px-2 font-service text-sm font-bold transition-[transform,filter] hover:brightness-125 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none",
+                tierColorTextClass(row.color),
+                active && "ring-2 ring-white/70",
+              )}
+              style={{ backgroundColor: `${bar}2e`, borderColor: `${bar}88` }}
+            >
+              {index < 9 && (
+                <kbd className="hidden rounded border border-white/15 px-1 font-sans text-[10px] font-normal text-zinc-400 sm:inline">
+                  {index + 1}
+                </kbd>
+              )}
+              <span className="truncate">{row.label}</span>
+            </button>
+          );
+        })}
+        <button
+          type="button"
+          disabled={disabled || currentRowId === null}
+          onClick={() => onAssign(UNRANKED_ROW_ID)}
+          className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md border border-white/15 bg-white/5 px-2 text-xs font-semibold text-zinc-300 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <kbd className="hidden rounded border border-white/15 px-1 font-sans text-[10px] font-normal text-zinc-400 sm:inline">0</kbd>
+          {copy.unranked}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export type DecisionsDecisionsComposerValues = {
   nickname: string;
@@ -193,6 +275,11 @@ export function DecisionsDecisionsComposer({
     setSelectedKey(null);
   }, []);
 
+  const toggleSelect = useCallback((ref: DecisionsDecisionsResourceRef) => {
+    const key = resourceKey(ref);
+    setSelectedKey((current) => (current === key ? null : key));
+  }, []);
+
   const handleAdd = useCallback((entity: EntityInfo) => {
     const ref = entityToResourceRef(entity);
     if (!ref) return;
@@ -320,6 +407,45 @@ export function DecisionsDecisionsComposer({
     rows,
     title,
   ]);
+
+  const selectedRowId = useMemo(() => {
+    if (!selectedKey) return null;
+    return placements.find((item) => resourceKey(item) === selectedKey)?.rowId ?? null;
+  }, [placements, selectedKey]);
+
+  // Assign, then jump to the next unranked piece so a whole pool goes by keys alone.
+  const assignSelected = useCallback((rowId: string) => {
+    if (!selectedKey) return;
+    handleMove(refFromKey(selectedKey), rowId);
+    if (rowId === UNRANKED_ROW_ID) return;
+    const placedKeys = new Set(placements.map(resourceKey));
+    placedKeys.add(selectedKey);
+    const index = pool.findIndex((ref) => resourceKey(ref) === selectedKey);
+    const next = [...pool.slice(index + 1), ...pool.slice(0, Math.max(index, 0))]
+      .find((ref) => !placedKeys.has(resourceKey(ref)));
+    setSelectedKey(next ? resourceKey(next) : null);
+  }, [handleMove, placements, pool, selectedKey]);
+
+  useEffect(() => {
+    if (step !== "board") return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target;
+      if (target instanceof Element && target.closest("input, textarea, select, [contenteditable='true']")) return;
+      if (event.key === "Escape" && selectedKey) {
+        setSelectedKey(null);
+        return;
+      }
+      if (!selectedKey || !/^[0-9]$/.test(event.key)) return;
+      const digit = Number(event.key);
+      const rowId = digit === 0 ? UNRANKED_ROW_ID : rows[digit - 1]?.id;
+      if (!rowId) return;
+      event.preventDefault();
+      assignSelected(rowId);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [assignSelected, rows, selectedKey, step]);
 
   const canMakeTiers = pool.length > 0;
   const goToBoard = useCallback(() => {
@@ -471,8 +597,9 @@ export function DecisionsDecisionsComposer({
             gameLocale={gameLocale}
             showNames={false}
             selectedKey={selectedKey}
-            onSelect={(ref) => setSelectedKey(resourceKey(ref))}
+            onSelect={toggleSelect}
             onMove={handleMove}
+            rowMinCards={2}
             onRowLabelChange={(rowId, label) => {
               setRows((current) => current.map((row) => (
                 row.id === rowId ? { ...row, label } : row
@@ -504,6 +631,13 @@ export function DecisionsDecisionsComposer({
                 },
               ]);
             }}
+          />
+          <TierAssignBar
+            rows={rows}
+            selectedName={selectedKey ? entityMap.get(selectedKey)?.nameKo ?? selectedKey : null}
+            currentRowId={selectedRowId}
+            serviceLocale={serviceLocale}
+            onAssign={assignSelected}
           />
           <div className="flex flex-wrap items-center gap-2">
             <button

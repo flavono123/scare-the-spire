@@ -156,7 +156,6 @@ export function DefragmentFederatedPostView({
         <DecisionsDecisionsPostView
           postId={postId}
           gameLocale={gameLocale}
-          gameCopy={decisionsCopy}
           variant="embed"
         />
       )}

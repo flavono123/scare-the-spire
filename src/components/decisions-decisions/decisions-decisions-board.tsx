@@ -24,7 +24,11 @@ import {
   type TierPlacement,
   type TierRow,
 } from "@/lib/decisions-decisions";
-import { DECISIONS_BOARD_CONTAINER_CLASS, DECISIONS_BOARD_TOKEN_VARS_CLASS } from "@/lib/decisions-token-layout";
+import {
+  DECISIONS_BOARD_CONTAINER_CLASS,
+  DECISIONS_BOARD_TOKEN_VARS_CLASS,
+  decisionsRowMinHeight,
+} from "@/lib/decisions-token-layout";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
@@ -303,6 +307,7 @@ export function DecisionsDecisionsBoard({
   disablePreview = false,
   thumbnail = false,
   staticOnly = false,
+  rowMinCards = 1,
 }: {
   rows: TierRow[];
   placements: TierPlacement[];
@@ -328,6 +333,8 @@ export function DecisionsDecisionsBoard({
   disablePreview?: boolean;
   thumbnail?: boolean;
   staticOnly?: boolean;
+  /** Empty tier rows stay this many card heights tall (the tallest piece). */
+  rowMinCards?: number;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const poolOnly = variant === "pool";
@@ -377,14 +384,17 @@ export function DecisionsDecisionsBoard({
 
   const renderTokens = (
     items: TierPlacement[],
-    options: { removable?: boolean } = {},
+    options: { removable?: boolean; ranked?: boolean } = {},
   ) => (
     <div
       className={cn(
         "flex flex-wrap content-start",
         thumbnail ? "px-1 py-1" : "min-h-0 px-[var(--dd-pad,6px)] py-1",
       )}
-      style={{ gap: "var(--dd-gap, 4px)" }}
+      style={{
+        gap: "var(--dd-gap, 4px)",
+        ...(options.ranked && !thumbnail ? { minHeight: decisionsRowMinHeight(rowMinCards) } : {}),
+      }}
     >
       {items.map((item) => {
         const entity = entitiesByKey.get(resourceKey(item));
@@ -514,7 +524,7 @@ export function DecisionsDecisionsBoard({
                 {row.label}
               </span>
             </div>
-            <div className="min-w-0 flex-1">{renderTokens(byRow.get(row.id) ?? [])}</div>
+            <div className="min-w-0 flex-1">{renderTokens(byRow.get(row.id) ?? [], { ranked: true })}</div>
           </div>
           {editable && (
             <TierRowEditor

@@ -32,6 +32,7 @@ const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
 
 const STATIC_NESTED_SERVICE_PAGES: ReadonlyArray<readonly [string, string]> = [
   ["pagestorm", "write"],
+  ["decisions-decisions", "write"],
 ];
 
 function isNestedStaticServicePage(parts: string[]): boolean {
@@ -213,7 +214,6 @@ const DEFRAGMENT_FEDERATED_SERVICES = new Set([
 ]);
 
 const THIS_OR_THAT_NESTED_SEGMENTS = new Set(["tournament", "worldcup"]);
-const PAGESTORM_NESTED_SEGMENTS = new Set(["write"]);
 
 const RECORD_ID_PATTERN = /^[A-Za-z0-9_-]{1,128}$/;
 
@@ -285,13 +285,8 @@ export function staticServiceDetailShellAssetPath(
     return null;
   }
 
-  if (
-    rest.length === 2
-    && rest[0] === "pagestorm"
-    && PAGESTORM_NESTED_SEGMENTS.has(rest[1])
-  ) {
-    return null;
-  }
+  // `/pagestorm/write` and friends are static pages, not record ids.
+  if (isNestedStaticServicePage(rest)) return null;
 
   if (
     rest.length === 2
