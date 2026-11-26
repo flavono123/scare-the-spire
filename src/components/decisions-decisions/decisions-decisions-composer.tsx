@@ -38,9 +38,34 @@ import {
   type TierPlacement,
   type TierRow,
 } from "@/lib/decisions-decisions";
+import { compareCards, type SortKey } from "@/lib/card-sort";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
+
+export type DecisionsCardSortLabels = Record<"type" | "rarity" | "cost", string>;
+type PoolSort = "default" | keyof DecisionsCardSortLabels;
+const CARD_SORT_KEYS = ["type", "rarity", "cost"] as const satisfies readonly SortKey[];
+
+/** Cards by the chosen key, then the other two; other pieces keep their order after the cards. */
+function sortPoolForBoard(
+  pool: DecisionsDecisionsResourceRef[],
+  entityMap: Map<string, EntityInfo>,
+  sort: PoolSort,
+): DecisionsDecisionsResourceRef[] {
+  if (sort === "default") return pool;
+  const keys = [sort, ...CARD_SORT_KEYS.filter((key) => key !== sort)];
+  return pool.toSorted((a, b) => {
+    const left = entityMap.get(resourceKey(a))?.cardData;
+    const right = entityMap.get(resourceKey(b))?.cardData;
+    if (!left || !right) return Number(!left) - Number(!right);
+    for (const key of keys) {
+      const cmp = compareCards(left, right, key, "asc");
+      if (cmp) return cmp;
+    }
+    return 0;
+  });
+}
 
 function refFromKey(key: string): DecisionsDecisionsResourceRef {
   const [type, id] = key.split(":");
@@ -176,6 +201,7 @@ export function DecisionsDecisionsComposer({
   onSubmit,
   onClose,
   embedded = false,
+  cardSortLabels,
 }: {
   entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
@@ -190,6 +216,7 @@ export function DecisionsDecisionsComposer({
   onSubmit: (values: DecisionsDecisionsComposerValues) => Promise<boolean>;
   onClose?: () => void;
   embedded?: boolean;
+  cardSortLabels?: DecisionsCardSortLabels;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const confirmCopy = serviceMessages[serviceLocale].deleteConfirm;
@@ -219,6 +246,7 @@ export function DecisionsDecisionsComposer({
   const [excludedKeys, setExcludedKeys] = useState<Set<string>>(new Set());
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [poolSort, setPoolSort] = useState<PoolSort>("default");
 
   const filterReady = poolFilterIsReady(major, dims);
   const presetKey = lockedPresetKey ?? namedPresetKeyFromFilter(major, dims);
@@ -408,6 +436,15 @@ export function DecisionsDecisionsComposer({
     title,
   ]);
 
+  const boardPool = useMemo(
+    () => sortPoolForBoard(pool, entityMap, poolSort),
+    [entityMap, pool, poolSort],
+  );
+  const poolHasCards = useMemo(
+    () => pool.some((ref) => ref.type === "card"),
+    [pool],
+  );
+
   const selectedRowId = useMemo(() => {
     if (!selectedKey) return null;
     return placements.find((item) => resourceKey(item) === selectedKey)?.rowId ?? null;
@@ -420,11 +457,11 @@ export function DecisionsDecisionsComposer({
     if (rowId === UNRANKED_ROW_ID) return;
     const placedKeys = new Set(placements.map(resourceKey));
     placedKeys.add(selectedKey);
-    const index = pool.findIndex((ref) => resourceKey(ref) === selectedKey);
-    const next = [...pool.slice(index + 1), ...pool.slice(0, Math.max(index, 0))]
+    const index = boardPool.findIndex((ref) => resourceKey(ref) === selectedKey);
+    const next = [...boardPool.slice(index + 1), ...boardPool.slice(0, Math.max(index, 0))]
       .find((ref) => !placedKeys.has(resourceKey(ref)));
     setSelectedKey(next ? resourceKey(next) : null);
-  }, [handleMove, placements, pool, selectedKey]);
+  }, [boardPool, handleMove, placements, selectedKey]);
 
   useEffect(() => {
     if (step !== "board") return;
@@ -588,6 +625,50 @@ export function DecisionsDecisionsComposer({
 
       {step === "board" && (
         <>
+          {/* Pieces first (what), then tiers (where): side by side on PC, stacked on mobile. */}
+          <div className="grid gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
+          <section
+            aria-label={copy.unranked}
+            data-decisions-decisions-pool-panel
+            className="space-y-1.5 lg:sticky lg:top-14"
+          >
+            {poolHasCards && cardSortLabels && (
+              <div role="radiogroup" aria-label={copy.poolSort} className="flex flex-wrap gap-1">
+                {(["default", ...CARD_SORT_KEYS] as const).map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    role="radio"
+                    aria-checked={poolSort === key}
+                    onClick={() => setPoolSort(key)}
+                    className={cn(
+                      "rounded-md px-2 py-1 text-xs font-semibold transition-colors",
+                      poolSort === key
+                        ? "bg-primary/15 text-primary"
+                        : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+                    )}
+                  >
+                    {key === "default" ? copy.poolSortDefault : cardSortLabels[key]}
+                  </button>
+                ))}
+              </div>
+            )}
+            <DecisionsDecisionsBoard
+              variant="pool"
+              rows={rows}
+              placements={placements}
+              pool={boardPool}
+              entitiesByKey={entityMap}
+              serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
+              showNames={false}
+              selectedKey={selectedKey}
+              onSelect={toggleSelect}
+              onMove={handleMove}
+              emptyPoolLabel={copy.poolAllPlaced}
+              className="lg:max-h-[calc(100dvh-14rem)]"
+            />
+          </section>
           <DecisionsDecisionsBoard
             rows={rows}
             placements={placements}
@@ -596,10 +677,10 @@ export function DecisionsDecisionsComposer({
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
             showNames={false}
+            showUnranked={false}
             selectedKey={selectedKey}
             onSelect={toggleSelect}
             onMove={handleMove}
-            rowMinCards={2}
             onRowLabelChange={(rowId, label) => {
               setRows((current) => current.map((row) => (
                 row.id === rowId ? { ...row, label } : row
@@ -632,6 +713,7 @@ export function DecisionsDecisionsComposer({
               ]);
             }}
           />
+          </div>
           <TierAssignBar
             rows={rows}
             selectedName={selectedKey ? entityMap.get(selectedKey)?.nameKo ?? selectedKey : null}

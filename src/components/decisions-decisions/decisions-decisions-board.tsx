@@ -307,7 +307,7 @@ export function DecisionsDecisionsBoard({
   disablePreview = false,
   thumbnail = false,
   staticOnly = false,
-  rowMinCards = 1,
+  className,
 }: {
   rows: TierRow[];
   placements: TierPlacement[];
@@ -333,14 +333,14 @@ export function DecisionsDecisionsBoard({
   disablePreview?: boolean;
   thumbnail?: boolean;
   staticOnly?: boolean;
-  /** Empty tier rows stay this many card heights tall (the tallest piece). */
-  rowMinCards?: number;
+  className?: string;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const poolOnly = variant === "pool";
   const includeUnranked = showUnranked ?? (!compact || poolOnly);
   const editable = Boolean(!readOnly && !poolOnly && onRowLabelChange && onRowColorChange && onReorderRows);
-  const canDrag = Boolean(!readOnly && !poolOnly);
+  // A pool panel beside the tier rows (onMove given) still drags pieces out and takes them back.
+  const canDrag = Boolean(!readOnly && (!poolOnly || onMove));
   const dragKindRef = useRef<DragKind | null>(null);
   const [rowDropId, setRowDropId] = useState<string | null>(null);
   const [draggingRowId, setDraggingRowId] = useState<string | null>(null);
@@ -393,7 +393,7 @@ export function DecisionsDecisionsBoard({
       )}
       style={{
         gap: "var(--dd-gap, 4px)",
-        ...(options.ranked && !thumbnail ? { minHeight: decisionsRowMinHeight(rowMinCards) } : {}),
+        ...(options.ranked && !thumbnail ? { minHeight: decisionsRowMinHeight(1) } : {}),
       }}
     >
       {items.map((item) => {
@@ -495,6 +495,7 @@ export function DecisionsDecisionsBoard({
           compact && "text-[10px]",
           poolOnly && !thumbnail && "max-h-[min(28rem,50dvh)] overflow-y-auto",
           thumbnail && "bg-transparent",
+          className,
         )}
       >
         <div className={DECISIONS_BOARD_TOKEN_VARS_CLASS}>
@@ -579,7 +580,7 @@ export function DecisionsDecisionsBoard({
         <div
           className={cn(!poolOnly && "border-t border-white/10")}
           data-decisions-decisions-pool
-          {...(poolOnly ? {} : tokenDropProps(UNRANKED_ROW_ID))}
+          {...(poolOnly && !onMove ? {} : tokenDropProps(UNRANKED_ROW_ID))}
         >
           <div className="min-w-0 flex-1 overflow-x-auto p-2">
             {unrankedItems.length === 0

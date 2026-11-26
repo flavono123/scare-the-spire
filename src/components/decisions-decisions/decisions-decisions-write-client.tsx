@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import {
   DecisionsDecisionsComposer,
+  type DecisionsCardSortLabels,
   type DecisionsDecisionsComposerValues,
 } from "@/components/decisions-decisions/decisions-decisions-composer";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
@@ -45,6 +46,7 @@ function EditComposer({
   gameLocale,
   gameCopy,
   profileNickname,
+  cardSortLabels,
   onSaved,
 }: {
   postId: string;
@@ -52,6 +54,7 @@ function EditComposer({
   gameLocale: GameLocale;
   gameCopy: DecisionsDecisionsGameCopy;
   profileNickname: string;
+  cardSortLabels: DecisionsCardSortLabels;
   onSaved: (id: string) => void;
 }) {
   const serviceLocale = useServiceLocale();
@@ -92,6 +95,7 @@ function EditComposer({
       initial={post}
       onSubmit={handleSubmit}
       embedded
+      cardSortLabels={cardSortLabels}
     />
   );
 }
@@ -99,9 +103,11 @@ function EditComposer({
 export function DecisionsDecisionsWriteClient({
   gameLocale,
   gameCopy,
+  cardSortLabels,
 }: {
   gameLocale: GameLocale;
   gameCopy: DecisionsDecisionsGameCopy;
+  cardSortLabels: DecisionsCardSortLabels;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
@@ -154,6 +160,7 @@ export function DecisionsDecisionsWriteClient({
         gameLocale={gameLocale}
         gameCopy={gameCopy}
         profileNickname={profile.nickname}
+        cardSortLabels={cardSortLabels}
         onSaved={openPost}
       />
     );
@@ -170,6 +177,7 @@ export function DecisionsDecisionsWriteClient({
         profileNickname={profile.nickname}
         onSubmit={handleCreate}
         embedded
+        cardSortLabels={cardSortLabels}
       />
     );
   }

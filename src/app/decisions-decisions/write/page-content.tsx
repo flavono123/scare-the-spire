@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { DecisionsDecisionsWriteClient } from "@/components/decisions-decisions/decisions-decisions-write-client";
 import { ServiceBackground } from "@/components/service-background";
 import { getDecisionsDecisionsGameCopy } from "@/lib/borrowed-game-copy";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { DECISIONS_DECISIONS_BACKGROUND_SRC } from "@/lib/decisions-decisions";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { DECISIONS_DECISIONS_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
-import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateDecisionsDecisionsWriteMetadata(
@@ -35,7 +35,11 @@ export async function generateDecisionsDecisionsWriteMetadata(
 export async function renderDecisionsDecisionsWritePage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const gameCopy = await getDecisionsDecisionsGameCopy(gameLocale);
+  const [gameCopy, gameUi] = await Promise.all([
+    getDecisionsDecisionsGameCopy(gameLocale),
+    getCodexGameUiLabels(gameLocale),
+  ]);
+  const { type, rarity, cost } = gameUi.cardLibrary.sort;
 
   return (
     <div className="relative isolate min-h-[calc(100svh-3rem)]" data-decisions-decisions-page="write">
@@ -43,8 +47,13 @@ export async function renderDecisionsDecisionsWritePage(
         src={DECISIONS_DECISIONS_BACKGROUND_SRC}
         imageClassName="object-[42%_center] sm:object-center"
       />
-      <div className={TOYBOX_WIDE_SHELL_CLASS}>
-        <DecisionsDecisionsWriteClient gameLocale={gameLocale} gameCopy={gameCopy} />
+      {/* The editor takes the whole width so pieces and tiers fit side by side. */}
+      <div className="mx-auto w-full max-w-screen-2xl px-4 py-6">
+        <DecisionsDecisionsWriteClient
+          gameLocale={gameLocale}
+          gameCopy={gameCopy}
+          cardSortLabels={{ type, rarity, cost }}
+        />
       </div>
     </div>
   );
