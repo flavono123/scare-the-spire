@@ -1061,6 +1061,40 @@
   }
 }
 
+/* Patch note hover tips: as-is dissolves into to-be on a loop, after the version
+   shorts (1.2 s hold, 0.4 s dissolve each way). The as-is layer runs the same
+   curve half a cycle late, so the two opacities always cross. */
+.version-dissolve-tip {
+  --version-dissolve-cycle: 3.2s;
+  display: inline-grid;
+}
+
+.version-dissolve-tip > * {
+  display: block;
+  grid-area: 1 / 1;
+  animation: version-dissolve var(--version-dissolve-cycle) linear infinite;
+}
+
+.version-dissolve-tip > [data-version-as-is] {
+  animation-delay: calc(var(--version-dissolve-cycle) / -2);
+}
+
+@keyframes version-dissolve {
+  0%, 37.5% { opacity: 0; }
+  50%, 87.5% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .version-dissolve-tip > * {
+    animation: none;
+  }
+
+  .version-dissolve-tip > [data-version-as-is] {
+    visibility: hidden;
+  }
+}
+
 /* NMerchantDialogue: fade 0.25 s, bubble and box settle in 0.5 s, hold 1 s, fade 0.5 s. */
 @keyframes merchant-bubble-fade {
   0% { opacity: 0; }

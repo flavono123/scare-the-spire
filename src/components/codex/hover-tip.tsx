@@ -152,3 +152,16 @@ export function GameHoverTip({
 }
 
 export { GameHoverTip as HoverTip };
+
+/**
+ * Patch notes only: the tip before the patch dissolves into the tip after it, on a loop.
+ * Both layers share one grid cell so the tip keeps the larger size; timing lives in globals.css.
+ */
+export function VersionDissolveHoverTip({ asIs, toBe }: { asIs: ReactNode; toBe: ReactNode }) {
+  return (
+    <span className="version-dissolve-tip">
+      <span data-version-as-is aria-hidden>{asIs}</span>
+      <span data-version-to-be>{toBe}</span>
+    </span>
+  );
+}

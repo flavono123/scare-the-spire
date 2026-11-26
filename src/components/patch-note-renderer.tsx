@@ -35,7 +35,7 @@ import { neowsletterLineKind } from "@/lib/neowsletter-anchors";
 import { isPatchPageHref, patchLineAnchorId } from "@/lib/patch-line-links";
 import { classNameForHref, RESOURCE_LINK_CLASS } from "@/lib/service-link-classes";
 import { patchLineSummaryMarkdownForService, withPatchChangeEffects } from "@/lib/patch-line-display";
-import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
+import { compareVersions, latestPatchVersion, reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import type { EntityVersionDiff, STS2Patch, STS2PatchLine } from "@/lib/types";
 import { CardTile } from "@/components/codex/card-tile";
 import {
@@ -58,7 +58,7 @@ import { collectPotionSideTips } from "@/lib/potion-side-tips";
 import { collectRelicSideTips } from "@/lib/relic-side-tips";
 import { RELIC_INSPECT_HOVER_SIZE } from "@/lib/relic-inspect-assets";
 import { RelicInspectPreview } from "@/components/codex/relic-inspect-preview";
-import { GameHoverTip, type HoverTipArt, type HoverTipArtMode } from "@/components/codex/hover-tip";
+import { GameHoverTip, VersionDissolveHoverTip, type HoverTipArt, type HoverTipArtMode } from "@/components/codex/hover-tip";
 import {
   buildMonsterMoveVisual,
   hasMonsterAnimationPatchDiff,
@@ -600,6 +600,10 @@ function LocalizedEntityPreview({
     () => reconstructPatchPreviewEntity(entity, patchVersion, currentVersion, versionDiffs, patches),
     [currentVersion, entity, patchVersion, patches, versionDiffs],
   );
+  const asIsEntity = useMemo(
+    () => patchAsIsEntity(entity, patchVersion, currentVersion, versionDiffs, patches),
+    [currentVersion, entity, patchVersion, patches, versionDiffs],
+  );
   const isPendingCompendium = previewEntity.availability === "pending-compendium";
   const staticPreview = staticHoverPreviews && !useTapPreview && !forceShow;
   const pendingStaticPreview = (isPendingCompendium || staticPreview) && !useTapPreview && !forceShow;
@@ -737,6 +741,311 @@ function LocalizedEntityPreview({
     );
   };
 
+  // Every resolved hover body for one version of the entity; patch notes draw it twice to dissolve as-is into to-be.
+  const tipBodies = (target: EntityInfo, wrap: (content: ReactNode, variant?: "card" | "box") => ReactNode) => (
+    <>
+      {target.type === "card" && target.cardData && (
+        wrap(
+          staticHoverPreviews ? (
+            <div className="w-36 drop-shadow-2xl">
+              <CardTile
+                card={target.cardData}
+                serviceLocale={serviceLocale}
+                showUpgrade={Boolean(target.cardPreviewUpgradeLevel)}
+                upgradeLevel={target.cardPreviewUpgradeLevel}
+                showBeta={false}
+                interactive={false}
+              />
+            </div>
+          ) : (
+            <EntityCardHoverPreview
+              entity={target}
+              serviceLocale={serviceLocale}
+              portal={false}
+              growUp={placement.vertical === "above"}
+            />
+          ),
+          "card",
+        )
+      )}
+      {target.type === "character" && target.characterData && (
+        wrap(
+          !staticHoverPreviews && characterHasLowHealthIdle(target.characterData) ? (
+            <CharacterLowHpHoverPreview
+              character={target.characterData}
+              serviceLocale={serviceLocale}
+            />
+          ) : (
+            <GameResourcePreview
+              title={target.nameKo}
+              imageUrl={target.characterData.selectImageUrl || target.characterData.imageUrl}
+              imageAlt={target.nameKo}
+              imageFrameClassName="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-black/20"
+              imageClassName="h-24 w-24 object-contain"
+              imageWidth={96}
+              imageHeight={96}
+            />
+          ),
+        )
+      )}
+      {target.type === "keyword" && target.keywordData && (
+        wrap(
+          <GameHoverTip title={target.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+            <DescriptionText description={target.keywordData.description} />
+          </GameHoverTip>,
+        )
+      )}
+      {target.type === "modifier" && target.modifierData && (
+        wrap(
+          <div className="flex items-center gap-3">
+            <ModifierToken
+              modifier={{
+                name: target.modifierData.name || target.nameKo,
+                imageUrl: target.modifierData.imageUrl,
+              }}
+              size={64}
+            />
+            <GameHoverTip title={target.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+              <DescriptionText description={target.modifierData.description} />
+            </GameHoverTip>
+          </div>,
+        )
+      )}
+      {target.type === "ascension" && target.ascensionData && (
+        wrap(
+          <div className="flex items-center gap-3">
+            <AscensionToken level={target.ascensionData.level} size={64} />
+            <GameHoverTip title={target.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+              <DescriptionText description={target.ascensionData.description} />
+            </GameHoverTip>
+          </div>,
+        )
+      )}
+      {(target.blitzEntryData ?? target.dominionData) && (() => {
+        const data = (target.blitzEntryData ?? target.dominionData)!;
+        return wrap(
+          <div className="flex items-center gap-3">
+            <ModifierToken modifier={{ name: data.name, imageUrl: data.imageUrl }} size={64} />
+            <GameHoverTip title={target.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+              <DescriptionText description={data.description} />
+            </GameHoverTip>
+          </div>,
+        );
+      })()}
+      {target.petData && (
+        wrap(
+          <div className="flex items-center gap-3">
+            <Image src={target.petData.imageUrl} alt={target.petData.name} width={88} height={88} className="h-[88px] w-[88px] object-contain" />
+            <GameHoverTip title={target.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+              <DescriptionText description={target.petData.description} />
+            </GameHoverTip>
+          </div>,
+        )
+      )}
+      {target.type === "relic" && target.relicData && (
+        wrap(
+          <EntityRelicHoverPreview
+            entity={target}
+            gameUi={gameUi}
+            portal={false}
+            growUp={placement.vertical === "above"}
+          />,
+        )
+      )}
+      {target.type === "potion" && target.potionData && (
+        wrap(
+          <EntityPotionHoverPreview entity={target} gameUi={gameUi} />,
+        )
+      )}
+      {target.type === "power" && target.powerData && (
+        wrap(
+          <GameResourcePreview
+            title={target.nameKo}
+            imageUrl={target.powerData.imageUrl}
+            imageAlt={target.nameKo}
+            imageClassName={`h-14 w-14 object-contain${target.powerData.deprecated ? " opacity-50 grayscale saturate-0" : ""}`}
+          >
+            <DescriptionText description={target.powerData.description} />
+          </GameResourcePreview>,
+        )
+      )}
+      {target.type === "enchantment" && target.enchantmentData && (
+        wrap(
+          <GameHoverTip title={target.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+            <DescriptionText description={target.enchantmentData.description} />
+          </GameHoverTip>,
+        )
+      )}
+      {target.type === "affliction" && target.afflictionData && (
+        wrap(
+          <GameHoverTip title={target.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+            <DescriptionText description={target.afflictionData.description} />
+          </GameHoverTip>,
+        )
+      )}
+      {target.type === "event" && target.eventData && !target.eventOptionDesc && (
+        wrap(
+          <GameResourcePreview
+            title={target.nameKo}
+            imageUrl={target.eventData.imageUrl}
+            imageAlt={target.nameKo}
+            imageFrameClassName="flex h-28 w-40 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/20"
+            imageClassName="h-full w-full rounded-lg object-cover"
+            imageWidth={160}
+            imageHeight={112}
+            hoverTipStyle={{ width: "max-content", maxWidth: 320, whiteSpace: "nowrap" }}
+          />,
+        )
+      )}
+      {target.eventOptionDesc && (
+        wrap(
+          <GameResourcePreview
+            title={target.nameKo}
+            imageUrl={target.imageUrl}
+            imageAlt={target.nameKo}
+          >
+            <DescriptionText description={target.eventOptionDesc} />
+          </GameResourcePreview>,
+        )
+      )}
+      {target.type === "monster" && target.monsterData && (
+        wrap(
+          <GameResourcePreview
+            title={target.nameKo}
+            imageUrl={target.monsterData.bossImageUrl ?? target.monsterData.imageUrl}
+            imageAlt={target.nameKo}
+            imageClassName="h-14 w-14 rounded object-cover"
+            meta={(
+              <>
+                <span style={{ color: MONSTER_TYPE_CONFIG[target.monsterData.type].color }}>
+                  {gameUi?.monsterTypes[target.monsterData.type].label ?? MONSTER_TYPE_CONFIG[target.monsterData.type].label}
+                </span>
+                {target.monsterData.minHp != null && target.monsterData.minHp !== 9999 && (
+                  <span className="text-gray-300">
+                    HP {target.monsterData.maxHp && target.monsterData.maxHp !== target.monsterData.minHp
+                      ? `${target.monsterData.minHp}-${target.monsterData.maxHp}`
+                      : target.monsterData.minHp}
+                  </span>
+                )}
+              </>
+            )}
+          >
+            {target.monsterData.bestiaryMoves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).slice(0, 4).map((m) => m.name).join(", ")}
+          </GameResourcePreview>,
+        )
+      )}
+      {entity.type === "monsterMove" && entity.monsterMoveData && entity.monsterMoveMonsterData && (
+        wrap(
+          <MonsterMoveKeywordPreview
+            entity={entity}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+            previewNonce={previewNonce}
+          />,
+        )
+      )}
+      {entity.type === "encounter" && entity.encounterData && (
+        wrap(
+          <GameResourcePreview
+            title={entity.nameKo}
+            imageUrl={entity.encounterData.scene?.backgroundUrl ?? entity.imageUrl}
+            imageAlt={entity.nameKo}
+            meta={(
+              <>
+                <span style={{ color: ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color }}>
+                  {gameUi?.encounterRoomTypes[entity.encounterData.roomType] ?? ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].label}
+                </span>
+                {entity.encounterData.act && (
+                  <span className={(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).color}>
+                    {gameUi?.acts[entity.encounterData.act] ?? (EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
+                  </span>
+                )}
+                {entity.encounterData.isWeak && (
+                  <span className="text-green-400">
+                    {getCodexServiceMessages(serviceLocale).encountersView.weakEncounter}
+                  </span>
+                )}
+              </>
+            )}
+          >
+            <div className="space-y-1">
+              {encounterFormations.slice(0, ENCOUNTER_PREVIEW_FORMATION_LIMIT).map((formation) => (
+                <div key={formation.id} className="flex items-start justify-between gap-3 text-xs">
+                  <span>{formation.monsters.map((monster) => monster.name).join(" + ")}</span>
+                  <span className="shrink-0 text-amber-300/90">
+                    {formatEncounterProbability(
+                      formation.probability,
+                      serviceLocale === "en" ? "en-US" : "ko-KR",
+                    )}
+                  </span>
+                </div>
+              ))}
+              {encounterFormations.length > ENCOUNTER_PREVIEW_FORMATION_LIMIT && (
+                <div className="text-xs text-gray-400">
+                  {serviceLocale === "en"
+                    ? `+${encounterFormations.length - ENCOUNTER_PREVIEW_FORMATION_LIMIT} more`
+                    : `외 ${encounterFormations.length - ENCOUNTER_PREVIEW_FORMATION_LIMIT}개`}
+                </div>
+              )}
+            </div>
+          </GameResourcePreview>,
+        )
+      )}
+      {entity.type === "ancient" && entity.ancientData && (
+        wrap(
+          <GameResourcePreview
+            title={entity.nameKo}
+            imageUrl={entity.ancientData.imageUrl}
+            imageAlt={entity.nameKo}
+            imageClassName="h-14 w-14 rounded object-cover"
+            meta={entity.ancientData.act ? (
+              <span className={(EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).color}>
+                {gameUi?.acts[entity.ancientData.act] ?? (EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
+              </span>
+            ) : undefined}
+          >
+            {entity.ancientData.epithet}
+          </GameResourcePreview>,
+        )
+      )}
+      {entity.type === "epoch" && entity.epochData && (
+        wrap(
+          <GameResourcePreview
+            title={entity.nameKo}
+            imageUrl={entity.epochData.imageUrl}
+            imageAlt={entity.nameKo}
+            hoverTipStyle={{ width: "max-content", maxWidth: 360, whiteSpace: "nowrap" }}
+            hoverTipArt={{
+              mode: epochArtMode,
+              imageUrl: entity.epochData.imageUrl,
+              betaImageUrl: entity.epochData.betaImageUrl,
+              alt: entity.nameKo,
+              betaAlt: serviceLocale === "en" ? `${entity.nameKo} beta art` : `${entity.nameKo} 베타 아트`,
+              width: 320,
+              height: 224,
+              className: "h-auto w-80 rounded object-cover",
+            }}
+            meta={entity.epochData.eraName ? (
+              <span className="text-blue-300">
+                {entity.epochData.eraYear ? `${entity.epochData.eraName} ${entity.epochData.eraYear}` : entity.epochData.eraName}
+              </span>
+            ) : undefined}
+          />,
+        )
+      )}
+      {!entity.cardData && !entity.characterData && !entity.keywordData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && !entity.modifierData && !entity.ascensionData && entity.imageUrl && (
+        wrap(
+          <GameResourcePreview
+            title={entity.nameKo}
+            imageUrl={entity.imageUrl}
+            imageAlt={entity.nameKo}
+            imageClassName="h-14 w-14 rounded object-cover"
+          />,
+        )
+      )}
+    </>
+  );
+
   if (disablePreview) {
     return children;
   }
@@ -811,307 +1120,47 @@ function LocalizedEntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {showResolvedPreview && previewEntity.type === "card" && previewEntity.cardData && (
-        renderTooltip(
-          staticHoverPreviews ? (
-            <div className="w-36 drop-shadow-2xl">
-              <CardTile
-                card={previewEntity.cardData}
-                serviceLocale={serviceLocale}
-                showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
-                upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
-                showBeta={false}
-                interactive={false}
-              />
-            </div>
-          ) : (
-            <EntityCardHoverPreview
-              entity={previewEntity}
-              serviceLocale={serviceLocale}
-              portal={false}
-              growUp={placement.vertical === "above"}
-            />
-          ),
-          "card",
-        )
-      )}
-      {showResolvedPreview && previewEntity.type === "character" && previewEntity.characterData && (
-        renderTooltip(
-          !staticHoverPreviews && characterHasLowHealthIdle(previewEntity.characterData) ? (
-            <CharacterLowHpHoverPreview
-              character={previewEntity.characterData}
-              serviceLocale={serviceLocale}
-            />
-          ) : (
-            <GameResourcePreview
-              title={previewEntity.nameKo}
-              imageUrl={previewEntity.characterData.selectImageUrl || previewEntity.characterData.imageUrl}
-              imageAlt={previewEntity.nameKo}
-              imageFrameClassName="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-black/20"
-              imageClassName="h-24 w-24 object-contain"
-              imageWidth={96}
-              imageHeight={96}
-            />
-          ),
-        )
-      )}
-      {showResolvedPreview && previewEntity.type === "keyword" && previewEntity.keywordData && (
-        renderTooltip(
-          <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
-            <DescriptionText description={previewEntity.keywordData.description} />
-          </GameHoverTip>,
-        )
-      )}
-      {showResolvedPreview && previewEntity.type === "modifier" && previewEntity.modifierData && (
-        renderTooltip(
-          <div className="flex items-center gap-3">
-            <ModifierToken
-              modifier={{
-                name: previewEntity.modifierData.name || previewEntity.nameKo,
-                imageUrl: previewEntity.modifierData.imageUrl,
-              }}
-              size={64}
-            />
-            <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
-              <DescriptionText description={previewEntity.modifierData.description} />
-            </GameHoverTip>
-          </div>,
-        )
-      )}
-      {showResolvedPreview && previewEntity.type === "ascension" && previewEntity.ascensionData && (
-        renderTooltip(
-          <div className="flex items-center gap-3">
-            <AscensionToken level={previewEntity.ascensionData.level} size={64} />
-            <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
-              <DescriptionText description={previewEntity.ascensionData.description} />
-            </GameHoverTip>
-          </div>,
-        )
-      )}
-      {showResolvedPreview && (previewEntity.blitzEntryData ?? previewEntity.dominionData) && (() => {
-        const data = (previewEntity.blitzEntryData ?? previewEntity.dominionData)!;
-        return renderTooltip(
-          <div className="flex items-center gap-3">
-            <ModifierToken modifier={{ name: data.name, imageUrl: data.imageUrl }} size={64} />
-            <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
-              <DescriptionText description={data.description} />
-            </GameHoverTip>
-          </div>,
-        );
-      })()}
-      {showResolvedPreview && previewEntity.petData && (
-        renderTooltip(
-          <div className="flex items-center gap-3">
-            <Image src={previewEntity.petData.imageUrl} alt={previewEntity.petData.name} width={88} height={88} className="h-[88px] w-[88px] object-contain" />
-            <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
-              <DescriptionText description={previewEntity.petData.description} />
-            </GameHoverTip>
-          </div>,
-        )
-      )}
-      {showResolvedPreview && previewEntity.type === "relic" && previewEntity.relicData && (
-        renderTooltip(
-          <EntityRelicHoverPreview
-            entity={previewEntity}
-            gameUi={gameUi}
-            portal={false}
-            growUp={placement.vertical === "above"}
+      {showResolvedPreview && (asIsEntity
+        ? renderTooltip(
+          <VersionDissolveHoverTip
+            asIs={tipBodies(asIsEntity, keepContent)}
+            toBe={tipBodies(previewEntity, keepContent)}
           />,
+          previewEntity.type === "card" ? "card" : "box",
         )
-      )}
-      {showResolvedPreview && previewEntity.type === "potion" && previewEntity.potionData && (
-        renderTooltip(
-          <EntityPotionHoverPreview entity={previewEntity} gameUi={gameUi} />,
-        )
-      )}
-      {showResolvedPreview && previewEntity.type === "power" && previewEntity.powerData && (
-        renderTooltip(
-          <GameResourcePreview
-            title={previewEntity.nameKo}
-            imageUrl={previewEntity.powerData.imageUrl}
-            imageAlt={previewEntity.nameKo}
-            imageClassName={`h-14 w-14 object-contain${previewEntity.powerData.deprecated ? " opacity-50 grayscale saturate-0" : ""}`}
-          >
-            <DescriptionText description={previewEntity.powerData.description} />
-          </GameResourcePreview>,
-        )
-      )}
-      {showResolvedPreview && previewEntity.type === "enchantment" && previewEntity.enchantmentData && (
-        renderTooltip(
-          <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
-            <DescriptionText description={previewEntity.enchantmentData.description} />
-          </GameHoverTip>,
-        )
-      )}
-      {showResolvedPreview && previewEntity.type === "affliction" && previewEntity.afflictionData && (
-        renderTooltip(
-          <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
-            <DescriptionText description={previewEntity.afflictionData.description} />
-          </GameHoverTip>,
-        )
-      )}
-      {showResolvedPreview && previewEntity.type === "event" && previewEntity.eventData && !previewEntity.eventOptionDesc && (
-        renderTooltip(
-          <GameResourcePreview
-            title={previewEntity.nameKo}
-            imageUrl={previewEntity.eventData.imageUrl}
-            imageAlt={previewEntity.nameKo}
-            imageFrameClassName="flex h-28 w-40 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/20"
-            imageClassName="h-full w-full rounded-lg object-cover"
-            imageWidth={160}
-            imageHeight={112}
-            hoverTipStyle={{ width: "max-content", maxWidth: 320, whiteSpace: "nowrap" }}
-          />,
-        )
-      )}
-      {showResolvedPreview && previewEntity.eventOptionDesc && (
-        renderTooltip(
-          <GameResourcePreview
-            title={previewEntity.nameKo}
-            imageUrl={previewEntity.imageUrl}
-            imageAlt={previewEntity.nameKo}
-          >
-            <DescriptionText description={previewEntity.eventOptionDesc} />
-          </GameResourcePreview>,
-        )
-      )}
-      {showResolvedPreview && entity.type === "monster" && entity.monsterData && (
-        renderTooltip(
-          <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.monsterData.bossImageUrl ?? entity.monsterData.imageUrl}
-            imageAlt={entity.nameKo}
-            imageClassName="h-14 w-14 rounded object-cover"
-            meta={(
-              <>
-                <span style={{ color: MONSTER_TYPE_CONFIG[entity.monsterData.type].color }}>
-                  {gameUi?.monsterTypes[entity.monsterData.type].label ?? MONSTER_TYPE_CONFIG[entity.monsterData.type].label}
-                </span>
-                {entity.monsterData.minHp != null && entity.monsterData.minHp !== 9999 && (
-                  <span className="text-gray-300">
-                    HP {entity.monsterData.maxHp && entity.monsterData.maxHp !== entity.monsterData.minHp
-                      ? `${entity.monsterData.minHp}-${entity.monsterData.maxHp}`
-                      : entity.monsterData.minHp}
-                  </span>
-                )}
-              </>
-            )}
-          >
-            {entity.monsterData.bestiaryMoves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).slice(0, 4).map((m) => m.name).join(", ")}
-          </GameResourcePreview>,
-        )
-      )}
-      {showResolvedPreview && entity.type === "monsterMove" && entity.monsterMoveData && entity.monsterMoveMonsterData && (
-        renderTooltip(
-          <MonsterMoveKeywordPreview
-            entity={entity}
-            serviceLocale={serviceLocale}
-            gameLocale={gameLocale}
-            previewNonce={previewNonce}
-          />,
-        )
-      )}
-      {showResolvedPreview && entity.type === "encounter" && entity.encounterData && (
-        renderTooltip(
-          <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.encounterData.scene?.backgroundUrl ?? entity.imageUrl}
-            imageAlt={entity.nameKo}
-            meta={(
-              <>
-                <span style={{ color: ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color }}>
-                  {gameUi?.encounterRoomTypes[entity.encounterData.roomType] ?? ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].label}
-                </span>
-                {entity.encounterData.act && (
-                  <span className={(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).color}>
-                    {gameUi?.acts[entity.encounterData.act] ?? (EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
-                  </span>
-                )}
-                {entity.encounterData.isWeak && (
-                  <span className="text-green-400">
-                    {getCodexServiceMessages(serviceLocale).encountersView.weakEncounter}
-                  </span>
-                )}
-              </>
-            )}
-          >
-            <div className="space-y-1">
-              {encounterFormations.slice(0, ENCOUNTER_PREVIEW_FORMATION_LIMIT).map((formation) => (
-                <div key={formation.id} className="flex items-start justify-between gap-3 text-xs">
-                  <span>{formation.monsters.map((monster) => monster.name).join(" + ")}</span>
-                  <span className="shrink-0 text-amber-300/90">
-                    {formatEncounterProbability(
-                      formation.probability,
-                      serviceLocale === "en" ? "en-US" : "ko-KR",
-                    )}
-                  </span>
-                </div>
-              ))}
-              {encounterFormations.length > ENCOUNTER_PREVIEW_FORMATION_LIMIT && (
-                <div className="text-xs text-gray-400">
-                  {serviceLocale === "en"
-                    ? `+${encounterFormations.length - ENCOUNTER_PREVIEW_FORMATION_LIMIT} more`
-                    : `외 ${encounterFormations.length - ENCOUNTER_PREVIEW_FORMATION_LIMIT}개`}
-                </div>
-              )}
-            </div>
-          </GameResourcePreview>,
-        )
-      )}
-      {showResolvedPreview && entity.type === "ancient" && entity.ancientData && (
-        renderTooltip(
-          <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.ancientData.imageUrl}
-            imageAlt={entity.nameKo}
-            imageClassName="h-14 w-14 rounded object-cover"
-            meta={entity.ancientData.act ? (
-              <span className={(EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).color}>
-                {gameUi?.acts[entity.ancientData.act] ?? (EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
-              </span>
-            ) : undefined}
-          >
-            {entity.ancientData.epithet}
-          </GameResourcePreview>,
-        )
-      )}
-      {showResolvedPreview && entity.type === "epoch" && entity.epochData && (
-        renderTooltip(
-          <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.epochData.imageUrl}
-            imageAlt={entity.nameKo}
-            hoverTipStyle={{ width: "max-content", maxWidth: 360, whiteSpace: "nowrap" }}
-            hoverTipArt={{
-              mode: epochArtMode,
-              imageUrl: entity.epochData.imageUrl,
-              betaImageUrl: entity.epochData.betaImageUrl,
-              alt: entity.nameKo,
-              betaAlt: serviceLocale === "en" ? `${entity.nameKo} beta art` : `${entity.nameKo} 베타 아트`,
-              width: 320,
-              height: 224,
-              className: "h-auto w-80 rounded object-cover",
-            }}
-            meta={entity.epochData.eraName ? (
-              <span className="text-blue-300">
-                {entity.epochData.eraYear ? `${entity.epochData.eraName} ${entity.epochData.eraYear}` : entity.epochData.eraName}
-              </span>
-            ) : undefined}
-          />,
-        )
-      )}
-      {showResolvedPreview && !entity.cardData && !entity.characterData && !entity.keywordData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && !entity.modifierData && !entity.ascensionData && entity.imageUrl && (
-        renderTooltip(
-          <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.imageUrl}
-            imageAlt={entity.nameKo}
-            imageClassName="h-14 w-14 rounded object-cover"
-          />,
-        )
-      )}
+        : tipBodies(previewEntity, renderTooltip))}
     </span>
   );
+}
+
+const keepContent = (content: ReactNode) => content;
+
+/**
+ * The entity before this patch when the patch changed or removed it, else null.
+ * New entities and untouched ones keep the single to-be tip.
+ */
+function patchAsIsEntity(
+  entity: EntityInfo,
+  patchVersion?: string,
+  currentVersion?: string,
+  versionDiffs?: EntityVersionDiff[],
+  patches?: STS2Patch[],
+): EntityInfo | null {
+  if (!patchVersion || !currentVersion || !versionDiffs?.length || !patches?.length) return null;
+  const samePatch = (version: unknown) => typeof version === "string" && compareVersions(version, patchVersion) === 0;
+  const dataKey = `${entity.type}Data` as keyof EntityInfo;
+  const data = entity[dataKey] as { introducedInPatch?: string; deprecatedInPatch?: string } | undefined;
+  if (samePatch(data?.introducedInPatch)) return null;
+  const removed = samePatch(data?.deprecatedInPatch);
+  if (!removed && !versionDiffs.some((diff) => diff.entityType === entity.type && diff.entityId === entity.id && samePatch(diff.patch))) {
+    return null;
+  }
+  const previousVersion = latestPatchVersion(patches.filter((patch) => compareVersions(patch.version, patchVersion) < 0));
+  if (!previousVersion) return null;
+  const asIs = reconstructPatchPreviewEntity(entity, previousVersion, currentVersion, versionDiffs, patches);
+  // Lifecycle fields are never reverted, so an entity removed later still reads deprecated: before this patch it was live.
+  const asIsData = asIs[dataKey];
+  return asIsData && typeof asIsData === "object" ? { ...asIs, [dataKey]: { ...asIsData, deprecated: false } } : asIs;
 }
 
 function reconstructPatchPreviewEntity(
