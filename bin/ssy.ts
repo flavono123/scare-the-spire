@@ -159,9 +159,12 @@ async function api({ args, opts }: Flags) {
   if (!res.ok) process.exitCode = 1;
 }
 
-// StaticHoverTip values the game attaches to card/relic/power text (HoverTipFactory.Static/ForEnergy/ForArrow in the DLL).
+// Static tips some game text names (data/sts2/game-tips.json, scripts/generate-game-tips.py).
 // Every other static_hover_tips entry (piles, deck, gold, HP, rooms, map) only shows on UI widgets.
-const GAMEPLAY_STATIC_TIPS = ["ARROW", "BLOCK", "CHANNELING", "EVOKE", "TRANSFORM", "FATAL", "ENERGY", "STUN", "FORGE", "SUMMON_STATIC", "SUMMON_DYNAMIC", "REPLAY_STATIC", "REPLAY_DYNAMIC", "COOK", "WAH_MELODY", "CHO_MELODY", "KI_MELODY", "TAROT"];
+const GAMEPLAY_STATIC_TIPS = new Set<string>(
+  (json<{ keywords: string[] }>("data/sts2/game-tips.json").keywords as string[])
+    .flatMap((id) => (id === "REPLAY" ? ["REPLAY_STATIC", "REPLAY_DYNAMIC"] : id === "SUMMON_STATIC" ? [id, "SUMMON_DYNAMIC"] : [id])),
+);
 function gameTerms(loc: "kor" | "eng") {
   const dir = path.join(root, "data/sts2/localization", loc);
   const strings = (file: string) => Object.entries(JSON.parse(readFileSync(path.join(dir, file), "utf8")) as Record<string, string>);
@@ -170,7 +173,7 @@ function gameTerms(loc: "kor" | "eng") {
   const ui = new Set<string>();
   for (const [k, v] of strings("static_hover_tips.json")) {
     if (!k.endsWith(".title")) continue;
-    (GAMEPLAY_STATIC_TIPS.includes(k.slice(0, -6)) ? gameplay : ui).add(title(v));
+    (GAMEPLAY_STATIC_TIPS.has(k.slice(0, -6)) ? gameplay : ui).add(title(v));
   }
   // Cards, powers, relics, potions, enchantments, afflictions and orbs get their own tip wherever game text names them.
   const entities = new Map<string, string>();
@@ -199,9 +202,10 @@ function verdict(game: ReturnType<typeof gameTerms>, loc: "kor" | "eng", term: s
   // English inflections (Exhausted, replays, Arrows) still get the keyword's tip in game.
   const inflected = [...game.gameplay].find((t) => loc === "eng" && t.length > 3 && lower !== t.toLowerCase() && (lower.startsWith(t.toLowerCase()) || t.toLowerCase().startsWith(lower)));
   if (inflected) return { mismatch: true, text: `MISMATCH inflected ${inflected}: the game shows its tip` };
+  // A UI tip's name (별 for the Regent's stars) stays gold even when a card shares it (the tarot 별).
+  if (game.ui.has(base)) return { mismatch: false, text: "ok game tip only on UI widgets; card text is gold only" };
   const kind = game.entities.get(base);
   if (kind) return { mismatch: true, text: `MISMATCH a game ${kind}: the game shows its tip` };
-  if (game.ui.has(base)) return { mismatch: false, text: "ok game tip only on UI widgets; card text is gold only" };
   if (game.gold.has(base)) return { mismatch: false, text: "ok game text colors it gold without a tip" };
   if (game.values.has(base)) return { mismatch: false, text: "name a game name with no Compendium page here" };
   return { mismatch: true, text: "WORDING not a game term: check the official wording" };
