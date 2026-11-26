@@ -10,8 +10,10 @@ import {
   HOVER_TIP_TITLE_COLOR,
 } from "@/lib/hover-tip-chrome";
 import {
+  drawnRect,
   getHoverTipPortalRoot,
   HOVER_TIP_LAYER_Z_INDEX,
+  placeBesideTrigger,
 } from "@/lib/hover-tip-layer";
 
 /** Same hover_tip.png chrome as site-navbar patch notes / contact / profile. */
@@ -32,13 +34,10 @@ export function GameUiHoverTip({
   open?: boolean;
 }) {
   const triggerRef = useRef<HTMLSpanElement>(null);
+  const tipRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
   const visible = open || hovered;
-  const [placement, setPlacement] = useState<{
-    left: number;
-    top: number;
-    above: boolean;
-  } | null>(null);
+  const [placement, setPlacement] = useState<{ left: number; top: number } | null>(null);
   const timerRef = useRef<number | null>(null);
   const portalRoot = typeof document !== "undefined" ? getHoverTipPortalRoot() : null;
 
@@ -48,24 +47,33 @@ export function GameUiHoverTip({
     };
   }, []);
 
+  // Measure the rendered tip and put it below (or above, or beside) the trigger, never over it.
   const updatePlacement = () => {
     const el = triggerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const estimatedHeight = typeof label === "string" && label.length <= 24
-      ? 36
-      : 88;
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const above = spaceBelow < estimatedHeight + 8 && rect.top > estimatedHeight + 8;
-    setPlacement({
-      left: rect.left + rect.width / 2,
-      top: above ? rect.top - 4 : rect.bottom + 2,
-      above,
+    const tip = tipRef.current;
+    if (!el || !tip) return;
+    const tipBox = tip.getBoundingClientRect();
+    const tipDrawn = drawnRect(tip);
+    const next = placeBesideTrigger({
+      trigger: drawnRect(el),
+      tipWidth: tipDrawn.width,
+      tipHeight: tipDrawn.height,
+      order: ["below", "above", "right", "left"],
+      align: "center",
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      gap: 4,
     });
+    const left = next.left + (tipBox.left - tipDrawn.left);
+    const top = next.top + (tipBox.top - tipDrawn.top);
+    setPlacement((prev) => (prev && prev.left === left && prev.top === top ? prev : { left, top }));
   };
 
   useLayoutEffect(() => {
-    if (!visible) return;
+    if (!visible) {
+      setPlacement(null);
+      return;
+    }
     updatePlacement();
     const onReposition = () => updatePlacement();
     window.addEventListener("scroll", onReposition, true);
@@ -92,16 +100,17 @@ export function GameUiHoverTip({
   };
 
   const wrapLabel = typeof label !== "string" || label.length > 24;
-  const tip = visible && placement && portalRoot
+  const tip = visible && portalRoot
     ? createPortal(
       <div
+        ref={tipRef}
         data-hover-tip-layer=""
         className="pointer-events-none dark"
         style={{
           position: "fixed",
-          left: placement.left,
-          top: placement.top,
-          transform: placement.above ? "translate(-50%, -100%)" : "translate(-50%, 0)",
+          left: placement?.left ?? 0,
+          top: placement?.top ?? 0,
+          visibility: placement ? "visible" : "hidden",
           zIndex: HOVER_TIP_LAYER_Z_INDEX,
         }}
       >
@@ -131,6 +140,7 @@ export function GameUiHoverTip({
   return (
     <span
       ref={triggerRef}
+      data-hover-trigger=""
       className={cn("relative inline-flex", className)}
       onMouseEnter={show}
       onMouseLeave={hide}

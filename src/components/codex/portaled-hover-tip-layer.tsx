@@ -10,6 +10,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import {
+  drawnRect,
   getHoverTipPortalRoot,
   HOVER_TIP_LAYER_Z_INDEX,
   placePortaledHoverTip,
@@ -45,21 +46,26 @@ export function PortaledHoverTipLayer({
   const portalRoot = mounted ? getHoverTipPortalRoot() : null;
 
   const updateBox = useCallback(() => {
-    const trigger = triggerRectFromAnchor(anchorRef.current);
+    const box = triggerRectFromAnchor(anchorRef.current);
     const tip = tipRef.current;
-    if (!trigger) return;
-    setBox((prev) => {
-      const next = placePortaledHoverTip({
-        trigger,
-        tipWidth: tip?.offsetWidth ?? 0,
-        tipHeight: tip?.offsetHeight ?? 0,
-        pin,
-        viewportWidth: window.innerWidth,
-        viewportHeight: window.innerHeight,
-      });
-      if (prev && prev.left === next.left && prev.top === next.top) return prev;
-      return next;
+    if (!box) return;
+    // Place by what is painted: a card preview draws its frame outside its box, and so may the trigger.
+    const trigger = anchorRef.current?.parentElement ? drawnRect(anchorRef.current.parentElement) : box;
+    const tipBox = tip?.getBoundingClientRect();
+    const tipDrawn = tip ? drawnRect(tip) : null;
+    const next = placePortaledHoverTip({
+      trigger,
+      tipWidth: tipDrawn?.width ?? 0,
+      tipHeight: tipDrawn?.height ?? 0,
+      pin,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
     });
+    // The drawn area may start left of or above the tip's own box; shift the box by that much.
+    const placed = tipBox && tipDrawn
+      ? { left: next.left + (tipBox.left - tipDrawn.left), top: next.top + (tipBox.top - tipDrawn.top) }
+      : next;
+    setBox((prev) => (prev && prev.left === placed.left && prev.top === placed.top ? prev : placed));
   }, [pin]);
 
   useLayoutEffect(() => {

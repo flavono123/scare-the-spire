@@ -18,10 +18,11 @@ import {
 } from "@/lib/card-side-tip-placement";
 import { usePageGameUiLabels } from "@/hooks/use-game-ui-labels";
 import { useServiceLocale } from "@/hooks/use-service-locale";
-import { getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib/hover-tip-layer";
+import { drawnRect, getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib/hover-tip-layer";
 import { DescriptionText } from "./codex-description";
 import { CardTile } from "./card-tile";
 import { GameHoverTip } from "./hover-tip";
+import { SideTipsShownContext } from "./side-tips-context";
 
 type FixedPlacement = {
   left: number;
@@ -29,6 +30,12 @@ type FixedPlacement = {
 };
 
 const MIN_VIEWPORT_WIDTH = 768;
+const SIDE_TIPS_MEDIA = `(min-width: ${MIN_VIEWPORT_WIDTH}px) and (hover: hover)`;
+const subscribeSideTipsMedia = (onChange: () => void) => {
+  const media = window.matchMedia(SIDE_TIPS_MEDIA);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+};
 
 function KeywordSideTip({ tip }: { tip: Extract<CardSideTip, { kind: "keyword" }> }) {
   return (
@@ -46,7 +53,8 @@ function KeywordSideTip({ tip }: { tip: Extract<CardSideTip, { kind: "keyword" }
 function CardEntitySideTip({ tip }: { tip: Extract<CardSideTip, { kind: "card" }> }) {
   const serviceLocale = useServiceLocale();
   return (
-    <span className="block w-36 drop-shadow-2xl">
+    // The tile paints its frame outside its box; the padding keeps that inside this tip so stacked tips never touch.
+    <span className="block w-fit px-[14px] pt-[12px] drop-shadow-2xl">
       <CardTile
         card={tip.card}
         serviceLocale={serviceLocale}
@@ -111,6 +119,11 @@ export function CardSideTipsAnchor({
     () => true,
     () => false,
   );
+  const sideTipsPossible = useSyncExternalStore(
+    subscribeSideTipsMedia,
+    () => window.matchMedia(SIDE_TIPS_MEDIA).matches,
+    () => false,
+  );
   const [fits, setFits] = useState(false);
   const [placement, setPlacement] = useState<FixedPlacement>({ left: 0, top: 0 });
 
@@ -129,10 +142,13 @@ export function CardSideTipsAnchor({
       return;
     }
 
+    // Cards paint their frame, banner and energy orb outside their box; place by the painted areas.
+    const tipBox = measure.getBoundingClientRect();
+    const tipDrawn = drawnRect(measure);
     const next = placeCardSideTip({
-      card: anchor.getBoundingClientRect(),
-      tipWidth: measure.offsetWidth,
-      tipHeight: measure.offsetHeight,
+      card: drawnRect(anchor),
+      tipWidth: tipDrawn.width,
+      tipHeight: tipDrawn.height,
       preferSide,
       viewportWidth: window.innerWidth,
       viewportHeight: window.innerHeight,
@@ -143,14 +159,25 @@ export function CardSideTipsAnchor({
       setFits(false);
       return;
     }
-    setPlacement(next);
+    const placed = { left: next.left + (tipBox.left - tipDrawn.left), top: next.top + (tipBox.top - tipDrawn.top) };
+    setPlacement((prev) => (prev.left === placed.left && prev.top === placed.top ? prev : placed));
     setFits(true);
   }, [preferSide]);
 
   useLayoutEffect(() => {
     if (!wantVisible || !mounted) return;
     const raf = requestAnimationFrame(() => updatePlacement());
-    return () => cancelAnimationFrame(raf);
+    // Card art and fonts load after the first measure and grow the tip; place it again when they do.
+    const measure = measureRef.current;
+    const observer = measure && typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => updatePlacement()) : null;
+    if (measure) {
+      observer?.observe(measure);
+      measure.querySelectorAll("*").forEach((child) => observer?.observe(child));
+    }
+    return () => {
+      cancelAnimationFrame(raf);
+      observer?.disconnect();
+    };
   }, [wantVisible, tips, mounted, updatePlacement]);
 
   useLayoutEffect(() => {
@@ -188,6 +215,7 @@ export function CardSideTipsAnchor({
   return (
     <div
       ref={anchorRef}
+      data-hover-trigger=""
       className={`relative ${className}`}
       style={style}
       onMouseEnter={() => {
@@ -197,7 +225,7 @@ export function CardSideTipsAnchor({
         if (mode === "hover") setHovered(false);
       }}
     >
-      {children}
+      <SideTipsShownContext.Provider value={sideTipsPossible && tips.length > 0}>{children}</SideTipsShownContext.Provider>
       {portal}
     </div>
   );

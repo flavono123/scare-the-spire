@@ -50,6 +50,12 @@
 - QA: `pnpm game-tips:audit`(15개 로케일, 키워드 문구 대조·옆 툴팁 1412목록·금색 단어 전수), 자체 검사 5종, `patch:test`, `bin/ssy tags`(불일치 0), 워크트리 dev 1440에서 위 Expect 화면. 확인 못 함: 메인 사이트 전체 빌드와 Worker 308 실제 응답, 게임 화면과 나란히 놓은 캡처.
 - Commits: `002b46ed`부터, 병합 커밋.
 
+### hover-overlap
+- Feature: 호버 팁이 설명하는 대상을 가리지 않는다. 카드는 테두리·배너·에너지 구슬을 상자 밖에 그려서(`b437d24e` 이후) 상자 기준으로 놓던 옆 카드 팁이 본체를 최대 74px 덮었다. 이제 모든 팁(옆 팁 묶음, 포털 키워드 팁, 패치 Worker 정적 카드 미리보기, 사이트 UI 팁)을 그려진 영역(`drawnRect`) 기준으로 트리거 옆에 놓는다(`placeBesideTrigger`, 화면에 맞는 첫 방향, 맞는 곳이 없으면 가장 많이 보이는 방향, 겹치는 자리는 고르지 않음). 옆 팁을 이미 띄우는 요소(유물·포션 등 히어로) 안의 금색 단어는 자기 팁을 또 띄우지 않고 링크·색만 남긴다(넓고 호버 가능한 화면, 폰은 탭 그대로).
+- Expect: /compendium/cards/charge 하수인 투하 팁이 카드 왼쪽에 간격을 두고 뜬다. /compendium/relics/conductors_baton 히어로 호버에 와·초·키 선율 세 팁. /compendium/relics/kunai "민첩"에 마우스를 올려도 유물 위에 팁이 겹쳐 뜨지 않는다.
+- QA: `pnpm hover:audit`(dev 1440, 카드·유물·포션·파워·인챈트·키워드·패치 1486쪽, 호버 12813번, 팁 11149개, 상시 묶음 239개: 겹침 0, 트리거를 감싼 트리거까지 검사), `hover-tip-layer`·`card-keyword-tips` 자체 검사. 확인 못 함: 1440 외 폭, 패치 Worker 빌드 산출물(정적 미리보기는 dev 패치 페이지로만 확인).
+- Commits: `2f0477ef`부터, 병합 커밋.
+
 ### patch-deploy-speed
 - Feature: 패치 Worker 배포 가속. patch:html을 코어 수만큼 프로세스로 나눠 렌더(결과물 동일), 매니페스트는 빌드당 한 번 읽음. CI는 scope·patch·main 세 job으로 나뉘고 패치 배포는 자기 대기열(`cloudflare-patch`)이라 다른 push의 main 빌드 뒤에서 기다리지 않는다. main 뒤 패치 재배포는 이 실행의 패치가 live이고 매니페스트가 같으면 건너뛴다. `scripts/patch-worker-deploy.sh`가 버전 메시지에 커밋을 남겨 옛 실행이 새 패치를 덮지 않게 한다. `/patches/latest`(언어별 포함)는 최신 패치로 302.
 - Expect: 패치 push 뒤 Actions의 "Deploy patch Worker before main" job이 바로 시작, /patches/latest → /patches/0.114.0.

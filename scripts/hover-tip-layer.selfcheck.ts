@@ -51,6 +51,14 @@ function main() {
   });
   assert.ok(rightEdge.left + 320 <= 1280 - 8);
 
+  // A tip taller than the room above and below goes beside the trigger, never over it.
+  const trigger = { left: 600, top: 380, right: 660, bottom: 404 };
+  const tall = placePortaledHoverTip({ trigger, tipWidth: 220, tipHeight: 560, pin: "top-left", viewportWidth: 1280, viewportHeight: 800 });
+  assert.ok(tall.left >= 660 + 8 || tall.left + 220 <= 600 - 8, "a tall tip moves to a side");
+  // Clamping at the right edge must not slide a center-right tip back onto its trigger.
+  const edge = placePortaledHoverTip({ trigger: { left: 1150, top: 300, right: 1260, bottom: 330 }, tipWidth: 200, tipHeight: 100, pin: "center-right", viewportWidth: 1280, viewportHeight: 800 });
+  assert.ok(edge.left + 200 <= 1150 - 8, "flips to the left of the trigger");
+
   console.log("hover-tip-layer.selfcheck: ok");
 }
 
