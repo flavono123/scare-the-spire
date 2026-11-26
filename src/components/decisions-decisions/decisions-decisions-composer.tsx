@@ -141,23 +141,33 @@ function PoolTools({
     <div className="space-y-1" data-decisions-decisions-pool-tools>
       <div className="flex flex-wrap items-center gap-1">
         {sortLabels && (
-          <div role="radiogroup" aria-label={copy.poolSort} className="flex flex-wrap gap-1">
-            {(["default", ...CARD_SORT_KEYS] as const).map((key) => (
+          // Pressing the active sort again goes back to the pool order; no separate "default" chip.
+          <div role="group" aria-label={copy.poolSort} className="flex flex-wrap gap-1">
+            {CARD_SORT_KEYS.map((key) => (
               <button
                 key={key}
                 type="button"
-                role="radio"
-                aria-checked={sort === key}
-                onClick={() => onSort(key)}
+                aria-pressed={sort === key}
+                onClick={() => onSort(sort === key ? "default" : key)}
                 className={chip(sort === key)}
               >
-                {key === "default" ? copy.poolSortDefault : sortLabels[key]}
-                {key !== "default" && filters[key].length > 0 && (
+                {sortLabels[key]}
+                {filters[key].length > 0 && (
                   <span aria-hidden className="ml-1 text-[10px] text-primary">●</span>
                 )}
               </button>
             ))}
           </div>
+        )}
+        {filtered && (
+          <button
+            type="button"
+            onClick={onReset}
+            className="inline-flex items-center gap-0.5 border-l border-white/10 pl-2 text-[11px] text-red-400/70 transition-colors hover:text-red-300"
+          >
+            <X size={11} aria-hidden />
+            {copy.poolFilterReset}
+          </button>
         )}
         <input
           type="search"
@@ -167,11 +177,6 @@ function PoolTools({
           aria-label={copy.poolSearch}
           className="ml-auto h-7 w-36 rounded-md border border-white/10 bg-black/30 px-2 text-xs text-foreground outline-none placeholder:text-zinc-500 focus:border-primary/40"
         />
-        {filtered && (
-          <button type="button" onClick={onReset} className="rounded-md px-1.5 py-1 text-xs text-zinc-400 hover:text-foreground">
-            {copy.poolFilterReset}
-          </button>
-        )}
       </div>
       {sort !== "default" && values.length > 1 && (
         <div role="group" aria-label={sortLabels?.[sort]} className="flex flex-wrap gap-1">
