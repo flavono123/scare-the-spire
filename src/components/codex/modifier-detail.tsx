@@ -68,10 +68,6 @@ export function ModifierInspect({
   entities?: EntityInfo[];
   gameUi?: CodexGameUiLabels;
 }) {
-  const excludeSelf = useMemo(
-    () => new Set([modifier.name, modifier.nameEn]),
-    [modifier.name, modifier.nameEn],
-  );
 
   return (
     <div className="flex w-full max-w-[32rem] items-center gap-3 sm:gap-5">
@@ -82,7 +78,6 @@ export function ModifierInspect({
             gameUi={gameUi}
             description={modifier.description}
             entities={entities}
-            excludeEntityTerms={excludeSelf}
             className="block text-left"
           />
         ) : (

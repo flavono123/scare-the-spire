@@ -38,6 +38,12 @@
 
 ## 기능 기대치
 
+### game-text-tips
+- Feature: 게임 문구의 금색 단어는 "팁 있음/없음" 둘 중 하나이고, 게임 코드에서 뽑은 데이터로 정한다(`scripts/generate-game-tips.py` → `data/sts2/game-tips.json`·`data/sts2/gold-tips/<로케일>.json`). 카드·유물·포션·파워·인챈트·고통의 옆 툴팁은 그 요소의 게임 팁 목록 그대로(카드는 금색 단어 이름 매칭 제거, 몬스터 팁 제거). 유물·인챈트·고통·도미니언 설명의 금색 단어는 데이터가 짝지은 팁에만 링크, 나머지 금색·색 글자는 강조만. 백과사전 키워드는 게임 문구가 쓰는 팁 28개(UI 팁 25개 제외, 옛 주소는 키워드 목록으로 308). 지어낸 금색 단어 툴팁 문구 삭제. `/dev/gold-words`는 팁 없는 금색 단어 목록(로케일별). 전수 감사 `pnpm game-tips:audit`는 커밋된 데이터만 읽고 배포 경로에 없다. 한국어 패치 노트의 리젠트 별 7곳은 `[gold:keyword]`로 강조만.
+- Expect: /compendium/cards/coda 옆 툴팁에 와·초·키 선율, /compendium/cards/charge는 하수인 투하 카드 팁만, /compendium/cards/bone_shards는 방어도. /compendium/relics/bag_of_marbles의 "취약"은 취약 파워 링크, /compendium/relics/fishing_rod의 "덱"·"강화"는 강조만. /compendium/keywords 28개, /compendium/keywords/deck → /compendium/keywords 308. /patches/0.100.0의 덱·별은 강조만.
+- QA: `pnpm game-tips:audit`(15개 로케일, 키워드 문구 대조·옆 툴팁 1412목록·금색 단어 전수), 자체 검사 5종, `patch:test`, `bin/ssy tags`(불일치 0), 워크트리 dev 1440에서 위 Expect 화면. 확인 못 함: 메인 사이트 전체 빌드와 Worker 308 실제 응답, 게임 화면과 나란히 놓은 캡처.
+- Commits: `002b46ed`부터, 병합 커밋.
+
 ### patch-deploy-speed
 - Feature: 패치 Worker 배포 가속. patch:html을 코어 수만큼 프로세스로 나눠 렌더(결과물 동일), 매니페스트는 빌드당 한 번 읽음. CI는 scope·patch·main 세 job으로 나뉘고 패치 배포는 자기 대기열(`cloudflare-patch`)이라 다른 push의 main 빌드 뒤에서 기다리지 않는다. main 뒤 패치 재배포는 이 실행의 패치가 live이고 매니페스트가 같으면 건너뛴다. `scripts/patch-worker-deploy.sh`가 버전 메시지에 커밋을 남겨 옛 실행이 새 패치를 덮지 않게 한다. `/patches/latest`(언어별 포함)는 최신 패치로 302.
 - Expect: 패치 push 뒤 Actions의 "Deploy patch Worker before main" job이 바로 시작, /patches/latest → /patches/0.114.0.

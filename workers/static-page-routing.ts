@@ -360,7 +360,26 @@ export function prerenderedRedirect(pathname: string): PrerenderedRedirect | nul
   const worldcupIndex = legacyWorldcupIndexRedirectPath(pathname);
   if (worldcupIndex) return { status: 308, location: worldcupIndex };
   const madScience = legacyMadScienceCardRedirectPath(pathname);
-  return madScience ? { status: 308, location: madScience } : null;
+  if (madScience) return { status: 308, location: madScience };
+  const uiKeyword = legacyUiKeywordRedirectPath(pathname);
+  return uiKeyword ? { status: 308, location: uiKeyword } : null;
+}
+
+/**
+ * UI-part tips (top bar Deck, combat piles, map rooms ...) were Compendium keywords until
+ * keywords became the tips game text names; their pages now go to the keyword list.
+ */
+const LEGACY_UI_KEYWORD_IDS = new Set([
+  "deck", "draw_pile", "discard_pile", "exhaust_pile", "money_pouch", "hit_points", "potion_slot", "floor",
+  "linked_rewards", "dread_rotation", "star_count",
+]);
+
+export function legacyUiKeywordRedirectPath(pathname: string): string | null {
+  if (!isExactRoutePath(pathname)) return null;
+  const { localePrefix, rest } = splitLocalePrefix(pathname);
+  if (rest.length !== 3 || rest[0] !== "compendium" || rest[1] !== "keywords") return null;
+  if (!LEGACY_UI_KEYWORD_IDS.has(rest[2]) && !rest[2].startsWith("room_")) return null;
+  return `/${[...localePrefix, "compendium", "keywords"].join("/")}`;
 }
 
 /** Mad Science had one Compendium card per type (`mad_science_attack`); now one card keeps the type as `?variant=`. */

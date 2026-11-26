@@ -592,7 +592,6 @@ function PotionTile({
         sources: tipCatalogSources,
         powers: tipCatalogPowers,
         cards: tipCatalogCards,
-        monsters: tipCatalogMonsters,
       })
       : null,
     [tipCatalogSources, tipCatalogPowers, tipCatalogCards, tipCatalogMonsters],

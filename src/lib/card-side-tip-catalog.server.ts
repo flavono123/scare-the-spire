@@ -1,4 +1,5 @@
 import {
+  getCodexEnchantments,
   getCodexKeywords,
 } from "@/lib/codex-data";
 import { readGameLocalizationTable } from "@/lib/game-localization";
@@ -14,16 +15,14 @@ export async function loadCardSideTipCatalogSources(
     engStaticHoverTips,
     orbs,
     engOrbs,
-    monsterNames,
-    engMonsterNames,
+    enchantments,
   ] = await Promise.all([
     getCodexKeywords({ gameLocale }),
     readGameLocalizationTable(gameLocale, "static_hover_tips"),
     readGameLocalizationTable("eng", "static_hover_tips"),
     readGameLocalizationTable(gameLocale, "orbs"),
     readGameLocalizationTable("eng", "orbs"),
-    readGameLocalizationTable(gameLocale, "monsters"),
-    readGameLocalizationTable("eng", "monsters"),
+    getCodexEnchantments({ gameLocale }),
   ]);
 
   return {
@@ -32,7 +31,7 @@ export async function loadCardSideTipCatalogSources(
     engStaticHoverTips,
     orbs,
     engOrbs,
-    monsterNames,
-    engMonsterNames,
+    // A card's FromEnchantment tip (Blade of Ink's Inky).
+    enchantments: enchantments.map(({ id, name, description, imageUrl }) => ({ id, name, description, imageUrl })),
   };
 }

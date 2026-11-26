@@ -66,10 +66,6 @@ export function AscensionInspect({
   entities?: EntityInfo[];
   gameUi?: CodexGameUiLabels;
 }) {
-  const excludeSelf = useMemo(
-    () => new Set([ascension.name, ascension.nameEn, ...ascension.aliasesKo, ...ascension.aliasesEn]),
-    [ascension.aliasesEn, ascension.aliasesKo, ascension.name, ascension.nameEn],
-  );
 
   return (
     <div className="flex w-full max-w-[32rem] items-center gap-3 sm:gap-5">
@@ -80,7 +76,6 @@ export function AscensionInspect({
             gameUi={gameUi}
             description={ascension.description}
             entities={entities}
-            excludeEntityTerms={excludeSelf}
             className="block text-left"
           />
         ) : (

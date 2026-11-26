@@ -1,0 +1,4392 @@
+{
+ "affliction:BOUND": {
+  "Печать": "affliction:BOUND",
+  "запечатанную": null
+ },
+ "affliction:HEXED": {
+  "эфирной": null
+ },
+ "affliction:SMOG": {
+  "Навыки": null
+ },
+ "affliction:TAINTED": {
+  "порчи": null
+ },
+ "ancient:NEOW": {
+  "“Ки...!”": null
+ },
+ "ancient:VAKUU": {
+  "Вакуу": null
+ },
+ "ascension:BLITZ": {
+  "колоду": null
+ },
+ "ascension:DREAD_RULE_02": {
+  "колоду": null
+ },
+ "ascension:LEVEL_01": {
+  "Элитные враги": null
+ },
+ "ascension:LEVEL_03": {
+  "золота": null
+ },
+ "ascension:LEVEL_10": {
+  "акта": null
+ },
+ "badge:KACHING": {
+  "золота": null
+ },
+ "badge:MONEY_MONEY": {
+  "золота": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "чары": null
+ },
+ "blitz:CARD_PACKS": {
+  "колоду": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "колоды": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "необычный": null,
+  "обычный": null,
+  "редкий": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Преобразовать": null,
+  "колоде": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Улучшить": null,
+  "колоде": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "бесцветный": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "зачарованный": null
+ },
+ "blitz:GLAM": {
+  "чары": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "колоде": null
+ },
+ "blitz:RELIC": {
+  "реликвию": null
+ },
+ "blitz:TWO_RELICS": {
+  "реликвии": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "улучшенный": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "улучшенную": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "улучшенный": null
+ },
+ "card:ABRASIVE": {
+  "ловкости": null,
+  "шипов": null
+ },
+ "card:ABUNDANCE": {
+  "Талантов": null,
+  "руку": null,
+  "улучшенных": null
+ },
+ "card:ACCELERANT": {
+  "Яд": "power:POISON"
+ },
+ "card:ACCURACY": {
+  "«Заточки»": null
+ },
+ "card:ADAPTIVE_STRIKE": {
+  "стопку сброса": null
+ },
+ "card:AFTERIMAGE": {
+  "защиты": null
+ },
+ "card:AFTERLIFE": {
+  "Призывает": null
+ },
+ "card:AGGRESSION": {
+  "стопки сброса": null,
+  "улучшаете": null
+ },
+ "card:ALL_FOR_ONE": {
+  "стопки сброса": null
+ },
+ "card:ALL_IS_WELL": {
+  "«Печаль»": null,
+  "защиты": null
+ },
+ "card:ANGER": {
+  "стопку сброса": null
+ },
+ "card:ANGUISH": {
+  "«Печаль»": null
+ },
+ "card:ANOINTED": {
+  "редкие": null,
+  "стопки добора": null
+ },
+ "card:ANTICIPATE": {
+  "ловкости": null
+ },
+ "card:APOTHEOSIS": {
+  "Улучшает": null
+ },
+ "card:APPARITION": {
+  "неосязаемости": null
+ },
+ "card:ARCHERY": {
+  "тяги": null
+ },
+ "card:ARMAMENTS": {
+  "Улучшает": null,
+  "защиты": null,
+  "руке": null
+ },
+ "card:ARROW_STAB": {
+  "тяги": null
+ },
+ "card:ARSENAL": {
+  "силы": null
+ },
+ "card:ASHEN_STRIKE": {
+  "стопке пепла": null
+ },
+ "card:ASSASSINATE": {
+  "уязвимости": null
+ },
+ "card:BACKFLIP": {
+  "защиты": null
+ },
+ "card:BAD_LUCK": {
+  "руке": null
+ },
+ "card:BALL_LIGHTNING": {
+  "Заряжает": null,
+  "сферу молнии": null
+ },
+ "card:BANSHEES_CRY": {
+  "эфирную": null
+ },
+ "card:BARRAGE": {
+  "заряженную": null
+ },
+ "card:BARRICADE": {
+  "Защита": "keyword:BLOCK"
+ },
+ "card:BASH": {
+  "уязвимости": null
+ },
+ "card:BEACON_OF_HOPE": {
+  "защиту": null
+ },
+ "card:BEAM_CELL": {
+  "уязвимости": null
+ },
+ "card:BEAT_DOWN": {
+  "стопки сброса": null
+ },
+ "card:BEAT_INTO_SHAPE": {
+  "Закаляет": null
+ },
+ "card:BECKON": {
+  "руке": null
+ },
+ "card:BEGONE": {
+  "«Удар слуги+»": null,
+  "«Удар слуги»": null,
+  "Преобразует": null,
+  "руке": null
+ },
+ "card:BIASED_COGNITION": {
+  "фокуса": null
+ },
+ "card:BIG_BANG": {
+  "Закаляет": null
+ },
+ "card:BLADE_DANCE": {
+  "руку": null
+ },
+ "card:BLADE_OF_INK": {
+  "руку": null
+ },
+ "card:BLADE_SYMPHONY": {
+  "руку": null
+ },
+ "card:BLAZE": {
+  "силы": null
+ },
+ "card:BLIGHT_STRIKE": {
+  "злой рок": "power:DOOM"
+ },
+ "card:BLOOD_WALL": {
+  "защиты": null
+ },
+ "card:BLOSSOM_SHOT": {
+  "Пронзает": null,
+  "растяжку": null,
+  "стрелой": null
+ },
+ "card:BLOT_OUT_THE_SKY": {
+  "пронзить": null,
+  "руку": null,
+  "стрелой": null
+ },
+ "card:BLUR": {
+  "Защита": "keyword:BLOCK",
+  "защиты": null
+ },
+ "card:BODYGUARD": {
+  "Призывает": null
+ },
+ "card:BODY_SLAM": {
+  "защите": null
+ },
+ "card:BOLAS": {
+  "руку": null
+ },
+ "card:BOMBARDMENT": {
+  "стопке пепла": null
+ },
+ "card:BONE_SHARDS": {
+  "Костя": null,
+  "защиты": null
+ },
+ "card:BOOST_AWAY": {
+  "«Головокружение»": null,
+  "защиты": null,
+  "стопку сброса": null
+ },
+ "card:BOOT_SEQUENCE": {
+  "защиты": null
+ },
+ "card:BOUNCE": {
+  "растяжки": null,
+  "руку": null
+ },
+ "card:BOUNCING_FLASK": {
+  "яда": null
+ },
+ "card:BOW_SMACK": {
+  "пронзен": null
+ },
+ "card:BRACE": {
+  "тяги": null
+ },
+ "card:BRAND": {
+  "Сжигает": null,
+  "силы": null
+ },
+ "card:BREAK": {
+  "уязвимости": null
+ },
+ "card:BRIGHTEN_UP": {
+  "«Печали»": null,
+  "«Радости»": null,
+  "руку": null
+ },
+ "card:BUBBLE_BUBBLE": {
+  "яд": "power:POISON",
+  "яда": null
+ },
+ "card:BULK_UP": {
+  "ловкости": null,
+  "силы": null
+ },
+ "card:BULLET_TIME": {
+  "руке": null
+ },
+ "card:BULLY": {
+  "уязвимость": "power:VULNERABLE"
+ },
+ "card:BULWARK": {
+  "Закаляет": null,
+  "защиты": null
+ },
+ "card:BUNDLE_OF_JOY": {
+  "руку": null
+ },
+ "card:BURN": {
+  "руке": null
+ },
+ "card:BURNING_PACT": {
+  "Сжигает": null
+ },
+ "card:BYRDONIS_EGG": {
+  "лагере": null
+ },
+ "card:CALAMITY": {
+  "руку": null
+ },
+ "card:CALCIFY": {
+  "Кости": null
+ },
+ "card:CALL_OF_THE_VOID": {
+  "руку": null,
+  "эфирной": null,
+  "эфирными": null
+ },
+ "card:CAPTURE_SPIRIT": {
+  "стопку добора": null
+ },
+ "card:CASCADE": {
+  "стопки добора": null
+ },
+ "card:CATASTROPHE": {
+  "стопки добора": null
+ },
+ "card:CHAOS": {
+  "Заряжает": null
+ },
+ "card:CHARGE": {
+  "Преобразует": null,
+  "стопке добора": null
+ },
+ "card:CHARGE_BATTERY": {
+  "защиты": null
+ },
+ "card:CHILD_OF_THE_STARS": {
+  "защиты": null
+ },
+ "card:CHILL": {
+  "Заряжает": null,
+  "сферу льда": null
+ },
+ "card:CHO_BARBS": {
+  "защиты": null,
+  "шипов": null
+ },
+ "card:CHO_CHORUS": {
+  "защиты": null,
+  "руке": null
+ },
+ "card:CHO_FIRM": {
+  "защиту": null,
+  "защиты": null,
+  "стрела": "keyword:ARROW"
+ },
+ "card:CHO_KI": {
+  "защиты": null,
+  "растяжку": null
+ },
+ "card:CHO_LIMBS": {
+  "защиты": null,
+  "мелодия Ва": "keyword:WAH_MELODY",
+  "мелодия Ки": "keyword:KI_MELODY"
+ },
+ "card:CHO_READY": {
+  "защиты": null,
+  "тяги": null
+ },
+ "card:CHRYSALIS": {
+  "стопку добора": null
+ },
+ "card:CINDER": {
+  "Сжигает": null
+ },
+ "card:CLASH": {
+  "руке": null
+ },
+ "card:CLEANSE": {
+  "Призывает": null,
+  "Сжигает": null,
+  "стопке добора": null
+ },
+ "card:CLOAK_AND_DAGGER": {
+  "защиты": null,
+  "руку": null
+ },
+ "card:CLOAK_OF_STARS": {
+  "защиты": null
+ },
+ "card:CODA": {
+  "мелодию": null
+ },
+ "card:COLD_SNAP": {
+  "Заряжает": null,
+  "сферу льда": null
+ },
+ "card:COLLISION_COURSE": {
+  "«Обломок»": null,
+  "руку": null
+ },
+ "card:COLOSSUS": {
+  "защиты": null,
+  "уязвимых": null
+ },
+ "card:COMET": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:COMPACT": {
+  "«Топливо+»": null,
+  "«Топливо»": null,
+  "Преобразует": null,
+  "защиты": null,
+  "руке": null
+ },
+ "card:CONCOCT": {
+  "яда": null
+ },
+ "card:CONQUEROR": {
+  "Закаляет": null,
+  "Клинок монарха": "card:SOVEREIGN_BLADE"
+ },
+ "card:CONSTELLATION": {
+  "защиты": null
+ },
+ "card:CONSUMING_SHADOW": {
+  "Заряжает": null,
+  "Разряжает": null,
+  "сферы тьмы": null
+ },
+ "card:CONVERGENCE": {
+  "оставляете": null,
+  "руке": null
+ },
+ "card:COOLANT": {
+  "защиты": null
+ },
+ "card:COOLHEADED": {
+  "Заряжает": null,
+  "сферу льда": null
+ },
+ "card:COORDINATE": {
+  "силы": null
+ },
+ "card:CORROSIVE_WAVE": {
+  "яда": null
+ },
+ "card:CORRUPTION": {
+  "сжигаются": null
+ },
+ "card:COSMIC_INDIFFERENCE": {
+  "защиты": null,
+  "стопки добора": null,
+  "стопки сброса": null
+ },
+ "card:COUNTDOWN": {
+  "злого рока": null
+ },
+ "card:COVERING_FIRE": {
+  "защиты": null,
+  "пронзаете": null,
+  "стрелой": null
+ },
+ "card:CRASH_LANDING": {
+  "«Обломками»": null,
+  "руку": null
+ },
+ "card:CREATIVE_AI": {
+  "руку": null
+ },
+ "card:CRIMSON_MANTLE": {
+  "защиты": null
+ },
+ "card:CRUELTY": {
+  "Уязвимые": null
+ },
+ "card:CRUSH_UNDER": {
+  "силы": null
+ },
+ "card:DANSE_MACABRE": {
+  "защиты": null
+ },
+ "card:DARKNESS": {
+  "Заряжает": null,
+  "сфер тьмы": null,
+  "сферу тьмы": null
+ },
+ "card:DARK_EMBRACE": {
+  "сжигается": "keyword:EXHAUST"
+ },
+ "card:DARK_SHACKLES": {
+  "силы": null
+ },
+ "card:DASH": {
+  "защиты": null
+ },
+ "card:DEADLY_POISON": {
+  "яда": null
+ },
+ "card:DEATH": {
+  "злого рока": null
+ },
+ "card:DEATHBRINGER": {
+  "злого рока": null,
+  "слабости": null
+ },
+ "card:DEATHS_DOOR": {
+  "защиты": null,
+  "злой рок": "power:DOOM"
+ },
+ "card:DEBILITATE": {
+  "Уязвимость": "power:VULNERABLE",
+  "слабость": "power:WEAK"
+ },
+ "card:DEBT": {
+  "золота": null,
+  "руке": null
+ },
+ "card:DECAY": {
+  "руке": null
+ },
+ "card:DECISIONS_DECISIONS": {
+  "руке": null
+ },
+ "card:DEEP_STRETCH": {
+  "растяжки": null
+ },
+ "card:DEFEND_DEFECT": {
+  "защиты": null
+ },
+ "card:DEFEND_FOOL": {
+  "защиты": null
+ },
+ "card:DEFEND_IRONCLAD": {
+  "защиты": null
+ },
+ "card:DEFEND_NECROBINDER": {
+  "защиты": null
+ },
+ "card:DEFEND_REGENT": {
+  "защиты": null
+ },
+ "card:DEFEND_SILENT": {
+  "защиты": null
+ },
+ "card:DEFLECT": {
+  "защиты": null
+ },
+ "card:DEFRAGMENT": {
+  "фокуса": null
+ },
+ "card:DEFY": {
+  "защиты": null,
+  "слабости": null
+ },
+ "card:DELAY": {
+  "защиты": null
+ },
+ "card:DEMONIC_SHIELD": {
+  "защите": null,
+  "защиту": null,
+  "защиты": null
+ },
+ "card:DEMON_FORM": {
+  "силы": null
+ },
+ "card:DEPRECATED_CARD": {
+  "колоды": null
+ },
+ "card:DESPAIR": {
+  "защиту": null,
+  "злому року": null
+ },
+ "card:DEVOUR_LIFE": {
+  "«Душу»": null,
+  "Призывает": null
+ },
+ "card:DIRGE": {
+  "«Душ+»": null,
+  "«Душ»": null,
+  "Призывает": null,
+  "стопку добора": null
+ },
+ "card:DISCOVERY": {
+  "руку": null
+ },
+ "card:DISLIKE_YOU": {
+  "стрел": null
+ },
+ "card:DISMANTLE": {
+  "уязвим": null
+ },
+ "card:DISTRACTION": {
+  "руку": null
+ },
+ "card:DIVINE_SHOT": {
+  "Пронзает": null,
+  "стрелой": null
+ },
+ "card:DODGE_AND_ROLL": {
+  "защиты": null
+ },
+ "card:DOMINATE": {
+  "силы": null,
+  "уязвимости": null,
+  "уязвимость": "power:VULNERABLE"
+ },
+ "card:DOUBT": {
+  "руке": null,
+  "слабости": null
+ },
+ "card:DOWSING": {
+  "?": null,
+  "Изобилие": "card:ABUNDANCE"
+ },
+ "card:DRAIN_POWER": {
+  "Улучшает": null,
+  "стопке сброса": null
+ },
+ "card:DREDGE": {
+  "стопки сброса": null
+ },
+ "card:DRUM_OF_BATTLE": {
+  "сжигается": "keyword:EXHAUST"
+ },
+ "card:DUALCAST": {
+  "Разряжает": null
+ },
+ "card:DUAL_WIELD": {
+  "руки": null,
+  "руку": null
+ },
+ "card:DYING_STAR": {
+  "силы": null
+ },
+ "card:ECSTASY": {
+  "«Отраду»": null,
+  "«Печаль»": null,
+  "Преобразует": null,
+  "руке": null
+ },
+ "card:EIDOLON": {
+  "стопки пепла": null,
+  "эфирные": null
+ },
+ "card:END_OF_DAYS": {
+  "злого рока": null,
+  "злой рок": "power:DOOM"
+ },
+ "card:ENFEEBLING_TOUCH": {
+  "силы": null
+ },
+ "card:ENLIGHTENMENT": {
+  "руке": null
+ },
+ "card:ENNUI": {
+  "«Печаль»": null,
+  "руку": null
+ },
+ "card:ENRAPTURE": {
+  "бодрости": null,
+  "растяжки": null
+ },
+ "card:ENTHRALLED": {
+  "руке": null
+ },
+ "card:ENTRENCH": {
+  "защиту": null
+ },
+ "card:ENTROPY": {
+  "Преобразует": null,
+  "руке": null
+ },
+ "card:ENVENOM": {
+  "яда": null
+ },
+ "card:EPIC_RETRIEVAL": {
+  "извлекает": null,
+  "стрелу": null
+ },
+ "card:EQUILIBRIUM": {
+  "защиты": null,
+  "оставляете": null,
+  "руке": null
+ },
+ "card:ESCAPE_PLAN": {
+  "защиты": null
+ },
+ "card:ETERNAL_ARMOR": {
+  "панциря": null
+ },
+ "card:EVIL_EYE": {
+  "защиты": null,
+  "сжигали": null
+ },
+ "card:EXPECT_A_FIGHT": {
+  "защиты": null,
+  "руке": null
+ },
+ "card:EXPERTISE": {
+  "оставляете": null,
+  "руке": null
+ },
+ "card:EXPLOSIVE_ARROWS": {
+  "пронзаете": null,
+  "стрелой": null
+ },
+ "card:EXPOSE": {
+  "артефакты": null,
+  "защиту": null,
+  "уязвимости": null
+ },
+ "card:FADE": {
+  "ловкости": null
+ },
+ "card:FALLING_STAR": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:FAN_OF_KNIVES": {
+  "«Заточки»": null,
+  "руку": null
+ },
+ "card:FASTEN": {
+  "защиту": null
+ },
+ "card:FEAR": {
+  "уязвимости": null
+ },
+ "card:FEED": {
+  "казнит": null
+ },
+ "card:FEEDING_FRENZY": {
+  "силы": null
+ },
+ "card:FEEL_NO_PAIN": {
+  "защиты": null,
+  "сжигается": "keyword:EXHAUST"
+ },
+ "card:FERAL": {
+  "руку": null
+ },
+ "card:FETCH": {
+  "Костя": null
+ },
+ "card:FIEND_FIRE": {
+  "Сжигает": null,
+  "руке": null
+ },
+ "card:FIGHT_ME": {
+  "силы": null
+ },
+ "card:FIGHT_THROUGH": {
+  "«Раны»": null,
+  "защиты": null,
+  "стопку сброса": null
+ },
+ "card:FINESSE": {
+  "защиты": null
+ },
+ "card:FISTICUFFS": {
+  "защиту": null
+ },
+ "card:FLAK_CANNON": {
+  "Сжигает": null
+ },
+ "card:FLAME_BARRIER": {
+  "защиты": null
+ },
+ "card:FLATTEN": {
+  "Костя": null
+ },
+ "card:FLECHETTES": {
+  "руке": null
+ },
+ "card:FLORESCENCE": {
+  "«Выстрел+»": null,
+  "«Выстрел»": null,
+  "Преобразует": null,
+  "руке": null
+ },
+ "card:FOCUSED_STRIKE": {
+  "фокуса": null
+ },
+ "card:FOOLISH_SHOT": {
+  "Пронзает": null,
+  "стрелой": null
+ },
+ "card:FOOTWORK": {
+  "ловкости": null
+ },
+ "card:FORBIDDEN_GRIMOIRE": {
+  "колоды": null
+ },
+ "card:FOREGONE_CONCLUSION": {
+  "стопки добора": null
+ },
+ "card:FORGOTTEN_RITUAL": {
+  "сжигали": null
+ },
+ "card:FRANTIC_ESCAPE": {
+  "«Зыбучие пески»": null
+ },
+ "card:FRIENDSHIP": {
+  "силы": null
+ },
+ "card:FURNACE": {
+  "Закаляет": null
+ },
+ "card:FUSION": {
+  "Заряжает": null,
+  "сферу плазмы": null
+ },
+ "card:GAMMA_BLAST": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:GATHER_LIGHT": {
+  "защиты": null
+ },
+ "card:GENETIC_ALGORITHM": {
+  "защита": "keyword:BLOCK",
+  "защиты": null
+ },
+ "card:GHOST_EATER": {
+  "злого рока": null,
+  "злой рок": null
+ },
+ "card:GLACIER": {
+  "Заряжает": null,
+  "защиты": null,
+  "сферы льда": null
+ },
+ "card:GLASSWORK": {
+  "Заряжает": null,
+  "защиты": null,
+  "сферу стекла": null
+ },
+ "card:GLIMMER": {
+  "руки": null,
+  "стопки добора": null
+ },
+ "card:GLIMPSE_BEYOND": {
+  "стопку добора": null
+ },
+ "card:GLITTERSTREAM": {
+  "защиты": null
+ },
+ "card:GOOD_INSTINCTS": {
+  "защиты": null
+ },
+ "card:GO_FOR_THE_EYES": {
+  "слабости": null
+ },
+ "card:GRAND_FINALE": {
+  "стопке добора": null
+ },
+ "card:GRAVEBLAST": {
+  "стопки сброса": null
+ },
+ "card:GRAVE_WARDEN": {
+  "«Душу»": null,
+  "защиты": null,
+  "стопку добора": null
+ },
+ "card:GROWTH": {
+  "«Печаль»": null,
+  "Преобразует": null,
+  "защиты": null,
+  "руке": null
+ },
+ "card:GUARDS": {
+  "«Слуг-защитников+»": null,
+  "«Слуг-защитников»": null,
+  "Преобразует": null,
+  "преобразовать": null,
+  "руке": null
+ },
+ "card:GUILTY": {
+  "колоды": null
+ },
+ "card:GUNK_UP": {
+  "«Слизь»": null,
+  "стопку сброса": null
+ },
+ "card:HAILSTORM": {
+  "сфера льда": "keyword:FROST_ORB"
+ },
+ "card:HAMMER_TIME": {
+  "закаляете": null,
+  "закаляют": null
+ },
+ "card:HAND_OF_GREED": {
+  "золота": null,
+  "казнит": null
+ },
+ "card:HAND_TRICK": {
+  "защиты": null,
+  "коварной": null,
+  "коварным": null,
+  "руке": null
+ },
+ "card:HARMONIC_SHIELD": {
+  "защиты": null,
+  "мелодию": null
+ },
+ "card:HAUNT": {
+  "«Душу»": null
+ },
+ "card:HAVOC": {
+  "сжигаете": null,
+  "стопки добора": null
+ },
+ "card:HAZE": {
+  "слабости": null,
+  "яда": null
+ },
+ "card:HEADBUTT": {
+  "стопки добора": null,
+  "стопки сброса": null
+ },
+ "card:HEAVY_SHOT": {
+  "Пронзает": null,
+  "Тяга": "power:AIM",
+  "стрелой": null
+ },
+ "card:HEIRLOOM_HAMMER": {
+  "руке": null,
+  "руку": null
+ },
+ "card:HELLO_WORLD": {
+  "руку": null
+ },
+ "card:HIBERNATE": {
+  "Заряжает": null,
+  "защиту": null,
+  "сферы льда": null
+ },
+ "card:HIDDEN_DAGGERS": {
+  "руку": null
+ },
+ "card:HIDDEN_GEM": {
+  "повтор": "keyword:REPLAY",
+  "повтора": null,
+  "стопке добора": null
+ },
+ "card:HIDDEN_ROOTS": {
+  "растяжки": null
+ },
+ "card:HIGH_FIVE": {
+  "Костя": null,
+  "уязвимости": null
+ },
+ "card:HOBBLING_SHOT": {
+  "Пронзает": null,
+  "слабости": null,
+  "стрелой": null,
+  "уязвимости": null
+ },
+ "card:HOLOGRAM": {
+  "защиты": null,
+  "стопки сброса": null
+ },
+ "card:HONING": {
+  "Стрелы": null
+ },
+ "card:HOTFIX": {
+  "фокуса": null
+ },
+ "card:HOWL_FROM_BEYOND": {
+  "стопке пепла": null
+ },
+ "card:HYPERBEAM": {
+  "фокуса": null
+ },
+ "card:ICE_LANCE": {
+  "Заряжает": null
+ },
+ "card:IGNITION": {
+  "заряжает": null,
+  "сферу плазмы": null
+ },
+ "card:IMMORTALITY": {
+  "неосязаемости": null
+ },
+ "card:IMPALE": {
+  "яда": null
+ },
+ "card:IMPATIENCE": {
+  "руке": null
+ },
+ "card:IMPERVIOUS": {
+  "защиты": null
+ },
+ "card:INFECTION": {
+  "руке": null
+ },
+ "card:INFERNAL_BLADE": {
+  "руку": null
+ },
+ "card:INFINITE_BLADES": {
+  "«Заточку»": null,
+  "руку": null
+ },
+ "card:INFLAME": {
+  "силы": null
+ },
+ "card:INTERCEPT": {
+  "защиты": null
+ },
+ "card:INVOKE": {
+  "призовет": null
+ },
+ "card:IRON_WAVE": {
+  "защиты": null
+ },
+ "card:I_AM_INVINCIBLE": {
+  "защиты": null,
+  "стопки добора": null
+ },
+ "card:JACKPOT": {
+  "руку": null,
+  "улучшенную": null,
+  "улучшенные": null,
+  "улучшенных": null
+ },
+ "card:JACK_OF_ALL_TRADES": {
+  "руку": null
+ },
+ "card:JEST": {
+  "«Печаль»": null,
+  "защиты": null,
+  "руку": null
+ },
+ "card:JUGGERNAUT": {
+  "защиту": null
+ },
+ "card:JUGGLING": {
+  "Атаки": null,
+  "руку": null
+ },
+ "card:KI_CHANT": {
+  "стопки добора": null
+ },
+ "card:KI_HOP": {
+  "пронзен": null
+ },
+ "card:KI_REST": {
+  "мелодия Ва": "keyword:WAH_MELODY",
+  "мелодия Чу": "keyword:CHO_MELODY",
+  "оставляете": null,
+  "руке": null
+ },
+ "card:KNIFE_TRAP": {
+  "«Заточки»": null,
+  "сожженные": null,
+  "улучшаются": null
+ },
+ "card:KNOW_THY_PLACE": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:LARGESSE": {
+  "руку": null,
+  "улучшенную": null
+ },
+ "card:LEADING_STRIKE": {
+  "руку": null
+ },
+ "card:LEAP": {
+  "защиты": null
+ },
+ "card:LEGION_OF_BONE": {
+  "призывают": null
+ },
+ "card:LEG_SWEEP": {
+  "защиты": null,
+  "слабости": null
+ },
+ "card:LIFT": {
+  "защиты": null
+ },
+ "card:LIGHTNING_ROD": {
+  "Зарядит": null,
+  "Заряжает": null,
+  "защиты": null,
+  "сферу молнии": null
+ },
+ "card:LOCKED_IN": {
+  "пронзить": null,
+  "стопки добора": null,
+  "стрелой": null
+ },
+ "card:LOST_LUTE": {
+  "мелодию": null,
+  "стопки добора": null
+ },
+ "card:LULLABY": {
+  "защиты": null,
+  "мелодии": null
+ },
+ "card:MAD_SCIENCE": {
+  "Улучшает": null,
+  "защиты": null,
+  "ловкости": null,
+  "руку": null,
+  "силы": null,
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:MAKE_IT_SO": {
+  "руку": null
+ },
+ "card:MALAISE": {
+  "силы": null,
+  "слабости": null
+ },
+ "card:MANGLE": {
+  "силы": null
+ },
+ "card:MANIFEST_AUTHORITY": {
+  "защиты": null,
+  "руку": null,
+  "улучшенную": null
+ },
+ "card:MASTER_PLANNER": {
+  "коварными": null
+ },
+ "card:MAYHEM": {
+  "стопки добора": null
+ },
+ "card:MELANCHOLY": {
+  "защиты": null
+ },
+ "card:MELODIC_SHOT": {
+  "Пронзает": null,
+  "мелодию": null,
+  "стрелой": null
+ },
+ "card:METAMORPHOSIS": {
+  "стопку добора": null
+ },
+ "card:METEOR_SHOWER": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:METEOR_STRIKE": {
+  "Заряжает": null,
+  "сферы плазмы": null
+ },
+ "card:MIDNIGHT": {
+  "сожженную": null
+ },
+ "card:MIGHTY_SHIELD": {
+  "«Головокружение»": null,
+  "«Головокружений»": null,
+  "«Головокружения»": null,
+  "защиты": null,
+  "стопку добора": null
+ },
+ "card:MIGHTY_WEAPON": {
+  "«Головокружение»": null,
+  "«Головокружений»": null,
+  "«Головокружения»": null,
+  "стопку добора": null
+ },
+ "card:MIMIC": {
+  "защите": null,
+  "защиту": null
+ },
+ "card:MIND_BLAST": {
+  "стопке добора": null
+ },
+ "card:MINION_SACRIFICE": {
+  "защиты": null
+ },
+ "card:MIRAGE": {
+  "защиту": null,
+  "защиты": null,
+  "яду": null
+ },
+ "card:MOLTEN_FIST": {
+  "уязвимости": null
+ },
+ "card:MONARCHS_GAZE": {
+  "силы": null
+ },
+ "card:MONOLOGUE": {
+  "силы": null
+ },
+ "card:MOTIF": {
+  "мелодию": null
+ },
+ "card:MOURNING_BLOW": {
+  "«Печаль»": null,
+  "руку": null
+ },
+ "card:MULTI_CAST": {
+  "Разряжает": null
+ },
+ "card:MYTHIC_FORM": {
+  "руку": null,
+  "таро": "keyword:TAROT"
+ },
+ "card:MY_SHINIES": {
+  "золота": null
+ },
+ "card:NAIL": {
+  "пронзен": null,
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:NECRO_MASTERY": {
+  "Костя": null,
+  "Призывает": null
+ },
+ "card:NEGATIVE_PULSE": {
+  "защиты": null,
+  "злого рока": null
+ },
+ "card:NEOWS_FURY": {
+  "стопки сброса": null
+ },
+ "card:NEUROSURGE": {
+  "злого рока": null
+ },
+ "card:NEUTRALIZE": {
+  "слабости": null
+ },
+ "card:NEUTRON_AEGIS": {
+  "панциря": null
+ },
+ "card:NIGHTMARE": {
+  "руке": null,
+  "руку": null
+ },
+ "card:NOCK": {
+  "тяги": null
+ },
+ "card:NOSTALGIA": {
+  "стопки добора": null
+ },
+ "card:NOXIOUS_FUMES": {
+  "яда": null
+ },
+ "card:NO_ESCAPE": {
+  "злого рока": null
+ },
+ "card:NULL": {
+  "Заряжает": null,
+  "слабости": null,
+  "сферу тьмы": null
+ },
+ "card:OBLIVION": {
+  "злого рока": null
+ },
+ "card:OFF_BY_ONE": {
+  "руке": null
+ },
+ "card:OPTIMISM": {
+  "\"Печаль\"": null,
+  "Сжигает": null,
+  "руке": null,
+  "сожженную": null
+ },
+ "card:OUTBREAK": {
+  "Яд": "power:POISON",
+  "яда": null
+ },
+ "card:OUTRAGE": {
+  "стопку сброса": null
+ },
+ "card:OVERCLOCK": {
+  "«Ожог»": null,
+  "стопку сброса": null
+ },
+ "card:PACTS_END": {
+  "стопке пепла": null
+ },
+ "card:PAELS_STRIKE": {
+  "колоде": null
+ },
+ "card:PAGESTORM": {
+  "эфирную": null
+ },
+ "card:PANIC_BUTTON": {
+  "защиту": null,
+  "защиты": null
+ },
+ "card:PARRY": {
+  "Клинок монарха": "card:SOVEREIGN_BLADE",
+  "защиты": null
+ },
+ "card:PARTICLE_WALL": {
+  "защиты": null,
+  "руку": null
+ },
+ "card:PATTER": {
+  "бодрости": null,
+  "защиты": null
+ },
+ "card:PHANTOM_BLADES": {
+  "«Заточка»": null,
+  "«Заточки»": null,
+  "оставляются": null
+ },
+ "card:PHOTON_CUT": {
+  "руки": null,
+  "стопки добора": null
+ },
+ "card:PIERCING_WAIL": {
+  "силы": null
+ },
+ "card:PILLAR_OF_CREATION": {
+  "защиты": null
+ },
+ "card:POISONED_STAB": {
+  "яда": null
+ },
+ "card:POKE": {
+  "Костя": null
+ },
+ "card:PRECISE_CUT": {
+  "руке": null
+ },
+ "card:PREP_TIME": {
+  "бодрости": null
+ },
+ "card:PRIMAL_FORCE": {
+  "«Булыжники+»": null,
+  "«Булыжники»": null,
+  "Преобразует": null,
+  "руке": null
+ },
+ "card:PROLONG": {
+  "защите": null,
+  "защиту": null
+ },
+ "card:PROTECTOR": {
+  "Кости": null,
+  "Костя": null,
+  "максимальным ОЗ": null
+ },
+ "card:PROWESS": {
+  "ловкости": null,
+  "силы": null
+ },
+ "card:PULL_AGGRO": {
+  "Призывает": null,
+  "защиты": null
+ },
+ "card:PULL_FROM_BELOW": {
+  "эфирную": null
+ },
+ "card:PUNCH_OF_JOY": {
+  "«Отраду»": null,
+  "«Отрады»": null,
+  "«Печалей»": null,
+  "«Печали»": null,
+  "«Печаль»": null,
+  "Преобразует": null,
+  "руке": null
+ },
+ "card:PURITY": {
+  "Сжигает": null,
+  "руке": null,
+  "сжечь": null
+ },
+ "card:PUTREFY": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:QUADCAST": {
+  "Разряжает": null
+ },
+ "card:QUASAR": {
+  "руку": null,
+  "улучшенных": null
+ },
+ "card:QUICK_SHOT": {
+  "Пронзает": null,
+  "стрелой": null
+ },
+ "card:QUIETUS": {
+  "стрела": "keyword:ARROW"
+ },
+ "card:QUIVER": {
+  "стрел": null,
+  "стрелу": null,
+  "стрелы": null
+ },
+ "card:RAGE": {
+  "защиты": null
+ },
+ "card:RAINBOW": {
+  "Заряжает": null,
+  "сферу льда": null,
+  "сферу молнии": null,
+  "сферу тьмы": null
+ },
+ "card:RAIN_SHOT": {
+  "Пронзает": null,
+  "стрелой": null
+ },
+ "card:RALLY": {
+  "защиты": null
+ },
+ "card:RATTLE": {
+  "Кости": null,
+  "Костя": null
+ },
+ "card:REANIMATE": {
+  "Призывает": null
+ },
+ "card:REAPER_FORM": {
+  "злой рок": "power:DOOM"
+ },
+ "card:REAVE": {
+  "«Душу+»": null,
+  "«Душу»": null,
+  "стопку добора": null
+ },
+ "card:REBOOT": {
+  "стопку добора": null
+ },
+ "card:REBOUND": {
+  "стопки добора": null
+ },
+ "card:RECALL": {
+  "извлекаете": null,
+  "пронзен": null,
+  "стрелу": null
+ },
+ "card:REFINE_BLADE": {
+  "Закаляет": null
+ },
+ "card:REFLECT": {
+  "защите": null,
+  "защиты": null
+ },
+ "card:REFRACT": {
+  "Заряжает": null
+ },
+ "card:REGRET": {
+  "руке": null
+ },
+ "card:RELAX": {
+  "защиты": null
+ },
+ "card:REPEAT_SHOT": {
+  "Пронзает": null,
+  "стрелой": null
+ },
+ "card:RESONANCE": {
+  "силы": null
+ },
+ "card:RESTLESSNESS": {
+  "руке": null
+ },
+ "card:RHYTHM_STRIKE": {
+  "мелодию": null
+ },
+ "card:RIGHT_HAND_HAND": {
+  "Костя": null,
+  "стопки сброса": null
+ },
+ "card:ROYALTIES": {
+  "золота": null
+ },
+ "card:RUMMAGE": {
+  "«Печаль»": null,
+  "руку": null
+ },
+ "card:RUPTURE": {
+  "силы": null
+ },
+ "card:SACRIFICE": {
+  "Костя": null,
+  "защиту": null,
+  "защиты": null
+ },
+ "card:SALVO": {
+  "оставляете": null,
+  "руке": null
+ },
+ "card:SCAVENGE": {
+  "Сжигает": null
+ },
+ "card:SCOURGE": {
+  "злого рока": null
+ },
+ "card:SCRAWL": {
+  "рука": null
+ },
+ "card:SCULPTING_STRIKE": {
+  "руке": null,
+  "эфирной": null
+ },
+ "card:SEANCE": {
+  "«Душу»": null,
+  "Преобразует": null,
+  "стопке добора": null
+ },
+ "card:SECOND_WIND": {
+  "Сжигает": null,
+  "защиты": null,
+  "руке": null
+ },
+ "card:SECRET_TECHNIQUE": {
+  "стопки добора": null
+ },
+ "card:SECRET_WEAPON": {
+  "стопки добора": null
+ },
+ "card:SEEKER_STRIKE": {
+  "стопки добора": null
+ },
+ "card:SEEKING_EDGE": {
+  "Закаляет": null,
+  "Клинок монарха": "card:SOVEREIGN_BLADE"
+ },
+ "card:SELF_DEPRECATE": {
+  "«Отрад»": null,
+  "«Отраду»": null,
+  "«Отрады»": null,
+  "«Печалей»": null,
+  "«Печали»": null,
+  "«Печаль»": null,
+  "руку": null
+ },
+ "card:SENTRY_MODE": {
+  "руку": null
+ },
+ "card:SERRATED_ARROWS": {
+  "Пронзенные": null
+ },
+ "card:SETUP_STRIKE": {
+  "силы": null
+ },
+ "card:SEVERANCE": {
+  "«Душу»": null,
+  "руку": null,
+  "стопку добора": null,
+  "стопку сброса": null
+ },
+ "card:SHADOWMELD": {
+  "защиту": null
+ },
+ "card:SHADOW_SHIELD": {
+  "Заряжает": null,
+  "защиты": null,
+  "сферу тьмы": null
+ },
+ "card:SHAME": {
+  "руке": null,
+  "хрупкости": null
+ },
+ "card:SHARED_FATE": {
+  "силы": null
+ },
+ "card:SHARP_EDGE": {
+  "«Заточки»": null,
+  "Улучшает": null
+ },
+ "card:SHATTER": {
+  "Разряжает": null
+ },
+ "card:SHINING_STRIKE": {
+  "стопки добора": null
+ },
+ "card:SHOCKWAVE": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:SHOW_OFF": {
+  "тяги": null,
+  "тягу": null
+ },
+ "card:SHROUD": {
+  "защиты": null,
+  "злой рок": "power:DOOM"
+ },
+ "card:SHRUG_IT_OFF": {
+  "защиты": null
+ },
+ "card:SIC_EM": {
+  "Костя": null,
+  "Призывает": null
+ },
+ "card:SIMPLETON": {
+  "руки": null
+ },
+ "card:SKY_SHOT": {
+  "Пронзает": null,
+  "стрелой": null
+ },
+ "card:SNAKEBITE": {
+  "яда": null
+ },
+ "card:SNAP": {
+  "Костя": null,
+  "оставить": null,
+  "оставляется": "keyword:RETAIN",
+  "руке": null
+ },
+ "card:SNEAKY": {
+  "защиты": null
+ },
+ "card:SONG_PATH": {
+  "защиты": null,
+  "мелодию Чу": null
+ },
+ "card:SOULBOUND": {
+  "«Душу»": null,
+  "стопку добора": null
+ },
+ "card:SOUL_STORM": {
+  "«Душу»": null,
+  "стопке пепла": null
+ },
+ "card:SOVEREIGN_BLADE": {
+  "защиты": null
+ },
+ "card:SPECTRUM_SHIFT": {
+  "руку": null
+ },
+ "card:SPINNER": {
+  "Заряжает": null,
+  "сферу стекла": null
+ },
+ "card:SPIRIT_OF_ASH": {
+  "защиты": null,
+  "эфирную": null
+ },
+ "card:SPLASH": {
+  "руку": null,
+  "улучшенных": null
+ },
+ "card:SPOILS_MAP": {
+  "золота": null
+ },
+ "card:SPOILS_OF_BATTLE": {
+  "Закаляет": null
+ },
+ "card:SPUR": {
+  "Костя": null,
+  "Призывает": null
+ },
+ "card:SQUASH": {
+  "уязвимости": null
+ },
+ "card:SQUEEZE": {
+  "Кости": null,
+  "Костя": null
+ },
+ "card:STACK": {
+  "защиту": null,
+  "защиты": null,
+  "стопке сброса": null
+ },
+ "card:STAMPEDE": {
+  "руки": null
+ },
+ "card:STAR_BLAST": {
+  "защиты": null
+ },
+ "card:STAR_SHIELD": {
+  "защиты": null
+ },
+ "card:STEADY_CADENCE": {
+  "мелодию": null
+ },
+ "card:STOKE": {
+  "Сжигает": null,
+  "руке": null,
+  "руку": null,
+  "сожженную": null,
+  "улучшенной": null
+ },
+ "card:STONE_ARMOR": {
+  "панциря": null
+ },
+ "card:STORM": {
+  "Заряжает": null
+ },
+ "card:STORM_OF_STEEL": {
+  "«Заточке+»": null,
+  "«Заточке»": null,
+  "руку": null
+ },
+ "card:STRATAGEM": {
+  "стопка добора": null
+ },
+ "card:STRENGTH": {
+  "силы": null
+ },
+ "card:SUCKER_PUNCH": {
+  "слабости": null
+ },
+ "card:SUMMON_FORTH": {
+  "Закаляет": null,
+  "Клинок монарха": "card:SOVEREIGN_BLADE",
+  "руку": null
+ },
+ "card:SUPPRESS": {
+  "слабости": null
+ },
+ "card:SURVIVOR": {
+  "защиты": null
+ },
+ "card:SWEEPING_GAZE": {
+  "Костя": null
+ },
+ "card:SWORD_SAGE": {
+  "Клинок монарха": "card:SOVEREIGN_BLADE"
+ },
+ "card:SYNCHRONIZE": {
+  "фокуса": null
+ },
+ "card:TAUNT": {
+  "защиты": null,
+  "уязвимости": null
+ },
+ "card:TEMPERANCE": {
+  "защиты": null
+ },
+ "card:TEMPEST": {
+  "Заряжает": null,
+  "сфер молнии": null
+ },
+ "card:TERRAFORMING": {
+  "бодрости": null
+ },
+ "card:TESLA_COIL": {
+  "сфер молнии": null
+ },
+ "card:TEZCATARAS_MIGHT": {
+  "силы": null
+ },
+ "card:THE_DEVIL": {
+  "Сжигает": null,
+  "руке": null,
+  "стопки добора": null,
+  "улучшаете": null
+ },
+ "card:THE_EMPRESS": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:THE_FOOL": {
+  "руки": null
+ },
+ "card:THE_GAMBIT": {
+  "защиты": null
+ },
+ "card:THE_HERMIT": {
+  "проклятия": null,
+  "сжигаются": null
+ },
+ "card:THE_HIEROPHANT": {
+  "руку": null
+ },
+ "card:THE_HUNT": {
+  "казнит": null
+ },
+ "card:THE_LOVERS": {
+  "руку": null
+ },
+ "card:THE_MAGICIAN": {
+  "Заряжает": null
+ },
+ "card:THE_MOON": {
+  "«Заточками+»": null,
+  "«Заточками»": null,
+  "руку": null
+ },
+ "card:THE_SHOT": {
+  "Пронзает": null,
+  "стрелой": null
+ },
+ "card:THE_SMITH": {
+  "Закаляет": null
+ },
+ "card:THE_SUN": {
+  "«Сажи»": null,
+  "стопку добора": null
+ },
+ "card:THE_WORLD": {
+  "стопки сброса": null
+ },
+ "card:THINKING_AHEAD": {
+  "руки": null,
+  "стопки добора": null
+ },
+ "card:THRASH": {
+  "Сжигает": null,
+  "руке": null
+ },
+ "card:THRUMMING_HATCHET": {
+  "руку": null
+ },
+ "card:THUNDER": {
+  "разряженная молния": null
+ },
+ "card:THUNDERCLAP": {
+  "уязвимости": null
+ },
+ "card:TIMES_UP": {
+  "злому року": null
+ },
+ "card:TORIC_TOUGHNESS": {
+  "защиты": null
+ },
+ "card:TOXIC": {
+  "руке": null
+ },
+ "card:TRACKING": {
+  "Слабые": null
+ },
+ "card:TRAINING_STRIKE": {
+  "казнит": null
+ },
+ "card:TRANSFIGURE": {
+  "повтор": "keyword:REPLAY",
+  "руке": null
+ },
+ "card:TRASH_TO_TREASURE": {
+  "Заряжает": null
+ },
+ "card:TREMBLE": {
+  "уязвимости": null
+ },
+ "card:TRICK_SHOT": {
+  "Пронзает": null,
+  "стрелой": null
+ },
+ "card:TRUE_GRIT": {
+  "Сжигает": null,
+  "защиты": null
+ },
+ "card:TUNE": {
+  "мелодию Ки": null,
+  "руке": null,
+  "улучшает": null
+ },
+ "card:TURBO": {
+  "«Бездну»": null,
+  "стопку сброса": null
+ },
+ "card:TUTOR": {
+  "руку": null,
+  "стопки добора": null
+ },
+ "card:TWIN_SHOT": {
+  "Пронзает": null,
+  "стрелой": null
+ },
+ "card:TYRANNY": {
+  "руке": null,
+  "сжигаете": null
+ },
+ "card:ULTIMATE_DEFEND": {
+  "защиты": null
+ },
+ "card:UNDEATH": {
+  "защиты": null,
+  "стопку сброса": null
+ },
+ "card:UNDERWORLD": {
+  "злой рок": "power:DOOM"
+ },
+ "card:UNLEASH": {
+  "Кости": null,
+  "Костя": null
+ },
+ "card:UNMOVABLE": {
+  "Защита": "keyword:BLOCK"
+ },
+ "card:UNTOUCHABLE": {
+  "защиты": null
+ },
+ "card:UPPERCUT": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "card:UPROAR": {
+  "стопки добора": null
+ },
+ "card:UPROOT": {
+  "Извлекает": null,
+  "пронзен": null,
+  "стрелу": null,
+  "уязвимости": null
+ },
+ "card:UP_MY_SLEEVE": {
+  "руку": null
+ },
+ "card:VEILPIERCER": {
+  "эфирная": "keyword:ETHEREAL"
+ },
+ "card:VETERAN": {
+  "защиты": null,
+  "силы": null
+ },
+ "card:VICIOUS": {
+  "уязвимость": "power:VULNERABLE"
+ },
+ "card:VIOLENT_CHORD": {
+  "мелодию Ва": null
+ },
+ "card:VITRIOL": {
+  "«Печалей»": null,
+  "«Печали»": null,
+  "«Печаль»": null,
+  "руку": null,
+  "слабости": null
+ },
+ "card:VOLTAIC": {
+  "Заряжает": null,
+  "сфер молнии": null
+ },
+ "card:WAH_BLAST": {
+  "мелодия Ки": "keyword:KI_MELODY",
+  "мелодия Чу": "keyword:CHO_MELODY"
+ },
+ "card:WAH_CHO": {
+  "защиты": null
+ },
+ "card:WAH_CHO_KI": {
+  "защиты": null
+ },
+ "card:WAH_HAMMER": {
+  "пронзенным": null
+ },
+ "card:WAH_KI": {
+  "стопки добора": null,
+  "стопки сброса": null
+ },
+ "card:WAH_TOUCH": {
+  "уязвимости": null
+ },
+ "card:WARP_SPACE": {
+  "стопку добора": null
+ },
+ "card:WHISTLE": {
+  "Оглушает": null
+ },
+ "card:WHISTLING_ARROWS": {
+  "защиты": null,
+  "пронзаете": null,
+  "руку": null,
+  "стопки сброса": null,
+  "стрелой": null
+ },
+ "card:WHITE_NOISE": {
+  "руку": null
+ },
+ "card:WISH": {
+  "стопки добора": null
+ },
+ "card:WITHER": {
+  "руке": null
+ },
+ "card:WRAITH_FORM": {
+  "ловкости": null,
+  "неосязаемости": null
+ },
+ "card:WREST": {
+  "извлекаете": null,
+  "пронзен": null,
+  "стрелу": null
+ },
+ "card:WROUGHT_IN_WAR": {
+  "Закаляет": null
+ },
+ "card:YAH": {
+  "извлекаете": null,
+  "стрелу": null
+ },
+ "card:YOGA": {
+  "растяжки": null
+ },
+ "card:ZAP": {
+  "Заряжает": null,
+  "сферу молнии": null
+ },
+ "character:FOOL": {
+  "Шпиле": null
+ },
+ "character:NECROBINDER": {
+  "Костя": null
+ },
+ "dominion:AEONGLASS": {
+  "«Усыхание»": null,
+  "стопки добора": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "ритуал": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "панциря": null
+ },
+ "dominion:KIN": {
+  "слабости": null,
+  "хрупкости": null
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "ловкости": null,
+  "силы": null
+ },
+ "dominion:QUEEN": {
+  "слабости": null,
+  "уязвимости": null,
+  "хрупкости": null
+ },
+ "dominion:SOUL_FYSH": {
+  "«Приворот»": null,
+  "стопку добора": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "силы": null
+ },
+ "dominion:VANTOM": {
+  "изворотливости": null
+ },
+ "enchantment:ADROIT": {
+  "защиты": null
+ },
+ "enchantment:CLONE": {
+  "лагере": null
+ },
+ "enchantment:GLAM": {
+  "повтор": "keyword:REPLAY"
+ },
+ "enchantment:GOOPY": {
+  "защита": null,
+  "сжигается": "keyword:EXHAUST"
+ },
+ "enchantment:INKY": {
+  "слабости": null
+ },
+ "enchantment:NIMBLE": {
+  "защиту": null
+ },
+ "enchantment:PERFECT_FIT": {
+  "стопки добора": null
+ },
+ "enchantment:ROYALLY_APPROVED": {
+  "начальной": null,
+  "оставляется": "keyword:RETAIN"
+ },
+ "enchantment:SOULS_POWER": {
+  "сжигается": "keyword:EXHAUST"
+ },
+ "enchantment:SPIRAL": {
+  "повтор": "keyword:REPLAY"
+ },
+ "enchantment:STEADY": {
+  "оставляется": "keyword:RETAIN"
+ },
+ "enchantment:TEZCATARAS_EMBER": {
+  "вечной": null
+ },
+ "encounter:NEOW_CHOICE": {
+  "Выбор от Ньяу:": null
+ },
+ "epoch:BLITZ_EPOCH": {
+  "Блиц": null,
+  "золото испарилось": null
+ },
+ "epoch:COLORLESS1_EPOCH": {
+  "Шпиле": null
+ },
+ "epoch:COLORLESS2_EPOCH": {
+  "твари воображения": null
+ },
+ "epoch:COLORLESS5_EPOCH": {
+  "золота": null,
+  "золото": null
+ },
+ "epoch:CUSTOM_AND_SEEDS_EPOCH": {
+  "акт": null,
+  "семена Древних": null
+ },
+ "epoch:DAILY_RUN_EPOCH": {
+  "Шпиля": null,
+  "акт": null
+ },
+ "epoch:DARV_EPOCH": {
+  "Древних": null
+ },
+ "epoch:DEFECT2_EPOCH": {
+  "акт": null
+ },
+ "epoch:DEFECT3_EPOCH": {
+  "акт": null
+ },
+ "epoch:DEFECT4_EPOCH": {
+  "Шпиля": null,
+  "акт": null
+ },
+ "epoch:DEFECT7_EPOCH": {
+  "сокровищами": null
+ },
+ "epoch:EVENT1_EPOCH": {
+  "Шпиле": null,
+  "Шпиля": null
+ },
+ "epoch:EVENT2_EPOCH": {
+  "Шпиль": null
+ },
+ "epoch:EVENT3_EPOCH": {
+  "Деревья древних": null
+ },
+ "epoch:FOOL1_EPOCH": {
+  "Шпиле": null
+ },
+ "epoch:FOOL2_EPOCH": {
+  "акт": null
+ },
+ "epoch:FOOL3_EPOCH": {
+  "акт": null
+ },
+ "epoch:FOOL4_EPOCH": {
+  "акт": null
+ },
+ "epoch:IRONCLAD2_EPOCH": {
+  "Шпиль": null,
+  "акт": null
+ },
+ "epoch:IRONCLAD3_EPOCH": {
+  "акт": null
+ },
+ "epoch:IRONCLAD4_EPOCH": {
+  "акт": null
+ },
+ "epoch:IRONCLAD6_EPOCH": {
+  "Шпиля": null
+ },
+ "epoch:IRONCLAD7_EPOCH": {
+  "Шпиля": null
+ },
+ "epoch:NECROBINDER2_EPOCH": {
+  "акт": null
+ },
+ "epoch:NECROBINDER3_EPOCH": {
+  "Отчет о происшествии": null,
+  "акт": null
+ },
+ "epoch:NECROBINDER4_EPOCH": {
+  "акт": null,
+  "загадочных артефактов": null
+ },
+ "epoch:NECROBINDER7_EPOCH": {
+  "Паэль": null
+ },
+ "epoch:POTION1_EPOCH": {
+  "Шпиля": null
+ },
+ "epoch:POTION2_EPOCH": {
+  "Шпилем": null
+ },
+ "epoch:REGENT2_EPOCH": {
+  "акт": null
+ },
+ "epoch:REGENT3_EPOCH": {
+  "Акт": null,
+  "Шпиля": null
+ },
+ "epoch:REGENT4_EPOCH": {
+  "Наследник Звездалии": null,
+  "акт": null
+ },
+ "epoch:REGENT7_EPOCH": {
+  "Танкса": null
+ },
+ "epoch:RELIC1_EPOCH": {
+  "твари воображения": null
+ },
+ "epoch:RELIC2_EPOCH": {
+  "Древний": null
+ },
+ "epoch:SILENT1_EPOCH": {
+  "Шпиль": null,
+  "Шпиля": null
+ },
+ "epoch:SILENT2_EPOCH": {
+  "акт": null
+ },
+ "epoch:SILENT3_EPOCH": {
+  "акт": null
+ },
+ "epoch:SILENT4_EPOCH": {
+  "акт": null
+ },
+ "epoch:SILENT5_EPOCH": {
+  "Шпиль": null
+ },
+ "epoch:UNDERDOCKS_EPOCH": {
+  "Пристани": null,
+  "Пристань": null,
+  "Шпиля": null
+ },
+ "event:ABYSSAL_BATHS": {
+  "глубинных банях": null
+ },
+ "event:AMALGAMATOR": {
+  "«Обороны»": null,
+  "«Удара»": null,
+  "колоду": null,
+  "кружащей спиралью из печатей": null
+ },
+ "event:AROMA_OF_CHAOS": {
+  "Преобразовать": null,
+  "Улучшить": null,
+  "колоде": null,
+  "сокрушаете могучих врагов": null
+ },
+ "event:BATTLEWORN_DUMMY": {
+  "ФАБРИКУ": null,
+  "зелье": null,
+  "карты": null,
+  "реликвию": null
+ },
+ "event:BRAIN_LEECH": {
+  "колоду": null
+ },
+ "event:BUGSLAYER": {
+  "колоду": null,
+  "огромный могучий воин": null,
+  "технику истребления": null,
+  "технику наступления": null
+ },
+ "event:BYRDONIS_NEST": {
+  "колоду": null,
+  "яйцо": null
+ },
+ "event:COLORFUL_PHILOSOPHERS": {
+  "Радужный осколок": null,
+  "лучше всех": null
+ },
+ "event:COLOSSAL_FLOWER": {
+  "Золотой нектар": null,
+  "Сгусток пыльцы": null,
+  "гигантским цветком": null,
+  "золота": null,
+  "золотого нектара": null,
+  "нектар": null,
+  "нектара": null
+ },
+ "event:CRYSTAL_SPHERE": {
+  "большое предсказание": null,
+  "золота": null,
+  "малое предсказание": null,
+  "предсказаний Хрустального шара": null
+ },
+ "event:DENSE_VEGETATION": {
+  "густых зарослях": null,
+  "золота": null,
+  "золото": null,
+  "нечто отвратительное": null
+ },
+ "event:DOLL_ROOM": {
+  "кукольную реликвию": null,
+  "кукольных реликвий": null
+ },
+ "event:DOORS_OF_LIGHT_AND_DARK": {
+  "Вас окружает яркий свет…": null,
+  "Улучшить": null,
+  "колоды": null,
+  "прилив сил": null,
+  "элегантный привратник": null
+ },
+ "event:DROWNING_BEACON": {
+  "линзу": null,
+  "световой камеры": null
+ },
+ "event:ENDLESS_CONVEYOR": {
+  "«Неутолимый голод»": null,
+  "Улучшить": null,
+  "зелье": null,
+  "золота": null,
+  "колоде": null,
+  "колоду": null,
+  "преобразовать": null,
+  "улучшить": null
+ },
+ "event:FIELD_OF_MAN_SIZED_HOLES": {
+  "колоду": null,
+  "колоды": null,
+  "луч света": null,
+  "чары": null
+ },
+ "event:GRAVE_OF_THE_FORGOTTEN": {
+  "колоду": null,
+  "сжечь": null,
+  "чары": null
+ },
+ "event:HUNGRY_FOR_MUSHROOMS": {
+  "тренироваться изо всех сил": null
+ },
+ "event:INFESTED_AUTOMATON": {
+  "Талант": null,
+  "карту с нулевой стоимостью": null,
+  "электричества": null
+ },
+ "event:JUNGLE_MAZE_ADVENTURE": {
+  "золота": null,
+  "лабиринте": null,
+  "лучшее приключение в вашей жизни": null
+ },
+ "event:LOST_WISP": {
+  "золота": null,
+  "колоду": null
+ },
+ "event:LUMINOUS_CHOIR": {
+  "золота": null,
+  "колоду": null,
+  "колоды": null,
+  "реликвию": null
+ },
+ "event:MORPHIC_GROVE": {
+  "Преобразовать": null,
+  "золото": null
+ },
+ "event:POTION_COURIER": {
+  "необычное зелье": null,
+  "перевозчика зелий": null
+ },
+ "event:PUNCH_OFF": {
+  "Агрегаты": null,
+  "боевых агрегатов": null,
+  "бойких агрегатов": null,
+  "колоду": null,
+  "награду получше": null,
+  "реликвию": null
+ },
+ "event:RANWID_THE_ELDER": {
+  "монеты": null,
+  "реликвии": null,
+  "реликвию": null
+ },
+ "event:REFLECTIONS": {
+  "колоду": null
+ },
+ "event:ROOM_FULL_OF_CHEESE": {
+  "«Избранный сыр»": null,
+  "колоду": null,
+  "обычных": null,
+  "сырной комнате": null
+ },
+ "event:ROUND_TEA_PARTY": {
+  "военачальников": null,
+  "деньги на бочку": null,
+  "золотой короне": null,
+  "реликвию": null,
+  "чаепитии за круглым столом": null
+ },
+ "event:SAPPHIRE_SEED": {
+  "Цвета кажутся ярче": null,
+  "колоде": null,
+  "повысить выносливость": null,
+  "улучшить": null,
+  "чары": null
+ },
+ "event:SELF_HELP_BOOK": {
+  "чары": null
+ },
+ "event:SHRINE_OF_THE_WARLORD": {
+  "артефакта": null,
+  "колоду": null
+ },
+ "event:SLIPPERY_BRIDGE": {
+  "Не-е-е-е-ет!": null,
+  "колоды": null,
+  "скользкого моста": null
+ },
+ "event:SPIRALING_WHIRLPOOL": {
+  "«Оборону»": null,
+  "«Спасибо тебе!»": null,
+  "«Удар»": null,
+  "колоду": null,
+  "реликвию": null,
+  "чары": null
+ },
+ "event:SPIRIT_GRAFTER": {
+  "«Метаморфоза»": null,
+  "колоду": null,
+  "свет": null,
+  "улучшить": null
+ },
+ "event:STONE_OF_ALL_TIME": {
+  "«Вечный камень»": null,
+  "чары": null
+ },
+ "event:SUNKEN_STATUE": {
+  "блестело": null,
+  "блещет": null,
+  "золота": null,
+  "монеты": null
+ },
+ "event:SUNKEN_TREASURY": {
+  "Второй сундук": null,
+  "золота": null,
+  "золото": null,
+  "первый сундук": null,
+  "сундука": null
+ },
+ "event:SYMBIOTE": {
+  "преобразовать": null,
+  "чары": null
+ },
+ "event:TABLET_OF_TRUTH": {
+  "истина": null,
+  "истины": null,
+  "последнее слово": null,
+  "скрижаль истины": null,
+  "улучшить": null
+ },
+ "event:TEA_MASTER": {
+  "1.": null,
+  "2.": null,
+  "3.": null,
+  "4.": null,
+  "5.": null,
+  "Цены довольно высокие": null,
+  "золота": null
+ },
+ "event:THERMAE_NONUPEIPE": {
+  "золота": null,
+  "золото": null,
+  "колоду": null
+ },
+ "event:THE_FUTURE_OF_POTIONS": {
+  "улучшенная": null
+ },
+ "event:THE_LANTERN_KEY": {
+  "Таинственный рыцарь": null,
+  "золота": null
+ },
+ "event:THE_LEGENDS_WERE_TRUE": {
+  "«Карту сокровищ»": null,
+  "зелье": null
+ },
+ "event:THIS_OR_THAT": {
+  "золота": null,
+  "колоду": null,
+  "ни первое, ни второе": null,
+  "подозрительный мешок с золотом": null,
+  "реликвию": null
+ },
+ "event:TINKER_TIME": {
+  "Улучшает": null,
+  "колоду": null,
+  "ловкости": null,
+  "руку": null,
+  "силы": null,
+  "слабости": null,
+  "уязвимости": null
+ },
+ "event:TRASH_HEAP": {
+  "золота": null,
+  "интересное": null,
+  "побрякушек": null,
+  "реликвию": null,
+  "реликвия из прошлого": null
+ },
+ "event:TRIAL": {
+  "«Приговор!»": null,
+  "Верховный судья": null,
+  "Могущественный дворянин": null,
+  "взятка": null,
+  "дворянин": null,
+  "заседании суда": null,
+  "золота": null,
+  "золотую арку": null,
+  "колоду": null,
+  "могущественный дворянин": null,
+  "подзаработать": null,
+  "преобразовать": null,
+  "приговорное кресло": null,
+  "реликвии": null,
+  "улучшить": null
+ },
+ "event:UNREST_SITE": {
+  "место для привала": null,
+  "небольшую коробочку": null,
+  "реликвию": null
+ },
+ "event:WAR_HISTORIAN_REPY": {
+  "«Ключ-фонарь»": null,
+  "«Лекцию по истории»": null,
+  "Зелья": null,
+  "зелья": null,
+  "реликвии": null,
+  "сундук": null,
+  "сундук с сокровищем": null,
+  "толстый фолиант в кожаной обложке": null
+ },
+ "event:WATERFALL_OF_OBVIOUS_SECRETS": {
+  "«Ветхий кинжал»": null,
+  "золота": null,
+  "золото": null,
+  "колоду": null,
+  "редкую": null
+ },
+ "event:WATERLOGGED_SCRIPTORIUM": {
+  "золота": null,
+  "извивающийся стержень": null,
+  "колючую губку": null,
+  "товары": null,
+  "чары": null
+ },
+ "event:WELCOME_TO_WONGOS": {
+  "значок лучшего покупателя от «Вонго»": null,
+  "золота": null,
+  "обычную реликвию": null
+ },
+ "event:WELLSPRING": {
+  "зелье": null,
+  "колоду": null,
+  "колоды": null,
+  "крохотные светлячки": null
+ },
+ "event:WHISPERING_HOLLOW": {
+  "зелья": null,
+  "золота": null,
+  "монет": null,
+  "новое": null,
+  "преобразовать": null
+ },
+ "event:WOOD_CARVINGS": {
+  "Преобразовать": null,
+  "чары": null
+ },
+ "event:WUPPY_IN_TROUBLE": {
+  "Вопса": null,
+  "вопса": null,
+  "колоду": null
+ },
+ "event:ZEN_WEAVER": {
+  "«Просветление»": null,
+  "золота": null,
+  "золото": null,
+  "колоду": null,
+  "колоды": null
+ },
+ "intent:ATTACK": {
+  "атаковать": null
+ },
+ "intent:BUFF": {
+  "положительный эффект": null
+ },
+ "intent:CARD_DEBUFF": {
+  "порчу": null
+ },
+ "intent:DEBUFF": {
+  "отрицательный эффект": null
+ },
+ "intent:DEBUFF_STRONG": {
+  "отрицательный эффект": null
+ },
+ "intent:DEFEND": {
+  "защититься": null
+ },
+ "intent:ESCAPE": {
+  "сбежать": null
+ },
+ "intent:HEAL": {
+  "восполнить ОЗ": null
+ },
+ "intent:SUMMON": {
+  "монстров": null
+ },
+ "intent:UNKNOWN": {
+  "неизвестны": null
+ },
+ "keyword:ARROW": {
+  "извлечь": null,
+  "пронзен": null,
+  "пронзить": null
+ },
+ "keyword:CARD_REWARD": {
+  "колоду": null
+ },
+ "keyword:CHANNELING": {
+  "разряжается": null
+ },
+ "keyword:COOK": {
+  "колоды": null,
+  "лагере": null,
+  "удалить": null
+ },
+ "keyword:DREAD_ROTATION": {
+  "Марафоне кошмаров": null
+ },
+ "keyword:ENERGY": {
+  "руке": null
+ },
+ "keyword:ETERNAL": {
+  "колоды": null
+ },
+ "keyword:ETHEREAL": {
+  "руке": null,
+  "сжигается": null
+ },
+ "keyword:FORGE": {
+  "Клинка монарха": null,
+  "Клинок монарха": null,
+  "закалка": null,
+  "руку": null
+ },
+ "keyword:INNATE": {
+  "руку": null
+ },
+ "keyword:ROOM_ELITE": {
+  "реликвия": null
+ },
+ "keyword:ROOM_MERCHANT": {
+  "золото": null
+ },
+ "keyword:ROOM_REST": {
+  "улучшить": null
+ },
+ "keyword:ROOM_TREASURE": {
+  "золото": null,
+  "реликвии": null
+ },
+ "keyword:ROOM_UNKNOWN_MERCHANT": {
+  "золото": null
+ },
+ "keyword:SLY": {
+  "сбрасываете": null
+ },
+ "keyword:SUMMON_DYNAMIC": {
+  "Костю": null
+ },
+ "keyword:SUMMON_STATIC": {
+  "Костю": null
+ },
+ "modifier:ALL_STAR": {
+  "бесцветными": null
+ },
+ "modifier:BIG_GAME_HUNTER": {
+  "редкие": null
+ },
+ "modifier:MIDAS": {
+  "лагере": null
+ },
+ "modifier:MURDEROUS": {
+  "силы": null
+ },
+ "modifier:NIGHT_TERRORS": {
+  "лагере": null
+ },
+ "modifier:TERMINAL": {
+  "панциря": null
+ },
+ "monster:GREMLIN_MERC": {
+  "Деньги!": null
+ },
+ "orb:DARK_ORB": {
+  "Пассивный эффект:": null,
+  "Разрядка:": null,
+  "разрядке": null
+ },
+ "orb:FROST_ORB": {
+  "Пассивный эффект:": null,
+  "Разрядка:": null,
+  "защиту": null,
+  "защиты": null
+ },
+ "orb:GLASS_ORB": {
+  "Пассивный эффект:": null,
+  "Разрядка:": null
+ },
+ "orb:LIGHTNING_ORB": {
+  "Пассивный эффект:": null,
+  "Разрядка:": null
+ },
+ "orb:PLASMA_ORB": {
+  "Пассивный эффект:": null,
+  "Разрядка:": null,
+  "фокуса": null
+ },
+ "potion:ASHWATER": {
+  "Сжигает": null,
+  "руке": null,
+  "сжечь": null
+ },
+ "potion:ATTACK_POTION": {
+  "руку": null
+ },
+ "potion:BLESSING_OF_THE_FORGE": {
+  "Улучшает": null,
+  "руке": null
+ },
+ "potion:BLOCK_POTION": {
+  "защиты": null
+ },
+ "potion:BONE_BREW": {
+  "Призывает": null
+ },
+ "potion:BOTTLED_POTENTIAL": {
+  "стопку добора": null
+ },
+ "potion:BOTTLED_SONG": {
+  "руку": null
+ },
+ "potion:COLORLESS_POTION": {
+  "руку": null
+ },
+ "potion:COSMIC_CONCOCTION": {
+  "руку": null,
+  "улучшенную": null,
+  "улучшенные": null,
+  "улучшенных": null
+ },
+ "potion:CRYSTALLINE_EUPHORIA": {
+  "«Отрад»": null,
+  "«Отраду»": null,
+  "«Отрады»": null,
+  "«Печалями»": null,
+  "руку": null
+ },
+ "potion:CUNNING_POTION": {
+  "руку": null,
+  "улучшенных": null
+ },
+ "potion:DEXTERITY_POTION": {
+  "ловкости": null
+ },
+ "potion:DISTILLED_CHAOS": {
+  "стопки добора": null
+ },
+ "potion:DROPLET_OF_PRECOGNITION": {
+  "стопки добора": null
+ },
+ "potion:ESSENCE_OF_DARKNESS": {
+  "Заряжает": null,
+  "слоте": null,
+  "сферу тьмы": null
+ },
+ "potion:FLEX_POTION": {
+  "силы": null
+ },
+ "potion:FOCUS_POTION": {
+  "фокуса": null
+ },
+ "potion:FORTIFIER": {
+  "защиту": null
+ },
+ "potion:FOUL_POTION": {
+  "золота": null,
+  "торговцу": null
+ },
+ "potion:FYSH_OIL": {
+  "ловкости": null,
+  "силы": null
+ },
+ "potion:GHOST_IN_A_JAR": {
+  "неосязаемости": null
+ },
+ "potion:GLOWWATER_POTION": {
+  "Сжигает": null,
+  "руке": null
+ },
+ "potion:HEART_OF_IRON": {
+  "панциря": null
+ },
+ "potion:KINGS_COURAGE": {
+  "Закаляет": null
+ },
+ "potion:LIQUID_MEMORIES": {
+  "стопки сброса": null
+ },
+ "potion:OROBIC_ACID": {
+  "руку": null
+ },
+ "potion:POISON_POTION": {
+  "яда": null
+ },
+ "potion:POTION_OF_BINDING": {
+  "слабости": null,
+  "уязвимости": null
+ },
+ "potion:POTION_OF_DOOM": {
+  "злого рока": null
+ },
+ "potion:POT_OF_GHOULS": {
+  "руку": null
+ },
+ "potion:POWER_POTION": {
+  "руку": null
+ },
+ "potion:PRECISION_POTION": {
+  "тяги": null
+ },
+ "potion:REGEN_POTION": {
+  "регенерации": null
+ },
+ "potion:SHACKLING_POTION": {
+  "силы": null
+ },
+ "potion:SHIP_IN_A_BOTTLE": {
+  "защиты": null
+ },
+ "potion:SKILL_POTION": {
+  "руку": null
+ },
+ "potion:SNECKO_OIL": {
+  "руке": null
+ },
+ "potion:SOLDIERS_STEW": {
+  "«ударом»": null,
+  "повтор": "keyword:REPLAY"
+ },
+ "potion:SPEED_POTION": {
+  "ловкости": null
+ },
+ "potion:STABLE_SERUM": {
+  "оставляете": null,
+  "руке": null
+ },
+ "potion:STRENGTH_POTION": {
+  "силы": null
+ },
+ "potion:TOUCH_OF_INSANITY": {
+  "руке": null
+ },
+ "potion:VULNERABLE_POTION": {
+  "уязвимости": null
+ },
+ "potion:WEAK_POTION": {
+  "слабости": null
+ },
+ "power:ACCELERANT": {
+  "Яд": "power:POISON"
+ },
+ "power:ACCURACY": {
+  "«Заточки»": null
+ },
+ "power:ADAPTATION": {
+  "защиту": null,
+  "ловкости": null
+ },
+ "power:AEONGLASS_DOMINION": {
+  "«Усыхание»": null,
+  "стопки добора": null
+ },
+ "power:AFTERIMAGE": {
+  "защиты": null
+ },
+ "power:AGGRESSION": {
+  "стопки cброса": null,
+  "стопки сброса": null,
+  "улучшается": null,
+  "улучшаются": null
+ },
+ "power:AIM": {
+  "стрела": null
+ },
+ "power:ALL_IS_WELL": {
+  "«Печаль»": null,
+  "защиты": null
+ },
+ "power:ARCHERY": {
+  "тяги": null
+ },
+ "power:ARSENAL": {
+  "силы": null
+ },
+ "power:ARTIFACT": {
+  "Блокирует": null
+ },
+ "power:AUTOMATION": {
+  "энергию": null
+ },
+ "power:BARRICADE": {
+  "Защита": "keyword:BLOCK"
+ },
+ "power:BEACON_OF_HOPE": {
+  "защиту": null,
+  "защиты": null
+ },
+ "power:BIASED_COGNITION": {
+  "фокуса": null
+ },
+ "power:BLOCK_NEXT_TURN": {
+  "защиты": null
+ },
+ "power:BLUR": {
+  "Защита": "keyword:BLOCK"
+ },
+ "power:BURROWED": {
+  "Защита": null,
+  "Оглушается": null,
+  "защиту": null
+ },
+ "power:CALAMITY": {
+  "руку": null
+ },
+ "power:CALCIFY": {
+  "Кости": null
+ },
+ "power:CALL_OF_THE_VOID": {
+  "руку": null,
+  "эфирной": null,
+  "эфирными": null
+ },
+ "power:CHAINS_OF_BINDING": {
+  "запечатывает": null
+ },
+ "power:CHILD_OF_THE_STARS": {
+  "защиты": null
+ },
+ "power:COLOSSUS": {
+  "уязвимых": null
+ },
+ "power:COMPOST": {
+  "энергию": null
+ },
+ "power:CONCOCT": {
+  "яда": null
+ },
+ "power:CONQUEROR": {
+  "Клинка монарха": null,
+  "Клинок монарха": "card:SOVEREIGN_BLADE"
+ },
+ "power:CONSUMING_SHADOW": {
+  "Разряжает": null
+ },
+ "power:CONTRACTILITY": {
+  "защиты": null
+ },
+ "power:COOLANT": {
+  "защиты": null
+ },
+ "power:CORROSIVE_WAVE": {
+  "яда": null
+ },
+ "power:CORRUPTION": {
+  "сжигаются": null
+ },
+ "power:COUNTDOWN": {
+  "злого рока": null
+ },
+ "power:COVERING_FIRE": {
+  "защиты": null,
+  "пронзаете": null,
+  "стрелой": null
+ },
+ "power:CRAB_RAGE": {
+  "защиты": null,
+  "силы": null
+ },
+ "power:CREATIVE_AI": {
+  "руку": null
+ },
+ "power:CRIMSON_MANTLE": {
+  "защиту": null,
+  "защиты": null
+ },
+ "power:CRUELTY": {
+  "Уязвимые": null
+ },
+ "power:CURL_UP": {
+  "защиту": null,
+  "защиты": null
+ },
+ "power:DAMPEN": {
+  "ухудшаются": null
+ },
+ "power:DANSE_MACABRE": {
+  "защиты": null
+ },
+ "power:DARK_EMBRACE": {
+  "сжигается": "keyword:EXHAUST"
+ },
+ "power:DEBILITATE": {
+  "Уязвимость": "power:VULNERABLE",
+  "слабость": "power:WEAK"
+ },
+ "power:DECREE_OF_ENTROPY": {
+  "улучшенную": null,
+  "улучшенные": null,
+  "улучшенных": null
+ },
+ "power:DEMESNE": {
+  "энергии": null
+ },
+ "power:DEMON_FORM": {
+  "силы": null
+ },
+ "power:DESPAIR": {
+  "защиты": null,
+  "злого рока": null
+ },
+ "power:DEVOUR_LIFE": {
+  "«Душу»": null,
+  "Призвать": null,
+  "призываете": null
+ },
+ "power:DEXTERITY": {
+  "защиту": null
+ },
+ "power:DEXTERITY_DOWN": {
+  "ловкости": null,
+  "ловкость": null
+ },
+ "power:DIE_FOR_YOU": {
+  "Костя": null
+ },
+ "power:DISLIKE_YOU": {
+  "стрел": null
+ },
+ "power:ECSTASY": {
+  "«Отраду»": null,
+  "«Отрады»": null,
+  "«Печалей»": null,
+  "«Печали»": null,
+  "«Печаль»": null,
+  "Преобразует": null,
+  "руке": null
+ },
+ "power:ENERGY_NEXT_TURN": {
+  "энергию": null
+ },
+ "power:ENNUI": {
+  "«Печалей»": null,
+  "«Печали»": null,
+  "«Печаль»": null,
+  "руку": null
+ },
+ "power:ENRAGE": {
+  "силы": null
+ },
+ "power:ENTROPY": {
+  "Преобразует": null,
+  "руке": null
+ },
+ "power:ENVENOM": {
+  "яда": null
+ },
+ "power:EXPLOSIVE_ARROWS": {
+  "пронзаете": null
+ },
+ "power:FAN_OF_KNIVES": {
+  "«Заточки»": null
+ },
+ "power:FASTEN": {
+  "защиты": null
+ },
+ "power:FEEL_NO_PAIN": {
+  "защиты": null
+ },
+ "power:FERAL": {
+  "руку": null
+ },
+ "power:FLUTTER": {
+  "50%": null,
+  "Оглушается": null
+ },
+ "power:FOCUS_DOWN": {
+  "фокуса": null
+ },
+ "power:FORBIDDEN_GRIMOIRE": {
+  "колоды": null
+ },
+ "power:FOREGONE_CONCLUSION": {
+  "стопки добора": null
+ },
+ "power:FRAIL": {
+  "защиту": null,
+  "защиты": null
+ },
+ "power:FRIENDSHIP": {
+  "энергии": null
+ },
+ "power:FURNACE": {
+  "закаляете": null
+ },
+ "power:GALVANIC": {
+  "гальваническими": null
+ },
+ "power:HAILSTORM": {
+  "сфера льда": "keyword:FROST_ORB"
+ },
+ "power:HAMMER_TIME": {
+  "закаляете": null,
+  "закаляют": null
+ },
+ "power:HANG": {
+  "«Повешение»": null
+ },
+ "power:HARD_TO_KILL": {
+  "Экзоскелет": null
+ },
+ "power:HAUNT": {
+  "«Душу»": null
+ },
+ "power:HEIST": {
+  "золото": null
+ },
+ "power:HELLO_WORLD": {
+  "руку": null
+ },
+ "power:HEX": {
+  "эфирные": null
+ },
+ "power:HIBERNATE": {
+  "защиту": null,
+  "сферы льда": null
+ },
+ "power:HIDDEN_ROOTS": {
+  "растяжки": null
+ },
+ "power:HIGH_VOLTAGE": {
+  "силы": null
+ },
+ "power:HONING": {
+  "Стрелы": null
+ },
+ "power:IMBALANCED": {
+  "оглушается": null
+ },
+ "power:IMPALED": {
+  "Стрела": null,
+  "извлекается": null,
+  "извлечена": null,
+  "пронзает": null,
+  "стрела": null,
+  "стрелой": null
+ },
+ "power:IMPROVEMENT": {
+  "Улучшает": null
+ },
+ "power:INFINITE_BLADES": {
+  "«Заточек»": null,
+  "«Заточки»": null,
+  "«Заточку»": null,
+  "руку": null
+ },
+ "power:JUGGERNAUT": {
+  "защиту": null
+ },
+ "power:JUGGLING": {
+  "руку": null
+ },
+ "power:LAGAVULIN_MATRIARCH_DOMINION": {
+  "ловкости": null,
+  "силы": null
+ },
+ "power:LIGHTNING_ROD": {
+  "Заряжает": null,
+  "сферу молнии": null
+ },
+ "power:LOST_LUTE": {
+  "мелодию": null,
+  "стопки добора": null
+ },
+ "power:LULLABY": {
+  "защиты": null,
+  "мелодии": null
+ },
+ "power:MASTER_PLANNER": {
+  "коварными": null
+ },
+ "power:MAYHEM": {
+  "стопки добора": null
+ },
+ "power:MELANCHOLY": {
+  "злой рок": null
+ },
+ "power:MONARCHS_GAZE": {
+  "силы": null
+ },
+ "power:MONOLOGUE": {
+  "силы": null
+ },
+ "power:MOTIF": {
+  "мелодию": null
+ },
+ "power:MYTHIC_FORM": {
+  "руку": null,
+  "таро": "keyword:TAROT"
+ },
+ "power:NECRO_MASTERY": {
+  "Костя": null
+ },
+ "power:NEMESIS": {
+  "неосязаемости": null
+ },
+ "power:NEUROSURGE": {
+  "злого рока": null
+ },
+ "power:NIGHTMARE": {
+  "руку": null
+ },
+ "power:NOSTALGIA": {
+  "стопки добора": null
+ },
+ "power:NOXIOUS_FUMES": {
+  "яда": null
+ },
+ "power:NO_BLOCK": {
+  "защиту": null
+ },
+ "power:NO_ESCAPE": {
+  "злого рока": null
+ },
+ "power:OBLIVION": {
+  "злого рока": null
+ },
+ "power:ORB_GENERATOR": {
+  "Сферы": null,
+  "сфер": null
+ },
+ "power:PAGESTORM": {
+  "эфирную": null
+ },
+ "power:PAINFUL_STABS": {
+  "«Рану»": null,
+  "стопку сброса": null
+ },
+ "power:PAPER_CUTS": {
+  "макс. ОЗ": null
+ },
+ "power:PARRY": {
+  "Клинок монарха": null,
+  "защиту": null,
+  "защиты": null
+ },
+ "power:PERSONAL_HIVE": {
+  "«Головокружение»": null,
+  "стопку добора": null
+ },
+ "power:PHANTOM_BLADES": {
+  "«Заточка»": null,
+  "«Заточки»": null,
+  "оставляются": null
+ },
+ "power:PILLAR_OF_CREATION": {
+  "защиты": null
+ },
+ "power:PLATING": {
+  "защиту": null,
+  "защиты": null
+ },
+ "power:PLOW": {
+  "Оглушается": null,
+  "оглушается": null,
+  "силу": null
+ },
+ "power:POISON": {
+  "яд": "power:POISON"
+ },
+ "power:POSSESS_SPEED": {
+  "ловкость": "power:DEXTERITY"
+ },
+ "power:POSSESS_STRENGTH": {
+  "силу": null
+ },
+ "power:PREP_TIME": {
+  "бодрости": null
+ },
+ "power:PYRE": {
+  "энергии": null
+ },
+ "power:QUIETUS": {
+  "пронзившая": null,
+  "стрела": null
+ },
+ "power:RADIANCE": {
+  "энергию": null
+ },
+ "power:RAGE": {
+  "защиты": null
+ },
+ "power:RAMPART": {
+  "защиты": null
+ },
+ "power:RAVENOUS": {
+  "оглушение": "keyword:STUN",
+  "силы": null
+ },
+ "power:READ_THE_BONES": {
+  "призываете": null
+ },
+ "power:REAPER_FORM": {
+  "злой рок": "power:DOOM"
+ },
+ "power:REBOUND": {
+  "стопки добора": null
+ },
+ "power:REFLECT": {
+  "защищаетесь": null
+ },
+ "power:REFLECTIVE_FORTRESS": {
+  "защищаетесь": null
+ },
+ "power:REGEN": {
+  "Регенерация": "power:REGEN",
+  "регенерация": "power:REGEN"
+ },
+ "power:RESERVES": {
+  "энергии": null
+ },
+ "power:RESTORE_DEXTERITY": {
+  "ловкости": null
+ },
+ "power:RESTORE_FOCUS": {
+  "фокуса": null
+ },
+ "power:RETAIN_HAND": {
+  "оставляете": null,
+  "руке": null
+ },
+ "power:RITUAL": {
+  "силу": null,
+  "силы": null
+ },
+ "power:ROYALTIES": {
+  "золота": null
+ },
+ "power:RUPTURE": {
+  "силы": null
+ },
+ "power:SANDPIT": {
+  "Проглота": null
+ },
+ "power:SEEKING_EDGE": {
+  "Клинок монарха": "card:SOVEREIGN_BLADE"
+ },
+ "power:SELF_FORMING_CLAY": {
+  "защиты": null
+ },
+ "power:SENTRY_MODE": {
+  "«Всевидящее око»": null,
+  "руку": null
+ },
+ "power:SERRATED_ARROWS": {
+  "Пронзенные": null
+ },
+ "power:SHADOWMELD": {
+  "защиту": null
+ },
+ "power:SHARP_EDGE": {
+  "«Заточки»": null,
+  "Улучшает": null
+ },
+ "power:SHOW_OFF": {
+  "«Хвастовством»": null,
+  "Тяга": null
+ },
+ "power:SHRIEK": {
+  "Оглушается": null,
+  "оглушается": null
+ },
+ "power:SHROUD": {
+  "защиты": null,
+  "злой рок": "power:DOOM"
+ },
+ "power:SIC_EM": {
+  "Кости": null,
+  "Костя": null,
+  "Призывает": null,
+  "призываете": null
+ },
+ "power:SIMPLETON": {
+  "руке": null
+ },
+ "power:SKITTISH": {
+  "защиты": null
+ },
+ "power:SNEAKY": {
+  "защиту": null,
+  "защиты": null
+ },
+ "power:SOAR": {
+  "50%": null
+ },
+ "power:SONG_PATH": {
+  "защиты": null,
+  "мелодию Чу": null
+ },
+ "power:SOULBOUND": {
+  "«Душу»": null,
+  "стопку добора": null
+ },
+ "power:SOW": {
+  "оставляете": null,
+  "руке": null
+ },
+ "power:SPECTRUM_SHIFT": {
+  "руку": null
+ },
+ "power:SPINNER": {
+  "Заряжает": null,
+  "сферу стекла": null
+ },
+ "power:SPIRIT_OF_ASH": {
+  "защиты": null,
+  "эфирную": null
+ },
+ "power:STAMPEDE": {
+  "руки": null
+ },
+ "power:STORM": {
+  "Заряжает": null,
+  "сферу молнии": null
+ },
+ "power:STRATAGEM": {
+  "руку": null,
+  "стопки добора": null
+ },
+ "power:STRETCH": {
+  "защиту": null,
+  "защиты": null
+ },
+ "power:SUCK": {
+  "силы": null
+ },
+ "power:SUMMON_NEXT_TURN": {
+  "призовете": null
+ },
+ "power:SWIPE": {
+  "руку": null
+ },
+ "power:SWORD_SAGE": {
+  "Клинок монарха": "card:SOVEREIGN_BLADE",
+  "повтор": "keyword:REPLAY"
+ },
+ "power:TANGLED": {
+  "энергии": null
+ },
+ "power:TAUNT": {
+  "уязвимости": null
+ },
+ "power:TEMPORARY_DEXTERITY": {
+  "ловкости": null,
+  "ловкость": "power:DEXTERITY"
+ },
+ "power:TEMPORARY_DEXTERITY_DOWN": {
+  "ловкости": null,
+  "ловкость": null
+ },
+ "power:TEMPORARY_FOCUS": {
+  "фокус": "power:FOCUS",
+  "фокуса": null
+ },
+ "power:TEMPORARY_FOCUS_DOWN": {
+  "фокус": null,
+  "фокуса": null
+ },
+ "power:TEMPORARY_STRENGTH": {
+  "силу": null,
+  "силы": null
+ },
+ "power:TEMPORARY_STRENGTH_DOWN": {
+  "силу": null,
+  "силы": null
+ },
+ "power:TEMPORARY_THORNS": {
+  "шипов": null,
+  "шипы": "power:THORNS"
+ },
+ "power:TENDER": {
+  "ловкости": null,
+  "силы": null
+ },
+ "power:TERRITORIAL": {
+  "силы": null
+ },
+ "power:TEZCATARAS_BLIGHT": {
+  "силы": null
+ },
+ "power:THIEVERY": {
+  "золота": null,
+  "золото": null
+ },
+ "power:THUNDER": {
+  "разряженная сфера молнии": null
+ },
+ "power:TORIC_TOUGHNESS": {
+  "защиты": null
+ },
+ "power:TRACKING": {
+  "Слабые": null
+ },
+ "power:TRASH_TO_TREASURE": {
+  "Заряжает": null
+ },
+ "power:TUNE": {
+  "мелодию Ки": null,
+  "руке": null,
+  "улучшает": null
+ },
+ "power:TYRANNY": {
+  "руке": null,
+  "сжигаете": null
+ },
+ "power:UNDERWORLD": {
+  "злой рок": "power:DOOM"
+ },
+ "power:UNMOVABLE": {
+  "защиту": null
+ },
+ "power:UNSTEADY": {
+  "оглушается": null
+ },
+ "power:VEILPIERCER": {
+  "эфирная": "keyword:ETHEREAL",
+  "эфирные": null,
+  "эфирных": null
+ },
+ "power:VICIOUS": {
+  "уязвимость": "power:VULNERABLE"
+ },
+ "power:VIOLENT_CHORD": {
+  "мелодию Ва": null
+ },
+ "power:VITAL_SPARK": {
+  "навыки": null,
+  "порчи": null
+ },
+ "power:WASTE_AWAY": {
+  "энергии": null
+ },
+ "power:WINGED_JUMP": {
+  "уязвимости": null
+ },
+ "power:WITHERING_PRESENCE": {
+  "«Усыхание»": null,
+  "Усыхание": null,
+  "руку": null
+ },
+ "power:WRAITH_FORM": {
+  "ловкости": null
+ },
+ "power:WUPPYS_LOYALTY": {
+  "Вопс": null
+ },
+ "power:YAH": {
+  "извлекаете": null,
+  "стрелу": null
+ },
+ "power:YOU_ARE_MINE": {
+  "слабости": null,
+  "уязвимости": null,
+  "хрупкости": null
+ },
+ "relic:AKABEKO": {
+  "бодрости": null
+ },
+ "relic:ALCHEMICAL_COFFER": {
+  "зелий": null,
+  "зелье": null,
+  "зелья": null
+ },
+ "relic:AMETHYST_AUBERGINE": {
+  "золота": null
+ },
+ "relic:ANCHOR": {
+  "защиты": null
+ },
+ "relic:ARCANE_SCROLL": {
+  "колоду": null,
+  "редкую карту": null
+ },
+ "relic:ARCHAIC_TOOTH": {
+  "Преобразовать": null,
+  "преобразует": null
+ },
+ "relic:ASTROLABE": {
+  "Преобразовать": null,
+  "преобразует": null,
+  "улучшает": null,
+  "улучшить": null
+ },
+ "relic:BAG_OF_MARBLES": {
+  "уязвимости": null
+ },
+ "relic:BATH_ROBES": {
+  "боссом": null
+ },
+ "relic:BEAUTIFUL_BRACELET": {
+  "чары": null
+ },
+ "relic:BELLOWS": {
+  "Улучшает": null,
+  "руке": null
+ },
+ "relic:BELT_BUCKLE": {
+  "зелий": null,
+  "ловкости": null
+ },
+ "relic:BIG_HAT": {
+  "руку": null,
+  "эфирную": null,
+  "эфирные": null,
+  "эфирных": null
+ },
+ "relic:BIIIG_HUG": {
+  "«Сажа»": null,
+  "колоды": null,
+  "стопки добора": null,
+  "стопку добора": null
+ },
+ "relic:BING_BONG": {
+  "колоду": null
+ },
+ "relic:BIZARRE_LAMP": {
+  "«Печаль»": null,
+  "«Радость»": null,
+  "руку": null
+ },
+ "relic:BLACK_STAR": {
+  "реликвию": null,
+  "элитными врагами": null
+ },
+ "relic:BLESSED_ANTLER": {
+  "стопку добора": null
+ },
+ "relic:BLOOD_SOAKED_ROSE": {
+  "колоду": null
+ },
+ "relic:BONE_FLUTE": {
+  "Костя": null,
+  "защиты": null
+ },
+ "relic:BONE_TEA": {
+  "Улучшает": null,
+  "руке": null
+ },
+ "relic:BOOKMARK": {
+  "оставленной": null
+ },
+ "relic:BOOK_OF_FIVE_RINGS": {
+  "колоду": null
+ },
+ "relic:BOOK_REPAIR_KNIFE": {
+  "злого рока": null
+ },
+ "relic:BOOMING_CONCH": {
+  "элитными врагами": null
+ },
+ "relic:BOUND_PHYLACTERY": {
+  "Призывает": null
+ },
+ "relic:BOWLER_HAT": {
+  "золота": null
+ },
+ "relic:BRIMSTONE": {
+  "силы": null
+ },
+ "relic:BURNING_STICKS": {
+  "руку": null,
+  "сожженного": null
+ },
+ "relic:BYRDINE": {
+  "«Абсолютного птаха»": null,
+  "«Налет птаха»": null,
+  "Птахун": "relic:BYRDINE",
+  "преобразует": null
+ },
+ "relic:BYRDPIP": {
+  "«Налет птаха»": null,
+  "Птахоню": null,
+  "Птахоня": "relic:BYRDPIP",
+  "колоду": null,
+  "лагере": null
+ },
+ "relic:CALLING_BELL": {
+  "колоду": null
+ },
+ "relic:CAPTAINS_WHEEL": {
+  "защиты": null
+ },
+ "relic:CAULDRON": {
+  "зелий": null,
+  "зелье": null,
+  "зелья": null
+ },
+ "relic:CHARONS_ASHES": {
+  "сжигаете": null
+ },
+ "relic:CHOICES_PARADOX": {
+  "оставляется": "keyword:RETAIN",
+  "руку": null
+ },
+ "relic:CIRCLET": {
+  "Шпиле": null
+ },
+ "relic:CLAWS": {
+  "«Побои»": null,
+  "Преобразовать": null,
+  "преобразовать": null,
+  "преобразует": null
+ },
+ "relic:CLOAK_CLASP": {
+  "защиты": null,
+  "руке": null
+ },
+ "relic:CONDUCTORS_BATON": {
+  "мелодию": null
+ },
+ "relic:CRACKED_CORE": {
+  "Заряжает": null
+ },
+ "relic:CROSSBOW": {
+  "Атаку": null,
+  "руку": null
+ },
+ "relic:CURSED_KETTLE": {
+  "Элитные враги": null,
+  "силы": null,
+  "элитного врага": null
+ },
+ "relic:CURSED_PEARL": {
+  "золота": null,
+  "колоду": null
+ },
+ "relic:DARKSTONE_PERIAPT": {
+  "колоду": null
+ },
+ "relic:DATA_DISK": {
+  "фокуса": null
+ },
+ "relic:DAUGHTER_OF_THE_WIND": {
+  "защиты": null
+ },
+ "relic:DELICATE_FROND": {
+  "зельями": null
+ },
+ "relic:DIAMOND_DIADEM": {
+  "Защита": "keyword:BLOCK",
+  "защиты": null
+ },
+ "relic:DISTINGUISHED_CAPE": {
+  "колоду": null
+ },
+ "relic:DOLLYS_MIRROR": {
+  "колоду": null,
+  "скопировать": null
+ },
+ "relic:DOWSING_ROD": {
+  "«Лозоходство»": null,
+  "колоду": null
+ },
+ "relic:DRAGON_FRUIT": {
+  "золото": null
+ },
+ "relic:DREAM_CATCHER": {
+  "колоду": null,
+  "отдыхаете": null
+ },
+ "relic:DUSTY_TOME": {
+  "древнюю карту": null,
+  "колоду": null
+ },
+ "relic:ECTOPLASM": {
+  "золото": null
+ },
+ "relic:ELECTRIC_SHRYMP": {
+  "чары": null
+ },
+ "relic:EMBER_TEA": {
+  "силы": null
+ },
+ "relic:EMPTY_CAGE": {
+  "колоды": null
+ },
+ "relic:ENDLESS_APPETITE": {
+  "сжигаете": null,
+  "силы": null
+ },
+ "relic:ETERNAL_FEATHER": {
+  "колоде": null,
+  "лагерь": null
+ },
+ "relic:EXERCISE_MAT": {
+  "растяжки": null
+ },
+ "relic:FAKE_ANCHOR": {
+  "защиты": null
+ },
+ "relic:FAKE_ORICHALCUM": {
+  "защиты": null
+ },
+ "relic:FAKE_VENERABLE_TEA_SET": {
+  "лагеря": null
+ },
+ "relic:FENCING_MANUAL": {
+  "Закаляет": null
+ },
+ "relic:FERTILIZER": {
+  "«Печаль»": null,
+  "силы": null
+ },
+ "relic:FISHING_ROD": {
+  "Улучшает": null,
+  "колоде": null
+ },
+ "relic:FORGOTTEN_SOUL": {
+  "сжигаете": null
+ },
+ "relic:FRAGRANT_MUSHROOM": {
+  "улучшаете": null,
+  "улучшить": null
+ },
+ "relic:FRESNEL_LENS": {
+  "защиту": null,
+  "колоду": null,
+  "чары": null
+ },
+ "relic:FROZEN_EGG": {
+  "Улучшает": null,
+  "колоду": null
+ },
+ "relic:FUNERARY_MASK": {
+  "стопку добора": null
+ },
+ "relic:GALACTIC_DUST": {
+  "защиты": null
+ },
+ "relic:GHOST_SEED": {
+  "«Обороны»": null,
+  "«Удары»": null,
+  "эфирными": null
+ },
+ "relic:GIRYA": {
+  "лагере": null,
+  "силу": null
+ },
+ "relic:GLASS_EYE": {
+  "колоду": null,
+  "необычные": null,
+  "обычные": null,
+  "редкую": null
+ },
+ "relic:GLITTER": {
+  "чары": null
+ },
+ "relic:GLOWING_ORB": {
+  "элитным врагом": null
+ },
+ "relic:GNARLED_HAMMER": {
+  "чары": null
+ },
+ "relic:GOLDEN_COMPASS": {
+  "акта": null
+ },
+ "relic:GOLDEN_PEARL": {
+  "золота": null
+ },
+ "relic:GORGET": {
+  "панциря": null
+ },
+ "relic:HAND_DRILL": {
+  "защиту": null,
+  "уязвимости": null
+ },
+ "relic:HEFTY_TABLET": {
+  "колоду": null
+ },
+ "relic:HELICAL_DART": {
+  "«Заточку»": null,
+  "ловкости": null
+ },
+ "relic:HORN_CLEAT": {
+  "защиты": null
+ },
+ "relic:ICE_CREAM": {
+  "энергия": null
+ },
+ "relic:INFUSED_CORE": {
+  "Заряжает": null,
+  "Сферы молнии": null,
+  "сферы молнии": null
+ },
+ "relic:INTIMIDATING_HELMET": {
+  "защиты": null
+ },
+ "relic:JEWELED_MASK": {
+  "стопки добора": null
+ },
+ "relic:JEWELRY_BOX": {
+  "«Апофеоз»": null,
+  "колоду": null
+ },
+ "relic:JOSS_PAPER": {
+  "сожженную": null,
+  "сожженные": null,
+  "сожженных": null
+ },
+ "relic:JUZU_BRACELET": {
+  "?": null
+ },
+ "relic:KIFUDA": {
+  "чары": null
+ },
+ "relic:KUNAI": {
+  "ловкости": null
+ },
+ "relic:LARGE_CAPSULE": {
+  "«Оборону»": null,
+  "«Удар»": null,
+  "колоду": null,
+  "реликвии": null,
+  "реликвий": null,
+  "реликвию": null
+ },
+ "relic:LAVA_LAMP": {
+  "Улучшает": null
+ },
+ "relic:LAVA_ROCK": {
+  "акта": null,
+  "боссом": null,
+  "реликвии": null
+ },
+ "relic:LEAD_PAPERWEIGHT": {
+  "колоду": null
+ },
+ "relic:LEAFY_POULTICE": {
+  "«Оборону»": null,
+  "«Удар»": null,
+  "Преобразовать": null,
+  "преобразует": null
+ },
+ "relic:LORDS_PARASOL": {
+  "Торговцем": null
+ },
+ "relic:LOST_COFFER": {
+  "зелье": null
+ },
+ "relic:LUCKY_FYSH": {
+  "золота": null,
+  "колоду": null
+ },
+ "relic:MASSIVE_SCROLL": {
+  "колоду": null,
+  "командных": null
+ },
+ "relic:MAW_BANK": {
+  "золота": null,
+  "золото": null
+ },
+ "relic:MEAL_TICKET": {
+  "магазин": null
+ },
+ "relic:MEAT_CLEAVER": {
+  "готовить": null
+ },
+ "relic:METRONOME": {
+  "заряжаете": null
+ },
+ "relic:MIGHTY_WINGS": {
+  "силы": null
+ },
+ "relic:MINIATURE_CANNON": {
+  "улучшенных": null
+ },
+ "relic:MINIATURE_TENT": {
+  "лагере": null
+ },
+ "relic:MINI_REGENT": {
+  "силы": null
+ },
+ "relic:MOLTEN_EGG": {
+  "Улучшает": null,
+  "колоду": null
+ },
+ "relic:MUMMIFIED_HAND": {
+  "руке": null
+ },
+ "relic:MUSIC_BOX": {
+  "руку": null,
+  "эфирную": null
+ },
+ "relic:MYSTERIOUS_COCOON": {
+  "«Рогатину»": null,
+  "«Тренировочный удар»": null
+ },
+ "relic:MYSTIC_LIGHTER": {
+  "зачарованных": null
+ },
+ "relic:NEOWS_BONES": {
+  "колоду": null
+ },
+ "relic:NEOWS_SACRIFICE": {
+  "Амбру": null,
+  "колоду": null
+ },
+ "relic:NEOWS_TALISMAN": {
+  "«Оборону»": null,
+  "«Удар»": null,
+  "Улучшить": null,
+  "улучшает": null
+ },
+ "relic:NEOWS_TORMENT": {
+  "«Ярость Ньяу»": null,
+  "колоду": null
+ },
+ "relic:NEW_LEAF": {
+  "Преобразовать": null,
+  "преобразует": null
+ },
+ "relic:NINJA_SCROLL": {
+  "руку": null
+ },
+ "relic:NUTRITIOUS_SOUP": {
+  "«Удары»": null,
+  "Зачаровать": null,
+  "колоде": null,
+  "чарует": null
+ },
+ "relic:OBSIDIAN_VICE": {
+  "руке": null
+ },
+ "relic:OCARINA": {
+  "руку": null
+ },
+ "relic:ODDLY_SMOOTH_STONE": {
+  "ловкости": null
+ },
+ "relic:OLD_COIN": {
+  "золота": null
+ },
+ "relic:ORANGE_DOUGH": {
+  "руку": null
+ },
+ "relic:ORICHALCUM": {
+  "защиты": null
+ },
+ "relic:ORNAMENTAL_FAN": {
+  "защиты": null
+ },
+ "relic:PAELS_CLAW": {
+  "«Обороны»": null,
+  "чары": null
+ },
+ "relic:PAELS_EYE": {
+  "Сжигает": null,
+  "руке": null
+ },
+ "relic:PAELS_GROWTH": {
+  "чары": null
+ },
+ "relic:PAELS_HORN": {
+  "«Передышки»": null,
+  "колоду": null
+ },
+ "relic:PAELS_LEGION": {
+  "защиту": null
+ },
+ "relic:PAELS_TOOTH": {
+  "Улучшает": null,
+  "колоды": null,
+  "улучшены": null
+ },
+ "relic:PAELS_WING": {
+  "реликвию": null
+ },
+ "relic:PANDORAS_BOX": {
+  "«Обороны»": null,
+  "«Удары»": null,
+  "Преобразует": null,
+  "ящиком Пандоры": null
+ },
+ "relic:PANTOGRAPH": {
+  "боссом": null
+ },
+ "relic:PAPER_KRANE": {
+  "слабости": null
+ },
+ "relic:PAPER_PHROG": {
+  "уязвимости": null
+ },
+ "relic:PARRYING_SHIELD": {
+  "защиты": null
+ },
+ "relic:PERMAFROST": {
+  "защиты": null
+ },
+ "relic:PETRIFIED_TOAD": {
+  "Камень в форме зелья": "potion:POTION_SHAPED_ROCK"
+ },
+ "relic:PHIAL_HOLSTER": {
+  "зелий": null,
+  "зелье": null,
+  "зелья": null,
+  "случайных зелий": null
+ },
+ "relic:PHILOSOPHERS_STONE": {
+  "силы": null
+ },
+ "relic:PHYLACTERY_UNBOUND": {
+  "Призывает": null
+ },
+ "relic:PLANISPHERE": {
+  "?": null
+ },
+ "relic:POMANDER": {
+  "Улучшить": null,
+  "улучшает": null
+ },
+ "relic:POWER_CELL": {
+  "стопки добора": null
+ },
+ "relic:PRECARIOUS_SHEARS": {
+  "колоды": null
+ },
+ "relic:PRECISE_SCISSORS": {
+  "колоды": null
+ },
+ "relic:PRESERVED_FOG": {
+  "колоду": null,
+  "колоды": null
+ },
+ "relic:PUMPKIN_CANDLE": {
+  "боя": null,
+  "лагере": null,
+  "раздуть пламя": null
+ },
+ "relic:PUNCH_DAGGER": {
+  "чары": null
+ },
+ "relic:RADIANT_PEARL": {
+  "руку": null
+ },
+ "relic:RAINBOW_RING": {
+  "ловкости": null,
+  "силы": null
+ },
+ "relic:RAZOR_TOOTH": {
+  "Улучшает": null
+ },
+ "relic:RED_MASK": {
+  "слабости": null
+ },
+ "relic:RED_SKULL": {
+  "силы": null
+ },
+ "relic:REGALITE": {
+  "защиты": null
+ },
+ "relic:REGAL_PILLOW": {
+  "отдыхаете": null
+ },
+ "relic:REPTILE_TRINKET": {
+  "силы": null
+ },
+ "relic:RINGING_TRIANGLE": {
+  "оставляете": null,
+  "руке": null
+ },
+ "relic:RIPPLE_BASIN": {
+  "защиты": null
+ },
+ "relic:ROYAL_STAMP": {
+  "чары": null
+ },
+ "relic:RUINED_HELMET": {
+  "силу": null
+ },
+ "relic:SAI": {
+  "защиты": null
+ },
+ "relic:SAND_CASTLE": {
+  "улучшает": null
+ },
+ "relic:SCREAMING_FLAGON": {
+  "руке": null
+ },
+ "relic:SCROLL_BOXES": {
+  "колоду": null
+ },
+ "relic:SEAL_OF_GOLD": {
+  "золота": null
+ },
+ "relic:SEA_GLASS": {
+  "колоду": null
+ },
+ "relic:SELF_FORMING_CLAY": {
+  "защиты": null
+ },
+ "relic:SERE_TALON": {
+  "колоду": null
+ },
+ "relic:SHOVEL": {
+  "лагере": null,
+  "реликвии": null
+ },
+ "relic:SHURIKEN": {
+  "силы": null
+ },
+ "relic:SIGNET_RING": {
+  "золота": null
+ },
+ "relic:SILKEN_TRESS": {
+  "золото": null,
+  "чары": null
+ },
+ "relic:SILVER_CRUCIBLE": {
+  "улучшены": null
+ },
+ "relic:SLING_OF_COURAGE": {
+  "силы": null,
+  "элитным врагом": null
+ },
+ "relic:SMALL_CAPSULE": {
+  "реликвию": null
+ },
+ "relic:SNECKO_SKULL": {
+  "яд": "power:POISON"
+ },
+ "relic:SONG_BOW": {
+  "тяги": null
+ },
+ "relic:SOZU": {
+  "зелья": null
+ },
+ "relic:SPARKLING_ROUGE": {
+  "ловкости": null,
+  "силы": null
+ },
+ "relic:STONE_CRACKER": {
+  "Улучшает": null,
+  "стопке добора": null
+ },
+ "relic:STONE_HUMIDIFIER": {
+  "лагере": null,
+  "отдыхаете": null
+ },
+ "relic:STORYBOOK": {
+  "«Ярчайшее пламя»": null,
+  "колоду": null
+ },
+ "relic:STORYTELLER": {
+  "тяги": null
+ },
+ "relic:STURDY_CLAMP": {
+  "защиты": null
+ },
+ "relic:SWORD_OF_JADE": {
+  "силы": null
+ },
+ "relic:SWORD_OF_STONE": {
+  "реликвию": null
+ },
+ "relic:SYMBIOTIC_VIRUS": {
+  "Заряжает": null
+ },
+ "relic:TANXS_WHISTLE": {
+  "«Свисток»": null,
+  "колоду": null
+ },
+ "relic:TEA_OF_DISCOURTESY": {
+  "«Головокружения»": null,
+  "стопку добора": null
+ },
+ "relic:THE_ABACUS": {
+  "защиты": null,
+  "стопка добора": null
+ },
+ "relic:TINY_MAILBOX": {
+  "зелья": null,
+  "отдыхаете": null
+ },
+ "relic:TOASTY_MITTENS": {
+  "Сжигает": null,
+  "руке": null,
+  "силы": null
+ },
+ "relic:TOOLBOX": {
+  "руку": null
+ },
+ "relic:TORMENTOUS_COLLAR": {
+  "слабости": null,
+  "элитным врагом": null
+ },
+ "relic:TOUCH_OF_OROBAS": {
+  "древнюю": null,
+  "реликвию": null
+ },
+ "relic:TOUGH_BANDAGES": {
+  "защиты": null
+ },
+ "relic:TOXIC_EGG": {
+  "Улучшает": null,
+  "колоду": null
+ },
+ "relic:TOY_BOX": {
+  "восковая реликвия": null
+ },
+ "relic:TRI_BOOMERANG": {
+  "чары": null
+ },
+ "relic:TUNING_FORK": {
+  "защиты": null
+ },
+ "relic:TWINE": {
+  "защиты": null,
+  "извлекаете": null,
+  "стрелу": null
+ },
+ "relic:TWISTED_FUNNEL": {
+  "яда": null
+ },
+ "relic:UNCEASING_TOP": {
+  "руке": null
+ },
+ "relic:UNDYING_SIGIL": {
+  "злой рок": "power:DOOM"
+ },
+ "relic:UNSETTLING_LAMP": {
+  "отрицательные эффекты": null
+ },
+ "relic:VAJRA": {
+  "силы": null
+ },
+ "relic:VAMBRACE": {
+  "защиту": null
+ },
+ "relic:VENERABLE_TEA_SET": {
+  "лагеря": null
+ },
+ "relic:VEXING_PUZZLEBOX": {
+  "руку": null
+ },
+ "relic:VITRUVIAN_MINION": {
+  "защиту": null
+ },
+ "relic:WAR_HAMMER": {
+  "Улучшает": null,
+  "элитного врага": null
+ },
+ "relic:WAR_PAINT": {
+  "улучшает": null
+ },
+ "relic:WHETSTONE": {
+  "улучшает": null
+ },
+ "relic:WHITE_BEAST_STATUE": {
+  "зелье": null
+ },
+ "relic:WHITE_STAR": {
+  "редкий": null,
+  "элитным врагом": null
+ },
+ "relic:WHITTLING_KNIFE": {
+  "стопки добора": null,
+  "тяги": null
+ },
+ "relic:WING_CHARM": {
+  "чары": null
+ },
+ "relic:WONGOS_MYSTERY_TICKET": {
+  "реликвии": null,
+  "реликвий": null,
+  "реликвию": null
+ },
+ "relic:WUPPY": {
+  "Вопс": "relic:WUPPY",
+  "вопс": "relic:WUPPY",
+  "вопса": null
+ },
+ "relic:YUMMY_COOKIE": {
+  "Улучшить": null,
+  "улучшает": null
+ }
+}

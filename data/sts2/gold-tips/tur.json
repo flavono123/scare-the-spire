@@ -1,0 +1,4218 @@
+{
+ "affliction:BOUND": {
+  "Bağlı": "affliction:BOUND"
+ },
+ "affliction:HEXED": {
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "affliction:SMOG": {
+  "Beceri": null
+ },
+ "affliction:TAINTED": {
+  "Lekeli": "power:TAINTED"
+ },
+ "ancient:VAKUU": {
+  "Vakuu": null
+ },
+ "ascension:BLITZ": {
+  "Deste": null
+ },
+ "ascension:DREAD_RULE_02": {
+  "Deste": null
+ },
+ "ascension:LEVEL_01": {
+  "Elitler": null
+ },
+ "ascension:LEVEL_03": {
+  "Altın": null
+ },
+ "ascension:LEVEL_10": {
+  "Sahne": null
+ },
+ "badge:KACHING": {
+  "Altın": null
+ },
+ "badge:MONEY_MONEY": {
+  "Altın": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Büyüle": null
+ },
+ "blitz:CARD_PACKS": {
+  "Deste": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "Deste": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "Az Yaygın": null,
+  "Nadir": null,
+  "Yaygın": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Deste": null,
+  "Dönüştür": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Deste": null,
+  "Geliştir": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "Renksiz": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Büyülenmiş": null
+ },
+ "blitz:GLAM": {
+  "Büyüle": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Deste": null
+ },
+ "blitz:RELIC": {
+  "Kalıntı": null
+ },
+ "blitz:TWO_RELICS": {
+  "Kalıntı": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Geliştirilmiş": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Geliştirilmiş": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Geliştirilmiş": null
+ },
+ "card:ABRASIVE": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Diken": "power:THORNS"
+ },
+ "card:ABUNDANCE": {
+  "El": null,
+  "Geliştirilmiş": null,
+  "Güç": null
+ },
+ "card:ACCELERANT": {
+  "Zehir": "power:POISON"
+ },
+ "card:ACCURACY": {
+  "Kamalar": null
+ },
+ "card:ADAPTIVE_STRIKE": {
+  "Atık Destesi": null
+ },
+ "card:AFTERIMAGE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:AFTERLIFE": {
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "card:AGGRESSION": {
+  "Atık Deste": null,
+  "El": null,
+  "Geliştir": null
+ },
+ "card:ALL_FOR_ONE": {
+  "Atık Deste": null,
+  "El": null
+ },
+ "card:ALL_IS_WELL": {
+  "Blok": "keyword:BLOCK",
+  "Hüzün": "card:SADNESS"
+ },
+ "card:ANGER": {
+  "Atık Destesi": null
+ },
+ "card:ANGUISH": {
+  "Hüzün": "card:SADNESS"
+ },
+ "card:ANOINTED": {
+  "El": null,
+  "Nadir": null,
+  "Çekme Destesi": null
+ },
+ "card:ANTICIPATE": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "card:APOTHEOSIS": {
+  "Geliştir": null
+ },
+ "card:APPARITION": {
+  "Soyutluk": "power:INTANGIBLE"
+ },
+ "card:ARCHERY": {
+  "Nişan": "power:AIM"
+ },
+ "card:ARMAMENTS": {
+  "Blok": "keyword:BLOCK",
+  "El": null,
+  "Geliştir": null
+ },
+ "card:ARSENAL": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:ASHEN_STRIKE": {
+  "Tüketim Destesi": null
+ },
+ "card:ASSASSINATE": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:BACKFLIP": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BALL_LIGHTNING": {
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "card:BANSHEES_CRY": {
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "card:BARRAGE": {
+  "Oluşturulan": null
+ },
+ "card:BARRICADE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BASH": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:BEACON_OF_HOPE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BEAM_CELL": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:BEAT_DOWN": {
+  "Atık Deste": null
+ },
+ "card:BEAT_INTO_SHAPE": {
+  "Döv": "keyword:FORGE",
+  "Dövme": null
+ },
+ "card:BECKON": {
+  "El": null
+ },
+ "card:BEGONE": {
+  "Dönüştür": null,
+  "El": null,
+  "Uşak Saldırısı": "card:MINION_STRIKE",
+  "Uşak Saldırısı+": "card:MINION_STRIKE"
+ },
+ "card:BIASED_COGNITION": {
+  "Odak": "power:FOCUS"
+ },
+ "card:BIG_BANG": {
+  "Döv": "keyword:FORGE"
+ },
+ "card:BLADE_DANCE": {
+  "El": null,
+  "Kama": "card:SHIV",
+  "plural:Kama": null
+ },
+ "card:BLADE_OF_INK": {
+  "El": null,
+  "Kama": "card:SHIV",
+  "plural:Kama": null
+ },
+ "card:BLADE_SYMPHONY": {
+  "El": null,
+  "Kama": "card:SHIV",
+  "plural:Kama": null
+ },
+ "card:BLAZE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:BLIGHT_STRIKE": {
+  "Kader": "power:DOOM"
+ },
+ "card:BLOOD_WALL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BLOSSOM_SHOT": {
+  "Fırlat": null,
+  "Gerinme": "power:STRETCH"
+ },
+ "card:BLOT_OUT_THE_SKY": {
+  "Deste": null,
+  "Fırlatılabilen": null
+ },
+ "card:BLUR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BODYGUARD": {
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "card:BODY_SLAM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BOLAS": {
+  "El": null
+ },
+ "card:BOMBARDMENT": {
+  "Tüketme Deste": null
+ },
+ "card:BONE_SHARDS": {
+  "Blok": "keyword:BLOCK",
+  "Osti": null
+ },
+ "card:BOOST_AWAY": {
+  "Atık Deste": null,
+  "Blok": "keyword:BLOCK",
+  "Sersemlemiş": "card:DAZED"
+ },
+ "card:BOOT_SEQUENCE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:BOUNCE": {
+  "El": null,
+  "Gerinme": "power:STRETCH"
+ },
+ "card:BOUNCING_FLASK": {
+  "Zehir": "power:POISON"
+ },
+ "card:BOW_SMACK": {
+  "Saplanmış": "power:IMPALED"
+ },
+ "card:BRACE": {
+  "Nişan": "power:AIM"
+ },
+ "card:BRAND": {
+  "Kuvvet": "power:STRENGTH",
+  "Tüket": "keyword:EXHAUST"
+ },
+ "card:BREAK": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:BRIGHTEN_UP": {
+  "El": null,
+  "Hüzün": "card:SADNESS",
+  "Neşe": "card:JOY"
+ },
+ "card:BUBBLE_BUBBLE": {
+  "Zehir": "power:POISON"
+ },
+ "card:BULK_UP": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:BULLET_TIME": {
+  "El": null
+ },
+ "card:BULLY": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:BULWARK": {
+  "Blok": "keyword:BLOCK",
+  "Döv": "keyword:FORGE"
+ },
+ "card:BUNDLE_OF_JOY": {
+  "El": null
+ },
+ "card:BURN": {
+  "El": null
+ },
+ "card:BURNING_PACT": {
+  "Tüket": "keyword:EXHAUST"
+ },
+ "card:BYRDONIS_EGG": {
+  "Dinlenme Yerleri": null
+ },
+ "card:CALAMITY": {
+  "El": null
+ },
+ "card:CALCIFY": {
+  "Osti": null
+ },
+ "card:CALCULATED_GAMBLE": {
+  "El": null
+ },
+ "card:CALL_OF_THE_VOID": {
+  "El": null,
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "card:CAPTURE_SPIRIT": {
+  "Ruh": "card:SOUL",
+  "plural:Ruh": null,
+  "Çekme Deste": null
+ },
+ "card:CASCADE": {
+  "Çekme Deste": null
+ },
+ "card:CATASTROPHE": {
+  "Çekme Deste": null
+ },
+ "card:CHAOS": {
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:CHARGE": {
+  "Dönüştür": null,
+  "Çekme Deste": null
+ },
+ "card:CHARGE_BATTERY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CHILD_OF_THE_STARS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CHILL": {
+  "Buz": "keyword:FROST_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:CHO_BARBS": {
+  "Blok": "keyword:BLOCK",
+  "Diken": "power:THORNS"
+ },
+ "card:CHO_CHORUS": {
+  "Blok": "keyword:BLOCK",
+  "El": null
+ },
+ "card:CHO_FIRM": {
+  "Blok": "keyword:BLOCK",
+  "Ok": "keyword:ARROW"
+ },
+ "card:CHO_KI": {
+  "Blok": "keyword:BLOCK",
+  "Gerinme": "power:STRETCH"
+ },
+ "card:CHO_LIMBS": {
+  "Blok": "keyword:BLOCK",
+  "Ki Melodisi": "keyword:KI_MELODY",
+  "Vah Melodisi": "keyword:WAH_MELODY"
+ },
+ "card:CHO_READY": {
+  "Blok": "keyword:BLOCK",
+  "Nişan": "power:AIM"
+ },
+ "card:CHRYSALIS": {
+  "Çekme Deste": null
+ },
+ "card:CINDER": {
+  "Tüket": "keyword:EXHAUST"
+ },
+ "card:CLASH": {
+  "El": null
+ },
+ "card:CLEANSE": {
+  "Tüket": "keyword:EXHAUST",
+  "Çağır": "keyword:SUMMON_STATIC",
+  "Çekme Deste": null
+ },
+ "card:CLOAK_AND_DAGGER": {
+  "Blok": "keyword:BLOCK",
+  "El": null,
+  "Kama": "card:SHIV",
+  "plural:Kama": null
+ },
+ "card:CLOAK_OF_STARS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CODA": {
+  "Melodi": null
+ },
+ "card:COLD_SNAP": {
+  "Buz": "keyword:FROST_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:COLLISION_COURSE": {
+  "El": null,
+  "Moloz": "card:DEBRIS"
+ },
+ "card:COLOSSUS": {
+  "Blok": "keyword:BLOCK",
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:COMET": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:COMPACT": {
+  "Benzin": "card:FUEL",
+  "Benzin+": "card:FUEL",
+  "Blok": "keyword:BLOCK",
+  "Dönüştür": "keyword:TRANSFORM",
+  "El": null
+ },
+ "card:CONCOCT": {
+  "Zehir": "power:POISON"
+ },
+ "card:CONQUEROR": {
+  "Döv": "keyword:FORGE",
+  "Egemen Kılıcı": "card:SOVEREIGN_BLADE"
+ },
+ "card:CONSTELLATION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CONSUMING_SHADOW": {
+  "Karanlık": "keyword:DARK_ORB",
+  "Oluştur": "keyword:CHANNELING",
+  "Tetikle": "keyword:EVOKE"
+ },
+ "card:CONVERGENCE": {
+  "El": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "card:COOLANT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:COOLHEADED": {
+  "Buz": "keyword:FROST_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:COORDINATE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:CORROSIVE_WAVE": {
+  "Zehir": "power:POISON"
+ },
+ "card:CORRUPTION": {
+  "Tüketilir": null
+ },
+ "card:COSMIC_INDIFFERENCE": {
+  "Atık Deste": null,
+  "Blok": "keyword:BLOCK",
+  "Çekme Deste": null
+ },
+ "card:COUNTDOWN": {
+  "Kader": "power:DOOM"
+ },
+ "card:COVERING_FIRE": {
+  "Blok": "keyword:BLOCK",
+  "Fırlattığında": null
+ },
+ "card:CRASH_LANDING": {
+  "El": null,
+  "Moloz": "card:DEBRIS"
+ },
+ "card:CREATIVE_AI": {
+  "El": null
+ },
+ "card:CRIMSON_MANTLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:CRUELTY": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:CRUSH_UNDER": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:DANSE_MACABRE": {
+  "Blok": null
+ },
+ "card:DARKNESS": {
+  "Karanlık": "keyword:DARK_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:DARK_EMBRACE": {
+  "Tüketilirse": null
+ },
+ "card:DARK_SHACKLES": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:DASH": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEADLY_POISON": {
+  "Zehir": "power:POISON"
+ },
+ "card:DEATH": {
+  "Kader": "power:DOOM"
+ },
+ "card:DEATHBRINGER": {
+  "Kader": "power:DOOM",
+  "Zayıf": "power:WEAK"
+ },
+ "card:DEATHS_DOOR": {
+  "Blok": "keyword:BLOCK",
+  "Kader": "power:DOOM"
+ },
+ "card:DEBILITATE": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:DEBT": {
+  "Altın": null,
+  "El": null
+ },
+ "card:DECAY": {
+  "El": null
+ },
+ "card:DECISIONS_DECISIONS": {
+  "El": null
+ },
+ "card:DEEP_STRETCH": {
+  "Gerinme": "power:STRETCH"
+ },
+ "card:DEFEND_DEFECT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_FOOL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_IRONCLAD": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_NECROBINDER": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_REGENT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFEND_SILENT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFLECT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEFRAGMENT": {
+  "Odak": "power:FOCUS"
+ },
+ "card:DEFY": {
+  "Blok": "keyword:BLOCK",
+  "Zayıf": "power:WEAK"
+ },
+ "card:DELAY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEMONIC_SHIELD": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DEMON_FORM": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:DEPRECATED_CARD": {
+  "Deste": null
+ },
+ "card:DESPAIR": {
+  "Blok": null,
+  "Kader": null
+ },
+ "card:DEVOUR_LIFE": {
+  "Ruh": "card:SOUL",
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "card:DIRGE": {
+  "Ruh": "card:SOUL",
+  "Ruh+": "card:SOUL",
+  "Çağır": "keyword:SUMMON_STATIC",
+  "Çekme Deste": null
+ },
+ "card:DISCOVERY": {
+  "El": null
+ },
+ "card:DISLIKE_YOU": {
+  "Atışlarından": null
+ },
+ "card:DISMANTLE": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:DISTRACTION": {
+  "El": null
+ },
+ "card:DIVINE_SHOT": {
+  "Fırlat": null,
+  "Ok": "keyword:ARROW"
+ },
+ "card:DODGE_AND_ROLL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:DOMINATE": {
+  "Kuvvet": "power:STRENGTH",
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:DOUBT": {
+  "El": null,
+  "Zayıf": "power:WEAK"
+ },
+ "card:DOWSING": {
+  "?": null,
+  "Bereket": "card:ABUNDANCE"
+ },
+ "card:DRAIN_POWER": {
+  "Atık Deste": null,
+  "Geliştir": null
+ },
+ "card:DREDGE": {
+  "Atık Deste": null,
+  "El": null
+ },
+ "card:DRUM_OF_BATTLE": {
+  "Tüketildiğinde": null
+ },
+ "card:DUALCAST": {
+  "Tetikle": "keyword:EVOKE"
+ },
+ "card:DUAL_WIELD": {
+  "El": null
+ },
+ "card:DYING_STAR": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:ECSTASY": {
+  "Dönüştür": null,
+  "El": null,
+  "Hüzün": "card:SADNESS",
+  "Neşe": "card:JOY"
+ },
+ "card:EIDOLON": {
+  "Ruhani": "keyword:ETHEREAL",
+  "Tüketme Deste": null
+ },
+ "card:END_OF_DAYS": {
+  "Kader": "power:DOOM"
+ },
+ "card:ENFEEBLING_TOUCH": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:ENLIGHTENMENT": {
+  "El": null
+ },
+ "card:ENNUI": {
+  "El": null,
+  "Hüzün": "card:SADNESS"
+ },
+ "card:ENRAPTURE": {
+  "Dinç": "power:VIGOR",
+  "Gerinme": "power:STRETCH"
+ },
+ "card:ENTHRALLED": {
+  "El": null
+ },
+ "card:ENTRENCH": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:ENTROPY": {
+  "Dönüştür": "keyword:TRANSFORM",
+  "El": null
+ },
+ "card:ENVENOM": {
+  "Zehir": "power:POISON"
+ },
+ "card:EPIC_RETRIEVAL": {
+  "Ok": "keyword:ARROW",
+  "Çıkartırsa": null
+ },
+ "card:EQUILIBRIUM": {
+  "Blok": "keyword:BLOCK",
+  "El": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "card:ESCAPE_PLAN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:ETERNAL_ARMOR": {
+  "Zırh": "power:PLATING"
+ },
+ "card:EVIL_EYE": {
+  "Blok": "keyword:BLOCK",
+  "Tükettiysen": null
+ },
+ "card:EXPECT_A_FIGHT": {
+  "Blok": "keyword:BLOCK",
+  "El": null
+ },
+ "card:EXPERTISE": {
+  "El": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "card:EXPLOSIVE_ARROWS": {
+  "Sapladığında": null
+ },
+ "card:EXPOSE": {
+  "Blok": "keyword:BLOCK",
+  "Savunmasız": "power:VULNERABLE",
+  "Yapıt": "power:ARTIFACT"
+ },
+ "card:FADE": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "card:FALLING_STAR": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:FAN_OF_KNIVES": {
+  "El": null,
+  "Kama": "card:SHIV",
+  "Kamalar": null
+ },
+ "card:FASTEN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:FEAR": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:FEED": {
+  "Öldürürse": null
+ },
+ "card:FEEDING_FRENZY": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:FEEL_NO_PAIN": {
+  "Blok": "keyword:BLOCK",
+  "Tüketildiğinde": null
+ },
+ "card:FERAL": {
+  "El": null
+ },
+ "card:FETCH": {
+  "Osti": null
+ },
+ "card:FIEND_FIRE": {
+  "El": null,
+  "Tüket": "keyword:EXHAUST",
+  "Tüketilen": null
+ },
+ "card:FIGHT_ME": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:FIGHT_THROUGH": {
+  "Atık Destene": null,
+  "Blok": "keyword:BLOCK",
+  "Yara": "card:WOUND"
+ },
+ "card:FINESSE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:FISTICUFFS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:FLAK_CANNON": {
+  "Tüket": "keyword:EXHAUST",
+  "Tüketilen": null
+ },
+ "card:FLAME_BARRIER": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:FLATTEN": {
+  "Osti": null
+ },
+ "card:FLECHETTES": {
+  "El": null
+ },
+ "card:FOCUSED_STRIKE": {
+  "Odak": "power:FOCUS"
+ },
+ "card:FOOLISH_SHOT": {
+  "Fırlat": null,
+  "Ok": "keyword:ARROW"
+ },
+ "card:FOOTWORK": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "card:FORBIDDEN_GRIMOIRE": {
+  "Deste": null
+ },
+ "card:FOREGONE_CONCLUSION": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:FORGOTTEN_RITUAL": {
+  "Tükettiysen": null
+ },
+ "card:FRANTIC_ESCAPE": {
+  "Kum Havuzu": "power:SANDPIT"
+ },
+ "card:FRIENDSHIP": {
+  "Kuvvet": null
+ },
+ "card:FURNACE": {
+  "Döv": "keyword:FORGE"
+ },
+ "card:FUSION": {
+  "Oluştur": "keyword:CHANNELING",
+  "Plazma": "keyword:PLASMA_ORB"
+ },
+ "card:GAMMA_BLAST": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:GATHER_LIGHT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:GENETIC_ALGORITHM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:GHOST_EATER": {
+  "Kader": null
+ },
+ "card:GLACIER": {
+  "Blok": "keyword:BLOCK",
+  "Buz": "keyword:FROST_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:GLASSWORK": {
+  "Blok": "keyword:BLOCK",
+  "Cam": "keyword:GLASS_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:GLIMMER": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:GLIMPSE_BEYOND": {
+  "Ruh": "card:SOUL",
+  "plural:Ruh": null,
+  "Çekme Deste": null
+ },
+ "card:GLITTERSTREAM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:GOOD_INSTINCTS": {
+  "Blok": null
+ },
+ "card:GO_FOR_THE_EYES": {
+  "Zayıf": "power:WEAK"
+ },
+ "card:GRAND_FINALE": {
+  "Çekme Deste": null
+ },
+ "card:GRAVEBLAST": {
+  "Atık Deste": null,
+  "El": null
+ },
+ "card:GRAVE_WARDEN": {
+  "Blok": "keyword:BLOCK",
+  "Ruh": "card:SOUL",
+  "Çekme Deste": null
+ },
+ "card:GUARDS": {
+  "Dönüştür": null,
+  "Dönüştürmek": null,
+  "El": null,
+  "Uşak Fedakarlığı": "card:MINION_SACRIFICE",
+  "Uşak Fedakarlığı+": "card:MINION_SACRIFICE"
+ },
+ "card:GUILTY": {
+  "Deste": null
+ },
+ "card:GUNK_UP": {
+  "Atık Deste": null,
+  "Yapış Yapış": "card:SLIMED"
+ },
+ "card:HAILSTORM": {
+  "Buz": "keyword:FROST_ORB"
+ },
+ "card:HAMMER_TIME": {
+  "Dövdüğünde": null,
+  "Döver": null
+ },
+ "card:HAND_OF_GREED": {
+  "Altın": null,
+  "Öldürürse": null
+ },
+ "card:HAND_TRICK": {
+  "Blok": "keyword:BLOCK",
+  "El": null,
+  "Kurnaz": "keyword:SLY"
+ },
+ "card:HAUNT": {
+  "Ruh": "card:SOUL"
+ },
+ "card:HAVOC": {
+  "Tüket": "keyword:EXHAUST",
+  "Çekme Deste": null
+ },
+ "card:HAZE": {
+  "Zayıf": "power:WEAK",
+  "Zehir": "power:POISON"
+ },
+ "card:HEADBUTT": {
+  "Atık Deste": null,
+  "Çekme Deste": null
+ },
+ "card:HEAVY_SHOT": {
+  "Fırlat": null,
+  "Nişan": "power:AIM",
+  "Ok": "keyword:ARROW"
+ },
+ "card:HEIRLOOM_HAMMER": {
+  "El": null
+ },
+ "card:HELLO_WORLD": {
+  "El": null
+ },
+ "card:HIBERNATE": {
+  "Blok": "keyword:BLOCK",
+  "Buz": "keyword:FROST_ORB"
+ },
+ "card:HIDDEN_DAGGERS": {
+  "El": null
+ },
+ "card:HIDDEN_GEM": {
+  "Yeniden Oyna": "keyword:REPLAY",
+  "Çekme Deste": null
+ },
+ "card:HIDDEN_ROOTS": {
+  "Gerinme": "power:STRETCH"
+ },
+ "card:HIGH_FIVE": {
+  "Osti": null,
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:HOBBLING_SHOT": {
+  "Fırlat": null,
+  "Ok": "keyword:ARROW",
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:HOLOGRAM": {
+  "Atık Deste": null,
+  "Blok": "keyword:BLOCK",
+  "El": null
+ },
+ "card:HOTFIX": {
+  "Odak": "power:FOCUS"
+ },
+ "card:HOWL_FROM_BEYOND": {
+  "Tüketme Deste": null
+ },
+ "card:HYPERBEAM": {
+  "Odak": "power:FOCUS"
+ },
+ "card:ICE_LANCE": {
+  "Buz": "keyword:FROST_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:IGNITION": {
+  "Oluşturur": null,
+  "Plazma": "keyword:PLASMA_ORB"
+ },
+ "card:IMMORTALITY": {
+  "Soyutluk": null
+ },
+ "card:IMPALE": {
+  "Zehir": null
+ },
+ "card:IMPATIENCE": {
+  "El": null
+ },
+ "card:IMPERVIOUS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:INFECTION": {
+  "El": null
+ },
+ "card:INFERNAL_BLADE": {
+  "El": null
+ },
+ "card:INFINITE_BLADES": {
+  "El": null,
+  "Kama": "card:SHIV"
+ },
+ "card:INFLAME": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:INTERCEPT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:INVOKE": {
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "card:IRON_WAVE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:I_AM_INVINCIBLE": {
+  "Blok": "keyword:BLOCK",
+  "Çekme Deste": null
+ },
+ "card:JACKPOT": {
+  "El": null,
+  "Geliştirilmiş": null
+ },
+ "card:JACK_OF_ALL_TRADES": {
+  "El": null
+ },
+ "card:JEST": {
+  "Blok": "keyword:BLOCK",
+  "El": null,
+  "Hüzün": "card:SADNESS"
+ },
+ "card:JUGGERNAUT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:JUGGLING": {
+  "Atak": null,
+  "El": null
+ },
+ "card:KI_CHANT": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:KI_HOP": {
+  "Saplanmış": "power:IMPALED"
+ },
+ "card:KI_REST": {
+  "El": null,
+  "Sakla": "keyword:RETAIN",
+  "Vah Melodisi": "keyword:WAH_MELODY",
+  "Ço Melodisi": "keyword:CHO_MELODY"
+ },
+ "card:KNIFE_TRAP": {
+  "Geliştir": null,
+  "Kama": "card:SHIV",
+  "Kamaları": null,
+  "Tüketim Deste": null,
+  "plural:Kama": null
+ },
+ "card:KNOW_THY_PLACE": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:LARGESSE": {
+  "El": null,
+  "Geliştirilmiş": null
+ },
+ "card:LEADING_STRIKE": {
+  "El": null,
+  "Kama": "card:SHIV",
+  "plural:Kama": null
+ },
+ "card:LEAP": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:LEGION_OF_BONE": {
+  "Çağırır": null
+ },
+ "card:LEG_SWEEP": {
+  "Blok": "keyword:BLOCK",
+  "Zayıf": "power:WEAK"
+ },
+ "card:LIFT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:LIGHTNING_ROD": {
+  "Blok": "keyword:BLOCK",
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "card:LOCKED_IN": {
+  "El": null,
+  "Fırlatabilen": null,
+  "Çekme Deste": null
+ },
+ "card:LOST_LUTE": {
+  "Melodi": null,
+  "Çekme Deste": null
+ },
+ "card:LULLABY": {
+  "Blok": "keyword:BLOCK",
+  "Melodileri": null
+ },
+ "card:MAD_SCIENCE": {
+  "Beceriklilik": null,
+  "Blok": null,
+  "El": null,
+  "Geliştir": null,
+  "Kuvvet": null,
+  "Savunmasız": null,
+  "Zayıf": null
+ },
+ "card:MAKE_IT_SO": {
+  "El": null
+ },
+ "card:MALAISE": {
+  "Kuvvet": "power:STRENGTH",
+  "Zayıf": "power:WEAK"
+ },
+ "card:MANGLE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:MANIFEST_AUTHORITY": {
+  "Blok": "keyword:BLOCK",
+  "El": null,
+  "Geliştirilmiş": null
+ },
+ "card:MASTER_PLANNER": {
+  "Kurnaz": "keyword:SLY"
+ },
+ "card:MAYHEM": {
+  "Çekme Deste": null
+ },
+ "card:MELANCHOLY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:MELODIC_SHOT": {
+  "Fırlat": null,
+  "Melodi": null,
+  "Ok": "keyword:ARROW"
+ },
+ "card:METAMORPHOSIS": {
+  "Çekme Deste": null
+ },
+ "card:METEOR_SHOWER": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:METEOR_STRIKE": {
+  "Oluştur": "keyword:CHANNELING",
+  "Plazma": "keyword:PLASMA_ORB"
+ },
+ "card:MIDNIGHT": {
+  "Tüketilen": null
+ },
+ "card:MIGHTY_SHIELD": {
+  "Blok": "keyword:BLOCK",
+  "Sersemlemiş": "card:DAZED",
+  "Çekme Deste": null
+ },
+ "card:MIGHTY_WEAPON": {
+  "Sersemlemiş": "card:DAZED",
+  "Çekme Deste": null
+ },
+ "card:MIMIC": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:MIND_BLAST": {
+  "Çekme Deste": null
+ },
+ "card:MINION_SACRIFICE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:MIRAGE": {
+  "Blok": "keyword:BLOCK",
+  "Zehir": "power:POISON"
+ },
+ "card:MOLTEN_FIST": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:MONARCHS_GAZE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:MONOLOGUE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:MOTIF": {
+  "Melodi": null
+ },
+ "card:MOURNING_BLOW": {
+  "El": null,
+  "Hüzün": "card:SADNESS"
+ },
+ "card:MULTI_CAST": {
+  "Tetikle": "keyword:EVOKE"
+ },
+ "card:NECRO_MASTERY": {
+  "Osti": null,
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "card:NEGATIVE_PULSE": {
+  "Blok": "keyword:BLOCK",
+  "Kader": "power:DOOM"
+ },
+ "card:NEOWS_FURY": {
+  "Atık Deste": null,
+  "El": null
+ },
+ "card:NEUROSURGE": {
+  "Kader": "power:DOOM"
+ },
+ "card:NEUTRALIZE": {
+  "Zayıf": "power:WEAK"
+ },
+ "card:NEUTRON_AEGIS": {
+  "Zırh": "power:PLATING"
+ },
+ "card:NIGHTMARE": {
+  "El": null
+ },
+ "card:NOCK": {
+  "Nişan": "power:AIM"
+ },
+ "card:NOSTALGIA": {
+  "Çekme Deste": null
+ },
+ "card:NOXIOUS_FUMES": {
+  "Zehir": "power:POISON"
+ },
+ "card:NO_ESCAPE": {
+  "Kader": "power:DOOM"
+ },
+ "card:NULL": {
+  "Karanlık": "keyword:DARK_ORB",
+  "Oluştur": "keyword:CHANNELING",
+  "Zayıf": "power:WEAK"
+ },
+ "card:OBLIVION": {
+  "Kader": "power:DOOM"
+ },
+ "card:OFF_BY_ONE": {
+  "El": null
+ },
+ "card:OUTBREAK": {
+  "Zehir": "power:POISON"
+ },
+ "card:OUTRAGE": {
+  "Atık Destesi": null
+ },
+ "card:OVERCLOCK": {
+  "Atık Deste": null,
+  "Yanık": "card:BURN"
+ },
+ "card:PACTS_END": {
+  "Tüketme Deste": null
+ },
+ "card:PAELS_STRIKE": {
+  "Deste": null
+ },
+ "card:PAGESTORM": {
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "card:PANIC_BUTTON": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:PARRY": {
+  "Blok": "keyword:BLOCK",
+  "Egemen Kılıcı": "card:SOVEREIGN_BLADE"
+ },
+ "card:PARTICLE_WALL": {
+  "Blok": "keyword:BLOCK",
+  "El": null
+ },
+ "card:PATTER": {
+  "Blok": "keyword:BLOCK",
+  "Dinç": "power:VIGOR"
+ },
+ "card:PHANTOM_BLADES": {
+  "Kama": "card:SHIV",
+  "Kamaların": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "card:PHOTON_CUT": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:PIERCING_WAIL": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:PILLAR_OF_CREATION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:POISONED_STAB": {
+  "Zehir": "power:POISON"
+ },
+ "card:POKE": {
+  "Osti": null
+ },
+ "card:PRECISE_CUT": {
+  "El": null
+ },
+ "card:PREP_TIME": {
+  "Dinç": "power:VIGOR"
+ },
+ "card:PRIMAL_FORCE": {
+  "Devasa Kaya": "card:GIANT_ROCK",
+  "Devasa Kaya+": "card:GIANT_ROCK",
+  "El": null
+ },
+ "card:PROLONG": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:PROTECTOR": {
+  "Maksimum CP": null,
+  "Osti": null
+ },
+ "card:PROWESS": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:PULL_AGGRO": {
+  "Blok": "keyword:BLOCK",
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "card:PULL_FROM_BELOW": {
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "card:PURITY": {
+  "El": null,
+  "Tüketmek": null
+ },
+ "card:PUTREFY": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:QUADCAST": {
+  "Tetikle": "keyword:EVOKE"
+ },
+ "card:QUASAR": {
+  "El": null,
+  "Geliştirilmiş": null
+ },
+ "card:QUICK_SHOT": {
+  "Fırlat": null,
+  "Ok": "keyword:ARROW"
+ },
+ "card:QUIVER": {
+  "Ok": "keyword:ARROW",
+  "plural:Ok": null
+ },
+ "card:RAGE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:RAINBOW": {
+  "Buz": "keyword:FROST_ORB",
+  "Karanlık": "keyword:DARK_ORB",
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "card:RAIN_SHOT": {
+  "Fırlat": null,
+  "Ok": "keyword:ARROW"
+ },
+ "card:RALLY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:RATTLE": {
+  "Osti": null
+ },
+ "card:REANIMATE": {
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "card:REAPER_FORM": {
+  "Kader": "power:DOOM"
+ },
+ "card:REAVE": {
+  "Ruh": "card:SOUL",
+  "Ruh+": "card:SOUL",
+  "Çekme Deste": null
+ },
+ "card:REBOOT": {
+  "Çekme Deste": null
+ },
+ "card:REBOUND": {
+  "Çekme Deste": null
+ },
+ "card:REFINE_BLADE": {
+  "Döv": "keyword:FORGE"
+ },
+ "card:REFLECT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:REFRACT": {
+  "Cam": "keyword:GLASS_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:REGRET": {
+  "El": null
+ },
+ "card:RELAX": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:REPEAT_SHOT": {
+  "Fırlat": null,
+  "Ok": "keyword:ARROW"
+ },
+ "card:RESONANCE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:RESTLESSNESS": {
+  "El": null
+ },
+ "card:RHYTHM_STRIKE": {
+  "Melodi": null
+ },
+ "card:RIGHT_HAND_HAND": {
+  "Atık Deste": null,
+  "El": null,
+  "Osti": null
+ },
+ "card:ROYALTIES": {
+  "Altın": null
+ },
+ "card:RUMMAGE": {
+  "El": null,
+  "Hüzün": "card:SADNESS"
+ },
+ "card:RUPTURE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:SACRIFICE": {
+  "Blok": "keyword:BLOCK",
+  "Osti": null
+ },
+ "card:SALVO": {
+  "El": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "card:SCAVENGE": {
+  "Tüket": "keyword:EXHAUST"
+ },
+ "card:SCOURGE": {
+  "Kader": "power:DOOM"
+ },
+ "card:SCRAWL": {
+  "El": null
+ },
+ "card:SCULPTING_STRIKE": {
+  "El": null,
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "card:SEANCE": {
+  "Ruh": "card:SOUL",
+  "Çekme Deste": null
+ },
+ "card:SECOND_WIND": {
+  "Blok": "keyword:BLOCK",
+  "El": null,
+  "Tüket": "keyword:EXHAUST",
+  "Tüketilen": null
+ },
+ "card:SECRET_TECHNIQUE": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:SECRET_WEAPON": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:SEEKER_STRIKE": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:SEEKING_EDGE": {
+  "Döv": "keyword:FORGE",
+  "Egemen Kılıcı": "card:SOVEREIGN_BLADE"
+ },
+ "card:SELF_DEPRECATE": {
+  "El": null,
+  "Hüzün": "card:SADNESS",
+  "Neşe": "card:JOY"
+ },
+ "card:SENTRY_MODE": {
+  "El": null,
+  "Yarıcı Bakış": "card:SWEEPING_GAZE"
+ },
+ "card:SERRATED_ARROWS": {
+  "Saplanmış": "power:IMPALED"
+ },
+ "card:SETUP_STRIKE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:SEVERANCE": {
+  "Atık Deste": null,
+  "El": null,
+  "Ruh": "card:SOUL",
+  "Çekme Deste": null
+ },
+ "card:SHADOWMELD": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:SHADOW_SHIELD": {
+  "Blok": "keyword:BLOCK",
+  "Karanlık": "keyword:DARK_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:SHADOW_STEP": {
+  "El": null
+ },
+ "card:SHAME": {
+  "El": null,
+  "Kırılgan": "power:FRAIL"
+ },
+ "card:SHARED_FATE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:SHARP_EDGE": {
+  "Geliştir": null,
+  "Kama": null
+ },
+ "card:SHATTER": {
+  "Tetikle": "keyword:EVOKE"
+ },
+ "card:SHINING_STRIKE": {
+  "Çekme Deste": null
+ },
+ "card:SHOCKWAVE": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:SHOW_OFF": {
+  "Nişan": "power:AIM"
+ },
+ "card:SHROUD": {
+  "Blok": "keyword:BLOCK",
+  "Kader": "power:DOOM"
+ },
+ "card:SHRUG_IT_OFF": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:SIC_EM": {
+  "Osti": null,
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "card:SIMPLETON": {
+  "El": null
+ },
+ "card:SKY_SHOT": {
+  "Fırlat": null,
+  "Ok": "keyword:ARROW"
+ },
+ "card:SNAKEBITE": {
+  "Zehir": "power:POISON"
+ },
+ "card:SNAP": {
+  "El": null,
+  "Osti": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "card:SNEAKY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:SONG_PATH": {
+  "Blok": "keyword:BLOCK",
+  "Ço Melodisi": "keyword:CHO_MELODY"
+ },
+ "card:SOULBOUND": {
+  "Ruh": "card:SOUL",
+  "Çekme Destesi": null
+ },
+ "card:SOUL_STORM": {
+  "Ruh": "card:SOUL",
+  "Tüketme Deste": null
+ },
+ "card:SOVEREIGN_BLADE": {
+  "Blok": null
+ },
+ "card:SPECTRUM_SHIFT": {
+  "El": null
+ },
+ "card:SPINNER": {
+  "Cam": "keyword:GLASS_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:SPIRIT_OF_ASH": {
+  "Blok": "keyword:BLOCK",
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "card:SPLASH": {
+  "El": null,
+  "Geliştirilmiş": null
+ },
+ "card:SPOILS_MAP": {
+  "Altın": null
+ },
+ "card:SPOILS_OF_BATTLE": {
+  "Döv": "keyword:FORGE"
+ },
+ "card:SPUR": {
+  "Osti": null,
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "card:SQUASH": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:SQUEEZE": {
+  "Osti": null
+ },
+ "card:STACK": {
+  "Atık Deste": null,
+  "Blok": "keyword:BLOCK"
+ },
+ "card:STAMPEDE": {
+  "El": null
+ },
+ "card:STAR_BLAST": {
+  "Blok": null
+ },
+ "card:STAR_SHIELD": {
+  "Blok": null
+ },
+ "card:STEADY_CADENCE": {
+  "Melodi": null
+ },
+ "card:STOKE": {
+  "El": null,
+  "Geliştirilmiş": null,
+  "Tüket": null,
+  "Tüketilen": null
+ },
+ "card:STONE_ARMOR": {
+  "Zırh": "power:PLATING"
+ },
+ "card:STORM": {
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "card:STORM_OF_STEEL": {
+  "El": null,
+  "Kama": "card:SHIV",
+  "Kama+": "card:SHIV"
+ },
+ "card:STRATAGEM": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:STRENGTH": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "card:SUCKER_PUNCH": {
+  "Zayıf": "power:WEAK"
+ },
+ "card:SUMMON_FORTH": {
+  "Döv": "keyword:FORGE",
+  "Egemen Kılıcı": "card:SOVEREIGN_BLADE",
+  "El": null
+ },
+ "card:SUPPRESS": {
+  "Zayıf": "power:WEAK"
+ },
+ "card:SURVIVOR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:SWEEPING_GAZE": {
+  "Osti": null
+ },
+ "card:SWORD_SAGE": {
+  "Egemen Kılıcı": "card:SOVEREIGN_BLADE",
+  "Yeniden Oyna": "keyword:REPLAY"
+ },
+ "card:SYNCHRONIZE": {
+  "Odak": "power:FOCUS"
+ },
+ "card:TAUNT": {
+  "Blok": "keyword:BLOCK",
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:TEMPERANCE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:TEMPEST": {
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "card:TERRAFORMING": {
+  "Dinç": "power:VIGOR"
+ },
+ "card:TESLA_COIL": {
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "card:TEZCATARAS_MIGHT": {
+  "Kuvvet": null
+ },
+ "card:THE_DEVIL": {
+  "El": null,
+  "Geliştir": null,
+  "Tüket": "keyword:EXHAUST",
+  "Tüketilen": null,
+  "Çekme Deste": null
+ },
+ "card:THE_EMPRESS": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:THE_FOOL": {
+  "El": null
+ },
+ "card:THE_GAMBIT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:THE_HERMIT": {
+  "Lanet": null,
+  "Tüketilir": null
+ },
+ "card:THE_HUNT": {
+  "Öldürürse": null
+ },
+ "card:THE_LOVERS": {
+  "El": null
+ },
+ "card:THE_MAGICIAN": {
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:THE_MOON": {
+  "El": null,
+  "Kama": "card:SHIV",
+  "Kama+": "card:SHIV"
+ },
+ "card:THE_SMITH": {
+  "Döv": "keyword:FORGE"
+ },
+ "card:THE_WORLD": {
+  "Atık Deste": null,
+  "El": null
+ },
+ "card:THINKING_AHEAD": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:THRASH": {
+  "El": null,
+  "Tüket": "keyword:EXHAUST"
+ },
+ "card:THRUMMING_HATCHET": {
+  "El": null
+ },
+ "card:THUNDER": {
+  "Yıldırım Tetiklediğinde": null
+ },
+ "card:THUNDERCLAP": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:TIMES_UP": {
+  "Kader": "power:DOOM"
+ },
+ "card:TORIC_TOUGHNESS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:TOXIC": {
+  "El": null
+ },
+ "card:TRACKING": {
+  "Zayıf": "power:WEAK"
+ },
+ "card:TRAINING_STRIKE": {
+  "Öldürürse": null
+ },
+ "card:TRANSFIGURE": {
+  "El": null,
+  "Yeniden Oyna": "keyword:REPLAY"
+ },
+ "card:TRASH_TO_TREASURE": {
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "card:TREMBLE": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:TRUE_GRIT": {
+  "Blok": "keyword:BLOCK",
+  "Tüket": "keyword:EXHAUST"
+ },
+ "card:TURBO": {
+  "Atık Deste": null,
+  "Boşluk": "card:VOID"
+ },
+ "card:TUTOR": {
+  "El": null,
+  "Çekme Destesi": null
+ },
+ "card:TYRANNY": {
+  "El": null,
+  "Tüket": "keyword:EXHAUST"
+ },
+ "card:ULTIMATE_DEFEND": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:UNDEATH": {
+  "Atık Deste": null,
+  "Blok": "keyword:BLOCK"
+ },
+ "card:UNDERWORLD": {
+  "Kader": "power:DOOM"
+ },
+ "card:UNLEASH": {
+  "Osti": null
+ },
+ "card:UNMOVABLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:UNTOUCHABLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:UPPERCUT": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "card:UPROAR": {
+  "Çekme Deste": null
+ },
+ "card:UPROOT": {
+  "Saplanmış": "power:IMPALED",
+  "Savunmasız": "power:VULNERABLE",
+  "Çıkart": null
+ },
+ "card:UP_MY_SLEEVE": {
+  "El": null,
+  "Kama": "card:SHIV",
+  "plural:Kama": null
+ },
+ "card:VEILPIERCER": {
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "card:VETERAN": {
+  "Blok": null,
+  "Kuvvet": null
+ },
+ "card:VICIOUS": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:VIOLENT_CHORD": {
+  "Vah Melodisi": "keyword:WAH_MELODY"
+ },
+ "card:VOLTAIC": {
+  "Oluştur": "keyword:CHANNELING",
+  "Oluşturulan": null,
+  "Yıldırım": "keyword:LIGHTNING_ORB",
+  "Yıldırım Oluştur": null
+ },
+ "card:WAH_BLAST": {
+  "Ki Melodisi": "keyword:KI_MELODY",
+  "Ço Melodisi": "keyword:CHO_MELODY"
+ },
+ "card:WAH_CHO": {
+  "Blok": "keyword:BLOCK"
+ },
+ "card:WAH_HAMMER": {
+  "Saplanmış": "power:IMPALED"
+ },
+ "card:WAH_TOUCH": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "card:WARP_SPACE": {
+  "Çekme Deste": null
+ },
+ "card:WELL_LAID_PLANS": {
+  "El": null
+ },
+ "card:WHEEL_OF_FORTUNE": {
+  "El": null
+ },
+ "card:WHISTLE": {
+  "Sersemlet": null
+ },
+ "card:WHISTLING_ARROWS": {
+  "Atık Destesi": null,
+  "Blok": "keyword:BLOCK",
+  "El": null,
+  "Fırlattığında": null,
+  "Ok": "keyword:ARROW"
+ },
+ "card:WHITE_NOISE": {
+  "El": null
+ },
+ "card:WISH": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "card:WITHER": {
+  "El": null
+ },
+ "card:WRAITH_FORM": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Soyutluk": "power:INTANGIBLE"
+ },
+ "card:WREST": {
+  "Saplanmış": "power:IMPALED",
+  "Çıkart": null
+ },
+ "card:WROUGHT_IN_WAR": {
+  "Döv": "keyword:FORGE"
+ },
+ "card:YAH": {
+  "Ok": "keyword:ARROW",
+  "Çıkarttığında": null
+ },
+ "card:YOGA": {
+  "Gerinme": "power:STRETCH"
+ },
+ "card:ZAP": {
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "character:FOOL": {
+  "Kule": null
+ },
+ "character:NECROBINDER": {
+  "Osti": null
+ },
+ "dominion:AEONGLASS": {
+  "Solma": "card:WITHER",
+  "Çekme Deste": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Ritüel": "power:RITUAL"
+ },
+ "dominion:KIN": {
+  "Kırılgan": "power:FRAIL",
+  "Zayıf": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "Kırılgan": "power:FRAIL",
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "dominion:SOUL_FYSH": {
+  "Çağrı": "card:BECKON",
+  "Çekme Deste": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "enchantment:ADROIT": {
+  "Blok": null
+ },
+ "enchantment:CLONE": {
+  "Dinlenme Yerleri": null
+ },
+ "enchantment:GLAM": {
+  "Yeniden Oyna": "keyword:REPLAY"
+ },
+ "enchantment:GOOPY": {
+  "Blok": null,
+  "Tüket": "keyword:EXHAUST"
+ },
+ "enchantment:INKY": {
+  "Zayıf": "power:WEAK"
+ },
+ "enchantment:NIMBLE": {
+  "Blok": null
+ },
+ "enchantment:PERFECT_FIT": {
+  "Çekme Deste": null
+ },
+ "enchantment:ROYALLY_APPROVED": {
+  "Sakla": "keyword:RETAIN",
+  "Yerleşik": "keyword:INNATE"
+ },
+ "enchantment:SOULS_POWER": {
+  "Tüket": "keyword:EXHAUST"
+ },
+ "enchantment:SPIRAL": {
+  "Yeniden Oyna": "keyword:REPLAY"
+ },
+ "enchantment:STEADY": {
+  "Sakla": "keyword:RETAIN"
+ },
+ "enchantment:TEZCATARAS_EMBER": {
+  "Sonsuz": "keyword:ETERNAL"
+ },
+ "encounter:NEOW_CHOICE": {
+  "Neow Tercihi:": null
+ },
+ "epoch:BLITZ_EPOCH": {
+  "Sürat": null,
+  "altın buharlaştı": null
+ },
+ "epoch:COLORLESS1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:COLORLESS2_EPOCH": {
+  "Hayal Canavarı": null
+ },
+ "epoch:COLORLESS5_EPOCH": {
+  "Altın": null
+ },
+ "epoch:CUSTOM_AND_SEEDS_EPOCH": {
+  "Sahne": null,
+  "“Kadim Tohumlar”": null
+ },
+ "epoch:DAILY_RUN_EPOCH": {
+  "Sahne": null,
+  "Spire": null
+ },
+ "epoch:DARV_EPOCH": {
+  "Kadimler": null
+ },
+ "epoch:DEFECT2_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:DEFECT3_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:DEFECT4_EPOCH": {
+  "Sahne": null,
+  "Spire'ın": null
+ },
+ "epoch:DEFECT7_EPOCH": {
+  "hazineler": null
+ },
+ "epoch:EVENT1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:EVENT2_EPOCH": {
+  "Spire": null
+ },
+ "epoch:EVENT3_EPOCH": {
+  "Kadim Ağaçlar": null
+ },
+ "epoch:FOOL2_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:FOOL3_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:FOOL4_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:IRONCLAD2_EPOCH": {
+  "Sahne": null,
+  "Spire": null
+ },
+ "epoch:IRONCLAD3_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:IRONCLAD4_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:IRONCLAD6_EPOCH": {
+  "Spire": null
+ },
+ "epoch:IRONCLAD7_EPOCH": {
+  "Spire": null
+ },
+ "epoch:NECROBINDER2_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:NECROBINDER3_EPOCH": {
+  "Kaza Raporu": null,
+  "Sahne": null
+ },
+ "epoch:NECROBINDER4_EPOCH": {
+  "Sahne": null,
+  "tuhaf eserler": null
+ },
+ "epoch:NECROBINDER7_EPOCH": {
+  "Pael": null
+ },
+ "epoch:POTION1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:POTION2_EPOCH": {
+  "Spire": null
+ },
+ "epoch:REGENT2_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:REGENT3_EPOCH": {
+  "Sahne": null,
+  "Spire": null
+ },
+ "epoch:REGENT4_EPOCH": {
+  "Sahne": null,
+  "Starris'in Naip'i": null
+ },
+ "epoch:REGENT7_EPOCH": {
+  "Tanx": null
+ },
+ "epoch:RELIC1_EPOCH": {
+  "Hayal Canavarları": null
+ },
+ "epoch:RELIC2_EPOCH": {
+  "Kadim": null
+ },
+ "epoch:SILENT1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:SILENT2_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:SILENT3_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:SILENT4_EPOCH": {
+  "Sahne": null
+ },
+ "epoch:SILENT5_EPOCH": {
+  "Spire": null
+ },
+ "epoch:UNDERDOCKS_EPOCH": {
+  "Dip Rıhtımlar": null,
+  "Spire": null
+ },
+ "event:AMALGAMATOR": {
+  "Deste": null,
+  "Parıldayan mühürlerden oluşan ve dönüp duran bir girdabı": null,
+  "Saldırı": null,
+  "Savunma": null
+ },
+ "event:AROMA_OF_CHAOS": {
+  "Deste": null,
+  "Dönüştür": "keyword:TRANSFORM",
+  "Geliştir": null,
+  "büyük düşmanlarla düello yaparken": null
+ },
+ "event:BATTLEWORN_DUMMY": {
+  "FABRİKA": null,
+  "Geliştir": null,
+  "Kalıntı": null,
+  "İksir": null
+ },
+ "event:BRAIN_LEECH": {
+  "Deste": null
+ },
+ "event:BUGSLAYER": {
+  "Deste": null,
+  "Ezme Tekniği": null,
+  "Heybetli, Çetin bir Savaşçı": null,
+  "Yok Etme Tekniği": null
+ },
+ "event:BYRDONIS_NEST": {
+  "Deste": null,
+  "korunmasız tek bir yumurta": null
+ },
+ "event:COLORFUL_PHILOSOPHERS": {
+  "EN İYİ": null,
+  "Prizmatik Cam Parçası": null
+ },
+ "event:COLOSSAL_FLOWER": {
+  "Altın": null,
+  "Altın nektar": null,
+  "Polenli Çekirdek": "relic:POLLINOUS_CORE",
+  "Yüksek kaliteli nektardan": null,
+  "altın nektar": null,
+  "nektar": null
+ },
+ "event:CRYSTAL_SPHERE": {
+  "Altın": null,
+  "Büyük Kehanet": null,
+  "Kristal Küre okuması": null,
+  "Küçük Kehanet": null
+ },
+ "event:DENSE_VEGETATION": {
+  "Altın": null,
+  "kımıldanıp duran bir şey": null
+ },
+ "event:DOLL_ROOM": {
+  "Bebek Kalıntısı": null
+ },
+ "event:DOORS_OF_LIGHT_AND_DARK": {
+  "Deste": null,
+  "Geliştir": null,
+  "Işığın içine doğru...": null,
+  "güçlendiriyor": null,
+  "şık giyimli bir kapıcı": null
+ },
+ "event:DROWNING_BEACON": {
+  "Fener odasına": null,
+  "merceği": null
+ },
+ "event:ENDLESS_CONVEYOR": {
+  "Altın": null,
+  "Beslenme Çılgınlığı": null,
+  "Deste": null,
+  "Dönüştür": null,
+  "Geliştir": null,
+  "İksir": null
+ },
+ "event:FIELD_OF_MAN_SIZED_HOLES": {
+  "Büyüle": null,
+  "Deste": null,
+  "soluk bir ışığın": null
+ },
+ "event:GRAVE_OF_THE_FORGOTTEN": {
+  "Büyüle": null,
+  "Deste": null,
+  "Tüket": null,
+  "Tüketilen": null
+ },
+ "event:HUNGRY_FOR_MUSHROOMS": {
+  "amansızca antrenman yapmaya": null
+ },
+ "event:INFESTED_AUTOMATON": {
+  "Güç": null,
+  "Maliyeti 0 olan rastgele bir kart": null,
+  "elektrik": null
+ },
+ "event:JUNGLE_MAZE_ADVENTURE": {
+  "Altın": null,
+  "Harika Anılar": null
+ },
+ "event:LOST_WISP": {
+  "Altın": null,
+  "Deste": null,
+  "altın": null
+ },
+ "event:LUMINOUS_CHOIR": {
+  "Altın": null,
+  "Deste": null,
+  "Kalıntı": null
+ },
+ "event:MORPHIC_GROVE": {
+  "Altın": null,
+  "Dönüştür": "keyword:TRANSFORM",
+  "altınını": null
+ },
+ "event:POTION_COURIER": {
+  "Az Yaygın İksir": null,
+  "İksir Kuryesi": null,
+  "İğrenç plural:İksir": null,
+  "İğrenç İksir": "potion:FOUL_POTION"
+ },
+ "event:PUNCH_OFF": {
+  "Deste": null,
+  "Görkemli Ödüller": null,
+  "Kalıntı": null,
+  "Yapılar": null,
+  "Yumruklayan Yapı": null
+ },
+ "event:RANWID_THE_ELDER": {
+  "Kalıntı": null,
+  "altını": null
+ },
+ "event:REFLECTIONS": {
+  "Deste": null
+ },
+ "event:ROOM_FULL_OF_CHEESE": {
+  "Deste": null,
+  "Seçilmiş Peynir": "relic:CHOSEN_CHEESE",
+  "Sıradan": null
+ },
+ "event:ROUND_TEA_PARTY": {
+  "Kalıntı": null,
+  "altın bir taç": null,
+  "giriş ücretini": null,
+  "komutanlar": null
+ },
+ "event:SAPPHIRE_SEED": {
+  "Büyüle": null,
+  "Deste": null,
+  "Geliştir": null,
+  "dayanıklılığını büyük ölçüde artırır": null,
+  "renkler keskinleşir": null
+ },
+ "event:SELF_HELP_BOOK": {
+  "Büyülemek": null,
+  "Büyüleyebileceğin": null
+ },
+ "event:SHRINE_OF_THE_WARLORD": {
+  "Deste": null,
+  "farklı eserin": null
+ },
+ "event:SLIPPERY_BRIDGE": {
+  "Deste": null,
+  "HAAAAAYIIIR": null
+ },
+ "event:SPIRALING_WHIRLPOOL": {
+  "Büyüle": null,
+  "Deste": null,
+  "Kalıntı": null,
+  "Merkez’ine": null,
+  "Saldırı": null,
+  "Savunma": null,
+  "“Teşekkür ederim Sarmal.”": null
+ },
+ "event:SPIRIT_GRAFTER": {
+  "Başkalaşım": "card:METAMORPHOSIS",
+  "Deste": null,
+  "Geliştir": null,
+  "Işık": null
+ },
+ "event:STONE_OF_ALL_TIME": {
+  "Büyüle": null,
+  "Tüm Zamanların Taşı": null
+ },
+ "event:SUNKEN_STATUE": {
+  "Altın": null,
+  "Paraları": null,
+  "parıldayan": null
+ },
+ "event:SUNKEN_TREASURY": {
+  "Altın": null,
+  "Birinci Sandık:": null,
+  "altın": null,
+  "sandık": null,
+  "İkinci Sandık:": null
+ },
+ "event:SYMBIOTE": {
+  "Büyüle": null,
+  "Dönüştürmek": null
+ },
+ "event:TABLET_OF_TRUTH": {
+  "Geliştir": null,
+  "Gerçek": null,
+  "Son Sözcüğü": null
+ },
+ "event:TEA_MASTER": {
+  "1.": null,
+  "2.": null,
+  "3.": null,
+  "4.": null,
+  "5.": null,
+  "Altın": null,
+  "yüksek bir fiyat etiketiyle": null
+ },
+ "event:THERMAE_NONUPEIPE": {
+  "Altın": null,
+  "Deste": null
+ },
+ "event:THE_FUTURE_OF_POTIONS": {
+  "Geliştirilmiş": null
+ },
+ "event:THE_LANTERN_KEY": {
+  "Altın": null,
+  "Gizemli Şövalye": null
+ },
+ "event:THE_LEGENDS_WERE_TRUE": {
+  "Ganimet Haritası": "card:SPOILS_MAP",
+  "İksir": null
+ },
+ "event:THIS_OR_THAT": {
+  "Altın": null,
+  "Deste": null,
+  "Kalıntı": null,
+  "bol zenginliklerle dolu, şüpheli bir torba": null
+ },
+ "event:TINKER_TIME": {
+  "Beceriklilik": null,
+  "Deste": null,
+  "El": null,
+  "Geliştir": null,
+  "Kuvvet": null,
+  "Savunmasız": null,
+  "Zayıf": null
+ },
+ "event:TRASH_HEAP": {
+  "Altın": null,
+  "Kalıntı": null,
+  "egzotik hazinelere": null,
+  "geçmişten kalma bir kalıntı": null,
+  "unutulmuş değerli eşyalar": null
+ },
+ "event:TRIAL": {
+  "Altın": null,
+  "Altın bir kemerin": null,
+  "Dava": null,
+  "Deste": null,
+  "Dönüştür": "keyword:TRANSFORM",
+  "Geliştir": null,
+  "Güçlü bir soylu": null,
+  "Güçlü soylunun": null,
+  "Kalıntı": null,
+  "Karar Kürsüsü’ne": null,
+  "Karar ver": null,
+  "Mahkemelerin Yüce Hakimi": null,
+  "Soylu": null,
+  "altını": null,
+  "rüşvetle": null
+ },
+ "event:UNREST_SITE": {
+  "Dinlenme Alanı": null,
+  "Kalıntı": null,
+  "küçük bir kutu": null
+ },
+ "event:WAR_HISTORIAN_REPY": {
+  "Fener Anahtar": "card:LANTERN_KEY",
+  "Kalıntı": null,
+  "Tarih Dersi": "relic:HISTORY_COURSE",
+  "hazine sandığının": null,
+  "iksir": null,
+  "kalın, deri kaplı bir cilt": null,
+  "kalıntı mı": null,
+  "sandığı": null,
+  "İksir": null
+ },
+ "event:WATERFALL_OF_OBVIOUS_SECRETS": {
+  "Altın": null,
+  "Deste": null,
+  "Nadir": null,
+  "Paspal Hançer": null,
+  "altınları": null
+ },
+ "event:WATERLOGGED_SCRIPTORIUM": {
+  "Altın": null,
+  "Büyüle": null,
+  "dikenli süngeri": null,
+  "edevatları": null,
+  "kıpır kıpır olan kalemi": null
+ },
+ "event:WELCOME_TO_WONGOS": {
+  "Altın": null,
+  "Kalıntı": null,
+  "Wongo Müşteri Takdir Rozeti’ni": null,
+  "Wongo Puanınız": null,
+  "Yaygın Kalıntı": null
+ },
+ "event:WELLSPRING": {
+  "Deste": null,
+  "İksir": null,
+  "ışıldayan zerrecik kümeleri": null
+ },
+ "event:WHISPERING_HOLLOW": {
+  "Altın": null,
+  "Dönüştürmek": null,
+  "altın": null,
+  "dönüştürür": null,
+  "İksir": null
+ },
+ "event:WOOD_CARVINGS": {
+  "Büyüle": null,
+  "Dönüştürmek": null
+ },
+ "event:WUPPY_IN_TROUBLE": {
+  "Deste": null,
+  "Wuppy": null
+ },
+ "event:ZEN_WEAVER": {
+  "Altın": null,
+  "Aydınlanma": "card:ENLIGHTENMENT",
+  "Deste": null,
+  "altın": null
+ },
+ "intent:ATTACK": {
+  "Saldırmayı": null
+ },
+ "intent:BUFF": {
+  "Güçlendirme": null
+ },
+ "intent:CARD_DEBUFF": {
+  "Olumsuz Etki": null
+ },
+ "intent:DEBUFF": {
+  "Güçsüzleştirme": null
+ },
+ "intent:DEBUFF_STRONG": {
+  "Güçsüzleştirme": null
+ },
+ "intent:DEFEND": {
+  "Bloklamayı": null
+ },
+ "intent:ESCAPE": {
+  "Kaçmayı": null
+ },
+ "intent:HEAL": {
+  "İyileştirmeyi": null
+ },
+ "intent:STATUS": {
+  "Durum": null
+ },
+ "intent:SUMMON": {
+  "Canavar": null
+ },
+ "intent:UNKNOWN": {
+  "Bilinmiyor": null
+ },
+ "keyword:ARROW": {
+  "Saplamak": null,
+  "Saplanmış": null,
+  "Çıkartmak": null
+ },
+ "keyword:CARD_REWARD": {
+  "Deste": null
+ },
+ "keyword:CHANNELING": {
+  "Tetiklenir": null
+ },
+ "keyword:COOK": {
+  "Deste": null,
+  "Dinlenme Yeri": null,
+  "çıkar": null
+ },
+ "keyword:DREAD_ROTATION": {
+  "Dönüşümlü Seri": null
+ },
+ "keyword:ENERGY": {
+  "El": null
+ },
+ "keyword:ETERNAL": {
+  "Deste": null
+ },
+ "keyword:ETHEREAL": {
+  "El": null,
+  "Tüketilir": null
+ },
+ "keyword:FORGE": {
+  "Dövdüğünde": null,
+  "Egemen Kılıcı": null,
+  "El": null
+ },
+ "keyword:INNATE": {
+  "El": null
+ },
+ "keyword:REPLAY": {
+  "Yeniden Oyna": null
+ },
+ "keyword:ROOM_ELITE": {
+  "Kalıntı": null
+ },
+ "keyword:ROOM_MERCHANT": {
+  "Altın": null
+ },
+ "keyword:ROOM_REST": {
+  "Geliştir": null
+ },
+ "keyword:ROOM_TREASURE": {
+  "Altın": null,
+  "Kalıntılar": null
+ },
+ "keyword:ROOM_UNKNOWN_MERCHANT": {
+  "Altın": null
+ },
+ "keyword:SLY": {
+  "El": null
+ },
+ "keyword:SUMMON_DYNAMIC": {
+  "Osti": null
+ },
+ "keyword:SUMMON_STATIC": {
+  "Osti": null
+ },
+ "modifier:ALL_STAR": {
+  "Renksiz": null
+ },
+ "modifier:BIG_GAME_HUNTER": {
+  "Nadir": null
+ },
+ "modifier:MIDAS": {
+  "Dinlenme Yerleri": null
+ },
+ "modifier:MURDEROUS": {
+  "Kuvvet": null
+ },
+ "modifier:NIGHT_TERRORS": {
+  "Dinlenme Yerleri": null
+ },
+ "modifier:TERMINAL": {
+  "Zırh": null
+ },
+ "monster:GREMLIN_MERC": {
+  "Para!": null
+ },
+ "orb:DARK_ORB": {
+  "Pasif:": null,
+  "Tetikle:": null,
+  "Tetiklendiğinde": null
+ },
+ "orb:FROST_ORB": {
+  "Blok": null,
+  "Pasif:": null,
+  "Tetikle:": null
+ },
+ "orb:GLASS_ORB": {
+  "Pasif:": null,
+  "Tetikle:": null
+ },
+ "orb:LIGHTNING_ORB": {
+  "Pasif:": null,
+  "Tetikle:": null
+ },
+ "orb:PLASMA_ORB": {
+  "Odak": null,
+  "Pasif:": null,
+  "Tetikle:": null
+ },
+ "potion:ASHWATER": {
+  "El": null,
+  "Tüket": "keyword:EXHAUST",
+  "Tüketmek": null
+ },
+ "potion:ATTACK_POTION": {
+  "El": null
+ },
+ "potion:BLESSING_OF_THE_FORGE": {
+  "El": null,
+  "Geliştir": null
+ },
+ "potion:BLOCK_POTION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "potion:BONE_BREW": {
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "potion:BOTTLED_POTENTIAL": {
+  "Çekme Deste": null
+ },
+ "potion:BOTTLED_SONG": {
+  "El": null
+ },
+ "potion:COLORLESS_POTION": {
+  "El": null
+ },
+ "potion:COSMIC_CONCOCTION": {
+  "El": null,
+  "Geliştirilmiş": null
+ },
+ "potion:CRYSTALLINE_EUPHORIA": {
+  "El": null,
+  "Hüzün": "card:SADNESS",
+  "Neşe": "card:JOY"
+ },
+ "potion:CUNNING_POTION": {
+  "El": null,
+  "Geliştirilmiş Kama": null,
+  "Geliştirilmiş plural:Kama": null
+ },
+ "potion:DEXTERITY_POTION": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "potion:DISTILLED_CHAOS": {
+  "Çekme Deste": null
+ },
+ "potion:DROPLET_OF_PRECOGNITION": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "potion:ESSENCE_OF_DARKNESS": {
+  "Karanlık": "keyword:DARK_ORB",
+  "Küre Yuva": null,
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "potion:FLEX_POTION": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "potion:FOCUS_POTION": {
+  "Odak": "power:FOCUS"
+ },
+ "potion:FORTIFIER": {
+  "Blok": "keyword:BLOCK"
+ },
+ "potion:FOUL_POTION": {
+  "Altın": null,
+  "Tüccar": null
+ },
+ "potion:FYSH_OIL": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "potion:GHOST_IN_A_JAR": {
+  "Soyutluk": "power:INTANGIBLE"
+ },
+ "potion:GLOWWATER_POTION": {
+  "El": null,
+  "Tüket": "keyword:EXHAUST"
+ },
+ "potion:HEART_OF_IRON": {
+  "Zırh": "power:PLATING"
+ },
+ "potion:KINGS_COURAGE": {
+  "Döv": "keyword:FORGE"
+ },
+ "potion:LIQUID_BRONZE": {
+  "Diken": "power:THORNS"
+ },
+ "potion:LIQUID_MEMORIES": {
+  "Atık Deste": null,
+  "El": null
+ },
+ "potion:LUCKY_TONIC": {
+  "Tampon": "power:BUFFER"
+ },
+ "potion:MAZALETHS_GIFT": {
+  "Ritüel": "power:RITUAL"
+ },
+ "potion:OROBIC_ACID": {
+  "El": null
+ },
+ "potion:POISON_POTION": {
+  "Zehir": "power:POISON"
+ },
+ "potion:POTION_OF_BINDING": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "potion:POTION_OF_CAPACITY": {
+  "Küre Yuvası": null,
+  "Küre plural:Yuvası": null
+ },
+ "potion:POTION_OF_DOOM": {
+  "Kader": "power:DOOM"
+ },
+ "potion:POT_OF_GHOULS": {
+  "El": null,
+  "Ruh": "card:SOUL",
+  "plural:Ruh": null
+ },
+ "potion:POWER_POTION": {
+  "El": null
+ },
+ "potion:PRECISION_POTION": {
+  "Nişan": "power:AIM"
+ },
+ "potion:REGEN_POTION": {
+  "Yenilenme": "power:REGEN"
+ },
+ "potion:SHACKLING_POTION": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "potion:SHIP_IN_A_BOTTLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "potion:SKILL_POTION": {
+  "El": null
+ },
+ "potion:SNECKO_OIL": {
+  "El": null
+ },
+ "potion:SOLDIERS_STEW": {
+  "Saldırı": null,
+  "Yeniden Oyna": "keyword:REPLAY"
+ },
+ "potion:SPEED_POTION": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "potion:STABLE_SERUM": {
+  "El": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "potion:STRENGTH_POTION": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "potion:TOUCH_OF_INSANITY": {
+  "El": null
+ },
+ "potion:VULNERABLE_POTION": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "potion:WEAK_POTION": {
+  "Zayıf": "power:WEAK"
+ },
+ "power:ACCELERANT": {
+  "Zehir": "power:POISON"
+ },
+ "power:ACCURACY": {
+  "Kamalar": null
+ },
+ "power:ADAPTATION": {
+  "Beceriklilik": null,
+  "Blok": null
+ },
+ "power:AEONGLASS_DOMINION": {
+  "Solma": "card:WITHER",
+  "Çekme Deste": null
+ },
+ "power:AFTERIMAGE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:AGGRESSION": {
+  "Atık Deste": null,
+  "El": null,
+  "Geliştir": null
+ },
+ "power:AIM": {
+  "Ok": null
+ },
+ "power:ALL_IS_WELL": {
+  "Blok": "keyword:BLOCK",
+  "Hüzün": "card:SADNESS"
+ },
+ "power:ARCHERY": {
+  "Nişan": "power:AIM"
+ },
+ "power:ARSENAL": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:ARTIFACT": {
+  "Önler": null,
+  "önler": null
+ },
+ "power:AUTOMATION": {
+  "Enerji": null
+ },
+ "power:BARRICADE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:BEACON_OF_HOPE": {
+  "Blok": null
+ },
+ "power:BIASED_COGNITION": {
+  "Odak": "power:FOCUS"
+ },
+ "power:BLOCK_NEXT_TURN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:BLUR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:BURROWED": {
+  "Blok": null,
+  "Sersemler": null
+ },
+ "power:CALAMITY": {
+  "El": null
+ },
+ "power:CALCIFY": {
+  "Osti": null
+ },
+ "power:CALL_OF_THE_VOID": {
+  "El": null,
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "power:CHAINS_OF_BINDING": {
+  "Bağlı": "affliction:BOUND"
+ },
+ "power:CHILD_OF_THE_STARS": {
+  "Blok": null
+ },
+ "power:COLOSSUS": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "power:COMPOST": {
+  "Enerji": "keyword:ENERGY"
+ },
+ "power:CONCOCT": {
+  "Zehir": "power:POISON"
+ },
+ "power:CONQUEROR": {
+  "Egemen Kılıcı": "card:SOVEREIGN_BLADE"
+ },
+ "power:CONSUMING_SHADOW": {
+  "Tetikle": null
+ },
+ "power:CONTRACTILITY": {
+  "Blok": null
+ },
+ "power:COOLANT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:CORROSIVE_WAVE": {
+  "Zehir": "power:POISON"
+ },
+ "power:CORRUPTION": {
+  "Tüketilir": null
+ },
+ "power:COUNTDOWN": {
+  "Kader": "power:DOOM"
+ },
+ "power:COVERING_FIRE": {
+  "Blok": "keyword:BLOCK",
+  "Fırlattığında": null
+ },
+ "power:CRAB_RAGE": {
+  "Blok": "keyword:BLOCK",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:CREATIVE_AI": {
+  "El": null
+ },
+ "power:CRIMSON_MANTLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:CRUELTY": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "power:CURL_UP": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:DANSE_MACABRE": {
+  "Blok": null
+ },
+ "power:DARK_EMBRACE": {
+  "Tüketilirse": null
+ },
+ "power:DEBILITATE": {
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "power:DECREE_OF_ENTROPY": {
+  "Geliştirilmiş": null,
+  "Geliştirmiş": null
+ },
+ "power:DEMESNE": {
+  "Enerji": "keyword:ENERGY"
+ },
+ "power:DEMON_FORM": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:DESPAIR": {
+  "Blok": null,
+  "Kader": null
+ },
+ "power:DEVOUR_LIFE": {
+  "Ruh": "card:SOUL",
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "power:DEXTERITY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:DEXTERITY_DOWN": {
+  "Beceriklilik": null
+ },
+ "power:DIE_FOR_YOU": {
+  "Osti": null
+ },
+ "power:DISLIKE_YOU": {
+  "Atışlardan": null
+ },
+ "power:ECSTASY": {
+  "Dönüştür": null,
+  "El": null,
+  "Hüzün": "card:SADNESS",
+  "Neşe": "card:JOY"
+ },
+ "power:ENERGY_NEXT_TURN": {
+  "Enerji": "keyword:ENERGY"
+ },
+ "power:ENNUI": {
+  "El": null,
+  "Hüzün": null
+ },
+ "power:ENRAGE": {
+  "Kuvvet": null
+ },
+ "power:ENTROPY": {
+  "Dönüştür": "keyword:TRANSFORM",
+  "El": null
+ },
+ "power:ENVENOM": {
+  "Zehir": "power:POISON"
+ },
+ "power:EXPLOSIVE_ARROWS": {
+  "Sapladığında": null
+ },
+ "power:FAN_OF_KNIVES": {
+  "Kamalar": null
+ },
+ "power:FASTEN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:FEEL_NO_PAIN": {
+  "Blok": "keyword:BLOCK",
+  "Tüketildiğinde": null
+ },
+ "power:FERAL": {
+  "El": null
+ },
+ "power:FLUTTER": {
+  "%50": null,
+  "Sersemletmek": null
+ },
+ "power:FOCUS_DOWN": {
+  "Odak": null
+ },
+ "power:FORBIDDEN_GRIMOIRE": {
+  "Deste": null
+ },
+ "power:FOREGONE_CONCLUSION": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "power:FRAIL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:FRIENDSHIP": {
+  "Enerji": "keyword:ENERGY"
+ },
+ "power:FURNACE": {
+  "Döv": "keyword:FORGE"
+ },
+ "power:GALVANIC": {
+  "Uyarıcı": "affliction:GALVANIZED"
+ },
+ "power:HAILSTORM": {
+  "Buz": "keyword:FROST_ORB"
+ },
+ "power:HAMMER_TIME": {
+  "Dövdüğünde": null,
+  "Döver": null
+ },
+ "power:HANG": {
+  "As": "card:HANG"
+ },
+ "power:HAUNT": {
+  "Ruh": null
+ },
+ "power:HEIST": {
+  "Altın": null
+ },
+ "power:HELLO_WORLD": {
+  "El": null
+ },
+ "power:HEX": {
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "power:HIBERNATE": {
+  "Blok": "keyword:BLOCK",
+  "Buz": "keyword:FROST_ORB"
+ },
+ "power:HIDDEN_ROOTS": {
+  "Gerinme": "power:STRETCH"
+ },
+ "power:HIGH_VOLTAGE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:HONING": {
+  "Oklar": null
+ },
+ "power:IMBALANCED": {
+  "Sersemler": null
+ },
+ "power:IMPALED": {
+  "Ok": null,
+  "Saplanır": null,
+  "Çıkarılacak": null,
+  "Çıkarılır": null
+ },
+ "power:IMPROVEMENT": {
+  "Geliştir": null
+ },
+ "power:INFINITE_BLADES": {
+  "El": null,
+  "Kama": "card:SHIV"
+ },
+ "power:JUGGERNAUT": {
+  "Blok": null
+ },
+ "power:JUGGLING": {
+  "El": null
+ },
+ "power:LAGAVULIN_MATRIARCH_DOMINION": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:LIGHTNING_ROD": {
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "power:LOST_LUTE": {
+  "Melodi": null,
+  "Çekme Deste": null
+ },
+ "power:LULLABY": {
+  "Blok": "keyword:BLOCK",
+  "Melodileri": null
+ },
+ "power:MASTER_PLANNER": {
+  "Kurnaz": null
+ },
+ "power:MAYHEM": {
+  "Çekme Deste": null
+ },
+ "power:MELANCHOLY": {
+  "Kader": null
+ },
+ "power:MONARCHS_GAZE": {
+  "Kuvvet": null
+ },
+ "power:MONOLOGUE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:MOTIF": {
+  "Melodi": null
+ },
+ "power:MYTHIC_FORM": {
+  "El": null,
+  "Tarot": "keyword:TAROT"
+ },
+ "power:NECRO_MASTERY": {
+  "Osti": null
+ },
+ "power:NEMESIS": {
+  "Soyutluk": null
+ },
+ "power:NEUROSURGE": {
+  "Kader": "power:DOOM"
+ },
+ "power:NIGHTMARE": {
+  "El": null
+ },
+ "power:NOSTALGIA": {
+  "Çekme Deste": null
+ },
+ "power:NOXIOUS_FUMES": {
+  "Zehir": "power:POISON"
+ },
+ "power:NO_BLOCK": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:NO_ESCAPE": {
+  "Kader": null
+ },
+ "power:OBLIVION": {
+  "Kader": null
+ },
+ "power:ORB_GENERATOR": {
+  "Küreler": null,
+  "Kürelerin": null
+ },
+ "power:PAGESTORM": {
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "power:PAINFUL_STABS": {
+  "Atık Deste": null,
+  "Yara": "card:WOUND",
+  "plural:Yara": null
+ },
+ "power:PAPER_CUTS": {
+  "Maksimum CP": null
+ },
+ "power:PARRY": {
+  "Blok": null,
+  "Egemen Kılıcı": null
+ },
+ "power:PERSONAL_HIVE": {
+  "Sersemlemiş": "card:DAZED",
+  "Çekme Deste": null
+ },
+ "power:PHANTOM_BLADES": {
+  "Kama": "card:SHIV",
+  "Kamalar": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "power:PILLAR_OF_CREATION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:PLATING": {
+  "Blok": "keyword:BLOCK",
+  "Zırh": "power:PLATING"
+ },
+ "power:PLOW": {
+  "Kuvvet": "power:STRENGTH",
+  "Sersemler": null
+ },
+ "power:POISON": {
+  "Zehir": "power:POISON"
+ },
+ "power:POSSESS_SPEED": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "power:POSSESS_STRENGTH": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:PREP_TIME": {
+  "Dinç": null
+ },
+ "power:PYRE": {
+  "Enerji": "keyword:ENERGY"
+ },
+ "power:RADIANCE": {
+  "Enerji": "keyword:ENERGY"
+ },
+ "power:RAGE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:RAMPART": {
+  "Blok": null
+ },
+ "power:RAVENOUS": {
+  "Kuvvet": "power:STRENGTH",
+  "Sersemler": null
+ },
+ "power:READ_THE_BONES": {
+  "Çağırdığında": null
+ },
+ "power:REAPER_FORM": {
+  "Kader": "power:DOOM"
+ },
+ "power:REBOUND": {
+  "Çekme Deste": null
+ },
+ "power:REFLECTIVE_FORTRESS": {
+  "Blokladığında": null
+ },
+ "power:REGEN": {
+  "Yenilenme": "power:REGEN"
+ },
+ "power:RESERVES": {
+  "Enerji": null
+ },
+ "power:RESTORE_DEXTERITY": {
+  "Beceriklilik": null
+ },
+ "power:RESTORE_FOCUS": {
+  "Odak": null
+ },
+ "power:RETAIN_HAND": {
+  "El": null,
+  "Sakla": null
+ },
+ "power:RITUAL": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:ROYALTIES": {
+  "Altın": null
+ },
+ "power:RUPTURE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:SANDPIT": {
+  "Doyumsuz": null
+ },
+ "power:SEEKING_EDGE": {
+  "Egemen Kılıcı": "card:SOVEREIGN_BLADE"
+ },
+ "power:SELF_FORMING_CLAY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:SENTRY_MODE": {
+  "El": null,
+  "Yarıcı Bakış": "card:SWEEPING_GAZE"
+ },
+ "power:SERRATED_ARROWS": {
+  "Saplanmış": "power:IMPALED"
+ },
+ "power:SHADOWMELD": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:SHARP_EDGE": {
+  "Geliştir": null,
+  "Kama": null
+ },
+ "power:SHOW_OFF": {
+  "Gösteriş Yap": "power:SHOW_OFF",
+  "Nişan": null
+ },
+ "power:SHRIEK": {
+  "Sersemler": null
+ },
+ "power:SHROUD": {
+  "Blok": null,
+  "Kader": "power:DOOM"
+ },
+ "power:SIC_EM": {
+  "Osti": null,
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "power:SIMPLETON": {
+  "El": null
+ },
+ "power:SKITTISH": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:SNEAKY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:SOAR": {
+  "%50": null
+ },
+ "power:SONG_PATH": {
+  "Blok": "keyword:BLOCK",
+  "Ço Melodisi": "keyword:CHO_MELODY"
+ },
+ "power:SOULBOUND": {
+  "Ruh": "card:SOUL",
+  "plural:Ruh": null,
+  "Çekme Deste": null
+ },
+ "power:SOW": {
+  "El": null,
+  "Sakla": null
+ },
+ "power:SPECTRUM_SHIFT": {
+  "El": null
+ },
+ "power:SPINNER": {
+  "Cam": "keyword:GLASS_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "power:SPIRIT_OF_ASH": {
+  "Blok": "keyword:BLOCK",
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "power:STAMPEDE": {
+  "El": null
+ },
+ "power:STORM": {
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "power:STRATAGEM": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "power:STRETCH": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:SUCK": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:SUMMON_NEXT_TURN": {
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "power:SWORD_SAGE": {
+  "Egemen Kılıcı": "card:SOVEREIGN_BLADE",
+  "Yeniden Oyna": "keyword:REPLAY"
+ },
+ "power:TANGLED": {
+  "Enerji": null
+ },
+ "power:TAUNT": {
+  "Savunmasız": null
+ },
+ "power:TEMPORARY_DEXTERITY": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "power:TEMPORARY_DEXTERITY_DOWN": {
+  "Beceriklilik": null
+ },
+ "power:TEMPORARY_FOCUS": {
+  "Odak": "power:FOCUS"
+ },
+ "power:TEMPORARY_FOCUS_DOWN": {
+  "Odak": null
+ },
+ "power:TEMPORARY_STRENGTH": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:TEMPORARY_STRENGTH_DOWN": {
+  "Kuvvet": null
+ },
+ "power:TEMPORARY_THORNS": {
+  "Diken": "power:THORNS"
+ },
+ "power:TENDER": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:TERRITORIAL": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "power:TEZCATARAS_BLIGHT": {
+  "Kuvvet": null
+ },
+ "power:THIEVERY": {
+  "Altın": null
+ },
+ "power:THUNDER": {
+  "Yıldırım Tetiklediğinde": null
+ },
+ "power:TORIC_TOUGHNESS": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:TRACKING": {
+  "Zayıf": "power:WEAK"
+ },
+ "power:TRASH_TO_TREASURE": {
+  "Oluştur": null
+ },
+ "power:TYRANNY": {
+  "El": null,
+  "Tüket": "keyword:EXHAUST"
+ },
+ "power:UNDERWORLD": {
+  "Kader": "power:DOOM"
+ },
+ "power:UNMOVABLE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "power:UNSTEADY": {
+  "Sersemler": null
+ },
+ "power:VEILPIERCER": {
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "power:VICIOUS": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "power:VIOLENT_CHORD": {
+  "Vah Melodisi": "keyword:WAH_MELODY"
+ },
+ "power:VITAL_SPARK": {
+  "Beceriler": null,
+  "Lekeli": "affliction:TAINTED"
+ },
+ "power:WASTE_AWAY": {
+  "Enerji": "keyword:ENERGY"
+ },
+ "power:WELL_LAID_PLANS": {
+  "El": null
+ },
+ "power:WINGED_JUMP": {
+  "Savunmasız": null
+ },
+ "power:WITHERING_PRESENCE": {
+  "El": null,
+  "Solma": null
+ },
+ "power:WRAITH_FORM": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "power:WUPPYS_LOYALTY": {
+  "Wuppy": null
+ },
+ "power:YAH": {
+  "Ok": null,
+  "Çıkarttığında": null
+ },
+ "power:YOU_ARE_MINE": {
+  "Kırılgan": "power:FRAIL",
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "relic:AKABEKO": {
+  "Dinç": "power:VIGOR"
+ },
+ "relic:ALCHEMICAL_COFFER": {
+  "İksir": null,
+  "İksirler": null,
+  "İksirlerle": null
+ },
+ "relic:AMETHYST_AUBERGINE": {
+  "Altın": null
+ },
+ "relic:ANCHOR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:ARCANE_SCROLL": {
+  "Deste": null,
+  "Nadir Kart": null,
+  "Nadir Kartı": null
+ },
+ "relic:ARCHAIC_TOOTH": {
+  "Dönüştür": null
+ },
+ "relic:ASTROLABE": {
+  "Dönüştür": null,
+  "Geliştir": null
+ },
+ "relic:BAG_OF_MARBLES": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "relic:BATH_ROBES": {
+  "Boss": null
+ },
+ "relic:BEAUTIFUL_BRACELET": {
+  "Büyüle": null,
+  "Deste": null
+ },
+ "relic:BELLOWS": {
+  "El": null,
+  "Geliştirilir": null
+ },
+ "relic:BELT_BUCKLE": {
+  "Beceriklilik": "power:DEXTERITY",
+  "İksirin": null
+ },
+ "relic:BIG_HAT": {
+  "El": null,
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "relic:BIIIG_HUG": {
+  "Deste": null,
+  "Çekme Deste": null,
+  "İs": "card:SOOT"
+ },
+ "relic:BING_BONG": {
+  "Deste": null
+ },
+ "relic:BIZARRE_LAMP": {
+  "El": null,
+  "Hüzün": "card:SADNESS",
+  "Neşe": "card:JOY"
+ },
+ "relic:BLACK_STAR": {
+  "Elitler": null
+ },
+ "relic:BLESSED_ANTLER": {
+  "Sersemlemiş": "card:DAZED",
+  "Çekme Deste": null
+ },
+ "relic:BLOOD_SOAKED_ROSE": {
+  "Deste": null
+ },
+ "relic:BONE_FLUTE": {
+  "Blok": null,
+  "Osti": null
+ },
+ "relic:BONE_TEA": {
+  "Geliştir": null
+ },
+ "relic:BOOKMARK": {
+  "Saklanan": null
+ },
+ "relic:BOOK_OF_FIVE_RINGS": {
+  "Deste": null
+ },
+ "relic:BOOK_REPAIR_KNIFE": {
+  "Kader": "power:DOOM"
+ },
+ "relic:BOOMING_CONCH": {
+  "Elit": null
+ },
+ "relic:BOUND_PHYLACTERY": {
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "relic:BOWLER_HAT": {
+  "Altın": null
+ },
+ "relic:BRIMSTONE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:BRONZE_SCALES": {
+  "Diken": "power:THORNS"
+ },
+ "relic:BURNING_STICKS": {
+  "El": null,
+  "Tükettiğinde": null
+ },
+ "relic:BYRDINE": {
+  "Dönüştür": null,
+  "Guş Dalışı": "card:BYRD_SWOOP",
+  "Guşçağız": "relic:BYRDINE",
+  "Ulu Guş": "card:GOD_BYRD"
+ },
+ "relic:BYRDPIP": {
+  "Dinlenme Yeri": null,
+  "Guş Dalışı": "card:BYRD_SWOOP",
+  "Guşcuk": null,
+  "Guşçuk": "relic:BYRDPIP"
+ },
+ "relic:CALLING_BELL": {
+  "Kalıntı": null
+ },
+ "relic:CAPTAINS_WHEEL": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:CAULDRON": {
+  "plural:İksir": null,
+  "İksir": null
+ },
+ "relic:CHARONS_ASHES": {
+  "Tükettiğinde": null
+ },
+ "relic:CHOICES_PARADOX": {
+  "El": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "relic:CIRCLET": {
+  "Spire": null
+ },
+ "relic:CLAWS": {
+  "Deş": "card:MAUL",
+  "Dönüştür": null,
+  "Dönüştürmek": null
+ },
+ "relic:CLOAK_CLASP": {
+  "Blok": "keyword:BLOCK",
+  "El": null
+ },
+ "relic:CONDUCTORS_BATON": {
+  "Melodileri": null
+ },
+ "relic:CRACKED_CORE": {
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "relic:CROSSBOW": {
+  "Atak": null,
+  "El": null
+ },
+ "relic:CURSED_KETTLE": {
+  "Elit": null,
+  "Elitler": null,
+  "Kuvvet": null
+ },
+ "relic:CURSED_PEARL": {
+  "Altın": null
+ },
+ "relic:DATA_DISK": {
+  "Odak": "power:FOCUS"
+ },
+ "relic:DAUGHTER_OF_THE_WIND": {
+  "Blok": null
+ },
+ "relic:DELICATE_FROND": {
+  "İksirlerle": null
+ },
+ "relic:DIAMOND_DIADEM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:DISTINGUISHED_CAPE": {
+  "Deste": null,
+  "Ruhani Varlık": "card:APPARITION",
+  "plural:Ruhani Varlık": null
+ },
+ "relic:DOLLYS_MIRROR": {
+  "Deste": null,
+  "Kopyalamak": null
+ },
+ "relic:DOWSING_ROD": {
+  "Arayış": "card:DOWSING",
+  "Deste": null
+ },
+ "relic:DRAGON_FRUIT": {
+  "Altın": null
+ },
+ "relic:DREAM_CATCHER": {
+  "Deste": null,
+  "Dinlendiğinde": null
+ },
+ "relic:DUSTY_TOME": {
+  "Kadim Kart": null
+ },
+ "relic:ECTOPLASM": {
+  "Altın": null
+ },
+ "relic:ELECTRIC_SHRYMP": {
+  "Büyüle": null
+ },
+ "relic:EMBER_TEA": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:EMPTY_CAGE": {
+  "Deste": null
+ },
+ "relic:ENDLESS_APPETITE": {
+  "Kuvvet": null,
+  "Tükettiğinde": null
+ },
+ "relic:ETERNAL_FEATHER": {
+  "Deste": null,
+  "Dinlenme Yeri": null
+ },
+ "relic:EXERCISE_MAT": {
+  "Gerinme": "power:STRETCH"
+ },
+ "relic:FAKE_ANCHOR": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:FAKE_ORICHALCUM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:FAKE_VENERABLE_TEA_SET": {
+  "Dinlenme Yeri": null
+ },
+ "relic:FENCING_MANUAL": {
+  "Döv": "keyword:FORGE"
+ },
+ "relic:FERTILIZER": {
+  "Hüzün": "card:SADNESS",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:FISHING_ROD": {
+  "Deste": null,
+  "Geliştir": null
+ },
+ "relic:FORGOTTEN_SOUL": {
+  "Tükettiğinde": null
+ },
+ "relic:FRAGRANT_MUSHROOM": {
+  "Geliştir": null
+ },
+ "relic:FRESNEL_LENS": {
+  "Blok": null,
+  "Büyülenir": null,
+  "Deste": null
+ },
+ "relic:FROZEN_EGG": {
+  "Deste": null,
+  "Geliştir": null
+ },
+ "relic:FUNERARY_MASK": {
+  "Ruh": "card:SOUL",
+  "plural:Ruh": null,
+  "Çekme Deste": null
+ },
+ "relic:GALACTIC_DUST": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:GHOST_SEED": {
+  "Ruhani": "keyword:ETHEREAL",
+  "Saldırı": null,
+  "Savunma": null
+ },
+ "relic:GIRYA": {
+  "Dinlenme Yerleri": null,
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:GLASS_EYE": {
+  "Az Yaygın": null,
+  "Nadir": null,
+  "Yaygın": null
+ },
+ "relic:GLITTER": {
+  "Büyüle": null
+ },
+ "relic:GLOWING_ORB": {
+  "Elit": null
+ },
+ "relic:GNARLED_HAMMER": {
+  "Büyüle": null
+ },
+ "relic:GOLDEN_COMPASS": {
+  "Sahne": null
+ },
+ "relic:GOLDEN_PEARL": {
+  "Altın": null
+ },
+ "relic:GORGET": {
+  "Zırh": "power:PLATING"
+ },
+ "relic:HAND_DRILL": {
+  "Blok": null,
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "relic:HEFTY_TABLET": {
+  "Deste": null
+ },
+ "relic:HELICAL_DART": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kama": "card:SHIV"
+ },
+ "relic:HORN_CLEAT": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:INFUSED_CORE": {
+  "Oluştur": "keyword:CHANNELING",
+  "Yıldırım": "keyword:LIGHTNING_ORB"
+ },
+ "relic:INTIMIDATING_HELMET": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:JEWELED_MASK": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "relic:JEWELRY_BOX": {
+  "Deste": null,
+  "Tanrısallaşma": "card:APOTHEOSIS"
+ },
+ "relic:JOSS_PAPER": {
+  "Tükettiğinde": null
+ },
+ "relic:JUZU_BRACELET": {
+  "?": null
+ },
+ "relic:KIFUDA": {
+  "Büyüle": null
+ },
+ "relic:KUNAI": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "relic:LARGE_CAPSULE": {
+  "Deste": null,
+  "Kalıntı": null,
+  "Saldırı": null,
+  "Savunma": null,
+  "plural:Kalıntı": null
+ },
+ "relic:LAVA_LAMP": {
+  "Geliştir": null
+ },
+ "relic:LAVA_ROCK": {
+  "Kalıntı": null,
+  "Sahne": null
+ },
+ "relic:LEAD_PAPERWEIGHT": {
+  "Deste": null
+ },
+ "relic:LEAFY_POULTICE": {
+  "Dönüştür": "keyword:TRANSFORM",
+  "Saldırı": null,
+  "Savunma": null
+ },
+ "relic:LORDS_PARASOL": {
+  "Tüccar": null
+ },
+ "relic:LOST_COFFER": {
+  "İksir": null
+ },
+ "relic:LUCKY_FYSH": {
+  "Altın": null,
+  "Deste": null
+ },
+ "relic:MASSIVE_SCROLL": {
+  "Deste": null,
+  "Çok Oyunculu Kart": null
+ },
+ "relic:MAW_BANK": {
+  "Altın": null
+ },
+ "relic:MEAT_CLEAVER": {
+  "Yemek Pişirebilirsin": null
+ },
+ "relic:METRONOME": {
+  "Küre": null,
+  "Oluşturduğunda": null
+ },
+ "relic:MIGHTY_WINGS": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:MINIATURE_CANNON": {
+  "Geliştirilmiş": null
+ },
+ "relic:MINIATURE_TENT": {
+  "Dinlenme Yerleri": null
+ },
+ "relic:MINI_REGENT": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:MOLTEN_EGG": {
+  "Deste": null,
+  "Geliştirilir": null
+ },
+ "relic:MUMMIFIED_HAND": {
+  "El": null
+ },
+ "relic:MUSIC_BOX": {
+  "Ruhani": "keyword:ETHEREAL"
+ },
+ "relic:MYSTERIOUS_COCOON": {
+  "Del": null,
+  "Talim Saldırısı": null
+ },
+ "relic:MYSTIC_LIGHTER": {
+  "Büyülenmiş": null
+ },
+ "relic:NEOWS_BONES": {
+  "Deste": null,
+  "Neow Kalıntısı": null,
+  "Neow plural:Kalıntısı": null
+ },
+ "relic:NEOWS_SACRIFICE": {
+  "Akamber": "potion:AMBERGRIS",
+  "Deste": null
+ },
+ "relic:NEOWS_TALISMAN": {
+  "Geliştir": null,
+  "Saldırı": null,
+  "Savunma": null
+ },
+ "relic:NEOWS_TORMENT": {
+  "Deste": null,
+  "Neow'un Öfkesi": "card:NEOWS_FURY"
+ },
+ "relic:NEW_LEAF": {
+  "Dönüştür": "keyword:TRANSFORM"
+ },
+ "relic:NINJA_SCROLL": {
+  "El": null,
+  "Kama": "card:SHIV",
+  "plural:Kama": null
+ },
+ "relic:NUTRITIOUS_SOUP": {
+  "Büyüle": null,
+  "Deste": null,
+  "Saldırı": null
+ },
+ "relic:OBSIDIAN_VICE": {
+  "El": null
+ },
+ "relic:OCARINA": {
+  "El": null
+ },
+ "relic:ODDLY_SMOOTH_STONE": {
+  "Beceriklilik": "power:DEXTERITY"
+ },
+ "relic:OLD_COIN": {
+  "Altın": null
+ },
+ "relic:ORANGE_DOUGH": {
+  "El": null
+ },
+ "relic:ORICHALCUM": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:ORNAMENTAL_FAN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:PAELS_CLAW": {
+  "Büyüle": null,
+  "Savunma": null
+ },
+ "relic:PAELS_EYE": {
+  "El": null,
+  "Tüket": "keyword:EXHAUST"
+ },
+ "relic:PAELS_GROWTH": {
+  "Büyüle": null
+ },
+ "relic:PAELS_HORN": {
+  "Deste": null,
+  "Rahatla": "card:RELAX"
+ },
+ "relic:PAELS_LEGION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:PAELS_TOOTH": {
+  "Deste": null,
+  "Geliştirerek": null
+ },
+ "relic:PAELS_WING": {
+  "Kalıntı": null
+ },
+ "relic:PANDORAS_BOX": {
+  "Dönüştür": null,
+  "Pandora'nın Kutusu": "relic:PANDORAS_BOX",
+  "Saldırı": null,
+  "Savunma": null
+ },
+ "relic:PANTOGRAPH": {
+  "Boss": null
+ },
+ "relic:PAPER_KRANE": {
+  "Zayıf": "power:WEAK"
+ },
+ "relic:PAPER_PHROG": {
+  "Savunmasız": "power:VULNERABLE"
+ },
+ "relic:PARRYING_SHIELD": {
+  "Blok": null
+ },
+ "relic:PERMAFROST": {
+  "Blok": null
+ },
+ "relic:PETRIFIED_TOAD": {
+  "İksir Görünümlü Taş": "potion:POTION_SHAPED_ROCK"
+ },
+ "relic:PHIAL_HOLSTER": {
+  "plural:İksir": null,
+  "İksir": null
+ },
+ "relic:PHILOSOPHERS_STONE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:PHYLACTERY_UNBOUND": {
+  "Çağır": "keyword:SUMMON_STATIC"
+ },
+ "relic:PLANISPHERE": {
+  "?": null
+ },
+ "relic:POMANDER": {
+  "Geliştir": null
+ },
+ "relic:POWER_CELL": {
+  "El": null,
+  "Çekme Deste": null
+ },
+ "relic:PRECARIOUS_SHEARS": {
+  "Deste": null
+ },
+ "relic:PRECISE_SCISSORS": {
+  "Deste": null
+ },
+ "relic:PRESERVED_FOG": {
+  "Deste": null
+ },
+ "relic:PUMPKIN_CANDLE": {
+  "Dinlenme Yerlerinde": null,
+  "Tutuşturulabilir": null
+ },
+ "relic:PUNCH_DAGGER": {
+  "Büyüle": null
+ },
+ "relic:RADIANT_PEARL": {
+  "Aydınlat": "card:LUMINESCE",
+  "El": null,
+  "plural:Aydınlat": null
+ },
+ "relic:RAINBOW_RING": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:RAZOR_TOOTH": {
+  "Geliştir": null
+ },
+ "relic:RED_MASK": {
+  "Zayıf": "power:WEAK"
+ },
+ "relic:RED_SKULL": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:REGALITE": {
+  "Blok": null
+ },
+ "relic:REGAL_PILLOW": {
+  "Dinlendiğinde": null
+ },
+ "relic:REPTILE_TRINKET": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:RINGING_TRIANGLE": {
+  "El": null,
+  "Sakla": "keyword:RETAIN"
+ },
+ "relic:RIPPLE_BASIN": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:ROYAL_STAMP": {
+  "Büyülemek": null,
+  "Deste": null
+ },
+ "relic:RUINED_HELMET": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:RUNIC_CAPACITOR": {
+  "Küre Yuvası": null
+ },
+ "relic:RUNIC_PYRAMID": {
+  "El": null
+ },
+ "relic:SAI": {
+  "Blok": null
+ },
+ "relic:SAND_CASTLE": {
+  "Geliştir": null
+ },
+ "relic:SCREAMING_FLAGON": {
+  "El": null
+ },
+ "relic:SCROLL_BOXES": {
+  "Deste": null
+ },
+ "relic:SEAL_OF_GOLD": {
+  "Altın": null
+ },
+ "relic:SEA_GLASS": {
+  "Deste": null
+ },
+ "relic:SELF_FORMING_CLAY": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:SERE_TALON": {
+  "Deste": null
+ },
+ "relic:SHOVEL": {
+  "Dinlenme Yerleri": null,
+  "Kalıntı": null
+ },
+ "relic:SHURIKEN": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:SIGNET_RING": {
+  "Altın": null
+ },
+ "relic:SILKEN_TRESS": {
+  "Altın": null,
+  "Büyüle": null
+ },
+ "relic:SILVER_CRUCIBLE": {
+  "Geliştirilir": null
+ },
+ "relic:SLING_OF_COURAGE": {
+  "Elit": null,
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:SMALL_CAPSULE": {
+  "Kalıntı": null
+ },
+ "relic:SNECKO_SKULL": {
+  "Zehir": "power:POISON"
+ },
+ "relic:SONG_BOW": {
+  "Nişan": "power:AIM"
+ },
+ "relic:SOZU": {
+  "İksir": null
+ },
+ "relic:SPARKLING_ROUGE": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:STONE_CRACKER": {
+  "Geliştir": null,
+  "Çekme Deste": null
+ },
+ "relic:STONE_HUMIDIFIER": {
+  "Dinlendiğinde": null,
+  "Dinlenme Yeri": null
+ },
+ "relic:STORYBOOK": {
+  "Deste": null,
+  "En Parlak Alev": "card:BRIGHTEST_FLAME"
+ },
+ "relic:STORYTELLER": {
+  "Nişan": "power:AIM"
+ },
+ "relic:STURDY_CLAMP": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:SWORD_OF_JADE": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:SWORD_OF_STONE": {
+  "Elit": null,
+  "Kalıntı": null,
+  "plural:Elit": null
+ },
+ "relic:SYMBIOTIC_VIRUS": {
+  "Karanlık": "keyword:DARK_ORB",
+  "Oluştur": "keyword:CHANNELING"
+ },
+ "relic:TANXS_WHISTLE": {
+  "Deste": null,
+  "Islık Çal": "card:WHISTLE"
+ },
+ "relic:TEA_OF_DISCOURTESY": {
+  "Sersemlemiş": "card:DAZED",
+  "Çekme Deste": null
+ },
+ "relic:THE_ABACUS": {
+  "Blok": "keyword:BLOCK",
+  "Çekme Deste": null
+ },
+ "relic:TINY_MAILBOX": {
+  "Dinlendiğinde": null,
+  "İksir": null
+ },
+ "relic:TOASTY_MITTENS": {
+  "El": null,
+  "Kuvvet": "power:STRENGTH",
+  "Tüket": "keyword:EXHAUST"
+ },
+ "relic:TOOLBOX": {
+  "El": null
+ },
+ "relic:TORMENTOUS_COLLAR": {
+  "Zayıf": "power:WEAK"
+ },
+ "relic:TOUCH_OF_OROBAS": {
+  "Kadim": null,
+  "Kalıntın": null
+ },
+ "relic:TOUGH_BANDAGES": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:TOXIC_EGG": {
+  "Deste": null,
+  "Geliştirilir": null
+ },
+ "relic:TOY_BOX": {
+  "Balmumu Kalıntın": null,
+  "Kalıntı": null,
+  "plural:Kalıntı": null
+ },
+ "relic:TRI_BOOMERANG": {
+  "Büyüle": null,
+  "Deste": null
+ },
+ "relic:TUNING_FORK": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:TWINE": {
+  "Blok": "keyword:BLOCK",
+  "Ok": "keyword:ARROW",
+  "Çıkarttığında": null
+ },
+ "relic:TWISTED_FUNNEL": {
+  "Zehir": "power:POISON"
+ },
+ "relic:UNCEASING_TOP": {
+  "El": null
+ },
+ "relic:UNDYING_SIGIL": {
+  "Kader": "power:DOOM"
+ },
+ "relic:UNSETTLING_LAMP": {
+  "Güçsüzleştirme": null
+ },
+ "relic:VAJRA": {
+  "Kuvvet": "power:STRENGTH"
+ },
+ "relic:VAMBRACE": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:VENERABLE_TEA_SET": {
+  "Dinlenme Yeri": null
+ },
+ "relic:VEXING_PUZZLEBOX": {
+  "El": null
+ },
+ "relic:VITRUVIAN_MINION": {
+  "Blok": "keyword:BLOCK"
+ },
+ "relic:WAR_HAMMER": {
+  "Elit": null,
+  "Geliştir": null
+ },
+ "relic:WAR_PAINT": {
+  "Geliştir": null
+ },
+ "relic:WHETSTONE": {
+  "Geliştir": null
+ },
+ "relic:WHITE_BEAST_STATUE": {
+  "İksirler": null
+ },
+ "relic:WHITE_STAR": {
+  "Elitler": null,
+  "Nadir": null
+ },
+ "relic:WHITTLING_KNIFE": {
+  "Nişan": "power:AIM",
+  "Çekme Deste": null
+ },
+ "relic:WING_CHARM": {
+  "Büyülenir": null
+ },
+ "relic:WONGOS_MYSTERY_TICKET": {
+  "Kalıntı": null,
+  "plural:Kalıntı": null
+ },
+ "relic:WUPPY": {
+  "Wuppy": "relic:WUPPY"
+ },
+ "relic:YUMMY_COOKIE": {
+  "Geliştir": null
+ }
+}

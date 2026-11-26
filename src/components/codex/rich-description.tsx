@@ -7,23 +7,13 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import {
-  EntityPreview,
-  buildEntityLookup,
-  findEntity,
-  type EntityInfo,
-  type EntityLookup,
-} from "@/components/patch-note-renderer";
+import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 
 /**
- * Description renderer that recognises in-line entity names inside BBCode
- * color tags and turns them into hover-preview / clickable links — same
- * behaviour as the patch-note renderer, but for prose descriptions on
- * detail pages (relic, enchantment, power, …).
- *
- * - `[purple]숙련[/purple]` on the 목패 relic resolves to the 숙련 enchantment.
- * - Other gold words stay highlight only, as in game.
+ * Game text with its gold words decided by data, not by name: a gold word shows the tip its
+ * element's game tip list pairs it with (`goldTips`, scripts/generate-game-tips.py) or stays a
+ * plain gold highlight. Other colors are plain colored text.
  */
 
 interface BBNode {
@@ -43,26 +33,12 @@ function extractPlainText(nodes: BBNode[]): string {
   return out;
 }
 
-const COLOR_TAGS = new Set([
-  "gold",
-  "purple",
-  "blue",
-  "red",
-  "green",
-  "orange",
-  "pink",
-  "aqua",
-]);
-
 interface RenderCtx {
-  lookup: EntityLookup | null;
+  entitiesByRef: ReadonlyMap<string, EntityInfo>;
+  goldTips?: Readonly<Record<string, string | null>>;
+  self?: string;
   gameUi?: CodexGameUiLabels;
   energyIcon: string;
-  // Don't replace these terms with entity links even when they would match —
-  // useful for ambiguous keywords like 약화/취약 where the inline keyword
-  // tooltip is more useful than a power-page link.
-  excludeEntityTerms?: ReadonlySet<string>;
-  excludeEntityTypes?: ReadonlySet<EntityInfo["type"]>;
 }
 
 function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode[] {
@@ -79,45 +55,26 @@ function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode
       const className = [colorClass, effectClass].filter(Boolean).join(" ");
 
       const inner = extractPlainText(node.children).trim();
-      const isColorTag = COLOR_TAGS.has(tag);
-
-      // 1) Entity match — only at simple color-tag leaves with non-empty text
-      if (
-        isColorTag &&
-        inner &&
-        !ctx.excludeEntityTerms?.has(inner) &&
-        ctx.lookup
-      ) {
-        const entity = findEntity(inner, ctx.lookup);
-        // For the gold tag, the patch-note renderer also accepts a `param`
-        // type-hint (e.g. [gold:relic]); honour it to disambiguate.
-        const hinted =
-          tag === "gold" && node.param
-            ? findEntity(inner, ctx.lookup, node.param)
-            : null;
-        const matched = hinted ?? entity;
-        if (matched && !ctx.excludeEntityTypes?.has(matched.type)) {
-          // Don't link a relic to itself / enchantment to itself
-          // (caller is responsible for filtering self via `excludeEntityTerms`)
-          return (
-            <span key={key} className={className || undefined}>
-              <EntityPreview
-                entity={matched}
-                gameUi={ctx.gameUi}
-                linkClassName={[
-                  className,
-                  "underline decoration-current/30 underline-offset-2 hover:decoration-current/80 transition-colors cursor-pointer",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-              >
-                {inner}
-              </EntityPreview>
-            </span>
-          );
-        }
+      const ref = tag === "gold" && inner ? ctx.goldTips?.[inner] : null;
+      const entity = ref && ref !== ctx.self ? ctx.entitiesByRef.get(ref) : undefined;
+      if (entity) {
+        return (
+          <span key={key} className={className || undefined}>
+            <EntityPreview
+              entity={entity}
+              gameUi={ctx.gameUi}
+              linkClassName={[
+                className,
+                "underline decoration-current/30 underline-offset-2 hover:decoration-current/80 transition-colors cursor-pointer",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            >
+              {inner}
+            </EntityPreview>
+          </span>
+        );
       }
-
       // 3) Energy icon (renders as repeated lightning images)
       if (tag === "energy" && node.param) {
         const count = parseInt(node.param, 10) || 1;
@@ -171,14 +128,12 @@ export interface RichDescriptionProps {
   /** Game labels for the hover previews. Korean fallbacks show without it. */
   gameUi?: CodexGameUiLabels;
   description: string;
-  /** Entities used to resolve inline names to hover-cards + links. */
+  /** Entities a paired gold word can show (found by "type:id"). */
   entities?: EntityInfo[];
-  /** Pre-built lookup. If provided, takes precedence over `entities`. */
-  lookup?: EntityLookup;
-  /** Don't turn these matched names into entity links (still rendered colored). */
-  excludeEntityTerms?: ReadonlySet<string>;
-  /** Don't turn these matched resource kinds into entity links. */
-  excludeEntityTypes?: ReadonlySet<EntityInfo["type"]>;
+  /** The element's gold words and the tip each names, or null: its `goldTips` from the data layer. */
+  goldTips?: Readonly<Record<string, string | null>>;
+  /** The element itself ("relic:BYRDPIP"): a word naming it is not linked to its own page. */
+  self?: string;
   energyIcon?: string;
   className?: string;
 }
@@ -186,28 +141,20 @@ export interface RichDescriptionProps {
 export function RichDescription({
   description,
   entities,
+  goldTips,
+  self,
   gameUi,
-  lookup,
-  excludeEntityTerms,
-  excludeEntityTypes,
   energyIcon = "/images/game-assets/card-misc/energy_colorless.png",
   className,
 }: RichDescriptionProps) {
-  const resolvedLookup = useMemo(() => {
-    if (lookup) return lookup;
-    if (entities && entities.length > 0) return buildEntityLookup(entities);
-    return null;
-  }, [lookup, entities]);
+  const entitiesByRef = useMemo(
+    () => new Map((entities ?? []).map((entity) => [`${entity.type}:${entity.id}`, entity])),
+    [entities],
+  );
 
   const nodes = useMemo(() => parseBBCode(description) as BBNode[], [description]);
 
-  const ctx: RenderCtx = {
-    lookup: resolvedLookup,
-    gameUi,
-    energyIcon,
-    excludeEntityTerms,
-    excludeEntityTypes,
-  };
+  const ctx: RenderCtx = { entitiesByRef, goldTips, self, gameUi, energyIcon };
 
   return <span className={className}>{renderNodes(nodes, ctx, "rd")}</span>;
 }

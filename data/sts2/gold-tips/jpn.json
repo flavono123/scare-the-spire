@@ -1,0 +1,4297 @@
+{
+ "affliction:BOUND": {
+  "束縛": "affliction:BOUND"
+ },
+ "affliction:HEXED": {
+  "エセリアル": "keyword:ETHEREAL"
+ },
+ "affliction:SMOG": {
+  "スキル": null
+ },
+ "affliction:TAINTED": {
+  "汚染": "power:TAINTED"
+ },
+ "ancient:NEOW": {
+  "「キ……！」": null
+ },
+ "ancient:VAKUU": {
+  "ヴァクー": null
+ },
+ "ascension:BLITZ": {
+  "デッキ": null
+ },
+ "ascension:DREAD_RULE_02": {
+  "デッキ": null
+ },
+ "ascension:LEVEL_01": {
+  "エリート": null
+ },
+ "ascension:LEVEL_03": {
+  "ゴールド": null
+ },
+ "ascension:LEVEL_10": {
+  "層": null,
+  "第": null
+ },
+ "badge:KACHING": {
+  "ゴールド": null
+ },
+ "badge:MONEY_MONEY": {
+  "ゴールド": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "付与": null
+ },
+ "blitz:CARD_PACKS": {
+  "デッキ": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "デッキ": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "アンコモン": null,
+  "コモン": null,
+  "レア": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "デッキ": null,
+  "変化": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "アップグレード": null,
+  "デッキ": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "無色": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "エンチャント": null
+ },
+ "blitz:GLAM": {
+  "付与": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "デッキ": null
+ },
+ "blitz:RELIC": {
+  "レリック": null
+ },
+ "blitz:TWO_RELICS": {
+  "レリック": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "アップグレード済み": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "アップグレード済み": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "アップグレード済み": null
+ },
+ "card:ABRASIVE": {
+  "トゲ": "power:THORNS",
+  "敏捷": "power:DEXTERITY"
+ },
+ "card:ABUNDANCE": {
+  "アップグレード": null,
+  "パワー": null,
+  "手札": null
+ },
+ "card:ACCELERANT": {
+  "毒": "power:POISON"
+ },
+ "card:ACCURACY": {
+  "ナイフ": "card:SHIV"
+ },
+ "card:ADAPTIVE_STRIKE": {
+  "捨て札": null
+ },
+ "card:AFTERIMAGE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:AFTERLIFE": {
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:AGGRESSION": {
+  "アップグレード": null,
+  "手札": null,
+  "捨て札": null
+ },
+ "card:ALL_FOR_ONE": {
+  "手札": null,
+  "捨て札": null
+ },
+ "card:ALL_IS_WELL": {
+  "ブロック": "keyword:BLOCK",
+  "悲しみ": "card:SADNESS"
+ },
+ "card:ANGER": {
+  "捨て札": null
+ },
+ "card:ANGUISH": {
+  "悲しみ": "card:SADNESS"
+ },
+ "card:ANOINTED": {
+  "レア": null,
+  "山札": null,
+  "手札": null
+ },
+ "card:ANTICIPATE": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "card:APOTHEOSIS": {
+  "アップグレード": null
+ },
+ "card:APPARITION": {
+  "霊体": "power:INTANGIBLE"
+ },
+ "card:ARCHERY": {
+  "弓力": "power:AIM"
+ },
+ "card:ARMAMENTS": {
+  "アップグレード": null,
+  "ブロック": "keyword:BLOCK",
+  "手札": null
+ },
+ "card:ARROW_STAB": {
+  "弓力": "power:AIM"
+ },
+ "card:ARSENAL": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:ASHEN_STRIKE": {
+  "廃棄札": null
+ },
+ "card:ASSASSINATE": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:BACKFLIP": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:BAD_LUCK": {
+  "手札": null
+ },
+ "card:BALL_LIGHTNING": {
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:BANSHEES_CRY": {
+  "エセリアル": "keyword:ETHEREAL"
+ },
+ "card:BARRAGE": {
+  "生成": "keyword:CHANNELING"
+ },
+ "card:BARRICADE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:BASH": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:BEACON_OF_HOPE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:BEAM_CELL": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:BEAT_DOWN": {
+  "捨て札": null
+ },
+ "card:BEAT_INTO_SHAPE": {
+  "鍛造": "keyword:FORGE"
+ },
+ "card:BECKON": {
+  "手札": null
+ },
+ "card:BEGONE": {
+  "ミニオンストライク": "card:MINION_STRIKE",
+  "ミニオンストライク+": "card:MINION_STRIKE",
+  "変化": null,
+  "手札": null
+ },
+ "card:BIASED_COGNITION": {
+  "集中力": "power:FOCUS"
+ },
+ "card:BIG_BANG": {
+  "鍛造": "keyword:FORGE"
+ },
+ "card:BLADE_DANCE": {
+  "ナイフ": "card:SHIV",
+  "手札": null
+ },
+ "card:BLADE_OF_INK": {
+  "ナイフ": "card:SHIV",
+  "手札": null
+ },
+ "card:BLADE_SYMPHONY": {
+  "ナイフ": "card:SHIV",
+  "手札": null
+ },
+ "card:BLAZE": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:BLIGHT_STRIKE": {
+  "破滅": "power:DOOM"
+ },
+ "card:BLOOD_WALL": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:BLOSSOM_SHOT": {
+  "ストレッチ": "power:STRETCH",
+  "放ち": null
+ },
+ "card:BLOT_OUT_THE_SKY": {
+  "手札": null,
+  "放つ": null
+ },
+ "card:BLUR": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:BODYGUARD": {
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:BODY_SLAM": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:BOLAS": {
+  "手札": null
+ },
+ "card:BOMBARDMENT": {
+  "廃棄札": null
+ },
+ "card:BONE_SHARDS": {
+  "オスティ": null,
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:BOOST_AWAY": {
+  "めまい": "card:DAZED",
+  "ブロック": "keyword:BLOCK",
+  "捨て札": null
+ },
+ "card:BOOT_SEQUENCE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:BOUNCE": {
+  "ストレッチ": "power:STRETCH",
+  "手札": null
+ },
+ "card:BOUNCING_FLASK": {
+  "毒": "power:POISON"
+ },
+ "card:BOW_SMACK": {
+  "刺矢": "power:IMPALED"
+ },
+ "card:BRACE": {
+  "弓力": "power:AIM"
+ },
+ "card:BRAND": {
+  "廃棄": "keyword:EXHAUST",
+  "筋力": "power:STRENGTH"
+ },
+ "card:BREAK": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:BRIGHTEN_UP": {
+  "喜び": "card:JOY",
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:BUBBLE_BUBBLE": {
+  "毒": "power:POISON"
+ },
+ "card:BULK_UP": {
+  "敏捷": "power:DEXTERITY",
+  "筋力": "power:STRENGTH"
+ },
+ "card:BULLET_TIME": {
+  "手札": null
+ },
+ "card:BULLY": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:BULWARK": {
+  "ブロック": "keyword:BLOCK",
+  "鍛造": "keyword:FORGE"
+ },
+ "card:BUNDLE_OF_JOY": {
+  "手札": null
+ },
+ "card:BURN": {
+  "手札": null
+ },
+ "card:BURNING_PACT": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:BYRDONIS_EGG": {
+  "休憩所": null
+ },
+ "card:CALAMITY": {
+  "手札": null
+ },
+ "card:CALCIFY": {
+  "オスティ": null
+ },
+ "card:CALCULATED_GAMBLE": {
+  "手札": null
+ },
+ "card:CALL_OF_THE_VOID": {
+  "エセリアル": "keyword:ETHEREAL",
+  "手札": null
+ },
+ "card:CAPTURE_SPIRIT": {
+  "ソウル": "card:SOUL",
+  "山札": null
+ },
+ "card:CASCADE": {
+  "山札": null
+ },
+ "card:CATASTROPHE": {
+  "山札": null
+ },
+ "card:CHAOS": {
+  "生成": "keyword:CHANNELING"
+ },
+ "card:CHARGE": {
+  "ミニオンの特攻": "card:MINION_DIVE_BOMB",
+  "ミニオンの特攻+": "card:MINION_DIVE_BOMB",
+  "変化": null,
+  "山札": null
+ },
+ "card:CHARGE_BATTERY": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:CHILD_OF_THE_STARS": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:CHILL": {
+  "フロスト": "keyword:FROST_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:CHO_BARBS": {
+  "トゲ": "power:THORNS",
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:CHO_CHORUS": {
+  "ブロック": "keyword:BLOCK",
+  "手札": null
+ },
+ "card:CHO_FIRM": {
+  "ブロック": "keyword:BLOCK",
+  "矢": "keyword:ARROW"
+ },
+ "card:CHO_KI": {
+  "ストレッチ": "power:STRETCH",
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:CHO_LIMBS": {
+  "キの旋律": "keyword:KI_MELODY",
+  "ブロック": "keyword:BLOCK",
+  "ワーの旋律": "keyword:WAH_MELODY"
+ },
+ "card:CHO_READY": {
+  "ブロック": "keyword:BLOCK",
+  "弓力": "power:AIM"
+ },
+ "card:CHRYSALIS": {
+  "山札": null
+ },
+ "card:CINDER": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:CLASH": {
+  "手札": null
+ },
+ "card:CLEANSE": {
+  "召喚": "keyword:SUMMON_STATIC",
+  "山札": null,
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:CLOAK_AND_DAGGER": {
+  "ナイフ": "card:SHIV",
+  "ブロック": "keyword:BLOCK",
+  "手札": null
+ },
+ "card:CLOAK_OF_STARS": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:CODA": {
+  "旋律": null
+ },
+ "card:COLD_SNAP": {
+  "フロスト": "keyword:FROST_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:COLLISION_COURSE": {
+  "デブリ": "card:DEBRIS",
+  "手札": null
+ },
+ "card:COLOSSUS": {
+  "ブロック": "keyword:BLOCK",
+  "弱体": "power:VULNERABLE"
+ },
+ "card:COMET": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:COMPACT": {
+  "ブロック": "keyword:BLOCK",
+  "変化": "keyword:TRANSFORM",
+  "手札": null,
+  "燃料": "card:FUEL",
+  "燃料+": "card:FUEL"
+ },
+ "card:CONCOCT": {
+  "毒": "power:POISON"
+ },
+ "card:CONQUEROR": {
+  "ソヴリン・ブレード": "card:SOVEREIGN_BLADE",
+  "鍛造": "keyword:FORGE"
+ },
+ "card:CONSTELLATION": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:CONSUMING_SHADOW": {
+  "ダーク": "keyword:DARK_ORB",
+  "生成": "keyword:CHANNELING",
+  "解放": "keyword:EVOKE"
+ },
+ "card:CONVERGENCE": {
+  "保留": "keyword:RETAIN",
+  "手札": null
+ },
+ "card:COOLANT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:COOLHEADED": {
+  "フロスト": "keyword:FROST_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:COORDINATE": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:CORROSIVE_WAVE": {
+  "毒": "power:POISON"
+ },
+ "card:CORRUPTION": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:COSMIC_INDIFFERENCE": {
+  "ブロック": "keyword:BLOCK",
+  "山札": null,
+  "捨て札": null
+ },
+ "card:COUNTDOWN": {
+  "破滅": "power:DOOM"
+ },
+ "card:COVERING_FIRE": {
+  "ブロック": "keyword:BLOCK",
+  "放つ": null
+ },
+ "card:CRASH_LANDING": {
+  "デブリ": "card:DEBRIS",
+  "手札": null
+ },
+ "card:CREATIVE_AI": {
+  "手札": null
+ },
+ "card:CRIMSON_MANTLE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:CRUELTY": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:CRUSH_UNDER": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:DANSE_MACABRE": {
+  "ブロック": null
+ },
+ "card:DARKNESS": {
+  "ダーク": "keyword:DARK_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:DARK_EMBRACE": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:DARK_SHACKLES": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:DASH": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEADLY_POISON": {
+  "毒": "power:POISON"
+ },
+ "card:DEATH": {
+  "破滅": "power:DOOM"
+ },
+ "card:DEATHBRINGER": {
+  "破滅": "power:DOOM",
+  "脱力": "power:WEAK"
+ },
+ "card:DEATHS_DOOR": {
+  "ブロック": "keyword:BLOCK",
+  "破滅": "power:DOOM"
+ },
+ "card:DEBILITATE": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:DEBT": {
+  "ゴールド": null,
+  "手札": null
+ },
+ "card:DECAY": {
+  "手札": null
+ },
+ "card:DECISIONS_DECISIONS": {
+  "手札": null
+ },
+ "card:DEEP_STRETCH": {
+  "ストレッチ": "power:STRETCH"
+ },
+ "card:DEFEND_DEFECT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEFEND_FOOL": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEFEND_IRONCLAD": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEFEND_NECROBINDER": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEFEND_REGENT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEFEND_SILENT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEFLECT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEFRAGMENT": {
+  "集中力": "power:FOCUS"
+ },
+ "card:DEFY": {
+  "ブロック": "keyword:BLOCK",
+  "脱力": "power:WEAK"
+ },
+ "card:DELAY": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEMONIC_SHIELD": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DEMON_FORM": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:DEPRECATED_CARD": {
+  "デッキ": null
+ },
+ "card:DESPAIR": {
+  "ブロック": null,
+  "破滅": null
+ },
+ "card:DEVOUR_LIFE": {
+  "ソウル": "card:SOUL",
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:DIRGE": {
+  "ソウル": "card:SOUL",
+  "ソウル+": "card:SOUL",
+  "召喚": "keyword:SUMMON_STATIC",
+  "山札": null
+ },
+ "card:DISCOVERY": {
+  "手札": null
+ },
+ "card:DISLIKE_YOU": {
+  "ショット": null
+ },
+ "card:DISMANTLE": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:DISTRACTION": {
+  "手札": null
+ },
+ "card:DIVINE_SHOT": {
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:DODGE_AND_ROLL": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:DOMINATE": {
+  "弱体": "power:VULNERABLE",
+  "筋力": "power:STRENGTH"
+ },
+ "card:DOUBT": {
+  "手札": null,
+  "脱力": "power:WEAK"
+ },
+ "card:DOWSING": {
+  "豊穣": "card:ABUNDANCE",
+  "？": null
+ },
+ "card:DRAIN_POWER": {
+  "アップグレード": null,
+  "捨て札": null
+ },
+ "card:DREDGE": {
+  "手札": null,
+  "捨て札": null
+ },
+ "card:DRUM_OF_BATTLE": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:DUALCAST": {
+  "解放": "keyword:EVOKE"
+ },
+ "card:DUAL_WIELD": {
+  "手札": null
+ },
+ "card:DYING_STAR": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:ECSTASY": {
+  "喜び": "card:JOY",
+  "変化": null,
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:EIDOLON": {
+  "エセリアル": "keyword:ETHEREAL",
+  "廃棄札": null
+ },
+ "card:END_OF_DAYS": {
+  "破滅": "power:DOOM"
+ },
+ "card:ENFEEBLING_TOUCH": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:ENLIGHTENMENT": {
+  "手札": null
+ },
+ "card:ENNUI": {
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:ENRAPTURE": {
+  "ストレッチ": "power:STRETCH",
+  "活力": "power:VIGOR"
+ },
+ "card:ENTHRALLED": {
+  "手札": null
+ },
+ "card:ENTRENCH": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:ENTROPY": {
+  "変化": "keyword:TRANSFORM",
+  "手札": null
+ },
+ "card:ENVENOM": {
+  "毒": "power:POISON"
+ },
+ "card:EPIC_RETRIEVAL": {
+  "引き抜いた": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:EQUILIBRIUM": {
+  "ブロック": "keyword:BLOCK",
+  "保留": "keyword:RETAIN",
+  "手札": null
+ },
+ "card:ESCAPE_PLAN": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:ETERNAL_ARMOR": {
+  "プレート": "power:PLATING"
+ },
+ "card:EVIL_EYE": {
+  "ブロック": "keyword:BLOCK",
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:EXPECT_A_FIGHT": {
+  "ブロック": "keyword:BLOCK",
+  "手札": null
+ },
+ "card:EXPERTISE": {
+  "保留": "keyword:RETAIN",
+  "手札": null
+ },
+ "card:EXPLOSIVE_ARROWS": {
+  "刺矢": "power:IMPALED"
+ },
+ "card:EXPOSE": {
+  "アーティファクト": "power:ARTIFACT",
+  "ブロック": "keyword:BLOCK",
+  "弱体": "power:VULNERABLE"
+ },
+ "card:FADE": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "card:FALLING_STAR": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:FAN_OF_KNIVES": {
+  "ナイフ": "card:SHIV",
+  "手札": null
+ },
+ "card:FASTEN": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:FEAR": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:FEED": {
+  "リーサル": "keyword:FATAL"
+ },
+ "card:FEEDING_FRENZY": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:FEEL_NO_PAIN": {
+  "ブロック": "keyword:BLOCK",
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:FERAL": {
+  "手札": null
+ },
+ "card:FETCH": {
+  "オスティ": null
+ },
+ "card:FIEND_FIRE": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "card:FIGHT_ME": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:FIGHT_THROUGH": {
+  "ブロック": "keyword:BLOCK",
+  "捨て札": null,
+  "負傷": "card:WOUND"
+ },
+ "card:FINESSE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:FISTICUFFS": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:FLAK_CANNON": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:FLAME_BARRIER": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:FLATTEN": {
+  "オスティ": null
+ },
+ "card:FLECHETTES": {
+  "手札": null
+ },
+ "card:FLORESCENCE": {
+  "ザ・ショット": "card:THE_SHOT",
+  "ザ・ショット+": "card:THE_SHOT",
+  "変化": null,
+  "手札": null
+ },
+ "card:FOCUSED_STRIKE": {
+  "集中力": "power:FOCUS"
+ },
+ "card:FOOLISH_SHOT": {
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:FOOTWORK": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "card:FORBIDDEN_GRIMOIRE": {
+  "デッキ": null
+ },
+ "card:FOREGONE_CONCLUSION": {
+  "山札": null,
+  "手札": null
+ },
+ "card:FORGOTTEN_RITUAL": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:FRANTIC_ESCAPE": {
+  "蟻地獄": "power:SANDPIT"
+ },
+ "card:FRIENDSHIP": {
+  "筋力": null
+ },
+ "card:FURNACE": {
+  "鍛造": "keyword:FORGE"
+ },
+ "card:FUSION": {
+  "プラズマ": "keyword:PLASMA_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:GAMMA_BLAST": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:GATHER_LIGHT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:GENETIC_ALGORITHM": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:GHOST_EATER": {
+  "破滅": null
+ },
+ "card:GLACIER": {
+  "フロスト": "keyword:FROST_ORB",
+  "ブロック": "keyword:BLOCK",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:GLASSWORK": {
+  "グラス": "keyword:GLASS_ORB",
+  "ブロック": "keyword:BLOCK",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:GLIMMER": {
+  "山札": null,
+  "手札": null
+ },
+ "card:GLIMPSE_BEYOND": {
+  "ソウル": "card:SOUL",
+  "山札": null
+ },
+ "card:GLITTERSTREAM": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:GOOD_INSTINCTS": {
+  "ブロック": null
+ },
+ "card:GO_FOR_THE_EYES": {
+  "脱力": "power:WEAK"
+ },
+ "card:GRAND_FINALE": {
+  "山札": null
+ },
+ "card:GRAVEBLAST": {
+  "手札": null,
+  "捨て札": null
+ },
+ "card:GRAVE_WARDEN": {
+  "ソウル": "card:SOUL",
+  "ブロック": "keyword:BLOCK",
+  "山札": null
+ },
+ "card:GROWTH": {
+  "ブロック": "keyword:BLOCK",
+  "変化": null,
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:GUARDS": {
+  "ミニオンの盾": "card:MINION_SACRIFICE",
+  "ミニオンの盾+": "card:MINION_SACRIFICE",
+  "変化": null,
+  "手札": null
+ },
+ "card:GUILTY": {
+  "デッキ": null
+ },
+ "card:GUNK_UP": {
+  "捨て札": null,
+  "粘液": "card:SLIMED"
+ },
+ "card:HAILSTORM": {
+  "フロスト": "keyword:FROST_ORB"
+ },
+ "card:HAMMER_TIME": {
+  "鍛造": "keyword:FORGE"
+ },
+ "card:HAND_OF_GREED": {
+  "ゴールド": null,
+  "リーサル": "keyword:FATAL"
+ },
+ "card:HAND_TRICK": {
+  "スライ": "keyword:SLY",
+  "ブロック": "keyword:BLOCK",
+  "手札": null
+ },
+ "card:HARMONIC_SHIELD": {
+  "ブロック": "keyword:BLOCK",
+  "旋律": null
+ },
+ "card:HAUNT": {
+  "ソウル": "card:SOUL"
+ },
+ "card:HAVOC": {
+  "山札": null,
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:HAZE": {
+  "毒": "power:POISON",
+  "脱力": "power:WEAK"
+ },
+ "card:HEADBUTT": {
+  "山札": null,
+  "捨て札": null
+ },
+ "card:HEAVY_SHOT": {
+  "弓力": "power:AIM",
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:HEIRLOOM_HAMMER": {
+  "手札": null
+ },
+ "card:HELLO_WORLD": {
+  "手札": null
+ },
+ "card:HIBERNATE": {
+  "フロスト": "keyword:FROST_ORB",
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:HIDDEN_DAGGERS": {
+  "ナイフ": "card:SHIV",
+  "ナイフ+": "card:SHIV",
+  "手札": null
+ },
+ "card:HIDDEN_GEM": {
+  "リプレイ": "keyword:REPLAY",
+  "山札": null
+ },
+ "card:HIDDEN_ROOTS": {
+  "ストレッチ": "power:STRETCH"
+ },
+ "card:HIGH_FIVE": {
+  "オスティ": null,
+  "弱体": "power:VULNERABLE"
+ },
+ "card:HOBBLING_SHOT": {
+  "弱体": "power:VULNERABLE",
+  "放ち": null,
+  "矢": "keyword:ARROW",
+  "脱力": "power:WEAK"
+ },
+ "card:HOLOGRAM": {
+  "ブロック": "keyword:BLOCK",
+  "手札": null,
+  "捨て札": null
+ },
+ "card:HONING": {
+  "矢": "keyword:ARROW"
+ },
+ "card:HOTFIX": {
+  "集中力": "power:FOCUS"
+ },
+ "card:HOWL_FROM_BEYOND": {
+  "廃棄札": null
+ },
+ "card:HYPERBEAM": {
+  "集中力": "power:FOCUS"
+ },
+ "card:ICE_LANCE": {
+  "フロスト": "keyword:FROST_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:IGNITION": {
+  "プラズマ": "keyword:PLASMA_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:IMMORTALITY": {
+  "霊体": null
+ },
+ "card:IMPALE": {
+  "毒": null
+ },
+ "card:IMPATIENCE": {
+  "手札": null
+ },
+ "card:IMPERVIOUS": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:INFECTION": {
+  "手札": null
+ },
+ "card:INFERNAL_BLADE": {
+  "手札": null
+ },
+ "card:INFINITE_BLADES": {
+  "ナイフ": "card:SHIV",
+  "手札": null
+ },
+ "card:INFLAME": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:INTERCEPT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:INVOKE": {
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:IRON_WAVE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:I_AM_INVINCIBLE": {
+  "ブロック": "keyword:BLOCK",
+  "山札": null
+ },
+ "card:JACKPOT": {
+  "アップグレード": null,
+  "手札": null
+ },
+ "card:JACK_OF_ALL_TRADES": {
+  "手札": null
+ },
+ "card:JEST": {
+  "ブロック": "keyword:BLOCK",
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:JUGGERNAUT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:JUGGLING": {
+  "アタック": null,
+  "手札": null
+ },
+ "card:KI_CHANT": {
+  "山札": null,
+  "手札": null
+ },
+ "card:KI_HOP": {
+  "刺矢": "power:IMPALED"
+ },
+ "card:KI_REST": {
+  "チョの旋律": "keyword:CHO_MELODY",
+  "ワーの旋律": "keyword:WAH_MELODY",
+  "保留": "keyword:RETAIN",
+  "手札": null
+ },
+ "card:KNIFE_TRAP": {
+  "アップグレード": null,
+  "ナイフ": "card:SHIV",
+  "廃棄札": null
+ },
+ "card:KNOW_THY_PLACE": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:LARGESSE": {
+  "アップグレード": null,
+  "手札": null
+ },
+ "card:LEADING_STRIKE": {
+  "ナイフ": "card:SHIV",
+  "手札": null
+ },
+ "card:LEAP": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:LEGION_OF_BONE": {
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:LEG_SWEEP": {
+  "ブロック": "keyword:BLOCK",
+  "脱力": "power:WEAK"
+ },
+ "card:LIFT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:LIGHTNING_ROD": {
+  "ブロック": "keyword:BLOCK",
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:LOCKED_IN": {
+  "山札": null,
+  "手札": null,
+  "放つ": null
+ },
+ "card:LOST_LUTE": {
+  "山札": null,
+  "旋律": null
+ },
+ "card:LULLABY": {
+  "ブロック": "keyword:BLOCK",
+  "旋律": null
+ },
+ "card:MAD_SCIENCE": {
+  "アップグレード": null,
+  "ブロック": null,
+  "弱体": null,
+  "手札": null,
+  "敏捷": null,
+  "筋力": null,
+  "脱力": null
+ },
+ "card:MAKE_IT_SO": {
+  "手札": null
+ },
+ "card:MALAISE": {
+  "筋力": "power:STRENGTH",
+  "脱力": "power:WEAK"
+ },
+ "card:MANGLE": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:MANIFEST_AUTHORITY": {
+  "アップグレード": null,
+  "ブロック": "keyword:BLOCK",
+  "手札": null
+ },
+ "card:MASTER_PLANNER": {
+  "スライ": "keyword:SLY"
+ },
+ "card:MAYHEM": {
+  "山札": null
+ },
+ "card:MELANCHOLY": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:MELODIC_SHOT": {
+  "放ち": null,
+  "旋律": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:METAMORPHOSIS": {
+  "山札": null
+ },
+ "card:METEOR_SHOWER": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:METEOR_STRIKE": {
+  "プラズマ": "keyword:PLASMA_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:MIDNIGHT": {
+  "廃棄": null
+ },
+ "card:MIGHTY_SHIELD": {
+  "めまい": "card:DAZED",
+  "ブロック": "keyword:BLOCK",
+  "山札": null
+ },
+ "card:MIGHTY_WEAPON": {
+  "めまい": "card:DAZED",
+  "山札": null
+ },
+ "card:MIMIC": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:MIND_BLAST": {
+  "山札": null
+ },
+ "card:MINION_SACRIFICE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:MIRAGE": {
+  "ブロック": "keyword:BLOCK",
+  "毒": "power:POISON"
+ },
+ "card:MOLTEN_FIST": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:MONARCHS_GAZE": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:MONOLOGUE": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:MOTIF": {
+  "旋律": null
+ },
+ "card:MOURNING_BLOW": {
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:MULTI_CAST": {
+  "解放": "keyword:EVOKE"
+ },
+ "card:MYTHIC_FORM": {
+  "タロット": "keyword:TAROT",
+  "手札": null
+ },
+ "card:MY_SHINIES": {
+  "ゴールド": null
+ },
+ "card:NAIL": {
+  "刺矢": "power:IMPALED",
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:NECRO_MASTERY": {
+  "オスティ": null,
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:NEGATIVE_PULSE": {
+  "ブロック": "keyword:BLOCK",
+  "破滅": "power:DOOM"
+ },
+ "card:NEOWS_FURY": {
+  "手札": null,
+  "捨て札": null
+ },
+ "card:NEUROSURGE": {
+  "破滅": "power:DOOM"
+ },
+ "card:NEUTRALIZE": {
+  "脱力": "power:WEAK"
+ },
+ "card:NEUTRON_AEGIS": {
+  "プレート": "power:PLATING"
+ },
+ "card:NIGHTMARE": {
+  "手札": null
+ },
+ "card:NOCK": {
+  "弓力": "power:AIM"
+ },
+ "card:NOSTALGIA": {
+  "山札": null
+ },
+ "card:NOXIOUS_FUMES": {
+  "毒": "power:POISON"
+ },
+ "card:NO_ESCAPE": {
+  "破滅": "power:DOOM"
+ },
+ "card:NULL": {
+  "ダーク": "keyword:DARK_ORB",
+  "生成": "keyword:CHANNELING",
+  "脱力": "power:WEAK"
+ },
+ "card:OBLIVION": {
+  "破滅": "power:DOOM"
+ },
+ "card:OFF_BY_ONE": {
+  "手札": null
+ },
+ "card:OPTIMISM": {
+  "廃棄": "keyword:EXHAUST",
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:OUTBREAK": {
+  "毒": "power:POISON"
+ },
+ "card:OUTRAGE": {
+  "捨て札": null
+ },
+ "card:OVERCLOCK": {
+  "捨て札": null,
+  "火傷": "card:BURN"
+ },
+ "card:PACTS_END": {
+  "廃棄札": null
+ },
+ "card:PAELS_STRIKE": {
+  "デッキ": null
+ },
+ "card:PAGESTORM": {
+  "エセリアル": "keyword:ETHEREAL"
+ },
+ "card:PANIC_BUTTON": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:PARRY": {
+  "ソヴリン・ブレード": "card:SOVEREIGN_BLADE",
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:PARTICLE_WALL": {
+  "ブロック": "keyword:BLOCK",
+  "手札": null
+ },
+ "card:PATTER": {
+  "ブロック": "keyword:BLOCK",
+  "活力": "power:VIGOR"
+ },
+ "card:PHANTOM_BLADES": {
+  "ナイフ": "card:SHIV",
+  "保留": "keyword:RETAIN"
+ },
+ "card:PHOTON_CUT": {
+  "山札": null,
+  "手札": null
+ },
+ "card:PIERCING_WAIL": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:PILLAR_OF_CREATION": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:POISONED_STAB": {
+  "毒": "power:POISON"
+ },
+ "card:POKE": {
+  "オスティ": null
+ },
+ "card:PRECISE_CUT": {
+  "手札": null
+ },
+ "card:PREP_TIME": {
+  "活力": "power:VIGOR"
+ },
+ "card:PRIMAL_FORCE": {
+  "巨大な岩": "card:GIANT_ROCK",
+  "巨大な岩+": "card:GIANT_ROCK",
+  "手札": null
+ },
+ "card:PROLONG": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:PROTECTOR": {
+  "オスティ": null,
+  "最大HP": null
+ },
+ "card:PROWESS": {
+  "敏捷": "power:DEXTERITY",
+  "筋力": "power:STRENGTH"
+ },
+ "card:PULL_AGGRO": {
+  "ブロック": "keyword:BLOCK",
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:PULL_FROM_BELOW": {
+  "エセリアル": "keyword:ETHEREAL"
+ },
+ "card:PUNCH_OF_JOY": {
+  "喜び": "card:JOY",
+  "変化": null,
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:PURITY": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "card:PUTREFY": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:QUADCAST": {
+  "解放": "keyword:EVOKE"
+ },
+ "card:QUASAR": {
+  "アップグレード": null,
+  "手札": null
+ },
+ "card:QUICK_SHOT": {
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:QUIETUS": {
+  "ショット": null
+ },
+ "card:QUIVER": {
+  "矢": "keyword:ARROW"
+ },
+ "card:RAGE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:RAINBOW": {
+  "ダーク": "keyword:DARK_ORB",
+  "フロスト": "keyword:FROST_ORB",
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:RAIN_SHOT": {
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:RALLY": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:RATTLE": {
+  "オスティ": null
+ },
+ "card:REANIMATE": {
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:REAPER_FORM": {
+  "破滅": "power:DOOM"
+ },
+ "card:REAVE": {
+  "ソウル": "card:SOUL",
+  "ソウル+": "card:SOUL",
+  "山札": null
+ },
+ "card:REBOOT": {
+  "山札": null
+ },
+ "card:REBOUND": {
+  "山札": null
+ },
+ "card:RECALL": {
+  "刺矢": "power:IMPALED",
+  "引き抜く": null
+ },
+ "card:REFINE_BLADE": {
+  "鍛造": "keyword:FORGE"
+ },
+ "card:REFLECT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:REFRACT": {
+  "グラス": "keyword:GLASS_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:REGRET": {
+  "手札": null
+ },
+ "card:RELAX": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:REPEAT_SHOT": {
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:RESONANCE": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:RESTLESSNESS": {
+  "手札": null
+ },
+ "card:RHYTHM_STRIKE": {
+  "旋律": null
+ },
+ "card:RIGHT_HAND_HAND": {
+  "オスティ": null,
+  "手札": null,
+  "捨て札": null
+ },
+ "card:ROYALTIES": {
+  "ゴールド": null
+ },
+ "card:RUMMAGE": {
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:RUPTURE": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:SACRIFICE": {
+  "オスティ": null,
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:SALVO": {
+  "保留": "keyword:RETAIN",
+  "手札": null
+ },
+ "card:SCAVENGE": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:SCOURGE": {
+  "破滅": "power:DOOM"
+ },
+ "card:SCRAWL": {
+  "手札": null
+ },
+ "card:SCULPTING_STRIKE": {
+  "エセリアル": "keyword:ETHEREAL",
+  "手札": null
+ },
+ "card:SEANCE": {
+  "ソウル": "card:SOUL",
+  "山札": null
+ },
+ "card:SECOND_WIND": {
+  "ブロック": "keyword:BLOCK",
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "card:SECRET_TECHNIQUE": {
+  "山札": null,
+  "手札": null
+ },
+ "card:SECRET_WEAPON": {
+  "山札": null,
+  "手札": null
+ },
+ "card:SEEKER_STRIKE": {
+  "山札": null,
+  "手札": null
+ },
+ "card:SEEKING_EDGE": {
+  "ソヴリン・ブレード": "card:SOVEREIGN_BLADE",
+  "鍛造": "keyword:FORGE"
+ },
+ "card:SELF_DEPRECATE": {
+  "喜び": "card:JOY",
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "card:SENTRY_MODE": {
+  "手札": null,
+  "索敵の眼差し": "card:SWEEPING_GAZE"
+ },
+ "card:SERRATED_ARROWS": {
+  "刺矢": "power:IMPALED"
+ },
+ "card:SETUP_STRIKE": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:SEVERANCE": {
+  "ソウル": "card:SOUL",
+  "山札": null,
+  "手札": null,
+  "捨て札": null
+ },
+ "card:SHADOWMELD": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:SHADOW_SHIELD": {
+  "ダーク": "keyword:DARK_ORB",
+  "ブロック": "keyword:BLOCK",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:SHADOW_STEP": {
+  "手札": null
+ },
+ "card:SHAME": {
+  "手札": null,
+  "脆弱": "power:FRAIL"
+ },
+ "card:SHARED_FATE": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:SHARP_EDGE": {
+  "アップグレード": null,
+  "ナイフ": null
+ },
+ "card:SHATTER": {
+  "解放": "keyword:EVOKE"
+ },
+ "card:SHINING_STRIKE": {
+  "山札": null
+ },
+ "card:SHOCKWAVE": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:SHOW_OFF": {
+  "弓力": "power:AIM"
+ },
+ "card:SHROUD": {
+  "ブロック": "keyword:BLOCK",
+  "破滅": "power:DOOM"
+ },
+ "card:SHRUG_IT_OFF": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:SIC_EM": {
+  "オスティ": null,
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:SIMPLETON": {
+  "手札": null
+ },
+ "card:SKY_SHOT": {
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:SNAKEBITE": {
+  "毒": "power:POISON"
+ },
+ "card:SNAP": {
+  "オスティ": null,
+  "保留": "keyword:RETAIN",
+  "手札": null
+ },
+ "card:SNEAKY": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:SONG_PATH": {
+  "チョの旋律": "keyword:CHO_MELODY",
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:SOULBOUND": {
+  "ソウル": "card:SOUL",
+  "山札": null
+ },
+ "card:SOUL_STORM": {
+  "ソウル": "card:SOUL",
+  "廃棄札": null
+ },
+ "card:SOVEREIGN_BLADE": {
+  "ブロック": null
+ },
+ "card:SPECTRUM_SHIFT": {
+  "手札": null
+ },
+ "card:SPINNER": {
+  "グラス": "keyword:GLASS_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:SPIRIT_OF_ASH": {
+  "エセリアル": "keyword:ETHEREAL",
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:SPLASH": {
+  "アップグレード": null,
+  "手札": null
+ },
+ "card:SPOILS_MAP": {
+  "ゴールド": null
+ },
+ "card:SPOILS_OF_BATTLE": {
+  "鍛造": "keyword:FORGE"
+ },
+ "card:SPUR": {
+  "オスティ": null,
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "card:SQUASH": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:SQUEEZE": {
+  "オスティ": null
+ },
+ "card:STACK": {
+  "ブロック": "keyword:BLOCK",
+  "捨て札": null
+ },
+ "card:STAMPEDE": {
+  "手札": null
+ },
+ "card:STAR_BLAST": {
+  "ブロック": null
+ },
+ "card:STAR_SHIELD": {
+  "ブロック": null
+ },
+ "card:STEADY_CADENCE": {
+  "旋律": null
+ },
+ "card:STOKE": {
+  "アップグレード": null,
+  "廃棄": null,
+  "手札": null
+ },
+ "card:STONE_ARMOR": {
+  "プレート": "power:PLATING"
+ },
+ "card:STORM": {
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:STORM_OF_STEEL": {
+  "ナイフ": "card:SHIV",
+  "ナイフ+": "card:SHIV",
+  "手札": null
+ },
+ "card:STRATAGEM": {
+  "山札": null,
+  "手札": null
+ },
+ "card:STRENGTH": {
+  "筋力": "power:STRENGTH"
+ },
+ "card:SUCKER_PUNCH": {
+  "脱力": "power:WEAK"
+ },
+ "card:SUMMON_FORTH": {
+  "ソヴリン・ブレード": "card:SOVEREIGN_BLADE",
+  "手札": null,
+  "鍛造": "keyword:FORGE"
+ },
+ "card:SUPPRESS": {
+  "脱力": "power:WEAK"
+ },
+ "card:SURVIVOR": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:SWEEPING_GAZE": {
+  "オスティ": null
+ },
+ "card:SWORD_SAGE": {
+  "ソヴリン・ブレード": "card:SOVEREIGN_BLADE",
+  "リプレイ": "keyword:REPLAY"
+ },
+ "card:SYNCHRONIZE": {
+  "集中力": "power:FOCUS"
+ },
+ "card:TAUNT": {
+  "ブロック": "keyword:BLOCK",
+  "弱体": "power:VULNERABLE"
+ },
+ "card:TEMPERANCE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:TEMPEST": {
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:TERRAFORMING": {
+  "活力": "power:VIGOR"
+ },
+ "card:TESLA_COIL": {
+  "ライトニング": "keyword:LIGHTNING_ORB"
+ },
+ "card:TEZCATARAS_MIGHT": {
+  "筋力": null
+ },
+ "card:THE_DEVIL": {
+  "アップグレード": null,
+  "山札": null,
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "card:THE_EMPRESS": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:THE_FOOL": {
+  "手札": null
+ },
+ "card:THE_GAMBIT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:THE_HERMIT": {
+  "呪い": null,
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:THE_HIEROPHANT": {
+  "手札": null
+ },
+ "card:THE_HUNT": {
+  "リーサル": "keyword:FATAL"
+ },
+ "card:THE_LOVERS": {
+  "手札": null
+ },
+ "card:THE_MAGICIAN": {
+  "生成": "keyword:CHANNELING"
+ },
+ "card:THE_MOON": {
+  "ナイフ": "card:SHIV",
+  "ナイフ+": "card:SHIV",
+  "手札": null
+ },
+ "card:THE_SHOT": {
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:THE_SMITH": {
+  "鍛造": "keyword:FORGE"
+ },
+ "card:THE_SUN": {
+  "すす": "card:SOOT",
+  "山札": null
+ },
+ "card:THE_WORLD": {
+  "手札": null,
+  "捨て札": null
+ },
+ "card:THINKING_AHEAD": {
+  "山札": null,
+  "手札": null
+ },
+ "card:THRASH": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "card:THRUMMING_HATCHET": {
+  "手札": null
+ },
+ "card:THUNDER": {
+  "ライトニングを解放": null
+ },
+ "card:THUNDERCLAP": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:TIMES_UP": {
+  "破滅": "power:DOOM"
+ },
+ "card:TORIC_TOUGHNESS": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:TOXIC": {
+  "手札": null
+ },
+ "card:TRACKING": {
+  "脱力": "power:WEAK"
+ },
+ "card:TRAINING_STRIKE": {
+  "リーサル": null
+ },
+ "card:TRANSFIGURE": {
+  "リプレイ": "keyword:REPLAY",
+  "手札": null
+ },
+ "card:TRASH_TO_TREASURE": {
+  "生成": "keyword:CHANNELING"
+ },
+ "card:TREMBLE": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:TRICK_SHOT": {
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:TRUE_GRIT": {
+  "ブロック": "keyword:BLOCK",
+  "廃棄": "keyword:EXHAUST"
+ },
+ "card:TUNE": {
+  "アップグレード": null,
+  "キの旋律": "keyword:KI_MELODY",
+  "手札": null
+ },
+ "card:TURBO": {
+  "捨て札": null,
+  "虚無": "card:VOID"
+ },
+ "card:TUTOR": {
+  "山札": null,
+  "手札": null
+ },
+ "card:TWIN_SHOT": {
+  "放ち": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:TYRANNY": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "card:ULTIMATE_DEFEND": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:UNDEATH": {
+  "ブロック": "keyword:BLOCK",
+  "捨て札": null
+ },
+ "card:UNDERWORLD": {
+  "破滅": "power:DOOM"
+ },
+ "card:UNLEASH": {
+  "オスティ": null
+ },
+ "card:UNMOVABLE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:UNTOUCHABLE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:UPPERCUT": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "card:UPROAR": {
+  "山札": null
+ },
+ "card:UPROOT": {
+  "刺矢": "power:IMPALED",
+  "引き抜き": null,
+  "弱体": "power:VULNERABLE"
+ },
+ "card:UP_MY_SLEEVE": {
+  "ナイフ": "card:SHIV",
+  "手札": null
+ },
+ "card:VEILPIERCER": {
+  "エセリアル": "keyword:ETHEREAL"
+ },
+ "card:VETERAN": {
+  "ブロック": null,
+  "筋力": null
+ },
+ "card:VICIOUS": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:VIOLENT_CHORD": {
+  "ワーの旋律": "keyword:WAH_MELODY"
+ },
+ "card:VITRIOL": {
+  "悲しみ": "card:SADNESS",
+  "手札": null,
+  "脱力": "power:WEAK"
+ },
+ "card:VOLTAIC": {
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:WAH_BLAST": {
+  "キの旋律": "keyword:KI_MELODY",
+  "チョの旋律": "keyword:CHO_MELODY"
+ },
+ "card:WAH_CHO": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:WAH_CHO_KI": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "card:WAH_HAMMER": {
+  "刺矢": "power:IMPALED"
+ },
+ "card:WAH_KI": {
+  "山札": null,
+  "捨て札": null
+ },
+ "card:WAH_TOUCH": {
+  "弱体": "power:VULNERABLE"
+ },
+ "card:WARP_SPACE": {
+  "山札": null
+ },
+ "card:WELL_LAID_PLANS": {
+  "手札": null
+ },
+ "card:WHEEL_OF_FORTUNE": {
+  "手札": null
+ },
+ "card:WHISTLE": {
+  "スタン": null
+ },
+ "card:WHISTLING_ARROWS": {
+  "ブロック": "keyword:BLOCK",
+  "手札": null,
+  "捨て札": null,
+  "放つ": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:WHITE_NOISE": {
+  "手札": null
+ },
+ "card:WISH": {
+  "山札": null,
+  "手札": null
+ },
+ "card:WITHER": {
+  "手札": null
+ },
+ "card:WRAITH_FORM": {
+  "敏捷": "power:DEXTERITY",
+  "霊体": "power:INTANGIBLE"
+ },
+ "card:WREST": {
+  "刺矢": "power:IMPALED",
+  "引き抜き": null
+ },
+ "card:WROUGHT_IN_WAR": {
+  "鍛造": "keyword:FORGE"
+ },
+ "card:YAH": {
+  "引き抜く": null,
+  "矢": "keyword:ARROW"
+ },
+ "card:YOGA": {
+  "ストレッチ": "power:STRETCH"
+ },
+ "card:ZAP": {
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "character:FOOL": {
+  "スパイア": null
+ },
+ "character:NECROBINDER": {
+  "オスティ": null
+ },
+ "dominion:AEONGLASS": {
+  "山札": null,
+  "衰微": "card:WITHER"
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "儀式": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "プレート": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "脆弱": "power:FRAIL",
+  "脱力": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "敏捷": "power:DEXTERITY",
+  "筋力": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "弱体": "power:VULNERABLE",
+  "脆弱": "power:FRAIL",
+  "脱力": "power:WEAK"
+ },
+ "dominion:SOUL_FYSH": {
+  "山札": null,
+  "誘い": "card:BECKON"
+ },
+ "dominion:TEST_SUBJECT": {
+  "筋力": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "スリップ": "power:SLIPPERY"
+ },
+ "enchantment:ADROIT": {
+  "ブロック": null
+ },
+ "enchantment:CLONE": {
+  "休憩所": null
+ },
+ "enchantment:GLAM": {
+  "リプレイ": "keyword:REPLAY"
+ },
+ "enchantment:GOOPY": {
+  "ブロック": null,
+  "廃棄": "keyword:EXHAUST"
+ },
+ "enchantment:INKY": {
+  "脱力": "power:WEAK"
+ },
+ "enchantment:NIMBLE": {
+  "ブロック": null
+ },
+ "enchantment:PERFECT_FIT": {
+  "山札": null
+ },
+ "enchantment:ROYALLY_APPROVED": {
+  "保留": "keyword:RETAIN",
+  "天賦": "keyword:INNATE"
+ },
+ "enchantment:SOULS_POWER": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "enchantment:SPIRAL": {
+  "リプレイ": "keyword:REPLAY"
+ },
+ "enchantment:STEADY": {
+  "保留": "keyword:RETAIN"
+ },
+ "enchantment:TEZCATARAS_EMBER": {
+  "永劫": "keyword:ETERNAL"
+ },
+ "encounter:NEOW_CHOICE": {
+  "ネオーの選択：": null
+ },
+ "epoch:BLITZ_EPOCH": {
+  "ゴールドは蒸発し": null,
+  "ブリッツ": null
+ },
+ "epoch:COLORLESS1_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:COLORLESS2_EPOCH": {
+  "想像の獣": null
+ },
+ "epoch:COLORLESS5_EPOCH": {
+  "ゴールド": null
+ },
+ "epoch:CUSTOM_AND_SEEDS_EPOCH": {
+  "「古の種」": null,
+  "層": null,
+  "第": null
+ },
+ "epoch:DAILY_RUN_EPOCH": {
+  "スパイア": null,
+  "層": null,
+  "第": null
+ },
+ "epoch:DARV_EPOCH": {
+  "エンシェント": null
+ },
+ "epoch:DEFECT2_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:DEFECT3_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:DEFECT4_EPOCH": {
+  "スパイア": null,
+  "層": null,
+  "第": null
+ },
+ "epoch:DEFECT7_EPOCH": {
+  "財宝": null
+ },
+ "epoch:EVENT1_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:EVENT2_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:EVENT3_EPOCH": {
+  "古の木々": null
+ },
+ "epoch:FOOL1_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:FOOL2_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:FOOL3_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:FOOL4_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:IRONCLAD2_EPOCH": {
+  "スパイア": null,
+  "層": null,
+  "第": null
+ },
+ "epoch:IRONCLAD3_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:IRONCLAD4_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:IRONCLAD6_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:IRONCLAD7_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:NECROBINDER2_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:NECROBINDER3_EPOCH": {
+  "事故報告書": null,
+  "層": null,
+  "第": null
+ },
+ "epoch:NECROBINDER4_EPOCH": {
+  "不可思議な遺物": null,
+  "層": null,
+  "第": null
+ },
+ "epoch:NECROBINDER7_EPOCH": {
+  "パエル": null
+ },
+ "epoch:POTION1_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:POTION2_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:REGENT2_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:REGENT3_EPOCH": {
+  "スパイア": null,
+  "層": null,
+  "第": null
+ },
+ "epoch:REGENT4_EPOCH": {
+  "スターリスのリージェント": null,
+  "層": null,
+  "第": null
+ },
+ "epoch:REGENT7_EPOCH": {
+  "タンクス": null
+ },
+ "epoch:RELIC1_EPOCH": {
+  "想像の獣": null
+ },
+ "epoch:RELIC2_EPOCH": {
+  "エンシェント": null
+ },
+ "epoch:SILENT1_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:SILENT2_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:SILENT3_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:SILENT4_EPOCH": {
+  "層": null,
+  "第": null
+ },
+ "epoch:SILENT5_EPOCH": {
+  "スパイア": null
+ },
+ "epoch:UNDERDOCKS_EPOCH": {
+  "スパイア": null,
+  "地下水路": null
+ },
+ "event:AMALGAMATOR": {
+  "ストライク": null,
+  "デッキ": null,
+  "発光する印の渦": null,
+  "防御": null
+ },
+ "event:AROMA_OF_CHAOS": {
+  "アップグレード": null,
+  "デッキ": null,
+  "変化": "keyword:TRANSFORM",
+  "強大な敵に立ち向かう": null
+ },
+ "event:BATTLEWORN_DUMMY": {
+  "アップグレード": null,
+  "ファクトリー": null,
+  "ポーション": null,
+  "レリック": null
+ },
+ "event:BRAIN_LEECH": {
+  "デッキ": null
+ },
+ "event:BUGSLAYER": {
+  "デッキ": null,
+  "圧殺の極意": null,
+  "屈強で無骨な戦士": null,
+  "駆除の極意": null
+ },
+ "event:BYRDONIS_NEST": {
+  "デッキ": null,
+  "無防備な卵がひとつ": null
+ },
+ "event:COLORFUL_PHILOSOPHERS": {
+  "“至高”": null,
+  "プリズムジェム": null
+ },
+ "event:COLOSSAL_FLOWER": {
+  "ゴールド": null,
+  "花粉の中心核": null,
+  "蜜": null,
+  "高品質な蜜": null,
+  "黄金の蜜": null
+ },
+ "event:CRYSTAL_SPHERE": {
+  "ゴールド": null,
+  "大占い": null,
+  "小占い": null,
+  "水晶占い": null
+ },
+ "event:DENSE_VEGETATION": {
+  "ゴールド": null,
+  "何かがうごめく": null
+ },
+ "event:DOLL_ROOM": {
+  "人形レリック": null
+ },
+ "event:DOORS_OF_LIGHT_AND_DARK": {
+  "アップグレード": null,
+  "デッキ": null,
+  "光の中へと進む……": null,
+  "力を与えてくれる": null,
+  "身なりの良いドアマン": null
+ },
+ "event:DROWNING_BEACON": {
+  "レンズ": null,
+  "明かりが灯る部屋": null
+ },
+ "event:ENDLESS_CONVEYOR": {
+  "アップグレード": null,
+  "ゴールド": null,
+  "デッキ": null,
+  "フードファイト": null,
+  "ポーション": null,
+  "変化": null
+ },
+ "event:FIELD_OF_MAN_SIZED_HOLES": {
+  "かすかな光": null,
+  "エンチャント": null,
+  "デッキ": null
+ },
+ "event:GRAVE_OF_THE_FORGOTTEN": {
+  "エンチャント": null,
+  "デッキ": null,
+  "廃棄": null
+ },
+ "event:HUNGRY_FOR_MUSHROOMS": {
+  "猛特訓": null
+ },
+ "event:INFESTED_AUTOMATON": {
+  "0コストのカード": null,
+  "パワー": null,
+  "電流": null
+ },
+ "event:JUNGLE_MAZE_ADVENTURE": {
+  "ゴールド": null,
+  "素晴らしい思い出": null
+ },
+ "event:LOST_WISP": {
+  "ゴールド": null,
+  "デッキ": null
+ },
+ "event:LUMINOUS_CHOIR": {
+  "ゴールド": null,
+  "デッキ": null,
+  "レリック": null
+ },
+ "event:MORPHIC_GROVE": {
+  "ゴールド": null,
+  "変化": "keyword:TRANSFORM"
+ },
+ "event:POTION_COURIER": {
+  "アンコモンのポーション": null,
+  "ポーションの運び屋": null,
+  "悪臭ポーション": "potion:FOUL_POTION"
+ },
+ "event:PUNCH_OFF": {
+  "より良い報酬": null,
+  "デッキ": null,
+  "ボクシングロボ": null,
+  "レリック": null,
+  "ロボット": null
+ },
+ "event:RANWID_THE_ELDER": {
+  "ゴールド": null,
+  "レリック": null
+ },
+ "event:REFLECTIONS": {
+  "デッキ": null
+ },
+ "event:ROOM_FULL_OF_CHEESE": {
+  "コモン": null,
+  "デッキ": null,
+  "選ばれしチーズ": "relic:CHOSEN_CHEESE"
+ },
+ "event:ROUND_TEA_PARTY": {
+  "レリック": null,
+  "参加料": null,
+  "指揮官": null,
+  "黄金の冠": null
+ },
+ "event:SAPPHIRE_SEED": {
+  "アップグレード": null,
+  "エンチャント": null,
+  "デッキ": null,
+  "耐久力が劇的に跳ね上がる": null,
+  "色彩は鮮明になり": null
+ },
+ "event:SELF_HELP_BOOK": {
+  "エンチャント": null
+ },
+ "event:SHRINE_OF_THE_WARLORD": {
+  "デッキ": null,
+  "異なる遺物": null
+ },
+ "event:SLIPPERY_BRIDGE": {
+  "あああああああ！！！": null,
+  "デッキ": null
+ },
+ "event:SPIRALING_WHIRLPOOL": {
+  "「ありがとう、らせんさん」": null,
+  "エンチャント": null,
+  "ストライク": null,
+  "デッキ": null,
+  "レリック": null,
+  "中心": null,
+  "防御": null
+ },
+ "event:SPIRIT_GRAFTER": {
+  "アップグレード": null,
+  "デッキ": null,
+  "光": null,
+  "羽化": "card:METAMORPHOSIS"
+ },
+ "event:STONE_OF_ALL_TIME": {
+  "エンチャント": null,
+  "悠久の石": null
+ },
+ "event:SUNKEN_STATUE": {
+  "お供え物": null,
+  "きらきらと光って": null,
+  "ゴールド": null,
+  "光って": null
+ },
+ "event:SUNKEN_TREASURY": {
+  "1つ目の宝箱:": null,
+  "2つ目の宝箱:": null,
+  "ゴールド": null,
+  "宝箱": null
+ },
+ "event:SYMBIOTE": {
+  "エンチャント": null,
+  "変化": "keyword:TRANSFORM"
+ },
+ "event:TABLET_OF_TRUTH": {
+  "アップグレード": null,
+  "最後の一語": null,
+  "真実": null
+ },
+ "event:TEA_MASTER": {
+  "1.": null,
+  "2.": null,
+  "3.": null,
+  "4.": null,
+  "5.": null,
+  "ゴールド": null,
+  "高額な値段": null
+ },
+ "event:THERMAE_NONUPEIPE": {
+  "ゴールド": null,
+  "デッキ": null
+ },
+ "event:THE_FUTURE_OF_POTIONS": {
+  "アップグレード": null
+ },
+ "event:THE_LANTERN_KEY": {
+  "ゴールド": null,
+  "謎の騎士": null
+ },
+ "event:THE_LEGENDS_WERE_TRUE": {
+  "ポーション": null,
+  "戦利品の地図": "card:SPOILS_MAP"
+ },
+ "event:THIS_OR_THAT": {
+  "ゴールド": null,
+  "デッキ": null,
+  "レリック": null,
+  "怪しげな財宝の袋": null
+ },
+ "event:TINKER_TIME": {
+  "アップグレード": null,
+  "デッキ": null,
+  "弱体": null,
+  "手札": null,
+  "敏捷": null,
+  "筋力": null,
+  "脱力": null
+ },
+ "event:TRASH_HEAP": {
+  "ゴールド": null,
+  "レリック": null,
+  "放置された金品": null,
+  "珍しい宝物": null,
+  "過去のレリック": null
+ },
+ "event:TRIAL": {
+  "アップグレード": null,
+  "ゴールド": null,
+  "デッキ": null,
+  "レリック": null,
+  "位の高い貴族": null,
+  "判決を": null,
+  "変化": "keyword:TRANSFORM",
+  "決断の椅子": null,
+  "法廷の裁判長": null,
+  "裁判": null,
+  "貴族": null,
+  "賄賂": null,
+  "黄金のアーチ": null
+ },
+ "event:UNREST_SITE": {
+  "レリック": null,
+  "休憩所": null,
+  "小さな箱": null
+ },
+ "event:WAR_HISTORIAN_REPY": {
+  "ポーション": null,
+  "ランタンの鍵": "card:LANTERN_KEY",
+  "レリック": null,
+  "分厚い革張りの本": null,
+  "宝箱": null,
+  "歴史学教程": "relic:HISTORY_COURSE"
+ },
+ "event:WATERFALL_OF_OBVIOUS_SECRETS": {
+  "ゴールド": null,
+  "デッキ": null,
+  "レア": null,
+  "薄汚れた短剣": null
+ },
+ "event:WATERLOGGED_SCRIPTORIUM": {
+  "うねうねと動く羽ペン": null,
+  "エンチャント": null,
+  "ゴールド": null,
+  "チクチクするスポンジ": null,
+  "道具": null
+ },
+ "event:WELCOME_TO_WONGOS": {
+  "ウォンゴお客様感謝バッジ": null,
+  "ウォンゴポイント": null,
+  "ゴールド": null,
+  "レリック": null,
+  "レリック（コモン）": null
+ },
+ "event:WELLSPRING": {
+  "デッキ": null,
+  "ポーション": null,
+  "光り輝く粒子": null
+ },
+ "event:WHISPERING_HOLLOW": {
+  "ゴールド": null,
+  "ポーション": null,
+  "変化": "keyword:TRANSFORM"
+ },
+ "event:WOOD_CARVINGS": {
+  "エンチャント": null,
+  "変化": null
+ },
+ "event:WUPPY_IN_TROUBLE": {
+  "デッキ": null,
+  "ワッピー": null
+ },
+ "event:ZEN_WEAVER": {
+  "ゴールド": null,
+  "デッキ": null,
+  "啓発": "card:ENLIGHTENMENT"
+ },
+ "intent:ATTACK": {
+  "アタック": null
+ },
+ "intent:BUFF": {
+  "バフ": null
+ },
+ "intent:CARD_DEBUFF": {
+  "災禍": null
+ },
+ "intent:DEBUFF": {
+  "デバフ": null
+ },
+ "intent:DEBUFF_STRONG": {
+  "デバフ": null
+ },
+ "intent:DEFEND": {
+  "ブロック": null
+ },
+ "intent:ESCAPE": {
+  "逃走": null
+ },
+ "intent:HEAL": {
+  "回復": null
+ },
+ "intent:STATUS": {
+  "状態異常": null
+ },
+ "intent:SUMMON": {
+  "モンスター": null
+ },
+ "intent:UNKNOWN": {
+  "不明": null
+ },
+ "keyword:ARROW": {
+  "刺矢": null,
+  "引き抜く": null
+ },
+ "keyword:CARD_REWARD": {
+  "デッキ": null
+ },
+ "keyword:CHANNELING": {
+  "解放": null
+ },
+ "keyword:COOK": {
+  "デッキ": null,
+  "休憩所": null,
+  "削除": null
+ },
+ "keyword:DREAD_ROTATION": {
+  "ローテーション": null
+ },
+ "keyword:ENERGY": {
+  "手札": null
+ },
+ "keyword:ETERNAL": {
+  "デッキ": null
+ },
+ "keyword:ETHEREAL": {
+  "廃棄": null,
+  "手札": null
+ },
+ "keyword:FORGE": {
+  "ソヴリン・ブレード": null,
+  "手札": null,
+  "鍛造": null
+ },
+ "keyword:INNATE": {
+  "手札": null
+ },
+ "keyword:REPLAY": {
+  "リプレイ": null
+ },
+ "keyword:ROOM_ELITE": {
+  "レリック": null
+ },
+ "keyword:ROOM_MERCHANT": {
+  "ゴールド": null
+ },
+ "keyword:ROOM_REST": {
+  "アップグレード": null
+ },
+ "keyword:ROOM_TREASURE": {
+  "ゴールド": null,
+  "レリック": null
+ },
+ "keyword:ROOM_UNKNOWN_MERCHANT": {
+  "ゴールド": null
+ },
+ "keyword:SLY": {
+  "手札": null
+ },
+ "keyword:SUMMON_DYNAMIC": {
+  "オスティ": null
+ },
+ "keyword:SUMMON_STATIC": {
+  "オスティ": null
+ },
+ "modifier:ALL_STAR": {
+  "無色": null
+ },
+ "modifier:BIG_GAME_HUNTER": {
+  "レア": null
+ },
+ "modifier:MIDAS": {
+  "休憩所": null
+ },
+ "modifier:MURDEROUS": {
+  "筋力": null
+ },
+ "modifier:NIGHT_TERRORS": {
+  "休憩所": null
+ },
+ "modifier:TERMINAL": {
+  "プレート": null
+ },
+ "monster:GREMLIN_MERC": {
+  "カネ！": null
+ },
+ "orb:DARK_ORB": {
+  "自動効果:": null,
+  "解放": null,
+  "解放:": null
+ },
+ "orb:FROST_ORB": {
+  "ブロック": null,
+  "自動効果:": null,
+  "解放:": null
+ },
+ "orb:GLASS_ORB": {
+  "自動効果:": null,
+  "解放:": null
+ },
+ "orb:LIGHTNING_ORB": {
+  "自動効果:": null,
+  "解放:": null
+ },
+ "orb:PLASMA_ORB": {
+  "自動効果:": null,
+  "解放:": null,
+  "集中力": null
+ },
+ "potion:ASHWATER": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "potion:ATTACK_POTION": {
+  "手札": null
+ },
+ "potion:BLESSING_OF_THE_FORGE": {
+  "アップグレード": null,
+  "手札": null
+ },
+ "potion:BLOCK_POTION": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "potion:BONE_BREW": {
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "potion:BOTTLED_POTENTIAL": {
+  "山札": null
+ },
+ "potion:BOTTLED_SONG": {
+  "手札": null
+ },
+ "potion:COLORLESS_POTION": {
+  "手札": null
+ },
+ "potion:COSMIC_CONCOCTION": {
+  "アップグレード": null,
+  "手札": null
+ },
+ "potion:CRYSTALLINE_EUPHORIA": {
+  "喜び": "card:JOY",
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "potion:CUNNING_POTION": {
+  "アップグレードしたナイフ": null,
+  "手札": null
+ },
+ "potion:DEXTERITY_POTION": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "potion:DISTILLED_CHAOS": {
+  "山札": null
+ },
+ "potion:DROPLET_OF_PRECOGNITION": {
+  "山札": null,
+  "手札": null
+ },
+ "potion:ESSENCE_OF_DARKNESS": {
+  "オーブスロット": null,
+  "ダーク": "keyword:DARK_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "potion:FLEX_POTION": {
+  "筋力": "power:STRENGTH"
+ },
+ "potion:FOCUS_POTION": {
+  "集中力": "power:FOCUS"
+ },
+ "potion:FORTIFIER": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "potion:FOUL_POTION": {
+  "ゴールド": null,
+  "商人": null
+ },
+ "potion:FYSH_OIL": {
+  "敏捷": "power:DEXTERITY",
+  "筋力": "power:STRENGTH"
+ },
+ "potion:GHOST_IN_A_JAR": {
+  "霊体": "power:INTANGIBLE"
+ },
+ "potion:GLOWWATER_POTION": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "potion:HEART_OF_IRON": {
+  "プレート": "power:PLATING"
+ },
+ "potion:KINGS_COURAGE": {
+  "鍛造": "keyword:FORGE"
+ },
+ "potion:LIQUID_BRONZE": {
+  "トゲ": "power:THORNS"
+ },
+ "potion:LIQUID_MEMORIES": {
+  "手札": null,
+  "捨て札": null
+ },
+ "potion:LUCKY_TONIC": {
+  "バッファー": "power:BUFFER"
+ },
+ "potion:MAZALETHS_GIFT": {
+  "儀式": "power:RITUAL"
+ },
+ "potion:OROBIC_ACID": {
+  "手札": null
+ },
+ "potion:POISON_POTION": {
+  "毒": "power:POISON"
+ },
+ "potion:POTION_OF_BINDING": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "potion:POTION_OF_CAPACITY": {
+  "オーブスロット": null
+ },
+ "potion:POTION_OF_DOOM": {
+  "破滅": "power:DOOM"
+ },
+ "potion:POT_OF_GHOULS": {
+  "ソウル": "card:SOUL",
+  "手札": null
+ },
+ "potion:POWER_POTION": {
+  "手札": null
+ },
+ "potion:PRECISION_POTION": {
+  "弓力": "power:AIM"
+ },
+ "potion:REGEN_POTION": {
+  "再生": "power:REGEN"
+ },
+ "potion:SHACKLING_POTION": {
+  "筋力": "power:STRENGTH"
+ },
+ "potion:SHIP_IN_A_BOTTLE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "potion:SKILL_POTION": {
+  "手札": null
+ },
+ "potion:SNECKO_OIL": {
+  "手札": null
+ },
+ "potion:SOLDIERS_STEW": {
+  "ストライク": null,
+  "リプレイ": "keyword:REPLAY"
+ },
+ "potion:SPEED_POTION": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "potion:STABLE_SERUM": {
+  "保留": "keyword:RETAIN",
+  "手札": null
+ },
+ "potion:STRENGTH_POTION": {
+  "筋力": "power:STRENGTH"
+ },
+ "potion:TOUCH_OF_INSANITY": {
+  "手札": null
+ },
+ "potion:VULNERABLE_POTION": {
+  "弱体": "power:VULNERABLE"
+ },
+ "potion:WEAK_POTION": {
+  "脱力": "power:WEAK"
+ },
+ "power:ACCELERANT": {
+  "毒": "power:POISON"
+ },
+ "power:ACCURACY": {
+  "ナイフ": null
+ },
+ "power:ADAPTATION": {
+  "ブロック": null,
+  "敏捷": null
+ },
+ "power:AEONGLASS_DOMINION": {
+  "山札": null,
+  "衰微": "card:WITHER"
+ },
+ "power:AFTERIMAGE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:AGGRESSION": {
+  "アップグレード": null,
+  "手札": null,
+  "捨て札": null
+ },
+ "power:AIM": {
+  "矢": null
+ },
+ "power:ALL_IS_WELL": {
+  "ブロック": "keyword:BLOCK",
+  "悲しみ": "card:SADNESS"
+ },
+ "power:ARCHERY": {
+  "弓力": "power:AIM"
+ },
+ "power:ARSENAL": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:ARTIFACT": {
+  "無効化": null
+ },
+ "power:AUTOMATION": {
+  "エナジー": null
+ },
+ "power:BARRICADE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:BEACON_OF_HOPE": {
+  "ブロック": null
+ },
+ "power:BIASED_COGNITION": {
+  "集中力": "power:FOCUS"
+ },
+ "power:BLOCK_NEXT_TURN": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:BLUR": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:BURROWED": {
+  "スタン": null,
+  "ブロック": null
+ },
+ "power:CALAMITY": {
+  "手札": null
+ },
+ "power:CALCIFY": {
+  "オスティ": null
+ },
+ "power:CALL_OF_THE_VOID": {
+  "エセリアル": "keyword:ETHEREAL",
+  "手札": null
+ },
+ "power:CHAINS_OF_BINDING": {
+  "拘束": null
+ },
+ "power:CHILD_OF_THE_STARS": {
+  "ブロック": null
+ },
+ "power:COLOSSUS": {
+  "弱体": "power:VULNERABLE"
+ },
+ "power:COMPOST": {
+  "エナジー": "keyword:ENERGY"
+ },
+ "power:CONCOCT": {
+  "毒": "power:POISON"
+ },
+ "power:CONQUEROR": {
+  "ソヴリン・ブレード": "card:SOVEREIGN_BLADE"
+ },
+ "power:CONSUMING_SHADOW": {
+  "解放": null
+ },
+ "power:CONTRACTILITY": {
+  "ブロック": null
+ },
+ "power:COOLANT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:CORROSIVE_WAVE": {
+  "毒": "power:POISON"
+ },
+ "power:CORRUPTION": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "power:COUNTDOWN": {
+  "破滅": "power:DOOM"
+ },
+ "power:COVERING_FIRE": {
+  "ブロック": "keyword:BLOCK",
+  "放つ": null
+ },
+ "power:CRAB_RAGE": {
+  "ブロック": "keyword:BLOCK",
+  "筋力": "power:STRENGTH"
+ },
+ "power:CREATIVE_AI": {
+  "手札": null
+ },
+ "power:CRIMSON_MANTLE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:CRUELTY": {
+  "弱体": "power:VULNERABLE"
+ },
+ "power:CURL_UP": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:DAMPEN": {
+  "ダウングレード": null
+ },
+ "power:DANSE_MACABRE": {
+  "ブロック": null
+ },
+ "power:DARK_EMBRACE": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "power:DEBILITATE": {
+  "弱体": "power:VULNERABLE",
+  "脱力": "power:WEAK"
+ },
+ "power:DECREE_OF_ENTROPY": {
+  "アップグレード": null
+ },
+ "power:DEMESNE": {
+  "エナジー": "keyword:ENERGY"
+ },
+ "power:DEMON_FORM": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:DESPAIR": {
+  "ブロック": null,
+  "破滅": null
+ },
+ "power:DEVOUR_LIFE": {
+  "ソウル": "card:SOUL",
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "power:DEXTERITY": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:DEXTERITY_DOWN": {
+  "敏捷": null
+ },
+ "power:DIE_FOR_YOU": {
+  "オスティ": null
+ },
+ "power:DISLIKE_YOU": {
+  "ショット": null
+ },
+ "power:ECSTASY": {
+  "喜び": "card:JOY",
+  "変化": null,
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "power:ENERGY_NEXT_TURN": {
+  "エナジー": "keyword:ENERGY"
+ },
+ "power:ENNUI": {
+  "悲しみ": null,
+  "手札": null
+ },
+ "power:ENRAGE": {
+  "筋力": null
+ },
+ "power:ENTROPY": {
+  "変化": "keyword:TRANSFORM",
+  "手札": null
+ },
+ "power:ENVENOM": {
+  "毒": "power:POISON"
+ },
+ "power:EXPLOSIVE_ARROWS": {
+  "刺矢": "power:IMPALED"
+ },
+ "power:FAN_OF_KNIVES": {
+  "ナイフ": null
+ },
+ "power:FASTEN": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:FEEL_NO_PAIN": {
+  "ブロック": "keyword:BLOCK",
+  "廃棄": null
+ },
+ "power:FERAL": {
+  "手札": null
+ },
+ "power:FLUTTER": {
+  "50%": null,
+  "スタン": null
+ },
+ "power:FOCUS_DOWN": {
+  "集中力": null
+ },
+ "power:FORBIDDEN_GRIMOIRE": {
+  "デッキ": null
+ },
+ "power:FOREGONE_CONCLUSION": {
+  "山札": null,
+  "手札": null
+ },
+ "power:FRAIL": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:FRIENDSHIP": {
+  "エナジー": "keyword:ENERGY"
+ },
+ "power:FURNACE": {
+  "鍛造": "keyword:FORGE"
+ },
+ "power:GALVANIC": {
+  "帯電": "affliction:GALVANIZED"
+ },
+ "power:GRABBED": {
+  "手札": null
+ },
+ "power:HAILSTORM": {
+  "フロスト": "keyword:FROST_ORB"
+ },
+ "power:HAMMER_TIME": {
+  "鍛造": "keyword:FORGE"
+ },
+ "power:HANG": {
+  "絞首": "card:HANG"
+ },
+ "power:HARD_TO_KILL": {
+  "外骨格蟲": null
+ },
+ "power:HAUNT": {
+  "ソウル": null
+ },
+ "power:HEIST": {
+  "ゴールド": null
+ },
+ "power:HELLO_WORLD": {
+  "手札": null
+ },
+ "power:HEX": {
+  "エセリアル": "keyword:ETHEREAL"
+ },
+ "power:HIBERNATE": {
+  "フロスト": "keyword:FROST_ORB",
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:HIDDEN_ROOTS": {
+  "ストレッチ": "power:STRETCH"
+ },
+ "power:HIGH_VOLTAGE": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:HONING": {
+  "矢": null
+ },
+ "power:IMBALANCED": {
+  "スタン": null
+ },
+ "power:IMPALED": {
+  "刺矢": "power:IMPALED",
+  "引き抜かれる": null,
+  "矢": null
+ },
+ "power:IMPROVEMENT": {
+  "アップグレード": null
+ },
+ "power:INFINITE_BLADES": {
+  "ナイフ": "card:SHIV",
+  "手札": null
+ },
+ "power:JUGGERNAUT": {
+  "ブロック": null
+ },
+ "power:JUGGLING": {
+  "手札": null
+ },
+ "power:LAGAVULIN_MATRIARCH_DOMINION": {
+  "敏捷": "power:DEXTERITY",
+  "筋力": "power:STRENGTH"
+ },
+ "power:LIGHTNING_ROD": {
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "power:LOST_LUTE": {
+  "山札": null,
+  "旋律": null
+ },
+ "power:LULLABY": {
+  "ブロック": "keyword:BLOCK",
+  "旋律": null
+ },
+ "power:MASTER_PLANNER": {
+  "スライ": null
+ },
+ "power:MAYHEM": {
+  "山札": null
+ },
+ "power:MELANCHOLY": {
+  "破滅": null
+ },
+ "power:MONARCHS_GAZE": {
+  "筋力": null
+ },
+ "power:MONOLOGUE": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:MOTIF": {
+  "旋律": null
+ },
+ "power:MYTHIC_FORM": {
+  "タロット": "keyword:TAROT",
+  "手札": null
+ },
+ "power:NECRO_MASTERY": {
+  "オスティ": null
+ },
+ "power:NEMESIS": {
+  "霊体": null
+ },
+ "power:NEUROSURGE": {
+  "破滅": "power:DOOM"
+ },
+ "power:NIGHTMARE": {
+  "手札": null
+ },
+ "power:NOSTALGIA": {
+  "山札": null
+ },
+ "power:NOXIOUS_FUMES": {
+  "毒": "power:POISON"
+ },
+ "power:NO_BLOCK": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:NO_ESCAPE": {
+  "破滅": null
+ },
+ "power:OBLIVION": {
+  "破滅": null
+ },
+ "power:ORB_GENERATOR": {
+  "オーブ": null
+ },
+ "power:PAGESTORM": {
+  "エセリアル": "keyword:ETHEREAL"
+ },
+ "power:PAINFUL_STABS": {
+  "捨て札": null,
+  "負傷": "card:WOUND"
+ },
+ "power:PAPER_CUTS": {
+  "最大HP": null
+ },
+ "power:PARRY": {
+  "ソヴリン・ブレード": null,
+  "ブロック": null
+ },
+ "power:PERSONAL_HIVE": {
+  "めまい": "card:DAZED",
+  "山札": null
+ },
+ "power:PHANTOM_BLADES": {
+  "ナイフ": "card:SHIV",
+  "保留": "keyword:RETAIN"
+ },
+ "power:PILLAR_OF_CREATION": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:PLATING": {
+  "ブロック": "keyword:BLOCK",
+  "プレート": "power:PLATING"
+ },
+ "power:PLOW": {
+  "スタン": "keyword:STUN",
+  "筋力": "power:STRENGTH"
+ },
+ "power:POISON": {
+  "毒": "power:POISON"
+ },
+ "power:POSSESS_SPEED": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "power:POSSESS_STRENGTH": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:PREP_TIME": {
+  "活力": null
+ },
+ "power:PYRE": {
+  "エナジー": "keyword:ENERGY"
+ },
+ "power:QUIETUS": {
+  "ショット": null
+ },
+ "power:RADIANCE": {
+  "エナジー": "keyword:ENERGY"
+ },
+ "power:RAGE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:RAMPART": {
+  "ブロック": null
+ },
+ "power:RAVENOUS": {
+  "スタン": "keyword:STUN",
+  "筋力": "power:STRENGTH"
+ },
+ "power:READ_THE_BONES": {
+  "召喚": null
+ },
+ "power:REAPER_FORM": {
+  "破滅": "power:DOOM"
+ },
+ "power:REBOUND": {
+  "山札": null
+ },
+ "power:REFLECTIVE_FORTRESS": {
+  "ブロック": null
+ },
+ "power:REGEN": {
+  "再生": "power:REGEN"
+ },
+ "power:RESERVES": {
+  "エナジー": null
+ },
+ "power:RESTORE_DEXTERITY": {
+  "敏捷": null
+ },
+ "power:RESTORE_FOCUS": {
+  "集中力": null
+ },
+ "power:RETAIN_HAND": {
+  "保留": null,
+  "手札": null
+ },
+ "power:RITUAL": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:ROYALTIES": {
+  "ゴールド": null
+ },
+ "power:RUPTURE": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:SANDPIT": {
+  "貪りの獣": null
+ },
+ "power:SEEKING_EDGE": {
+  "ソヴリン・ブレード": "card:SOVEREIGN_BLADE"
+ },
+ "power:SELF_FORMING_CLAY": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:SENTRY_MODE": {
+  "手札": null,
+  "索敵の眼差し": "card:SWEEPING_GAZE"
+ },
+ "power:SERRATED_ARROWS": {
+  "刺矢": "power:IMPALED"
+ },
+ "power:SHADOWMELD": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:SHARP_EDGE": {
+  "アップグレード": null,
+  "ナイフ": null
+ },
+ "power:SHOW_OFF": {
+  "かっこつけ": "power:SHOW_OFF",
+  "弓力": null
+ },
+ "power:SHRIEK": {
+  "スタン": "keyword:STUN"
+ },
+ "power:SHROUD": {
+  "ブロック": null,
+  "破滅": "power:DOOM"
+ },
+ "power:SIC_EM": {
+  "オスティ": null,
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "power:SIMPLETON": {
+  "手札": null
+ },
+ "power:SKITTISH": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:SNEAKY": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:SOAR": {
+  "50%": null
+ },
+ "power:SONG_PATH": {
+  "チョの旋律": "keyword:CHO_MELODY",
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:SOULBOUND": {
+  "ソウル": "card:SOUL",
+  "山札": null
+ },
+ "power:SOW": {
+  "保留": null,
+  "手札": null
+ },
+ "power:SPECTRUM_SHIFT": {
+  "手札": null
+ },
+ "power:SPINNER": {
+  "グラス": "keyword:GLASS_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "power:SPIRIT_OF_ASH": {
+  "エセリアル": "keyword:ETHEREAL",
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:STAMPEDE": {
+  "アタック": null,
+  "手札": null
+ },
+ "power:STORM": {
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "power:STRATAGEM": {
+  "山札": null,
+  "手札": null
+ },
+ "power:STRETCH": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:SUCK": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:SUMMON_NEXT_TURN": {
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "power:SWORD_SAGE": {
+  "ソヴリン・ブレード": "card:SOVEREIGN_BLADE",
+  "リプレイ": "keyword:REPLAY"
+ },
+ "power:TANGLED": {
+  "エナジー": null
+ },
+ "power:TAUNT": {
+  "弱体": null
+ },
+ "power:TEMPORARY_DEXTERITY": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "power:TEMPORARY_DEXTERITY_DOWN": {
+  "敏捷": null
+ },
+ "power:TEMPORARY_FOCUS": {
+  "集中力": "power:FOCUS"
+ },
+ "power:TEMPORARY_FOCUS_DOWN": {
+  "集中力": null
+ },
+ "power:TEMPORARY_STRENGTH": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:TEMPORARY_STRENGTH_DOWN": {
+  "筋力": null
+ },
+ "power:TEMPORARY_THORNS": {
+  "トゲ": "power:THORNS"
+ },
+ "power:TENDER": {
+  "敏捷": "power:DEXTERITY",
+  "筋力": "power:STRENGTH"
+ },
+ "power:TERRITORIAL": {
+  "筋力": "power:STRENGTH"
+ },
+ "power:TEZCATARAS_BLIGHT": {
+  "筋力": null
+ },
+ "power:THIEVERY": {
+  "ゴールド": null
+ },
+ "power:THUNDER": {
+  "ライトニングを解放": null
+ },
+ "power:TORIC_TOUGHNESS": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:TRACKING": {
+  "脱力": "power:WEAK"
+ },
+ "power:TRASH_TO_TREASURE": {
+  "生成": null
+ },
+ "power:TUNE": {
+  "アップグレード": null,
+  "キの旋律": "keyword:KI_MELODY",
+  "手札": null
+ },
+ "power:TYRANNY": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "power:UNDERWORLD": {
+  "破滅": "power:DOOM"
+ },
+ "power:UNMOVABLE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "power:UNSTEADY": {
+  "スタン": null
+ },
+ "power:VEILPIERCER": {
+  "エセリアル": "keyword:ETHEREAL"
+ },
+ "power:VICIOUS": {
+  "弱体": "power:VULNERABLE"
+ },
+ "power:VIOLENT_CHORD": {
+  "ワーの旋律": "keyword:WAH_MELODY"
+ },
+ "power:VITAL_SPARK": {
+  "スキル": null,
+  "汚染": "affliction:TAINTED"
+ },
+ "power:WASTE_AWAY": {
+  "エナジー": "keyword:ENERGY"
+ },
+ "power:WELL_LAID_PLANS": {
+  "手札": null
+ },
+ "power:WINGED_JUMP": {
+  "弱体": null
+ },
+ "power:WITHERING_PRESENCE": {
+  "手札": null,
+  "衰微": null
+ },
+ "power:WRAITH_FORM": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "power:WUPPYS_LOYALTY": {
+  "ワッピー": null
+ },
+ "power:YAH": {
+  "引き抜く": null,
+  "矢": null
+ },
+ "power:YOU_ARE_MINE": {
+  "弱体": "power:VULNERABLE",
+  "脆弱化": null,
+  "脱力": "power:WEAK"
+ },
+ "relic:AKABEKO": {
+  "活力": "power:VIGOR"
+ },
+ "relic:ALCHEMICAL_COFFER": {
+  "ポーション": null
+ },
+ "relic:AMETHYST_AUBERGINE": {
+  "ゴールド": null
+ },
+ "relic:ANCHOR": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:ARCANE_SCROLL": {
+  "デッキ": null,
+  "レアカード": null
+ },
+ "relic:ARCHAIC_TOOTH": {
+  "変化": null
+ },
+ "relic:ASTROLABE": {
+  "アップグレード": null,
+  "変化": null
+ },
+ "relic:BAG_OF_MARBLES": {
+  "弱体": "power:VULNERABLE"
+ },
+ "relic:BATH_ROBES": {
+  "ボス": null
+ },
+ "relic:BEAUTIFUL_BRACELET": {
+  "エンチャント": null,
+  "デッキ": null
+ },
+ "relic:BELLOWS": {
+  "アップグレード": null,
+  "手札": null
+ },
+ "relic:BELT_BUCKLE": {
+  "ポーション": null,
+  "敏捷": "power:DEXTERITY"
+ },
+ "relic:BIG_HAT": {
+  "エセリアル": "keyword:ETHEREAL",
+  "手札": null
+ },
+ "relic:BIIIG_HUG": {
+  "すす": "card:SOOT",
+  "デッキ": null,
+  "山札": null
+ },
+ "relic:BING_BONG": {
+  "デッキ": null
+ },
+ "relic:BIZARRE_LAMP": {
+  "喜び": "card:JOY",
+  "悲しみ": "card:SADNESS",
+  "手札": null
+ },
+ "relic:BLACK_STAR": {
+  "エリート": null
+ },
+ "relic:BLESSED_ANTLER": {
+  "めまい": "card:DAZED",
+  "山札": null
+ },
+ "relic:BLOOD_SOAKED_ROSE": {
+  "デッキ": null
+ },
+ "relic:BONE_FLUTE": {
+  "オスティ": null,
+  "ブロック": null
+ },
+ "relic:BONE_TEA": {
+  "アップグレード": null
+ },
+ "relic:BOOKMARK": {
+  "保留": "keyword:RETAIN"
+ },
+ "relic:BOOK_OF_FIVE_RINGS": {
+  "デッキ": null
+ },
+ "relic:BOOK_REPAIR_KNIFE": {
+  "破滅": "power:DOOM"
+ },
+ "relic:BOOMING_CONCH": {
+  "エリート": null
+ },
+ "relic:BOUND_PHYLACTERY": {
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "relic:BOWLER_HAT": {
+  "ゴールド": null
+ },
+ "relic:BRIMSTONE": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:BRONZE_SCALES": {
+  "トゲ": "power:THORNS"
+ },
+ "relic:BURNING_STICKS": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "relic:BYRDINE": {
+  "ゴッドビャード": "card:GOD_BYRD",
+  "ビャーダイン": "relic:BYRDINE",
+  "ビャードの急襲": "card:BYRD_SWOOP",
+  "変化": null
+ },
+ "relic:BYRDPIP": {
+  "ビャードのヒナ": "relic:BYRDPIP",
+  "ビャードの急襲": "card:BYRD_SWOOP",
+  "休憩所": null
+ },
+ "relic:CALLING_BELL": {
+  "レリック": null
+ },
+ "relic:CAPTAINS_WHEEL": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:CAULDRON": {
+  "ポーション": null
+ },
+ "relic:CHARONS_ASHES": {
+  "廃棄": null
+ },
+ "relic:CHOICES_PARADOX": {
+  "保留": "keyword:RETAIN",
+  "手札": null
+ },
+ "relic:CIRCLET": {
+  "スパイア": null
+ },
+ "relic:CLAWS": {
+  "変化": null,
+  "引き裂き": "card:MAUL"
+ },
+ "relic:CLOAK_CLASP": {
+  "ブロック": "keyword:BLOCK",
+  "手札": null
+ },
+ "relic:CONDUCTORS_BATON": {
+  "旋律": null
+ },
+ "relic:CRACKED_CORE": {
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "relic:CROSSBOW": {
+  "アタック": null,
+  "手札": null
+ },
+ "relic:CURSED_KETTLE": {
+  "エリート": null,
+  "筋力": null
+ },
+ "relic:CURSED_PEARL": {
+  "ゴールド": null
+ },
+ "relic:DATA_DISK": {
+  "集中力": "power:FOCUS"
+ },
+ "relic:DAUGHTER_OF_THE_WIND": {
+  "ブロック": null
+ },
+ "relic:DELICATE_FROND": {
+  "ポーション": null
+ },
+ "relic:DIAMOND_DIADEM": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:DISTINGUISHED_CAPE": {
+  "デッキ": null,
+  "幻姿": "card:APPARITION"
+ },
+ "relic:DOLLYS_MIRROR": {
+  "コピー": null,
+  "デッキ": null
+ },
+ "relic:DOWSING_ROD": {
+  "ダウジング": "card:DOWSING",
+  "デッキ": null
+ },
+ "relic:DRAGON_FRUIT": {
+  "ゴールド": null
+ },
+ "relic:DREAM_CATCHER": {
+  "デッキ": null,
+  "休憩": null
+ },
+ "relic:DUSTY_TOME": {
+  "エンシェントカード": null
+ },
+ "relic:ECTOPLASM": {
+  "ゴールド": null
+ },
+ "relic:ELECTRIC_SHRYMP": {
+  "エンチャント": null
+ },
+ "relic:EMBER_TEA": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:EMPTY_CAGE": {
+  "デッキ": null
+ },
+ "relic:ENDLESS_APPETITE": {
+  "廃棄": null,
+  "筋力": null
+ },
+ "relic:ETERNAL_FEATHER": {
+  "デッキ": null,
+  "休憩所": null
+ },
+ "relic:EXERCISE_MAT": {
+  "ストレッチ": "power:STRETCH"
+ },
+ "relic:FAKE_ANCHOR": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:FAKE_ORICHALCUM": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:FAKE_VENERABLE_TEA_SET": {
+  "休憩所": null
+ },
+ "relic:FENCING_MANUAL": {
+  "鍛造": "keyword:FORGE"
+ },
+ "relic:FERTILIZER": {
+  "悲しみ": "card:SADNESS",
+  "筋力": "power:STRENGTH"
+ },
+ "relic:FISHING_ROD": {
+  "アップグレード": null,
+  "デッキ": null
+ },
+ "relic:FORGOTTEN_SOUL": {
+  "廃棄": null
+ },
+ "relic:FRAGRANT_MUSHROOM": {
+  "アップグレード": null
+ },
+ "relic:FRESNEL_LENS": {
+  "エンチャント": null,
+  "デッキ": null,
+  "ブロック": null
+ },
+ "relic:FROZEN_EGG": {
+  "アップグレード": null,
+  "デッキ": null
+ },
+ "relic:FUNERARY_MASK": {
+  "ソウル": "card:SOUL",
+  "山札": null
+ },
+ "relic:GALACTIC_DUST": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:GHOST_SEED": {
+  "エセリアル": "keyword:ETHEREAL",
+  "ストライク": null,
+  "防御": null
+ },
+ "relic:GIRYA": {
+  "休憩所": null,
+  "筋力": "power:STRENGTH"
+ },
+ "relic:GLASS_EYE": {
+  "アンコモン": null,
+  "コモン": null,
+  "レア": null
+ },
+ "relic:GLITTER": {
+  "エンチャント": null
+ },
+ "relic:GLOWING_ORB": {
+  "エリート": null
+ },
+ "relic:GNARLED_HAMMER": {
+  "エンチャント": null
+ },
+ "relic:GOLDEN_COMPASS": {
+  "層": null,
+  "第": null
+ },
+ "relic:GOLDEN_PEARL": {
+  "ゴールド": null
+ },
+ "relic:GORGET": {
+  "プレート": "power:PLATING"
+ },
+ "relic:HAND_DRILL": {
+  "ブロック": null,
+  "弱体": "power:VULNERABLE"
+ },
+ "relic:HEFTY_TABLET": {
+  "デッキ": null
+ },
+ "relic:HELICAL_DART": {
+  "ナイフ": "card:SHIV",
+  "敏捷": "power:DEXTERITY"
+ },
+ "relic:HORN_CLEAT": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:INFUSED_CORE": {
+  "ライトニング": "keyword:LIGHTNING_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "relic:INTIMIDATING_HELMET": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:JEWELED_MASK": {
+  "山札": null,
+  "手札": null
+ },
+ "relic:JEWELRY_BOX": {
+  "デッキ": null,
+  "神格化": "card:APOTHEOSIS"
+ },
+ "relic:JOSS_PAPER": {
+  "廃棄": "keyword:EXHAUST"
+ },
+ "relic:JUZU_BRACELET": {
+  "?": null
+ },
+ "relic:KIFUDA": {
+  "エンチャント": null
+ },
+ "relic:KUNAI": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "relic:LARGE_CAPSULE": {
+  "ストライク": null,
+  "デッキ": null,
+  "レリック": null,
+  "防御": null
+ },
+ "relic:LAVA_LAMP": {
+  "アップグレード": null
+ },
+ "relic:LAVA_ROCK": {
+  "レリック": null,
+  "層": null,
+  "第": null
+ },
+ "relic:LEAD_PAPERWEIGHT": {
+  "デッキ": null
+ },
+ "relic:LEAFY_POULTICE": {
+  "ストライク": null,
+  "変化": "keyword:TRANSFORM",
+  "防御": null
+ },
+ "relic:LORDS_PARASOL": {
+  "商人": null
+ },
+ "relic:LOST_COFFER": {
+  "ポーション": null
+ },
+ "relic:LUCKY_FYSH": {
+  "ゴールド": null,
+  "デッキ": null
+ },
+ "relic:MASSIVE_SCROLL": {
+  "デッキ": null,
+  "マルチプレイ用カード": null
+ },
+ "relic:MAW_BANK": {
+  "ゴールド": null
+ },
+ "relic:MEAT_CLEAVER": {
+  "料理": "keyword:COOK"
+ },
+ "relic:METRONOME": {
+  "オーブ": null,
+  "生成": null
+ },
+ "relic:MIGHTY_WINGS": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:MINIATURE_CANNON": {
+  "アップグレード": null
+ },
+ "relic:MINIATURE_TENT": {
+  "休憩所": null
+ },
+ "relic:MINI_REGENT": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:MOLTEN_EGG": {
+  "アップグレード": null,
+  "デッキ": null
+ },
+ "relic:MUMMIFIED_HAND": {
+  "手札": null
+ },
+ "relic:MUSIC_BOX": {
+  "エセリアル": "keyword:ETHEREAL"
+ },
+ "relic:MYSTERIOUS_COCOON": {
+  "インペイル": null,
+  "トレーニングストライク": null
+ },
+ "relic:MYSTIC_LIGHTER": {
+  "エンチャント": null
+ },
+ "relic:NEOWS_BONES": {
+  "デッキ": null,
+  "ネオーのレリック": null
+ },
+ "relic:NEOWS_SACRIFICE": {
+  "デッキ": null,
+  "竜涎香": null
+ },
+ "relic:NEOWS_TALISMAN": {
+  "アップグレード": null,
+  "ストライク": null,
+  "防御": null
+ },
+ "relic:NEOWS_TORMENT": {
+  "デッキ": null,
+  "ネオーの怒り": "card:NEOWS_FURY"
+ },
+ "relic:NEW_LEAF": {
+  "変化": "keyword:TRANSFORM"
+ },
+ "relic:NINJA_SCROLL": {
+  "ナイフ": "card:SHIV",
+  "手札": null
+ },
+ "relic:NUTRITIOUS_SOUP": {
+  "エンチャント": null,
+  "ストライク": null,
+  "デッキ": null
+ },
+ "relic:OBSIDIAN_VICE": {
+  "手札": null
+ },
+ "relic:OCARINA": {
+  "手札": null
+ },
+ "relic:ODDLY_SMOOTH_STONE": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "relic:OLD_COIN": {
+  "ゴールド": null
+ },
+ "relic:ORANGE_DOUGH": {
+  "手札": null
+ },
+ "relic:ORICHALCUM": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:ORNAMENTAL_FAN": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:PAELS_CLAW": {
+  "エンチャント": null,
+  "防御": null
+ },
+ "relic:PAELS_EYE": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null
+ },
+ "relic:PAELS_GROWTH": {
+  "エンチャント": null
+ },
+ "relic:PAELS_HORN": {
+  "デッキ": null,
+  "リラックス": "card:RELAX"
+ },
+ "relic:PAELS_LEGION": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:PAELS_TOOTH": {
+  "アップグレード": null,
+  "デッキ": null
+ },
+ "relic:PAELS_WING": {
+  "レリック": null
+ },
+ "relic:PANDORAS_BOX": {
+  "ストライク": null,
+  "パンドラの箱": "relic:PANDORAS_BOX",
+  "変化": null,
+  "防御": null
+ },
+ "relic:PANTOGRAPH": {
+  "ボス": null
+ },
+ "relic:PAPER_KRANE": {
+  "脱力": "power:WEAK"
+ },
+ "relic:PAPER_PHROG": {
+  "弱体": "power:VULNERABLE"
+ },
+ "relic:PARRYING_SHIELD": {
+  "ブロック": null
+ },
+ "relic:PERMAFROST": {
+  "ブロック": null
+ },
+ "relic:PETRIFIED_TOAD": {
+  "ポーションっぽい石": "potion:POTION_SHAPED_ROCK"
+ },
+ "relic:PHIAL_HOLSTER": {
+  "ポーション": null
+ },
+ "relic:PHILOSOPHERS_STONE": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:PHYLACTERY_UNBOUND": {
+  "召喚": "keyword:SUMMON_STATIC"
+ },
+ "relic:PLANISPHERE": {
+  "？": null
+ },
+ "relic:POMANDER": {
+  "アップグレード": null
+ },
+ "relic:POWER_CELL": {
+  "山札": null,
+  "手札": null
+ },
+ "relic:PRECARIOUS_SHEARS": {
+  "デッキ": null
+ },
+ "relic:PRECISE_SCISSORS": {
+  "デッキ": null
+ },
+ "relic:PRESERVED_FOG": {
+  "デッキ": null
+ },
+ "relic:PUMPKIN_CANDLE": {
+  "休憩所": null,
+  "火を灯す": null
+ },
+ "relic:PUNCH_DAGGER": {
+  "エンチャント": null
+ },
+ "relic:RADIANT_PEARL": {
+  "手札": null,
+  "発光": "card:LUMINESCE"
+ },
+ "relic:RAINBOW_RING": {
+  "敏捷": "power:DEXTERITY",
+  "筋力": "power:STRENGTH"
+ },
+ "relic:RAZOR_TOOTH": {
+  "アップグレード": null
+ },
+ "relic:RED_MASK": {
+  "脱力": "power:WEAK"
+ },
+ "relic:RED_SKULL": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:REGALITE": {
+  "ブロック": null
+ },
+ "relic:REGAL_PILLOW": {
+  "休憩": null
+ },
+ "relic:REPTILE_TRINKET": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:RINGING_TRIANGLE": {
+  "保留": "keyword:RETAIN",
+  "手札": null
+ },
+ "relic:RIPPLE_BASIN": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:ROYAL_STAMP": {
+  "エンチャント": null,
+  "デッキ": null
+ },
+ "relic:RUINED_HELMET": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:RUNIC_CAPACITOR": {
+  "オーブスロット": null
+ },
+ "relic:RUNIC_PYRAMID": {
+  "手札": null
+ },
+ "relic:SAI": {
+  "ブロック": null
+ },
+ "relic:SAND_CASTLE": {
+  "アップグレード": null
+ },
+ "relic:SCREAMING_FLAGON": {
+  "手札": null
+ },
+ "relic:SCROLL_BOXES": {
+  "デッキ": null
+ },
+ "relic:SEAL_OF_GOLD": {
+  "ゴールド": null
+ },
+ "relic:SEA_GLASS": {
+  "デッキ": null
+ },
+ "relic:SELF_FORMING_CLAY": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:SERE_TALON": {
+  "デッキ": null
+ },
+ "relic:SHOVEL": {
+  "レリック": null,
+  "休憩所": null
+ },
+ "relic:SHURIKEN": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:SIGNET_RING": {
+  "ゴールド": null
+ },
+ "relic:SILKEN_TRESS": {
+  "エンチャント": null,
+  "ゴールド": null
+ },
+ "relic:SILVER_CRUCIBLE": {
+  "アップグレード": null
+ },
+ "relic:SLING_OF_COURAGE": {
+  "エリート": null,
+  "筋力": "power:STRENGTH"
+ },
+ "relic:SMALL_CAPSULE": {
+  "レリック": null
+ },
+ "relic:SNECKO_SKULL": {
+  "毒": "power:POISON"
+ },
+ "relic:SONG_BOW": {
+  "弓力": "power:AIM"
+ },
+ "relic:SOZU": {
+  "ポーション": null
+ },
+ "relic:SPARKLING_ROUGE": {
+  "敏捷": "power:DEXTERITY",
+  "筋力": "power:STRENGTH"
+ },
+ "relic:STONE_CRACKER": {
+  "アップグレード": null,
+  "山札": null
+ },
+ "relic:STONE_HUMIDIFIER": {
+  "休憩": null,
+  "休憩所": null
+ },
+ "relic:STORYBOOK": {
+  "デッキ": null,
+  "極光の炎": "card:BRIGHTEST_FLAME"
+ },
+ "relic:STORYTELLER": {
+  "弓力": "power:AIM"
+ },
+ "relic:STURDY_CLAMP": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:SWORD_OF_JADE": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:SWORD_OF_STONE": {
+  "エリート": null,
+  "レリック": null
+ },
+ "relic:SYMBIOTIC_VIRUS": {
+  "ダーク": "keyword:DARK_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "relic:TANXS_WHISTLE": {
+  "デッキ": null,
+  "ホイッスル": "card:WHISTLE"
+ },
+ "relic:TEA_OF_DISCOURTESY": {
+  "めまい": "card:DAZED",
+  "山札": null
+ },
+ "relic:THE_ABACUS": {
+  "ブロック": "keyword:BLOCK",
+  "山札": null
+ },
+ "relic:TINY_MAILBOX": {
+  "ポーション": null,
+  "休憩": null
+ },
+ "relic:TOASTY_MITTENS": {
+  "廃棄": "keyword:EXHAUST",
+  "手札": null,
+  "筋力": "power:STRENGTH"
+ },
+ "relic:TOOLBOX": {
+  "手札": null
+ },
+ "relic:TORMENTOUS_COLLAR": {
+  "脱力": "power:WEAK"
+ },
+ "relic:TOUCH_OF_OROBAS": {
+  "エンシェント": null,
+  "レリック": null
+ },
+ "relic:TOUGH_BANDAGES": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:TOXIC_EGG": {
+  "アップグレード": null,
+  "デッキ": null
+ },
+ "relic:TOY_BOX": {
+  "おもちゃのレリック": null
+ },
+ "relic:TRI_BOOMERANG": {
+  "エンチャント": null,
+  "デッキ": null
+ },
+ "relic:TUNING_FORK": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:TWINE": {
+  "ブロック": "keyword:BLOCK",
+  "引き抜く": null,
+  "矢": "keyword:ARROW"
+ },
+ "relic:TWISTED_FUNNEL": {
+  "毒": "power:POISON"
+ },
+ "relic:UNCEASING_TOP": {
+  "手札": null
+ },
+ "relic:UNDYING_SIGIL": {
+  "破滅": "power:DOOM"
+ },
+ "relic:UNSETTLING_LAMP": {
+  "デバフ": null
+ },
+ "relic:VAJRA": {
+  "筋力": "power:STRENGTH"
+ },
+ "relic:VAMBRACE": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:VENERABLE_TEA_SET": {
+  "休憩所": null
+ },
+ "relic:VEXING_PUZZLEBOX": {
+  "手札": null
+ },
+ "relic:VITRUVIAN_MINION": {
+  "ブロック": "keyword:BLOCK"
+ },
+ "relic:WAR_HAMMER": {
+  "アップグレード": null,
+  "エリート": null
+ },
+ "relic:WAR_PAINT": {
+  "アップグレード": null
+ },
+ "relic:WHETSTONE": {
+  "アップグレード": null
+ },
+ "relic:WHITE_BEAST_STATUE": {
+  "ポーション": null
+ },
+ "relic:WHITE_STAR": {
+  "エリート": null,
+  "レア": null
+ },
+ "relic:WHITTLING_KNIFE": {
+  "山札": null,
+  "弓力": "power:AIM"
+ },
+ "relic:WING_CHARM": {
+  "エンチャント": null
+ },
+ "relic:WONGOS_MYSTERY_TICKET": {
+  "レリック": null
+ },
+ "relic:WUPPY": {
+  "ワッピー": "relic:WUPPY"
+ },
+ "relic:YUMMY_COOKIE": {
+  "アップグレード": null
+ }
+}

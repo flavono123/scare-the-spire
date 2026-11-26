@@ -408,12 +408,9 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       engStaticHoverTips: {},
       orbs: {},
       engOrbs: {},
-      monsterNames: {},
-      engMonsterNames: {},
     },
     powers: relatedPowers,
     cards: tipCatalogCards ?? [card],
-    monsters: relatedMonsters,
   });
   const sideTipsDescription = effectiveUpgradeLevel > 0 || activeStatMod
     ? renderCardDescription(upgradePreviewCard, {
@@ -423,7 +420,6 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     : upgradePreviewCard.description;
   const sideTips = collectCardSideTips(upgradePreviewCard, tipCatalog, {
     upgradeLevel: effectiveUpgradeLevel,
-    description: sideTipsDescription,
     addedKeywords: activeAddedKeywordsWithAffliction,
     removedKeywords: activeRemovedKeywords,
   });

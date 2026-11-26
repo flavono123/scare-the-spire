@@ -54,6 +54,5 @@ export function createHistoryCourseSideTipCatalog(): CardSideTipCatalog | null {
     sources: tipSources,
     cards: allCards,
     powers: allPowers,
-    monsters: allMonsters,
   });
 }

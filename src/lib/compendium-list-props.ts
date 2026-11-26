@@ -37,8 +37,6 @@ export const EMPTY_CARD_SIDE_TIP_SOURCES: CardSideTipCatalogSources = {
   engStaticHoverTips: {},
   orbs: {},
   engOrbs: {},
-  monsterNames: {},
-  engMonsterNames: {},
 };
 
 /** Bestiary grid rows: moves, Spine assets, and the move graph only feed hover and detail views. */

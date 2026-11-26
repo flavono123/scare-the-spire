@@ -171,10 +171,6 @@ export function EpochDetail({
       notifyCodexUrlChange();
     }
   }, [showBeta, syncBetaSearchParam]);
-  const excludeSelf = useMemo(
-    () => new Set([epoch.name, epoch.nameEn]),
-    [epoch.name, epoch.nameEn],
-  );
   const isModal = Boolean(onClose);
   const cardById = new Map(cards.map((card) => [card.id, card]));
   const relicById = new Map(relics.map((relic) => [relic.id, relic]));
@@ -275,7 +271,6 @@ export function EpochDetail({
                           gameUi={gameUi}
                           description={epoch.description}
                           entities={entities}
-                          excludeEntityTerms={excludeSelf}
                         />
                       ) : (
                         <DescriptionText description={epoch.description} />
@@ -343,7 +338,6 @@ export function EpochDetail({
                       gameUi={gameUi}
                       description={epoch.unlockInfo}
                       entities={entities}
-                      excludeEntityTerms={excludeSelf}
                     />
                   ) : (
                     <DescriptionText description={epoch.unlockInfo} />
@@ -359,7 +353,6 @@ export function EpochDetail({
                         gameUi={gameUi}
                         description={epoch.unlockText}
                         entities={entities}
-                        excludeEntityTerms={excludeSelf}
                       />
                     ) : (
                       <DescriptionText description={epoch.unlockText} />

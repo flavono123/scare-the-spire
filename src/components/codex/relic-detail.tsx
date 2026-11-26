@@ -137,7 +137,6 @@ interface RelicDetailProps {
   };
 }
 
-const RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 export function RelicDetail({
   serviceLocale,
   gameUi,
@@ -168,10 +167,6 @@ export function RelicDetail({
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
   // Don't link the relic to itself in its own description
-  const excludeSelf = useMemo(
-    () => new Set([relic.name, relic.nameEn]),
-    [relic.name, relic.nameEn],
-  );
 
   const variantPools = relic.variantImageUrls
     ? RELIC_CHARACTER_VARIANT_ORDER.filter((p) => relic.variantImageUrls![p])
@@ -272,7 +267,6 @@ export function RelicDetail({
         sources: tipCatalogSources,
         powers: relatedPowers,
         cards: tipCatalogCards ?? relatedCards,
-        monsters: relatedMonsters,
       })
       : null,
     [tipCatalogSources, relatedPowers, tipCatalogCards, relatedCards, relatedMonsters],
@@ -456,8 +450,8 @@ export function RelicDetail({
                   gameUi={gameUi}
                   description={relic.description}
                   entities={entities}
-                  excludeEntityTerms={excludeSelf}
-                  excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
+                  goldTips={relic.goldTips}
+                  self={`relic:${relic.id}`}
                   className="block"
                 />
               ) : (
@@ -469,8 +463,8 @@ export function RelicDetail({
                     gameUi={gameUi}
                     description={relic.flavor}
                     entities={entities}
-                    excludeEntityTerms={excludeSelf}
-                    excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
+                    goldTips={relic.goldTips}
+                    self={`relic:${relic.id}`}
                   />
                 ) : (
                   <DescriptionText description={relic.flavor} />

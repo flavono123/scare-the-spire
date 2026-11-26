@@ -127,10 +127,6 @@ export function AncientDetail({
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getAncientDetailLabels(serviceLocale);
   const [commentCount, setCommentCount] = useState(0);
-  const excludeSelf = useMemo(
-    () => new Set([ancient.name, ancient.nameEn]),
-    [ancient.name, ancient.nameEn],
-  );
   const cardById = new Map(cards.map((card) => [card.id, card]));
   const relatedCardTargets = getRelatedCardIdsForAncient(ancient, cards)
     .map((cardId) => cardById.get(cardId))
@@ -228,7 +224,6 @@ export function AncientDetail({
               characters={characters}
               messages={serviceText}
               entities={entities}
-              excludeSelf={excludeSelf}
               gameUi={gameUi}
               className="z-10 sm:pr-[min(32rem,48%)]"
             />

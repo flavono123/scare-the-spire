@@ -90,6 +90,7 @@ import {
   LocalizedFuturePotionOption,
 } from "./codex-types";
 import { groupAncientDialogueLines } from "./ancient-dialogue";
+import gameTips from "../../data/sts2/game-tips.json";
 import { cardServiceTags } from "./card-service-tags";
 import {
   getMadSciencePreviewCard,
@@ -437,51 +438,19 @@ const CODEX_KEYWORD_ORDER = [
   "TRANSFORM",
   "BLOCK",
   "ENERGY",
-  "STAR_COUNT",
   "COOK",
-  "DECK",
-  "DRAW_PILE",
-  "DISCARD_PILE",
-  "EXHAUST_PILE",
-  "MONEY_POUCH",
-  "HIT_POINTS",
-  "POTION_SLOT",
-  "FLOOR",
-  "LINKED_REWARDS",
-  "DREAD_ROTATION",
-  "ROOM_ENEMY",
-  "ROOM_ELITE",
-  "ROOM_BOSS",
-  "ROOM_REST",
-  "ROOM_MERCHANT",
-  "ROOM_TREASURE",
-  "ROOM_EVENT",
-  "ROOM_ANCIENT",
-  "ROOM_MAP",
-  "ROOM_UNKNOWN_ENEMY",
-  "ROOM_UNKNOWN_ELITE",
-  "ROOM_UNKNOWN_EVENT",
-  "ROOM_UNKNOWN_MERCHANT",
-  "ROOM_UNKNOWN_TREASURE",
 ] as const;
 
-const STATIC_HOVER_KEYWORD_IDS = [
-  "TAROT", "WAH_MELODY", "CHO_MELODY", "KI_MELODY", "ARROW", "FORGE", "SUMMON_STATIC",
-  "CHANNELING", "EVOKE", "FATAL", "STUN", "TRANSFORM", "BLOCK", "ENERGY", "STAR_COUNT",
-  // Every other tip the game can show: Cook on Meat Cleaver, and the combat piles, top bar,
-  // potion slots, reward sets, Dread and map room tips. Pure controls (map, end turn,
-  // settings, compendium), the unused card reward tip and boss-name templates are left out.
-  "COOK", "DECK", "DRAW_PILE", "DISCARD_PILE", "EXHAUST_PILE", "MONEY_POUCH", "HIT_POINTS", "POTION_SLOT", "FLOOR", "LINKED_REWARDS", "DREAD_ROTATION", "ROOM_ENEMY", "ROOM_ELITE", "ROOM_BOSS", "ROOM_REST", "ROOM_MERCHANT", "ROOM_TREASURE", "ROOM_EVENT", "ROOM_ANCIENT", "ROOM_MAP", "ROOM_UNKNOWN_ENEMY", "ROOM_UNKNOWN_ELITE", "ROOM_UNKNOWN_EVENT", "ROOM_UNKNOWN_MERCHANT", "ROOM_UNKNOWN_TREASURE",
-] as const;
+/**
+ * Compendium keywords are the tips a gold word of some game text names (or a card prints):
+ * scripts/generate-game-tips.py. UI-part tips (top bar Deck, piles, map rooms) are not keywords.
+ */
+const GAME_TIP_KEYWORDS = new Set<string>(gameTips.keywords);
+const ORB_KEYWORD_IDS = ["LIGHTNING_ORB", "FROST_ORB", "DARK_ORB", "PLASMA_ORB", "GLASS_ORB"];
 
-// Glossary tips carry runtime slots: the arrow count only shows in combat, the star icon is a token.
+// The arrow tip ends in a count slot only combat fills.
 function fillStaticHoverSlots(text: string): string {
-  return text.replace(/\{ShowArrowCount:[^|]*\|\}/g, "").replace(/\{singleStarIcon\}/g, "[star:1]");
-}
-
-// Pile, deck and map titles end in a hotkey slot ("덱{Hotkey:choose(None):| ({})}") that only the game UI fills.
-function stripHotkeySlot(title: string): string {
-  return title.replace(/\{Hotkey:.*?\(\{\}\)\}/g, "").trim();
+  return text.replace(/\{ShowArrowCount:[^|]*\|\}/g, "");
 }
 
 function keywordSortOrder(id: string): number {
@@ -529,7 +498,7 @@ async function getOrbKeywords(gameLocale: GameLocale): Promise<CodexKeyword[]> {
     readGameLocalizationTable(gameLocale, "orbs"),
     readGameLocalizationTable("eng", "orbs"),
   ]);
-  return ["LIGHTNING_ORB", "FROST_ORB", "DARK_ORB", "PLASMA_ORB", "GLASS_ORB"].map((id, index) => {
+  return ORB_KEYWORD_IDS.filter((id) => GAME_TIP_KEYWORDS.has(id)).map((id, index) => {
     const description = gameText(orbs, `${id}.description`, "");
     const descriptionEn = gameText(engOrbs, `${id}.description`, description);
     return {
@@ -632,8 +601,6 @@ function mapStaticHoverKeyword(
   };
   return {
     ...keyword,
-    name: stripHotkeySlot(keyword.name),
-    nameEn: stripHotkeySlot(keyword.nameEn),
     description: fillStaticHoverSlots(keyword.description),
     descriptionEn: fillStaticHoverSlots(keyword.descriptionEn),
     descriptionRaw: fillStaticHoverSlots(keyword.descriptionRaw),
@@ -847,6 +814,16 @@ async function readJson<T>(relativePath: string): Promise<T> {
   return JSON.parse(raw);
 }
 
+type GoldTips = Record<string, Record<string, string | null>>;
+
+/**
+ * Each element's gold words and the game tip each names, or null ("<type>:<ID>" -> word -> "<type>:<ID>"),
+ * from scripts/generate-game-tips.py. Renderers draw gold words from this, never by name.
+ */
+function readGoldTips(gameLocale: GameLocale): Promise<GoldTips> {
+  return readJson<GoldTips>(`gold-tips/${gameLocale}.json`).catch(() => readJson<GoldTips>("gold-tips/eng.json"));
+}
+
 export async function getCodexCards(opts?: {
   includeDeprecated?: boolean;
   gameLocale?: GameLocale;
@@ -940,6 +917,7 @@ export async function getCodexKeywords(opts?: { gameLocale?: GameLocale }): Prom
 
   const engById = new Map(engKeywords.map((keyword) => [keyword.id, keyword]));
   const cardKeywords = korKeywords.flatMap((kor) => {
+    if (!GAME_TIP_KEYWORDS.has(kor.id)) return [];
     const eng = engById.get(kor.id) ?? kor;
     const keyword = mapCardKeyword(kor, eng, gameKeywords, engGameKeywords, gameLocale);
     return keyword ? [keyword] : [];
@@ -948,9 +926,10 @@ export async function getCodexKeywords(opts?: { gameLocale?: GameLocale }): Prom
   return [
     ...cardKeywords,
     mapStaticHoverKeyword("REPLAY", "REPLAY_STATIC", gameStaticHoverTips, engStaticHoverTips, gameLocale),
-    // The game's glossary tips for card terms (Fool's Tarot and melodies, arrows, forge, summon, orbs ...).
-    ...STATIC_HOVER_KEYWORD_IDS.map((id) =>
-      mapStaticHoverKeyword(id, id, gameStaticHoverTips, engStaticHoverTips, gameLocale)),
+    // The game's glossary tips for card terms (Fool's Tarot and melodies, arrows, forge, summon, Cook ...).
+    ...gameTips.keywords
+      .filter((id) => id !== "REPLAY" && !ORB_KEYWORD_IDS.includes(id) && !korKeywords.some((keyword) => keyword.id === id))
+      .map((id) => mapStaticHoverKeyword(id, id, gameStaticHoverTips, engStaticHoverTips, gameLocale)),
     ...(await getOrbKeywords(gameLocale)),
   ].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name, "ko"));
 }
@@ -1180,6 +1159,7 @@ export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promis
     readGameLocalizationTable(gameLocale, "relics"),
     readGameLocalizationTable(gameLocale, "enchantments"),
   ]);
+  const goldTips = await readGoldTips(gameLocale);
 
   const engById = new Map(engRelics.map((r) => [r.id, r]));
 
@@ -1196,7 +1176,7 @@ export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promis
       betaImageFiles,
       imageFile,
     ) ?? betaImageUrlForFile("relics", officialImageFiles, imageFile, { exact: false });
-    const relic = mapRelic(kor, eng, variantMap, iconVariants, betaImageUrl, gameRelics, gameEnchantments, gameLocale);
+    const relic = { ...mapRelic(kor, eng, variantMap, iconVariants, betaImageUrl, gameRelics, gameEnchantments, gameLocale), goldTips: goldTips[`relic:${kor.id}`] };
     // New relics can ship with beta art only (v0.113.0); show it until official art lands.
     return relic.imageUrl && imageFile && !officialImageFiles.has(imageFile) && betaImageUrl
       ? { ...relic, imageUrl: betaImageUrl }
@@ -1602,10 +1582,11 @@ export async function getCodexEnchantments(opts?: { gameLocale?: GameLocale }): 
   ]);
 
   const engById = new Map(engEnchantments.map((e) => [e.id, e]));
+  const goldTips = await readGoldTips(gameLocale);
 
   return korEnchantments.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapEnchantment(kor, eng, gameEnchantments, gameLocale);
+    return { ...mapEnchantment(kor, eng, gameEnchantments, gameLocale), goldTips: goldTips[`enchantment:${kor.id}`] };
   });
 }
 
@@ -1669,12 +1650,13 @@ export async function getCodexAfflictions(opts?: { gameLocale?: GameLocale }): P
   ]);
 
   const engById = new Map(engAfflictions.map((a) => [a.id, a]));
+  const goldTips = await readGoldTips(gameLocale);
 
   return korAfflictions
     .filter((a) => !a.id.startsWith("MOCK_"))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapAffliction(kor, eng, gameAfflictions, gameLocale);
+      return { ...mapAffliction(kor, eng, gameAfflictions, gameLocale), goldTips: goldTips[`affliction:${kor.id}`] };
     });
 }
 
@@ -3243,6 +3225,7 @@ export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Pro
   ]);
   const encounterById = new Map(encounters.map((encounter) => [encounter.id, encounter]));
   const engEncounterById = new Map((engEncounters ?? encounters).map((encounter) => [encounter.id, encounter]));
+  const goldTips = await readGoldTips(gameLocale);
   const title = ascension["DREAD.title"] ?? engAscension["DREAD.title"] ?? "{BossName}";
   const engTitle = engAscension["DREAD.title"] ?? "{BossName}";
 
@@ -3266,6 +3249,7 @@ export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Pro
         nameEn: engTitle.replace("{BossName}", engEncounter.nameEn),
         description: ascension[key] ?? engAscension[key] ?? "",
         descriptionEn: engAscension[key] ?? "",
+        goldTips: goldTips[`dominion:${id}`],
         // The boss icon of the map and top bar, where the game shows the dominion.
         imageUrl: `/images/sts2/bosses/${encounterId.toLowerCase()}.webp`,
         act: encounter.act,

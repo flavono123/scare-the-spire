@@ -1,12 +1,12 @@
 import type {
   CodexCard,
+  CodexEnchantment,
   CodexKeyword,
-  CodexMonster,
   CodexPower,
 } from "@/lib/codex-types";
 import type { GameLocalizationTable } from "@/lib/game-localization-text";
 import { gameText } from "@/lib/game-localization-text";
-import { isTextHoverTip } from "@/lib/hover-tip-scope";
+import { getGameTipSpecs, pushGameTipSpecs } from "@/lib/game-tip-specs";
 import {
   cardKeywordLookupKey,
   getCardDisplayKeywords,
@@ -33,27 +33,14 @@ export type CardSideCardTip = {
   upgrade?: boolean;
 };
 
-export type CardSideMonsterTip = {
-  kind: "monster";
-  id: string;
-  title: string;
-  imageUrl: string | null;
-  /** Full bestiary row when present; pets like OSTY may be localization-only. */
-  monster?: CodexMonster | null;
-};
-
-export type CardSideTip = CardSideKeywordTip | CardSideCardTip | CardSideMonsterTip;
+export type CardSideTip = CardSideKeywordTip | CardSideCardTip;
 
 export type CardSideTipCatalog = {
   keywordsByName: Map<string, CardSideKeywordTip>;
   keywordsById: Map<string, CardSideKeywordTip>;
   cardsById: Map<string, CodexCard>;
-  cardsByName: Map<string, CodexCard>;
-  monstersByName: Map<string, CardSideMonsterTip>;
+  enchantmentsById: Map<string, Pick<CodexEnchantment, "id" | "name" | "description" | "imageUrl">>;
 };
-
-/** Pets/companions present in localization + art but missing from monsters.json. */
-const LOCALIZATION_ONLY_MONSTER_IDS = ["OSTY", "BYRDPIP", "PAELS_LEGION"] as const;
 
 /**
  * Keyword tips that append a card preview + that card's HoverTips.
@@ -75,8 +62,6 @@ const ORB_IDS = [
   "PLASMA_ORB",
   "GLASS_ORB",
 ] as const;
-
-const GOLD_TERM_RE = /\[gold\](.*?)\[\/gold\]/gi;
 
 function normalizeTipName(name: string): string {
   return name.trim().replace(/\s+/g, " ");
@@ -100,20 +85,6 @@ export function stripLocalizationTitleTemplates(title: string): string {
     i -= 1;
   }
   return normalizeTipName(out);
-}
-
-export function extractGoldTerms(description: string): string[] {
-  const terms: string[] = [];
-  const seen = new Set<string>();
-  GOLD_TERM_RE.lastIndex = 0;
-  let match: RegExpExecArray | null;
-  while ((match = GOLD_TERM_RE.exec(description)) !== null) {
-    const term = normalizeTipName(match[1] ?? "");
-    if (!term || seen.has(term)) continue;
-    seen.add(term);
-    terms.push(term);
-  }
-  return terms;
 }
 
 function powerVariant(power: CodexPower): CardSideTipVariant {
@@ -187,21 +158,17 @@ export function buildCardSideTipCatalog(input: {
   keywords: readonly CodexKeyword[];
   powers: readonly CodexPower[];
   cards: readonly CodexCard[];
-  monsters: readonly CodexMonster[];
   staticHoverTips: GameLocalizationTable;
   engStaticHoverTips?: GameLocalizationTable | null;
   orbs: GameLocalizationTable;
   engOrbs?: GameLocalizationTable | null;
-  monsterNames?: GameLocalizationTable | null;
-  engMonsterNames?: GameLocalizationTable | null;
+  enchantments?: readonly Pick<CodexEnchantment, "id" | "name" | "description" | "imageUrl">[];
 }): CardSideTipCatalog {
   const keywordsByName = new Map<string, CardSideKeywordTip>();
   const keywordsById = new Map<string, CardSideKeywordTip>();
 
   const registerKeywordTip = (tip: CardSideKeywordTip, ...names: Array<string | null | undefined>) => {
     if (!keywordsById.has(tip.id)) keywordsById.set(tip.id, tip);
-    // A gold word never shows a UI part's tip (Deck, piles, gold ...), so those stay off name lookup.
-    if (!isTextHoverTip(tip.source, tip.id)) return;
     for (const name of names) setKeywordTip(keywordsByName, name, tip);
   };
 
@@ -252,55 +219,13 @@ export function buildCardSideTipCatalog(input: {
   }
 
   const cardsById = new Map<string, CodexCard>();
-  const cardsByName = new Map<string, CodexCard>();
   for (const card of input.cards) {
     if (!cardsById.has(card.id)) cardsById.set(card.id, card);
-    const name = normalizeTipName(card.name);
-    const nameEn = normalizeTipName(card.nameEn);
-    if (name && !cardsByName.has(name)) cardsByName.set(name, card);
-    if (nameEn && !cardsByName.has(nameEn)) cardsByName.set(nameEn, card);
   }
 
-  const monstersByName = new Map<string, CardSideMonsterTip>();
-  const setMonsterTip = (name: string | null | undefined, tip: CardSideMonsterTip) => {
-    const key = normalizeTipName(name ?? "");
-    if (!key || monstersByName.has(key)) return;
-    monstersByName.set(key, tip);
-  };
+  const enchantmentsById = new Map((input.enchantments ?? []).map((enchantment) => [enchantment.id, enchantment]));
 
-  for (const monster of input.monsters) {
-    const tip: CardSideMonsterTip = {
-      kind: "monster",
-      id: monster.id,
-      title: monster.name,
-      imageUrl: monster.bossImageUrl ?? monster.imageUrl,
-      monster,
-    };
-    setMonsterTip(monster.name, tip);
-    setMonsterTip(monster.nameEn, tip);
-  }
-
-  for (const id of LOCALIZATION_ONLY_MONSTER_IDS) {
-    if ([...monstersByName.values()].some((tip) => tip.id === id)) continue;
-    const title = normalizeTipName(
-      gameText(input.monsterNames ?? null, `${id}.name`, id),
-    );
-    const titleEn = normalizeTipName(
-      gameText(input.engMonsterNames ?? null, `${id}.name`, title),
-    );
-    if (!title) continue;
-    const tip: CardSideMonsterTip = {
-      kind: "monster",
-      id,
-      title,
-      imageUrl: monsterRenderImageUrl(id),
-      monster: null,
-    };
-    setMonsterTip(title, tip);
-    setMonsterTip(titleEn, tip);
-  }
-
-  return { keywordsByName, keywordsById, cardsById, cardsByName, monstersByName };
+  return { keywordsByName, keywordsById, cardsById, enchantmentsById };
 }
 
 function resolveKeywordTerm(
@@ -375,34 +300,15 @@ export function pushCardWithCardHoverTips(
   }
 }
 
-function resolveEntityTerm(
-  term: string,
-  catalog: CardSideTipCatalog,
-  excludeCardId?: string | null,
-): CardSideCardTip | CardSideMonsterTip | null {
-  const key = normalizeTipName(term);
-  const card = catalog.cardsByName.get(key);
-  if (card && card.id !== excludeCardId) {
-    return { kind: "card", id: card.id, card };
-  }
-  return catalog.monstersByName.get(key) ?? null;
-}
-
-export function resolveCardSideTipTerm(
-  term: string,
-  catalog: CardSideTipCatalog,
-  opts?: { excludeCardId?: string | null },
-): CardSideTip | null {
-  return resolveKeywordTerm(term, catalog)
-    ?? resolveEntityTerm(term, catalog, opts?.excludeCardId);
-}
-
+/**
+ * Mirror CardModel.HoverTips: the class's ExtraHoverTips, Evoke and Block (scripts/generate-game-tips.py),
+ * then each printed keyword, with Exhaust after Ethereal. Gold words in the text add nothing.
+ */
 export function collectCardSideTips(
-  card: Pick<CodexCard, "id" | "keywords" | "keywordLabels" | "upgrade" | "description">,
+  card: Pick<CodexCard, "id" | "keywords" | "keywordLabels" | "upgrade">,
   catalog: CardSideTipCatalog,
   opts?: {
     upgradeLevel?: number;
-    description?: string;
     addedKeywords?: string[];
     removedKeywords?: string[];
   },
@@ -411,24 +317,21 @@ export function collectCardSideTips(
   const seen = new Set<string>();
   const push = createCardSideTipPusher(catalog, tips, seen, card.id);
 
+  // Printed keywords below follow the upgrade level and enchantments, so the class's own keyword list is skipped.
+  pushGameTipSpecs(getGameTipSpecs("card", card.id).filter((spec) => spec.kind !== "keyword"), catalog, tips, push);
+
   const printed = getCardDisplayKeywords(card, {
     upgradeLevel: opts?.upgradeLevel ?? 0,
     addedKeywords: opts?.addedKeywords,
     removedKeywords: opts?.removedKeywords,
   });
-
   for (const keyword of printed) {
     const lookupKey = cardKeywordLookupKey(keyword);
-    const display = getCardKeywordDisplayText(card, keyword);
     push(
-      resolveKeywordTerm(lookupKey, catalog)
-        ?? resolveKeywordTerm(display, catalog),
+      resolveKeywordTipById(catalog, lookupKey)
+        ?? resolveKeywordTerm(getCardKeywordDisplayText(card, keyword), catalog),
     );
-  }
-
-  const description = opts?.description ?? card.description;
-  for (const term of extractGoldTerms(description)) {
-    push(resolveCardSideTipTerm(term, catalog, { excludeCardId: card.id }));
+    if (lookupKey === "ETHEREAL") push(resolveKeywordTipById(catalog, "EXHAUST"));
   }
 
   return tips;

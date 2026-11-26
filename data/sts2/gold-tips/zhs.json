@@ -1,0 +1,4276 @@
+{
+ "affliction:BOUND": {
+  "魂缚": "affliction:BOUND"
+ },
+ "affliction:HEXED": {
+  "虚无": "keyword:ETHEREAL"
+ },
+ "affliction:SMOG": {
+  "技能": null
+ },
+ "affliction:TAINTED": {
+  "污染": "power:TAINTED"
+ },
+ "ancient:NEOW": {
+  "“叽...！”": null
+ },
+ "ancient:VAKUU": {
+  "瓦库": null
+ },
+ "ascension:BLITZ": {
+  "牌组": null
+ },
+ "ascension:DREAD_RULE_02": {
+  "牌组": null
+ },
+ "ascension:LEVEL_01": {
+  "精英": null
+ },
+ "ascension:LEVEL_03": {
+  "金币": null
+ },
+ "ascension:LEVEL_10": {
+  "阶段": null
+ },
+ "badge:KACHING": {
+  "金币": null
+ },
+ "badge:MONEY_MONEY": {
+  "金币": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "附魔": null
+ },
+ "blitz:CARD_PACKS": {
+  "牌组": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "牌组": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "普通": null,
+  "稀有": null,
+  "罕见": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "变化": null,
+  "牌组": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "升级": null,
+  "牌组": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "无色": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "附魔": null
+ },
+ "blitz:GLAM": {
+  "附魔": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "牌组": null
+ },
+ "blitz:RELIC": {
+  "遗物": null
+ },
+ "blitz:TWO_RELICS": {
+  "遗物": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "升级": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "升级": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "升级": null
+ },
+ "card:ABRASIVE": {
+  "敏捷": "power:DEXTERITY",
+  "荆棘": "power:THORNS"
+ },
+ "card:ABUNDANCE": {
+  "升级": null,
+  "手牌": null,
+  "能力": null
+ },
+ "card:ACCELERANT": {
+  "中毒": "power:POISON"
+ },
+ "card:ACCURACY": {
+  "小刀": "card:SHIV"
+ },
+ "card:ADAPTIVE_STRIKE": {
+  "弃牌堆": null
+ },
+ "card:AFTERIMAGE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:AFTERLIFE": {
+  "召唤": "keyword:SUMMON_STATIC"
+ },
+ "card:AGGRESSION": {
+  "升级": null,
+  "弃牌堆": null,
+  "手牌": null
+ },
+ "card:ALL_FOR_ONE": {
+  "弃牌堆": null,
+  "手牌": null
+ },
+ "card:ALL_IS_WELL": {
+  "悲伤": "card:SADNESS",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:ANGER": {
+  "弃牌堆": null
+ },
+ "card:ANGUISH": {
+  "悲伤": "card:SADNESS"
+ },
+ "card:ANOINTED": {
+  "手牌": null,
+  "抽牌堆": null,
+  "稀有": null
+ },
+ "card:ANTICIPATE": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "card:APOTHEOSIS": {
+  "升级": null
+ },
+ "card:APPARITION": {
+  "无实体": "power:INTANGIBLE"
+ },
+ "card:ARCHERY": {
+  "瞄准": "power:AIM"
+ },
+ "card:ARMAMENTS": {
+  "升级": null,
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:ARROW_STAB": {
+  "瞄准": "power:AIM"
+ },
+ "card:ARSENAL": {
+  "力量": "power:STRENGTH"
+ },
+ "card:ASHEN_STRIKE": {
+  "消耗牌堆": null
+ },
+ "card:ASSASSINATE": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:BACKFLIP": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:BALL_LIGHTNING": {
+  "生成": "keyword:CHANNELING",
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "card:BANSHEES_CRY": {
+  "虚无": "keyword:ETHEREAL"
+ },
+ "card:BARRAGE": {
+  "充能球": null
+ },
+ "card:BARRICADE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:BASH": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:BEACON_OF_HOPE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:BEAM_CELL": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:BEAT_DOWN": {
+  "弃牌堆": null
+ },
+ "card:BEAT_INTO_SHAPE": {
+  "铸造": "keyword:FORGE"
+ },
+ "card:BECKON": {
+  "手牌": null
+ },
+ "card:BEGONE": {
+  "仆从打击": "card:MINION_STRIKE",
+  "仆从打击+": "card:MINION_STRIKE",
+  "变化": null,
+  "手牌": null
+ },
+ "card:BIASED_COGNITION": {
+  "集中": "power:FOCUS"
+ },
+ "card:BIG_BANG": {
+  "铸造": "keyword:FORGE"
+ },
+ "card:BLADE_DANCE": {
+  "小刀": "card:SHIV",
+  "手牌": null
+ },
+ "card:BLADE_OF_INK": {
+  "小刀": "card:SHIV",
+  "手牌": null
+ },
+ "card:BLADE_SYMPHONY": {
+  "小刀": "card:SHIV",
+  "手牌": null
+ },
+ "card:BLAZE": {
+  "力量": "power:STRENGTH"
+ },
+ "card:BLIGHT_STRIKE": {
+  "灾厄": "power:DOOM"
+ },
+ "card:BLOOD_WALL": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:BLOSSOM_SHOT": {
+  "发射": null,
+  "拉伸": "power:STRETCH"
+ },
+ "card:BLOT_OUT_THE_SKY": {
+  "发射": null,
+  "手牌": null
+ },
+ "card:BLUR": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:BODYGUARD": {
+  "召唤": "keyword:SUMMON_STATIC"
+ },
+ "card:BODY_SLAM": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:BOLAS": {
+  "手牌": null
+ },
+ "card:BOMBARDMENT": {
+  "消耗牌堆": null
+ },
+ "card:BONE_SHARDS": {
+  "奥斯提": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:BOOST_AWAY": {
+  "弃牌堆": null,
+  "晕眩": "card:DAZED",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:BOOT_SEQUENCE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:BOUNCE": {
+  "手牌": null,
+  "拉伸": "power:STRETCH"
+ },
+ "card:BOUNCING_FLASK": {
+  "中毒": "power:POISON"
+ },
+ "card:BOW_SMACK": {
+  "扎穿": "power:IMPALED"
+ },
+ "card:BRACE": {
+  "瞄准": "power:AIM"
+ },
+ "card:BRAND": {
+  "力量": "power:STRENGTH",
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:BREAK": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:BRIGHTEN_UP": {
+  "喜悦": "card:JOY",
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "card:BUBBLE_BUBBLE": {
+  "中毒": "power:POISON"
+ },
+ "card:BULK_UP": {
+  "力量": "power:STRENGTH",
+  "敏捷": "power:DEXTERITY"
+ },
+ "card:BULLET_TIME": {
+  "手牌": null
+ },
+ "card:BULLY": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:BULWARK": {
+  "格挡": "keyword:BLOCK",
+  "铸造": "keyword:FORGE"
+ },
+ "card:BUNDLE_OF_JOY": {
+  "手牌": null
+ },
+ "card:BURN": {
+  "手牌": null
+ },
+ "card:BURNING_PACT": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:BYRDONIS_EGG": {
+  "休息处": null
+ },
+ "card:CALAMITY": {
+  "手牌": null
+ },
+ "card:CALCIFY": {
+  "奥斯提": null
+ },
+ "card:CALCULATED_GAMBLE": {
+  "手牌": null
+ },
+ "card:CALL_OF_THE_VOID": {
+  "手牌": null,
+  "虚无": "keyword:ETHEREAL"
+ },
+ "card:CAPTURE_SPIRIT": {
+  "抽牌堆": null,
+  "灵魂": "card:SOUL"
+ },
+ "card:CASCADE": {
+  "抽牌堆": null
+ },
+ "card:CATASTROPHE": {
+  "抽牌堆": null
+ },
+ "card:CHAOS": {
+  "生成": "keyword:CHANNELING"
+ },
+ "card:CHARGE": {
+  "仆从俯冲": "card:MINION_DIVE_BOMB",
+  "仆从俯冲+": "card:MINION_DIVE_BOMB",
+  "变化": null,
+  "抽牌堆": null
+ },
+ "card:CHARGE_BATTERY": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CHILD_OF_THE_STARS": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CHILL": {
+  "冰霜": "keyword:FROST_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:CHO_BARBS": {
+  "格挡": "keyword:BLOCK",
+  "荆棘": "power:THORNS"
+ },
+ "card:CHO_CHORUS": {
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CHO_FIRM": {
+  "格挡": "keyword:BLOCK",
+  "箭矢": "keyword:ARROW"
+ },
+ "card:CHO_KI": {
+  "拉伸": "power:STRETCH",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CHO_LIMBS": {
+  "叽 旋律": "keyword:KI_MELODY",
+  "哇 旋律": "keyword:WAH_MELODY",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CHO_READY": {
+  "格挡": "keyword:BLOCK",
+  "瞄准": "power:AIM"
+ },
+ "card:CHRYSALIS": {
+  "抽牌堆": null
+ },
+ "card:CINDER": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:CLASH": {
+  "手牌": null
+ },
+ "card:CLEANSE": {
+  "召唤": "keyword:SUMMON_STATIC",
+  "抽牌堆": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:CLOAK_AND_DAGGER": {
+  "小刀": "card:SHIV",
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CLOAK_OF_STARS": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CODA": {
+  "旋律": null
+ },
+ "card:COLD_SNAP": {
+  "冰霜": "keyword:FROST_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:COLLISION_COURSE": {
+  "手牌": null,
+  "碎屑": "card:DEBRIS"
+ },
+ "card:COLOSSUS": {
+  "易伤": "power:VULNERABLE",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:COMET": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:COMPACT": {
+  "变化": "keyword:TRANSFORM",
+  "手牌": null,
+  "格挡": "keyword:BLOCK",
+  "燃料": "card:FUEL",
+  "燃料+": "card:FUEL"
+ },
+ "card:CONCOCT": {
+  "中毒": "power:POISON"
+ },
+ "card:CONQUEROR": {
+  "君王之剑": "card:SOVEREIGN_BLADE",
+  "铸造": "keyword:FORGE"
+ },
+ "card:CONSTELLATION": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CONSUMING_SHADOW": {
+  "激发": "keyword:EVOKE",
+  "生成": "keyword:CHANNELING",
+  "黑暗": "keyword:DARK_ORB"
+ },
+ "card:CONVERGENCE": {
+  "保留": "keyword:RETAIN",
+  "手牌": null
+ },
+ "card:COOLANT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:COOLHEADED": {
+  "冰霜": "keyword:FROST_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:COORDINATE": {
+  "力量": "power:STRENGTH"
+ },
+ "card:CORROSIVE_WAVE": {
+  "中毒": "power:POISON"
+ },
+ "card:CORRUPTION": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:COSMIC_INDIFFERENCE": {
+  "弃牌堆": null,
+  "抽牌堆": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:COUNTDOWN": {
+  "灾厄": "power:DOOM"
+ },
+ "card:COVERING_FIRE": {
+  "发射": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CRASH_LANDING": {
+  "手牌": null,
+  "碎屑": "card:DEBRIS"
+ },
+ "card:CREATIVE_AI": {
+  "手牌": null
+ },
+ "card:CRIMSON_MANTLE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:CRUELTY": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:CRUSH_UNDER": {
+  "力量": "power:STRENGTH"
+ },
+ "card:DANSE_MACABRE": {
+  "格挡": null
+ },
+ "card:DARKNESS": {
+  "个黑暗": null,
+  "生成": "keyword:CHANNELING",
+  "黑暗": "keyword:DARK_ORB"
+ },
+ "card:DARK_EMBRACE": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:DARK_SHACKLES": {
+  "力量": "power:STRENGTH"
+ },
+ "card:DASH": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEADLY_POISON": {
+  "中毒": "power:POISON"
+ },
+ "card:DEATH": {
+  "灾厄": "power:DOOM"
+ },
+ "card:DEATHBRINGER": {
+  "灾厄": "power:DOOM",
+  "虚弱": "power:WEAK"
+ },
+ "card:DEATHS_DOOR": {
+  "格挡": "keyword:BLOCK",
+  "灾厄": "power:DOOM"
+ },
+ "card:DEBILITATE": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:DEBT": {
+  "手牌": null,
+  "金币": null
+ },
+ "card:DECAY": {
+  "手牌": null
+ },
+ "card:DECISIONS_DECISIONS": {
+  "手牌": null
+ },
+ "card:DEEP_STRETCH": {
+  "拉伸": "power:STRETCH"
+ },
+ "card:DEFEND_DEFECT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEFEND_FOOL": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEFEND_IRONCLAD": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEFEND_NECROBINDER": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEFEND_REGENT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEFEND_SILENT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEFLECT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEFRAGMENT": {
+  "集中": "power:FOCUS"
+ },
+ "card:DEFY": {
+  "格挡": "keyword:BLOCK",
+  "虚弱": "power:WEAK"
+ },
+ "card:DELAY": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEMONIC_SHIELD": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DEMON_FORM": {
+  "力量": "power:STRENGTH"
+ },
+ "card:DEPRECATED_CARD": {
+  "牌组": null
+ },
+ "card:DESPAIR": {
+  "格挡": null,
+  "灾厄": null
+ },
+ "card:DEVOUR_LIFE": {
+  "召唤": "keyword:SUMMON_STATIC",
+  "灵魂": "card:SOUL"
+ },
+ "card:DIRGE": {
+  "召唤": "keyword:SUMMON_STATIC",
+  "抽牌堆": null,
+  "灵魂": "card:SOUL",
+  "灵魂+": "card:SOUL"
+ },
+ "card:DISCOVERY": {
+  "手牌": null
+ },
+ "card:DISLIKE_YOU": {
+  "射击": null
+ },
+ "card:DISMANTLE": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:DISTRACTION": {
+  "手牌": null
+ },
+ "card:DIVINE_SHOT": {
+  "发射": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:DODGE_AND_ROLL": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:DOMINATE": {
+  "力量": "power:STRENGTH",
+  "易伤": "power:VULNERABLE"
+ },
+ "card:DOUBT": {
+  "手牌": null,
+  "虚弱": "power:WEAK"
+ },
+ "card:DOWSING": {
+  "?": null,
+  "富足": "card:ABUNDANCE"
+ },
+ "card:DRAIN_POWER": {
+  "升级": null,
+  "弃牌堆": null
+ },
+ "card:DREDGE": {
+  "弃牌堆": null,
+  "手牌": null
+ },
+ "card:DRUM_OF_BATTLE": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:DUALCAST": {
+  "激发": "keyword:EVOKE"
+ },
+ "card:DUAL_WIELD": {
+  "手牌": null
+ },
+ "card:DYING_STAR": {
+  "力量": "power:STRENGTH"
+ },
+ "card:ECSTASY": {
+  "变化": null,
+  "喜悦": "card:JOY",
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "card:EIDOLON": {
+  "消耗牌堆": null,
+  "虚无": "keyword:ETHEREAL"
+ },
+ "card:END_OF_DAYS": {
+  "灾厄": "power:DOOM"
+ },
+ "card:ENFEEBLING_TOUCH": {
+  "力量": "power:STRENGTH"
+ },
+ "card:ENLIGHTENMENT": {
+  "手牌": null
+ },
+ "card:ENNUI": {
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "card:ENRAPTURE": {
+  "拉伸": "power:STRETCH",
+  "活力": "power:VIGOR"
+ },
+ "card:ENTHRALLED": {
+  "手牌": null
+ },
+ "card:ENTRENCH": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:ENTROPY": {
+  "变化": "keyword:TRANSFORM",
+  "手牌": null
+ },
+ "card:ENVENOM": {
+  "中毒": "power:POISON"
+ },
+ "card:EPIC_RETRIEVAL": {
+  "松脱": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:EQUILIBRIUM": {
+  "保留": "keyword:RETAIN",
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:ESCAPE_PLAN": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:ETERNAL_ARMOR": {
+  "覆甲": "power:PLATING"
+ },
+ "card:EVIL_EYE": {
+  "格挡": "keyword:BLOCK",
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:EXPECT_A_FIGHT": {
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:EXPERTISE": {
+  "保留": "keyword:RETAIN",
+  "手牌": null
+ },
+ "card:EXPLOSIVE_ARROWS": {
+  "扎穿": "power:IMPALED"
+ },
+ "card:EXPOSE": {
+  "人工制品": "power:ARTIFACT",
+  "易伤": "power:VULNERABLE",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:FADE": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "card:FALLING_STAR": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:FAN_OF_KNIVES": {
+  "小刀": "card:SHIV",
+  "手牌": null
+ },
+ "card:FASTEN": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:FEAR": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:FEED": {
+  "斩杀": "keyword:FATAL"
+ },
+ "card:FEEDING_FRENZY": {
+  "力量": "power:STRENGTH"
+ },
+ "card:FEEL_NO_PAIN": {
+  "格挡": "keyword:BLOCK",
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:FERAL": {
+  "手牌": null
+ },
+ "card:FETCH": {
+  "奥斯提": null
+ },
+ "card:FIEND_FIRE": {
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:FIGHT_ME": {
+  "力量": "power:STRENGTH"
+ },
+ "card:FIGHT_THROUGH": {
+  "伤口": "card:WOUND",
+  "弃牌堆": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:FINESSE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:FISTICUFFS": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:FLAK_CANNON": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:FLAME_BARRIER": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:FLATTEN": {
+  "奥斯提": null
+ },
+ "card:FLECHETTES": {
+  "手牌": null
+ },
+ "card:FLORESCENCE": {
+  "全力射击": "card:THE_SHOT",
+  "全力射击+": "card:THE_SHOT",
+  "变化": null,
+  "手牌": null
+ },
+ "card:FOCUSED_STRIKE": {
+  "集中": "power:FOCUS"
+ },
+ "card:FOOLISH_SHOT": {
+  "发射": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:FOOTWORK": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "card:FORBIDDEN_GRIMOIRE": {
+  "牌组": null
+ },
+ "card:FOREGONE_CONCLUSION": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:FORGOTTEN_RITUAL": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:FRANTIC_ESCAPE": {
+  "沙坑": "power:SANDPIT"
+ },
+ "card:FRIENDSHIP": {
+  "力量": null
+ },
+ "card:FURNACE": {
+  "铸造": "keyword:FORGE"
+ },
+ "card:FUSION": {
+  "生成": "keyword:CHANNELING",
+  "等离子": "keyword:PLASMA_ORB"
+ },
+ "card:GAMMA_BLAST": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:GATHER_LIGHT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:GENETIC_ALGORITHM": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:GHOST_EATER": {
+  "灾厄": null
+ },
+ "card:GLACIER": {
+  "冰霜": "keyword:FROST_ORB",
+  "格挡": "keyword:BLOCK",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:GLASSWORK": {
+  "格挡": "keyword:BLOCK",
+  "玻璃": "keyword:GLASS_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:GLIMMER": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:GLIMPSE_BEYOND": {
+  "抽牌堆": null,
+  "灵魂": "card:SOUL"
+ },
+ "card:GLITTERSTREAM": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:GOOD_INSTINCTS": {
+  "格挡": null
+ },
+ "card:GO_FOR_THE_EYES": {
+  "虚弱": "power:WEAK"
+ },
+ "card:GRAND_FINALE": {
+  "抽牌堆": null
+ },
+ "card:GRAVEBLAST": {
+  "弃牌堆": null,
+  "手牌": null
+ },
+ "card:GRAVE_WARDEN": {
+  "抽牌堆": null,
+  "格挡": "keyword:BLOCK",
+  "灵魂": "card:SOUL"
+ },
+ "card:GROWTH": {
+  "变化": null,
+  "悲伤": "card:SADNESS",
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:GUARDS": {
+  "仆从捐躯": "card:MINION_SACRIFICE",
+  "仆从捐躯+": "card:MINION_SACRIFICE",
+  "变化": null,
+  "手牌": null
+ },
+ "card:GUILTY": {
+  "牌组": null
+ },
+ "card:GUNK_UP": {
+  "弃牌堆": null,
+  "黏液": "card:SLIMED"
+ },
+ "card:HAILSTORM": {
+  "冰霜": "keyword:FROST_ORB"
+ },
+ "card:HAMMER_TIME": {
+  "铸造": "keyword:FORGE"
+ },
+ "card:HAND_OF_GREED": {
+  "斩杀": "keyword:FATAL",
+  "金币": null
+ },
+ "card:HAND_TRICK": {
+  "奇巧": "keyword:SLY",
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:HARMONIC_SHIELD": {
+  "旋律": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:HAUNT": {
+  "灵魂": "card:SOUL"
+ },
+ "card:HAVOC": {
+  "抽牌堆": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:HAZE": {
+  "中毒": "power:POISON",
+  "虚弱": "power:WEAK"
+ },
+ "card:HEADBUTT": {
+  "弃牌堆": null,
+  "抽牌堆": null
+ },
+ "card:HEAVY_SHOT": {
+  "发射": null,
+  "瞄准": "power:AIM",
+  "箭矢": "keyword:ARROW"
+ },
+ "card:HEIRLOOM_HAMMER": {
+  "手牌": null
+ },
+ "card:HELLO_WORLD": {
+  "手牌": null
+ },
+ "card:HIBERNATE": {
+  "冰霜充能球": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:HIDDEN_DAGGERS": {
+  "小刀": "card:SHIV",
+  "小刀+": "card:SHIV",
+  "手牌": null
+ },
+ "card:HIDDEN_GEM": {
+  "抽牌堆": null,
+  "重放": "keyword:REPLAY"
+ },
+ "card:HIDDEN_ROOTS": {
+  "拉伸": "power:STRETCH"
+ },
+ "card:HIGH_FIVE": {
+  "奥斯提": null,
+  "易伤": "power:VULNERABLE"
+ },
+ "card:HOBBLING_SHOT": {
+  "发射": null,
+  "易伤": "power:VULNERABLE",
+  "箭矢": "keyword:ARROW",
+  "虚弱": "power:WEAK"
+ },
+ "card:HOLOGRAM": {
+  "弃牌堆": null,
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:HONING": {
+  "箭矢": "keyword:ARROW"
+ },
+ "card:HOTFIX": {
+  "集中": "power:FOCUS"
+ },
+ "card:HOWL_FROM_BEYOND": {
+  "消耗牌堆": null
+ },
+ "card:HYPERBEAM": {
+  "集中": "power:FOCUS"
+ },
+ "card:ICE_LANCE": {
+  "冰霜": "keyword:FROST_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:IGNITION": {
+  "生成": "keyword:CHANNELING",
+  "等离子": "keyword:PLASMA_ORB"
+ },
+ "card:IMMORTALITY": {
+  "无实体": null
+ },
+ "card:IMPALE": {
+  "中毒": null
+ },
+ "card:IMPATIENCE": {
+  "手牌": null
+ },
+ "card:IMPERVIOUS": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:INFECTION": {
+  "手牌": null
+ },
+ "card:INFERNAL_BLADE": {
+  "手牌": null
+ },
+ "card:INFINITE_BLADES": {
+  "小刀": "card:SHIV",
+  "手牌": null
+ },
+ "card:INFLAME": {
+  "力量": "power:STRENGTH"
+ },
+ "card:INTERCEPT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:INVOKE": {
+  "召唤": "keyword:SUMMON_STATIC"
+ },
+ "card:IRON_WAVE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:I_AM_INVINCIBLE": {
+  "抽牌堆": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:JACKPOT": {
+  "升级过": null,
+  "手牌": null
+ },
+ "card:JACK_OF_ALL_TRADES": {
+  "手牌": null
+ },
+ "card:JEST": {
+  "悲伤": "card:SADNESS",
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:JUGGERNAUT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:JUGGLING": {
+  "手牌": null,
+  "攻击牌": null
+ },
+ "card:KI_CHANT": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:KI_HOP": {
+  "扎穿": "power:IMPALED"
+ },
+ "card:KI_REST": {
+  "保留": "keyword:RETAIN",
+  "哇 旋律": "keyword:WAH_MELODY",
+  "啾 旋律": "keyword:CHO_MELODY",
+  "手牌": null
+ },
+ "card:KNIFE_TRAP": {
+  "升级": null,
+  "小刀": "card:SHIV",
+  "消耗牌堆": null
+ },
+ "card:KNOW_THY_PLACE": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:LARGESSE": {
+  "升级过的": null,
+  "手牌": null
+ },
+ "card:LEADING_STRIKE": {
+  "小刀": "card:SHIV",
+  "手牌": null
+ },
+ "card:LEAP": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:LEGION_OF_BONE": {
+  "召唤": "keyword:SUMMON_STATIC"
+ },
+ "card:LEG_SWEEP": {
+  "格挡": "keyword:BLOCK",
+  "虚弱": "power:WEAK"
+ },
+ "card:LIFT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:LIGHTNING_ROD": {
+  "格挡": "keyword:BLOCK",
+  "生成": "keyword:CHANNELING",
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "card:LOCKED_IN": {
+  "发射": null,
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:LOST_LUTE": {
+  "抽牌堆": null,
+  "旋律": null
+ },
+ "card:LULLABY": {
+  "旋律": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:MAD_SCIENCE": {
+  "力量": null,
+  "升级": null,
+  "手牌": null,
+  "敏捷": null,
+  "易伤": null,
+  "格挡": null,
+  "虚弱": null
+ },
+ "card:MAKE_IT_SO": {
+  "手牌": null
+ },
+ "card:MALAISE": {
+  "力量": "power:STRENGTH",
+  "虚弱": "power:WEAK"
+ },
+ "card:MANGLE": {
+  "力量": "power:STRENGTH"
+ },
+ "card:MANIFEST_AUTHORITY": {
+  "升级过的": null,
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:MASTER_PLANNER": {
+  "奇巧": "keyword:SLY"
+ },
+ "card:MAYHEM": {
+  "抽牌堆": null
+ },
+ "card:MELANCHOLY": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:MELODIC_SHOT": {
+  "发射": null,
+  "旋律": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:METAMORPHOSIS": {
+  "抽牌堆": null
+ },
+ "card:METEOR_SHOWER": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:METEOR_STRIKE": {
+  "生成": "keyword:CHANNELING",
+  "等离子": "keyword:PLASMA_ORB"
+ },
+ "card:MIDNIGHT": {
+  "消耗": null
+ },
+ "card:MIGHTY_SHIELD": {
+  "抽牌堆": null,
+  "晕眩": "card:DAZED",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:MIGHTY_WEAPON": {
+  "抽牌堆": null,
+  "晕眩": "card:DAZED"
+ },
+ "card:MIMIC": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:MIND_BLAST": {
+  "抽牌堆": null
+ },
+ "card:MINION_SACRIFICE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:MIRAGE": {
+  "中毒": "power:POISON",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:MOLTEN_FIST": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:MONARCHS_GAZE": {
+  "力量": "power:STRENGTH"
+ },
+ "card:MONOLOGUE": {
+  "力量": "power:STRENGTH"
+ },
+ "card:MOTIF": {
+  "旋律": null
+ },
+ "card:MOURNING_BLOW": {
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "card:MULTI_CAST": {
+  "激发": "keyword:EVOKE"
+ },
+ "card:MYTHIC_FORM": {
+  "塔罗牌": "keyword:TAROT",
+  "手牌": null
+ },
+ "card:MY_SHINIES": {
+  "金币": null
+ },
+ "card:NAIL": {
+  "扎穿": "power:IMPALED",
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:NECRO_MASTERY": {
+  "召唤": "keyword:SUMMON_STATIC",
+  "奥斯提": null
+ },
+ "card:NEGATIVE_PULSE": {
+  "格挡": "keyword:BLOCK",
+  "灾厄": "power:DOOM"
+ },
+ "card:NEOWS_FURY": {
+  "弃牌堆": null,
+  "手牌": null
+ },
+ "card:NEUROSURGE": {
+  "灾厄": "power:DOOM"
+ },
+ "card:NEUTRALIZE": {
+  "虚弱": "power:WEAK"
+ },
+ "card:NEUTRON_AEGIS": {
+  "覆甲": "power:PLATING"
+ },
+ "card:NIGHTMARE": {
+  "手牌": null
+ },
+ "card:NOCK": {
+  "瞄准": "power:AIM"
+ },
+ "card:NOSTALGIA": {
+  "抽牌堆": null
+ },
+ "card:NOXIOUS_FUMES": {
+  "中毒": "power:POISON"
+ },
+ "card:NO_ESCAPE": {
+  "灾厄": "power:DOOM"
+ },
+ "card:NULL": {
+  "生成": "keyword:CHANNELING",
+  "虚弱": "power:WEAK",
+  "黑暗": "keyword:DARK_ORB"
+ },
+ "card:OBLIVION": {
+  "灾厄": "power:DOOM"
+ },
+ "card:OFF_BY_ONE": {
+  "手牌": null
+ },
+ "card:OPTIMISM": {
+  "悲伤": "card:SADNESS",
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:OUTBREAK": {
+  "中毒": "power:POISON"
+ },
+ "card:OUTRAGE": {
+  "弃牌堆": null
+ },
+ "card:OVERCLOCK": {
+  "弃牌堆": null,
+  "灼伤": "card:BURN"
+ },
+ "card:PACTS_END": {
+  "消耗牌堆": null
+ },
+ "card:PAELS_STRIKE": {
+  "牌组": null
+ },
+ "card:PAGESTORM": {
+  "虚无": "keyword:ETHEREAL"
+ },
+ "card:PANIC_BUTTON": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:PARRY": {
+  "君王之剑": "card:SOVEREIGN_BLADE",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:PARTICLE_WALL": {
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:PATTER": {
+  "格挡": "keyword:BLOCK",
+  "活力": "power:VIGOR"
+ },
+ "card:PHANTOM_BLADES": {
+  "保留": "keyword:RETAIN",
+  "小刀": "card:SHIV"
+ },
+ "card:PHOTON_CUT": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:PIERCING_WAIL": {
+  "力量": "power:STRENGTH"
+ },
+ "card:PILLAR_OF_CREATION": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:POISONED_STAB": {
+  "中毒": "power:POISON"
+ },
+ "card:POKE": {
+  "奥斯提": null
+ },
+ "card:PRECISE_CUT": {
+  "手牌": null
+ },
+ "card:PREP_TIME": {
+  "活力": "power:VIGOR"
+ },
+ "card:PRIMAL_FORCE": {
+  "巨石": "card:GIANT_ROCK",
+  "巨石+": "card:GIANT_ROCK",
+  "手牌": null
+ },
+ "card:PROLONG": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:PROTECTOR": {
+  "奥斯提": null,
+  "最大生命值": null
+ },
+ "card:PROWESS": {
+  "力量": "power:STRENGTH",
+  "敏捷": "power:DEXTERITY"
+ },
+ "card:PULL_AGGRO": {
+  "召唤": "keyword:SUMMON_STATIC",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:PULL_FROM_BELOW": {
+  "虚无": "keyword:ETHEREAL"
+ },
+ "card:PUNCH_OF_JOY": {
+  "变化": null,
+  "喜悦": "card:JOY",
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "card:PURITY": {
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:PUTREFY": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:QUADCAST": {
+  "激发": "keyword:EVOKE"
+ },
+ "card:QUASAR": {
+  "升级过": null,
+  "手牌": null
+ },
+ "card:QUICK_SHOT": {
+  "发射": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:QUIETUS": {
+  "射击": null
+ },
+ "card:QUIVER": {
+  "箭矢": "keyword:ARROW"
+ },
+ "card:RAGE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:RAINBOW": {
+  "冰霜": "keyword:FROST_ORB",
+  "生成": "keyword:CHANNELING",
+  "闪电": "keyword:LIGHTNING_ORB",
+  "黑暗": "keyword:DARK_ORB"
+ },
+ "card:RAIN_SHOT": {
+  "发射": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:RALLY": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:RATTLE": {
+  "奥斯提": null
+ },
+ "card:REANIMATE": {
+  "召唤": "keyword:SUMMON_STATIC"
+ },
+ "card:REAPER_FORM": {
+  "灾厄": "power:DOOM"
+ },
+ "card:REAVE": {
+  "抽牌堆": null,
+  "灵魂": "card:SOUL",
+  "灵魂+": "card:SOUL"
+ },
+ "card:REBOOT": {
+  "抽牌堆": null
+ },
+ "card:REBOUND": {
+  "抽牌堆": null
+ },
+ "card:RECALL": {
+  "扎穿": "power:IMPALED",
+  "松脱": null
+ },
+ "card:REFINE_BLADE": {
+  "铸造": "keyword:FORGE"
+ },
+ "card:REFLECT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:REFRACT": {
+  "玻璃": "keyword:GLASS_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:REGRET": {
+  "手牌": null
+ },
+ "card:RELAX": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:REPEAT_SHOT": {
+  "发射": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:RESONANCE": {
+  "力量": "power:STRENGTH"
+ },
+ "card:RESTLESSNESS": {
+  "手牌": null
+ },
+ "card:RHYTHM_STRIKE": {
+  "旋律": null
+ },
+ "card:RIGHT_HAND_HAND": {
+  "奥斯提": null,
+  "弃牌堆": null,
+  "手牌": null
+ },
+ "card:ROYALTIES": {
+  "金币": null
+ },
+ "card:RUMMAGE": {
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "card:RUPTURE": {
+  "力量": "power:STRENGTH"
+ },
+ "card:SACRIFICE": {
+  "奥斯提": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:SALVO": {
+  "保留": "keyword:RETAIN",
+  "手牌": null
+ },
+ "card:SCAVENGE": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:SCOURGE": {
+  "灾厄": "power:DOOM"
+ },
+ "card:SCRAWL": {
+  "手牌": null
+ },
+ "card:SCULPTING_STRIKE": {
+  "手牌": null,
+  "虚无": "keyword:ETHEREAL"
+ },
+ "card:SEANCE": {
+  "抽牌堆": null,
+  "灵魂": "card:SOUL"
+ },
+ "card:SECOND_WIND": {
+  "手牌": null,
+  "格挡": "keyword:BLOCK",
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:SECRET_TECHNIQUE": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:SECRET_WEAPON": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:SEEKER_STRIKE": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:SEEKING_EDGE": {
+  "君王之剑": "card:SOVEREIGN_BLADE",
+  "铸造": "keyword:FORGE"
+ },
+ "card:SELF_DEPRECATE": {
+  "喜悦": "card:JOY",
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "card:SENTRY_MODE": {
+  "手牌": null,
+  "扫荡凝视": "card:SWEEPING_GAZE"
+ },
+ "card:SERRATED_ARROWS": {
+  "扎穿": "power:IMPALED"
+ },
+ "card:SETUP_STRIKE": {
+  "力量": "power:STRENGTH"
+ },
+ "card:SEVERANCE": {
+  "弃牌堆": null,
+  "手牌": null,
+  "抽牌堆": null,
+  "灵魂": "card:SOUL"
+ },
+ "card:SHADOWMELD": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:SHADOW_SHIELD": {
+  "格挡": "keyword:BLOCK",
+  "生成": "keyword:CHANNELING",
+  "黑暗": "keyword:DARK_ORB"
+ },
+ "card:SHADOW_STEP": {
+  "手牌": null
+ },
+ "card:SHAME": {
+  "手牌": null,
+  "脆弱": "power:FRAIL"
+ },
+ "card:SHARED_FATE": {
+  "力量": "power:STRENGTH"
+ },
+ "card:SHARP_EDGE": {
+  "升级": null,
+  "小刀": null
+ },
+ "card:SHATTER": {
+  "激发": "keyword:EVOKE"
+ },
+ "card:SHINING_STRIKE": {
+  "抽牌堆": null
+ },
+ "card:SHOCKWAVE": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:SHOW_OFF": {
+  "瞄准": "power:AIM"
+ },
+ "card:SHROUD": {
+  "格挡": "keyword:BLOCK",
+  "灾厄": "power:DOOM"
+ },
+ "card:SHRUG_IT_OFF": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:SIC_EM": {
+  "召唤": "keyword:SUMMON_STATIC",
+  "奥斯提": null
+ },
+ "card:SIMPLETON": {
+  "手牌": null
+ },
+ "card:SKY_SHOT": {
+  "发射": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:SNAKEBITE": {
+  "中毒": "power:POISON"
+ },
+ "card:SNAP": {
+  "保留": "keyword:RETAIN",
+  "奥斯提": null,
+  "手牌": null
+ },
+ "card:SNEAKY": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:SONG_PATH": {
+  "啾 旋律": "keyword:CHO_MELODY",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:SOULBOUND": {
+  "抽牌堆": null,
+  "灵魂": "card:SOUL"
+ },
+ "card:SOUL_STORM": {
+  "消耗牌堆": null,
+  "灵魂": "card:SOUL"
+ },
+ "card:SOVEREIGN_BLADE": {
+  "格挡": null
+ },
+ "card:SPECTRUM_SHIFT": {
+  "手牌": null
+ },
+ "card:SPINNER": {
+  "玻璃": "keyword:GLASS_ORB",
+  "生成": "keyword:CHANNELING"
+ },
+ "card:SPIRIT_OF_ASH": {
+  "格挡": "keyword:BLOCK",
+  "虚无": "keyword:ETHEREAL"
+ },
+ "card:SPLASH": {
+  "升级过的": null,
+  "手牌": null
+ },
+ "card:SPOILS_MAP": {
+  "金币": null
+ },
+ "card:SPOILS_OF_BATTLE": {
+  "铸造": "keyword:FORGE"
+ },
+ "card:SPUR": {
+  "召唤": "keyword:SUMMON_STATIC",
+  "奥斯提": null
+ },
+ "card:SQUASH": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:SQUEEZE": {
+  "奥斯提": null
+ },
+ "card:STACK": {
+  "弃牌堆": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:STAMPEDE": {
+  "手牌": null
+ },
+ "card:STAR_BLAST": {
+  "格挡": null
+ },
+ "card:STAR_SHIELD": {
+  "格挡": null
+ },
+ "card:STEADY_CADENCE": {
+  "旋律": null
+ },
+ "card:STOKE": {
+  "升级": null,
+  "手牌": null,
+  "消耗": null
+ },
+ "card:STONE_ARMOR": {
+  "覆甲": "power:PLATING"
+ },
+ "card:STORM": {
+  "生成": "keyword:CHANNELING",
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "card:STORM_OF_STEEL": {
+  "小刀": "card:SHIV",
+  "小刀+": "card:SHIV",
+  "手牌": null
+ },
+ "card:STRATAGEM": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:STRENGTH": {
+  "力量": "power:STRENGTH"
+ },
+ "card:SUCKER_PUNCH": {
+  "虚弱": "power:WEAK"
+ },
+ "card:SUMMON_FORTH": {
+  "君王之剑": "card:SOVEREIGN_BLADE",
+  "手牌": null,
+  "铸造": "keyword:FORGE"
+ },
+ "card:SUPPRESS": {
+  "虚弱": "power:WEAK"
+ },
+ "card:SURVIVOR": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:SWEEPING_GAZE": {
+  "奥斯提": null
+ },
+ "card:SWORD_SAGE": {
+  "君王之剑": "card:SOVEREIGN_BLADE",
+  "重放": "keyword:REPLAY"
+ },
+ "card:SYNCHRONIZE": {
+  "集中": "power:FOCUS"
+ },
+ "card:TAUNT": {
+  "易伤": "power:VULNERABLE",
+  "格挡": "keyword:BLOCK"
+ },
+ "card:TEMPERANCE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:TEMPEST": {
+  "生成": "keyword:CHANNELING",
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "card:TERRAFORMING": {
+  "活力": "power:VIGOR"
+ },
+ "card:TESLA_COIL": {
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "card:TEZCATARAS_MIGHT": {
+  "力量": null
+ },
+ "card:THE_DEVIL": {
+  "升级": null,
+  "手牌": null,
+  "抽牌堆": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:THE_EMPRESS": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:THE_FOOL": {
+  "手牌": null
+ },
+ "card:THE_GAMBIT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:THE_HERMIT": {
+  "消耗": "keyword:EXHAUST",
+  "诅咒": null
+ },
+ "card:THE_HIEROPHANT": {
+  "手牌": null
+ },
+ "card:THE_HUNT": {
+  "斩杀": "keyword:FATAL"
+ },
+ "card:THE_LOVERS": {
+  "手牌": null
+ },
+ "card:THE_MAGICIAN": {
+  "生成": "keyword:CHANNELING"
+ },
+ "card:THE_MOON": {
+  "小刀": "card:SHIV",
+  "小刀+": "card:SHIV",
+  "手牌": null
+ },
+ "card:THE_SHOT": {
+  "发射": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:THE_SMITH": {
+  "铸造": "keyword:FORGE"
+ },
+ "card:THE_SUN": {
+  "抽牌堆": null,
+  "煤灰": "card:SOOT"
+ },
+ "card:THE_WORLD": {
+  "弃牌堆": null,
+  "手牌": null
+ },
+ "card:THINKING_AHEAD": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:THRASH": {
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:THRUMMING_HATCHET": {
+  "手牌": null
+ },
+ "card:THUNDER": {
+  "激发闪电": null
+ },
+ "card:THUNDERCLAP": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:TIMES_UP": {
+  "灾厄": "power:DOOM"
+ },
+ "card:TORIC_TOUGHNESS": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:TOXIC": {
+  "手牌": null
+ },
+ "card:TRACKING": {
+  "虚弱": "power:WEAK"
+ },
+ "card:TRAINING_STRIKE": {
+  "斩杀": null
+ },
+ "card:TRANSFIGURE": {
+  "手牌": null,
+  "重放": "keyword:REPLAY"
+ },
+ "card:TRASH_TO_TREASURE": {
+  "生成": "keyword:CHANNELING"
+ },
+ "card:TREMBLE": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:TRICK_SHOT": {
+  "发射": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:TRUE_GRIT": {
+  "格挡": "keyword:BLOCK",
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:TUNE": {
+  "升级": null,
+  "叽 旋律": "keyword:KI_MELODY",
+  "手牌": null
+ },
+ "card:TURBO": {
+  "弃牌堆": null,
+  "虚空": "card:VOID"
+ },
+ "card:TUTOR": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:TWIN_SHOT": {
+  "发射": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:TYRANNY": {
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "card:ULTIMATE_DEFEND": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:UNDEATH": {
+  "弃牌堆": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "card:UNDERWORLD": {
+  "灾厄": "power:DOOM"
+ },
+ "card:UNLEASH": {
+  "奥斯提": null
+ },
+ "card:UNMOVABLE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:UNTOUCHABLE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:UPPERCUT": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "card:UPROAR": {
+  "抽牌堆": null
+ },
+ "card:UPROOT": {
+  "扎穿": "power:IMPALED",
+  "易伤": "power:VULNERABLE",
+  "松脱": null
+ },
+ "card:UP_MY_SLEEVE": {
+  "小刀": "card:SHIV",
+  "手牌": null
+ },
+ "card:VEILPIERCER": {
+  "虚无": "keyword:ETHEREAL"
+ },
+ "card:VETERAN": {
+  "力量": null,
+  "格挡": null
+ },
+ "card:VICIOUS": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:VIOLENT_CHORD": {
+  "哇 旋律": "keyword:WAH_MELODY"
+ },
+ "card:VITRIOL": {
+  "悲伤": "card:SADNESS",
+  "手牌": null,
+  "虚弱": "power:WEAK"
+ },
+ "card:VOLTAIC": {
+  "生成": "keyword:CHANNELING",
+  "生成过": null,
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "card:WAH_BLAST": {
+  "叽 旋律": "keyword:KI_MELODY",
+  "啾 旋律": "keyword:CHO_MELODY"
+ },
+ "card:WAH_CHO": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:WAH_CHO_KI": {
+  "格挡": "keyword:BLOCK"
+ },
+ "card:WAH_HAMMER": {
+  "扎穿": "power:IMPALED"
+ },
+ "card:WAH_KI": {
+  "弃牌堆": null,
+  "抽牌堆": null
+ },
+ "card:WAH_TOUCH": {
+  "易伤": "power:VULNERABLE"
+ },
+ "card:WARP_SPACE": {
+  "抽牌堆": null
+ },
+ "card:WELL_LAID_PLANS": {
+  "手牌": null
+ },
+ "card:WHEEL_OF_FORTUNE": {
+  "手牌": null
+ },
+ "card:WHISTLE": {
+  "击晕": null
+ },
+ "card:WHISTLING_ARROWS": {
+  "发射": null,
+  "弃牌堆": null,
+  "手牌": null,
+  "格挡": "keyword:BLOCK",
+  "箭矢": "keyword:ARROW"
+ },
+ "card:WHITE_NOISE": {
+  "手牌": null
+ },
+ "card:WISH": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "card:WITHER": {
+  "手牌": null
+ },
+ "card:WRAITH_FORM": {
+  "敏捷": "power:DEXTERITY",
+  "无实体": "power:INTANGIBLE"
+ },
+ "card:WREST": {
+  "扎穿": "power:IMPALED",
+  "松脱": null
+ },
+ "card:WROUGHT_IN_WAR": {
+  "铸造": "keyword:FORGE"
+ },
+ "card:YAH": {
+  "松脱": null,
+  "箭矢": "keyword:ARROW"
+ },
+ "card:YOGA": {
+  "拉伸": "power:STRETCH"
+ },
+ "card:ZAP": {
+  "生成": "keyword:CHANNELING",
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "character:FOOL": {
+  "高塔": null
+ },
+ "character:NECROBINDER": {
+  "奥斯提": null
+ },
+ "dominion:AEONGLASS": {
+  "凋萎": "card:WITHER",
+  "抽牌堆": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "仪式": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "覆甲": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "脆弱": "power:FRAIL",
+  "虚弱": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "力量": "power:STRENGTH",
+  "敏捷": "power:DEXTERITY"
+ },
+ "dominion:QUEEN": {
+  "易伤": "power:VULNERABLE",
+  "脆弱": "power:FRAIL",
+  "虚弱": "power:WEAK"
+ },
+ "dominion:SOUL_FYSH": {
+  "呼唤": "card:BECKON",
+  "抽牌堆": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "力量": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "滑溜": "power:SLIPPERY"
+ },
+ "enchantment:ADROIT": {
+  "格挡": null
+ },
+ "enchantment:CLONE": {
+  "休息处": null
+ },
+ "enchantment:GLAM": {
+  "重放": "keyword:REPLAY"
+ },
+ "enchantment:GOOPY": {
+  "格挡": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "enchantment:INKY": {
+  "虚弱": "power:WEAK"
+ },
+ "enchantment:NIMBLE": {
+  "格挡": null
+ },
+ "enchantment:PERFECT_FIT": {
+  "抽牌堆": null
+ },
+ "enchantment:ROYALLY_APPROVED": {
+  "保留": "keyword:RETAIN",
+  "固有": "keyword:INNATE"
+ },
+ "enchantment:SOULS_POWER": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "enchantment:SPIRAL": {
+  "重放": "keyword:REPLAY"
+ },
+ "enchantment:STEADY": {
+  "保留": "keyword:RETAIN"
+ },
+ "enchantment:TEZCATARAS_EMBER": {
+  "永恒": "keyword:ETERNAL"
+ },
+ "encounter:NEOW_CHOICE": {
+  "涅奥选择：": null
+ },
+ "epoch:BLITZ_EPOCH": {
+  "极速": null,
+  "黄金蒸发": null
+ },
+ "epoch:COLORLESS1_EPOCH": {
+  "高塔": null
+ },
+ "epoch:COLORLESS2_EPOCH": {
+  "想象之兽": null
+ },
+ "epoch:COLORLESS5_EPOCH": {
+  "金币": null
+ },
+ "epoch:CUSTOM_AND_SEEDS_EPOCH": {
+  "“先古种子”": null,
+  "阶段": null
+ },
+ "epoch:DAILY_RUN_EPOCH": {
+  "阶段": null,
+  "高塔": null
+ },
+ "epoch:DARV_EPOCH": {
+  "先古之民": null
+ },
+ "epoch:DEFECT2_EPOCH": {
+  "阶段": null
+ },
+ "epoch:DEFECT3_EPOCH": {
+  "阶段": null
+ },
+ "epoch:DEFECT4_EPOCH": {
+  "阶段": null,
+  "高塔": null
+ },
+ "epoch:DEFECT7_EPOCH": {
+  "财宝": null
+ },
+ "epoch:EVENT1_EPOCH": {
+  "高塔": null
+ },
+ "epoch:EVENT2_EPOCH": {
+  "高塔": null
+ },
+ "epoch:EVENT3_EPOCH": {
+  "先古之树": null
+ },
+ "epoch:FOOL1_EPOCH": {
+  "高塔": null
+ },
+ "epoch:FOOL2_EPOCH": {
+  "阶段": null
+ },
+ "epoch:FOOL3_EPOCH": {
+  "阶段": null
+ },
+ "epoch:FOOL4_EPOCH": {
+  "阶段": null
+ },
+ "epoch:IRONCLAD2_EPOCH": {
+  "阶段": null,
+  "高塔": null
+ },
+ "epoch:IRONCLAD3_EPOCH": {
+  "阶段": null
+ },
+ "epoch:IRONCLAD4_EPOCH": {
+  "阶段": null
+ },
+ "epoch:IRONCLAD6_EPOCH": {
+  "高塔": null
+ },
+ "epoch:IRONCLAD7_EPOCH": {
+  "高塔": null
+ },
+ "epoch:NECROBINDER2_EPOCH": {
+  "阶段": null
+ },
+ "epoch:NECROBINDER3_EPOCH": {
+  "事件报告": null,
+  "阶段": null
+ },
+ "epoch:NECROBINDER4_EPOCH": {
+  "有趣的文物": null,
+  "阶段": null
+ },
+ "epoch:NECROBINDER7_EPOCH": {
+  "佩尔": null
+ },
+ "epoch:POTION1_EPOCH": {
+  "高塔": null
+ },
+ "epoch:POTION2_EPOCH": {
+  "高塔": null
+ },
+ "epoch:REGENT2_EPOCH": {
+  "阶段": null
+ },
+ "epoch:REGENT3_EPOCH": {
+  "阶段": null,
+  "高塔": null
+ },
+ "epoch:REGENT4_EPOCH": {
+  "星国储君": null,
+  "阶段": null
+ },
+ "epoch:REGENT7_EPOCH": {
+  "坦克斯": null
+ },
+ "epoch:RELIC1_EPOCH": {
+  "想象之兽": null
+ },
+ "epoch:RELIC2_EPOCH": {
+  "先古之民": null
+ },
+ "epoch:SILENT1_EPOCH": {
+  "高塔": null
+ },
+ "epoch:SILENT2_EPOCH": {
+  "阶段": null
+ },
+ "epoch:SILENT3_EPOCH": {
+  "阶段": null
+ },
+ "epoch:SILENT4_EPOCH": {
+  "阶段": null
+ },
+ "epoch:SILENT5_EPOCH": {
+  "高塔": null
+ },
+ "epoch:UNDERDOCKS_EPOCH": {
+  "暗港": null,
+  "高塔": null
+ },
+ "event:AMALGAMATOR": {
+  "发光符文构成的流转旋涡": null,
+  "打击": null,
+  "牌组": null,
+  "防御": null
+ },
+ "event:AROMA_OF_CHAOS": {
+  "与强敌生死对决": null,
+  "升级": null,
+  "变化": "keyword:TRANSFORM",
+  "牌组": null
+ },
+ "event:BATTLEWORN_DUMMY": {
+  "升级": null,
+  "工厂": null,
+  "药水": null,
+  "遗物": null
+ },
+ "event:BRAIN_LEECH": {
+  "牌组": null
+ },
+ "event:BUGSLAYER": {
+  "压扁技巧": null,
+  "威猛剽悍的战士": null,
+  "杀灭的技巧": null,
+  "牌组": null
+ },
+ "event:BYRDONIS_NEST": {
+  "无人看守的蛋": null,
+  "牌组": null
+ },
+ "event:COLORFUL_PHILOSOPHERS": {
+  "最棒的": null,
+  "棱镜碎片": null
+ },
+ "event:COLOSSAL_FLOWER": {
+  "上等花蜜": null,
+  "花粉核心": "relic:POLLINOUS_CORE",
+  "花蜜": null,
+  "金币": null,
+  "金色花蜜": null
+ },
+ "event:CRYSTAL_SPHERE": {
+  "大幅占卜": null,
+  "小幅占卜": null,
+  "水晶球占卜": null,
+  "金币": null
+ },
+ "event:DENSE_VEGETATION": {
+  "在你身上蠕动的什么东西": null,
+  "金币": null
+ },
+ "event:DOLL_ROOM": {
+  "玩偶遗物": null
+ },
+ "event:DOORS_OF_LIGHT_AND_DARK": {
+  "升级": null,
+  "强化": null,
+  "牌组": null,
+  "衣着得体的看门人": null
+ },
+ "event:DROWNING_BEACON": {
+  "灯具室": null,
+  "透镜": null
+ },
+ "event:ENDLESS_CONVEYOR": {
+  "升级": null,
+  "变化": null,
+  "牌组": null,
+  "疯狂进食": null,
+  "药水": null,
+  "金币": null
+ },
+ "event:FIELD_OF_MAN_SIZED_HOLES": {
+  "微光": null,
+  "牌组": null,
+  "附魔": null
+ },
+ "event:GRAVE_OF_THE_FORGOTTEN": {
+  "消耗": null,
+  "牌组": null,
+  "附魔": null
+ },
+ "event:HUNGRY_FOR_MUSHROOMS": {
+  "进行一场特训": null
+ },
+ "event:INFESTED_AUTOMATON": {
+  "电流": null,
+  "耗能为0的牌": null,
+  "能力牌": null
+ },
+ "event:JUNGLE_MAZE_ADVENTURE": {
+  "美好的回忆": null,
+  "金币": null
+ },
+ "event:LOST_WISP": {
+  "牌组": null,
+  "金币": null
+ },
+ "event:LUMINOUS_CHOIR": {
+  "牌组": null,
+  "遗物": null,
+  "金币": null
+ },
+ "event:MORPHIC_GROVE": {
+  "变化": "keyword:TRANSFORM",
+  "金币": null
+ },
+ "event:POTION_COURIER": {
+  "污浊药水": "potion:FOUL_POTION",
+  "罕见药水": null,
+  "药水快递员": null
+ },
+ "event:PUNCH_OFF": {
+  "拳击构装体": null,
+  "更好的奖励": null,
+  "构装体": null,
+  "牌组": null,
+  "遗物": null
+ },
+ "event:RANWID_THE_ELDER": {
+  "遗物": null,
+  "金币": null
+ },
+ "event:REFLECTIONS": {
+  "牌组": null
+ },
+ "event:ROOM_FULL_OF_CHEESE": {
+  "天选芝士": "relic:CHOSEN_CHEESE",
+  "普通": null,
+  "牌组": null
+ },
+ "event:ROUND_TEA_PARTY": {
+  "入场费": null,
+  "指挥官": null,
+  "遗物": null,
+  "金冠": null
+ },
+ "event:SAPPHIRE_SEED": {
+  "升级": null,
+  "强化你的体能": null,
+  "牌组": null,
+  "眼中的色彩变得更加鲜艳": null,
+  "附魔": null
+ },
+ "event:SELF_HELP_BOOK": {
+  "附魔": null
+ },
+ "event:SHRINE_OF_THE_WARLORD": {
+  "牌组": null,
+  "独特的神器": null
+ },
+ "event:SLIPPERY_BRIDGE": {
+  "不～～～～": null,
+  "牌组": null
+ },
+ "event:SPIRALING_WHIRLPOOL": {
+  "“谢谢你，涡旋。”": null,
+  "打击": null,
+  "核心": null,
+  "牌组": null,
+  "遗物": null,
+  "防御": null,
+  "附魔": null
+ },
+ "event:SPIRIT_GRAFTER": {
+  "光芒": null,
+  "升级": null,
+  "牌组": null,
+  "羽化": "card:METAMORPHOSIS"
+ },
+ "event:STONE_OF_ALL_TIME": {
+  "永恒之石": null,
+  "附魔": null
+ },
+ "event:SUNKEN_STATUE": {
+  "祈愿金币": null,
+  "金币": null,
+  "闪亮的东西": null,
+  "闪烁": null
+ },
+ "event:SUNKEN_TREASURY": {
+  "第一个箱子：": null,
+  "第二个箱子：": null,
+  "箱子": null,
+  "金币": null
+ },
+ "event:SYMBIOTE": {
+  "变化": "keyword:TRANSFORM",
+  "附魔": null
+ },
+ "event:TABLET_OF_TRUTH": {
+  "升级": null,
+  "最后的词语": null,
+  "真理": null
+ },
+ "event:TEA_MASTER": {
+  "1.": null,
+  "2.": null,
+  "3.": null,
+  "4.": null,
+  "5.": null,
+  "金币": null,
+  "高昂价格": null
+ },
+ "event:THERMAE_NONUPEIPE": {
+  "牌组": null,
+  "金币": null
+ },
+ "event:THE_FUTURE_OF_POTIONS": {
+  "升级过": null
+ },
+ "event:THE_LANTERN_KEY": {
+  "神秘骑士": null,
+  "金币": null
+ },
+ "event:THE_LEGENDS_WERE_TRUE": {
+  "药水": null,
+  "藏宝图": "card:SPOILS_MAP"
+ },
+ "event:THIS_OR_THAT": {
+  "可疑的财宝": null,
+  "牌组": null,
+  "遗物": null,
+  "金币": null
+ },
+ "event:TINKER_TIME": {
+  "力量": null,
+  "升级": null,
+  "手牌": null,
+  "敏捷": null,
+  "易伤": null,
+  "牌组": null,
+  "虚弱": null
+ },
+ "event:TRASH_HEAP": {
+  "奇珍异宝": null,
+  "旧日遗物": null,
+  "被遗忘的值钱物品": null,
+  "遗物": null,
+  "金币": null
+ },
+ "event:TRIAL": {
+  "判决": null,
+  "判决之椅": null,
+  "升级": null,
+  "变化": "keyword:TRANSFORM",
+  "大贵族": null,
+  "审判": null,
+  "权势很大的贵族": null,
+  "法院总仲裁官": null,
+  "牌组": null,
+  "贵族": null,
+  "贿赂": null,
+  "遗物": null,
+  "金币": null,
+  "金币……": null,
+  "金色的拱门": null
+ },
+ "event:UNREST_SITE": {
+  "休息处": null,
+  "小盒子": null,
+  "遗物": null
+ },
+ "event:WAR_HISTORIAN_REPY": {
+  "历史课": "relic:HISTORY_COURSE",
+  "厚厚的硬皮书": null,
+  "大宝箱": null,
+  "宝箱": null,
+  "灯火钥匙": "card:LANTERN_KEY",
+  "药水": null,
+  "遗物": null
+ },
+ "event:WATERFALL_OF_OBVIOUS_SECRETS": {
+  "牌组": null,
+  "稀有": null,
+  "金币": null,
+  "黯淡匕首": null
+ },
+ "event:WATERLOGGED_SCRIPTORIUM": {
+  "器具": null,
+  "扎手海绵": null,
+  "扭动着的羽毛笔": null,
+  "金币": null,
+  "附魔": null
+ },
+ "event:WELCOME_TO_WONGOS": {
+  "旺购客户感恩徽章": null,
+  "旺购积分": null,
+  "普通遗物": null,
+  "遗物": null,
+  "金币": null
+ },
+ "event:WELLSPRING": {
+  "发光的尘埃": null,
+  "牌组": null,
+  "药水": null
+ },
+ "event:WHISPERING_HOLLOW": {
+  "变化": "keyword:TRANSFORM",
+  "药水": null,
+  "金币": null
+ },
+ "event:WOOD_CARVINGS": {
+  "变化": null,
+  "附魔": null
+ },
+ "event:WUPPY_IN_TROUBLE": {
+  "牌组": null,
+  "瓦皮": null
+ },
+ "event:ZEN_WEAVER": {
+  "开悟": "card:ENLIGHTENMENT",
+  "牌组": null,
+  "金币": null
+ },
+ "intent:ATTACK": {
+  "攻击": null
+ },
+ "intent:BUFF": {
+  "强化效果": null
+ },
+ "intent:CARD_DEBUFF": {
+  "侵蚀": null
+ },
+ "intent:DEBUFF": {
+  "负面效果": null
+ },
+ "intent:DEBUFF_STRONG": {
+  "负面效果": null
+ },
+ "intent:DEFEND": {
+  "格挡": null
+ },
+ "intent:ESCAPE": {
+  "逃跑": null
+ },
+ "intent:HEAL": {
+  "回复": null
+ },
+ "intent:STATUS": {
+  "状态": null
+ },
+ "intent:SUMMON": {
+  "怪物": null
+ },
+ "intent:UNKNOWN": {
+  "未知": null
+ },
+ "keyword:ARROW": {
+  "扎穿": null,
+  "松脱": null
+ },
+ "keyword:CARD_REWARD": {
+  "牌组": null
+ },
+ "keyword:CHANNELING": {
+  "激发": null
+ },
+ "keyword:COOK": {
+  "休息处": null,
+  "牌组": null,
+  "移除": null
+ },
+ "keyword:DREAD_ROTATION": {
+  "轮换连胜": null
+ },
+ "keyword:ENERGY": {
+  "手牌": null
+ },
+ "keyword:ETERNAL": {
+  "牌组": null
+ },
+ "keyword:ETHEREAL": {
+  "手牌": null,
+  "消耗": null
+ },
+ "keyword:FORGE": {
+  "君王之剑": null,
+  "手牌": null,
+  "铸造": null
+ },
+ "keyword:INNATE": {
+  "手牌": null
+ },
+ "keyword:REPLAY": {
+  "重放": null
+ },
+ "keyword:ROOM_ELITE": {
+  "遗物": null
+ },
+ "keyword:ROOM_MERCHANT": {
+  "金币": null
+ },
+ "keyword:ROOM_REST": {
+  "升级": null
+ },
+ "keyword:ROOM_TREASURE": {
+  "遗物": null,
+  "金币": null
+ },
+ "keyword:ROOM_UNKNOWN_MERCHANT": {
+  "金币": null
+ },
+ "keyword:SLY": {
+  "手牌": null
+ },
+ "keyword:SUMMON_DYNAMIC": {
+  "奥斯提": null
+ },
+ "keyword:SUMMON_STATIC": {
+  "奥斯提": null
+ },
+ "modifier:ALL_STAR": {
+  "无色": null
+ },
+ "modifier:BIG_GAME_HUNTER": {
+  "稀有": null
+ },
+ "modifier:MIDAS": {
+  "休息处": null
+ },
+ "modifier:MURDEROUS": {
+  "力量": null
+ },
+ "modifier:NIGHT_TERRORS": {
+  "休息处": null
+ },
+ "modifier:TERMINAL": {
+  "覆甲": null
+ },
+ "monster:GREMLIN_MERC": {
+  "钱钱！": null
+ },
+ "orb:DARK_ORB": {
+  "激发": null,
+  "激发：": null,
+  "被动：": null
+ },
+ "orb:FROST_ORB": {
+  "格挡": null,
+  "激发：": null,
+  "被动：": null
+ },
+ "orb:GLASS_ORB": {
+  "激发：": null,
+  "被动：": null
+ },
+ "orb:LIGHTNING_ORB": {
+  "激发：": null,
+  "被动：": null
+ },
+ "orb:PLASMA_ORB": {
+  "激发：": null,
+  "被动：": null,
+  "集中": null
+ },
+ "potion:ASHWATER": {
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "potion:ATTACK_POTION": {
+  "手牌": null
+ },
+ "potion:BLESSING_OF_THE_FORGE": {
+  "升级": null,
+  "手牌": null
+ },
+ "potion:BLOCK_POTION": {
+  "格挡": "keyword:BLOCK"
+ },
+ "potion:BONE_BREW": {
+  "召唤": "keyword:SUMMON_STATIC"
+ },
+ "potion:BOTTLED_POTENTIAL": {
+  "抽牌堆": null
+ },
+ "potion:BOTTLED_SONG": {
+  "手牌": null
+ },
+ "potion:COLORLESS_POTION": {
+  "手牌": null
+ },
+ "potion:COSMIC_CONCOCTION": {
+  "升级": null,
+  "手牌": null
+ },
+ "potion:CRYSTALLINE_EUPHORIA": {
+  "喜悦": "card:JOY",
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "potion:CUNNING_POTION": {
+  "小刀+": "card:SHIV",
+  "手牌": null
+ },
+ "potion:DEXTERITY_POTION": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "potion:DISTILLED_CHAOS": {
+  "抽牌堆": null
+ },
+ "potion:DROPLET_OF_PRECOGNITION": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "potion:ESSENCE_OF_DARKNESS": {
+  "充能球栏位": null,
+  "生成": "keyword:CHANNELING",
+  "黑暗": "keyword:DARK_ORB"
+ },
+ "potion:FLEX_POTION": {
+  "力量": "power:STRENGTH"
+ },
+ "potion:FOCUS_POTION": {
+  "集中": "power:FOCUS"
+ },
+ "potion:FORTIFIER": {
+  "格挡": "keyword:BLOCK"
+ },
+ "potion:FOUL_POTION": {
+  "商人": null,
+  "金币": null
+ },
+ "potion:FYSH_OIL": {
+  "力量": "power:STRENGTH",
+  "敏捷": "power:DEXTERITY"
+ },
+ "potion:GHOST_IN_A_JAR": {
+  "无实体": "power:INTANGIBLE"
+ },
+ "potion:GLOWWATER_POTION": {
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "potion:HEART_OF_IRON": {
+  "覆甲": "power:PLATING"
+ },
+ "potion:KINGS_COURAGE": {
+  "铸造": "keyword:FORGE"
+ },
+ "potion:LIQUID_BRONZE": {
+  "荆棘": "power:THORNS"
+ },
+ "potion:LIQUID_MEMORIES": {
+  "弃牌堆": null,
+  "手牌": null
+ },
+ "potion:LUCKY_TONIC": {
+  "缓冲": "power:BUFFER"
+ },
+ "potion:MAZALETHS_GIFT": {
+  "仪式": "power:RITUAL"
+ },
+ "potion:OROBIC_ACID": {
+  "手牌": null
+ },
+ "potion:POISON_POTION": {
+  "中毒": "power:POISON"
+ },
+ "potion:POTION_OF_BINDING": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "potion:POTION_OF_CAPACITY": {
+  "充能球栏位": null
+ },
+ "potion:POTION_OF_DOOM": {
+  "灾厄": "power:DOOM"
+ },
+ "potion:POT_OF_GHOULS": {
+  "手牌": null,
+  "灵魂": "card:SOUL"
+ },
+ "potion:POWER_POTION": {
+  "手牌": null
+ },
+ "potion:PRECISION_POTION": {
+  "瞄准": "power:AIM"
+ },
+ "potion:REGEN_POTION": {
+  "再生": "power:REGEN"
+ },
+ "potion:SHACKLING_POTION": {
+  "力量": "power:STRENGTH"
+ },
+ "potion:SHIP_IN_A_BOTTLE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "potion:SKILL_POTION": {
+  "手牌": null
+ },
+ "potion:SNECKO_OIL": {
+  "手牌": null
+ },
+ "potion:SOLDIERS_STEW": {
+  "打击": null,
+  "重放": "keyword:REPLAY"
+ },
+ "potion:SPEED_POTION": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "potion:STABLE_SERUM": {
+  "保留": "keyword:RETAIN",
+  "手牌": null
+ },
+ "potion:STRENGTH_POTION": {
+  "力量": "power:STRENGTH"
+ },
+ "potion:TOUCH_OF_INSANITY": {
+  "手牌": null
+ },
+ "potion:VULNERABLE_POTION": {
+  "易伤": "power:VULNERABLE"
+ },
+ "potion:WEAK_POTION": {
+  "虚弱": "power:WEAK"
+ },
+ "power:ACCELERANT": {
+  "中毒": "power:POISON"
+ },
+ "power:ACCURACY": {
+  "小刀": null
+ },
+ "power:ADAPTATION": {
+  "敏捷": null,
+  "格挡": null
+ },
+ "power:AEONGLASS_DOMINION": {
+  "凋萎": "card:WITHER",
+  "抽牌堆": null
+ },
+ "power:AFTERIMAGE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:AGGRESSION": {
+  "升级": null,
+  "弃牌堆": null,
+  "手牌": null
+ },
+ "power:AIM": {
+  "箭矢": null
+ },
+ "power:ALL_IS_WELL": {
+  "悲伤": "card:SADNESS",
+  "格挡": "keyword:BLOCK"
+ },
+ "power:ARCHERY": {
+  "瞄准": "power:AIM"
+ },
+ "power:ARSENAL": {
+  "力量": "power:STRENGTH"
+ },
+ "power:ARTIFACT": {
+  "免疫": null
+ },
+ "power:AUTOMATION": {
+  "能量": null
+ },
+ "power:BARRICADE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:BEACON_OF_HOPE": {
+  "格挡": null
+ },
+ "power:BIASED_COGNITION": {
+  "集中": "power:FOCUS"
+ },
+ "power:BLOCK_NEXT_TURN": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:BLUR": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:BURROWED": {
+  "击晕": null,
+  "格挡": null
+ },
+ "power:CALAMITY": {
+  "手牌": null
+ },
+ "power:CALCIFY": {
+  "奥斯提": null
+ },
+ "power:CALL_OF_THE_VOID": {
+  "手牌": null,
+  "虚无": "keyword:ETHEREAL"
+ },
+ "power:CHAINS_OF_BINDING": {
+  "魂缚": "affliction:BOUND"
+ },
+ "power:CHILD_OF_THE_STARS": {
+  "格挡": null
+ },
+ "power:COLOSSUS": {
+  "易伤": "power:VULNERABLE"
+ },
+ "power:COMPOST": {
+  "能量": "keyword:ENERGY"
+ },
+ "power:CONCOCT": {
+  "中毒": "power:POISON"
+ },
+ "power:CONQUEROR": {
+  "君王之剑": "card:SOVEREIGN_BLADE"
+ },
+ "power:CONSUMING_SHADOW": {
+  "激发": null
+ },
+ "power:CONTRACTILITY": {
+  "格挡": null
+ },
+ "power:COOLANT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:CORROSIVE_WAVE": {
+  "中毒": "power:POISON"
+ },
+ "power:CORRUPTION": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "power:COUNTDOWN": {
+  "灾厄": "power:DOOM"
+ },
+ "power:COVERING_FIRE": {
+  "发射": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "power:CRAB_RAGE": {
+  "力量": "power:STRENGTH",
+  "格挡": "keyword:BLOCK"
+ },
+ "power:CREATIVE_AI": {
+  "手牌": null
+ },
+ "power:CRIMSON_MANTLE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:CRUELTY": {
+  "易伤": "power:VULNERABLE"
+ },
+ "power:CURL_UP": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:DAMPEN": {
+  "降级": null
+ },
+ "power:DANSE_MACABRE": {
+  "格挡": null
+ },
+ "power:DARK_EMBRACE": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "power:DEBILITATE": {
+  "易伤": "power:VULNERABLE",
+  "虚弱": "power:WEAK"
+ },
+ "power:DECREE_OF_ENTROPY": {
+  "升级": null
+ },
+ "power:DEMESNE": {
+  "能量": "keyword:ENERGY"
+ },
+ "power:DEMON_FORM": {
+  "力量": "power:STRENGTH"
+ },
+ "power:DESPAIR": {
+  "格挡": null,
+  "灾厄": null
+ },
+ "power:DEVOUR_LIFE": {
+  "召唤": "keyword:SUMMON_STATIC",
+  "灵魂": "card:SOUL"
+ },
+ "power:DEXTERITY": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:DEXTERITY_DOWN": {
+  "敏捷": null
+ },
+ "power:DIE_FOR_YOU": {
+  "奥斯提": null
+ },
+ "power:DISLIKE_YOU": {
+  "射击": null
+ },
+ "power:ECSTASY": {
+  "变化": null,
+  "喜悦": "card:JOY",
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "power:ENERGY_NEXT_TURN": {
+  "能量": "keyword:ENERGY"
+ },
+ "power:ENNUI": {
+  "悲伤": null,
+  "手牌": null
+ },
+ "power:ENRAGE": {
+  "力量": null
+ },
+ "power:ENTROPY": {
+  "变化": "keyword:TRANSFORM",
+  "手牌": null
+ },
+ "power:ENVENOM": {
+  "中毒": "power:POISON"
+ },
+ "power:EXPLOSIVE_ARROWS": {
+  "扎穿": "power:IMPALED"
+ },
+ "power:FAN_OF_KNIVES": {
+  "小刀": null
+ },
+ "power:FASTEN": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:FEEL_NO_PAIN": {
+  "格挡": "keyword:BLOCK",
+  "消耗": null
+ },
+ "power:FERAL": {
+  "手牌": null
+ },
+ "power:FLUTTER": {
+  "50%": null,
+  "击晕": null
+ },
+ "power:FOCUS_DOWN": {
+  "集中": null
+ },
+ "power:FORBIDDEN_GRIMOIRE": {
+  "牌组": null
+ },
+ "power:FOREGONE_CONCLUSION": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "power:FRAIL": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:FRIENDSHIP": {
+  "能量": "keyword:ENERGY"
+ },
+ "power:FURNACE": {
+  "铸造": "keyword:FORGE"
+ },
+ "power:GALVANIC": {
+  "流电": "affliction:GALVANIZED"
+ },
+ "power:HAILSTORM": {
+  "冰霜": "keyword:FROST_ORB"
+ },
+ "power:HAMMER_TIME": {
+  "铸造": "keyword:FORGE"
+ },
+ "power:HANG": {
+  "吊杀": "card:HANG"
+ },
+ "power:HARD_TO_KILL": {
+  "外骨骼虫": null
+ },
+ "power:HAUNT": {
+  "灵魂": null
+ },
+ "power:HEIST": {
+  "金币": null
+ },
+ "power:HELLO_WORLD": {
+  "手牌": null
+ },
+ "power:HEX": {
+  "虚无": "keyword:ETHEREAL"
+ },
+ "power:HIBERNATE": {
+  "冰霜": "keyword:FROST_ORB",
+  "格挡": "keyword:BLOCK"
+ },
+ "power:HIDDEN_ROOTS": {
+  "拉伸": "power:STRETCH"
+ },
+ "power:HIGH_VOLTAGE": {
+  "力量": "power:STRENGTH"
+ },
+ "power:HONING": {
+  "箭矢": null
+ },
+ "power:IMBALANCED": {
+  "击晕": null
+ },
+ "power:IMPALED": {
+  "扎穿": "power:IMPALED",
+  "松脱": null,
+  "箭矢": null
+ },
+ "power:IMPROVEMENT": {
+  "升级": null
+ },
+ "power:INFINITE_BLADES": {
+  "小刀": "card:SHIV",
+  "手牌": null
+ },
+ "power:JUGGERNAUT": {
+  "格挡": null
+ },
+ "power:JUGGLING": {
+  "手牌": null
+ },
+ "power:LAGAVULIN_MATRIARCH_DOMINION": {
+  "力量": "power:STRENGTH",
+  "敏捷": "power:DEXTERITY"
+ },
+ "power:LIGHTNING_ROD": {
+  "生成": "keyword:CHANNELING",
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "power:LOST_LUTE": {
+  "抽牌堆": null,
+  "旋律": null
+ },
+ "power:LULLABY": {
+  "旋律": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "power:MASTER_PLANNER": {
+  "奇巧": null
+ },
+ "power:MAYHEM": {
+  "抽牌堆": null,
+  "抽牌堆顶部的": null
+ },
+ "power:MELANCHOLY": {
+  "灾厄": null
+ },
+ "power:MONARCHS_GAZE": {
+  "力量": null
+ },
+ "power:MONOLOGUE": {
+  "力量": "power:STRENGTH"
+ },
+ "power:MOTIF": {
+  "旋律": null
+ },
+ "power:MYTHIC_FORM": {
+  "塔罗牌": "keyword:TAROT",
+  "手牌": null
+ },
+ "power:NECRO_MASTERY": {
+  "奥斯提": null
+ },
+ "power:NEMESIS": {
+  "无实体": null
+ },
+ "power:NEUROSURGE": {
+  "灾厄": "power:DOOM"
+ },
+ "power:NIGHTMARE": {
+  "手牌": null
+ },
+ "power:NOSTALGIA": {
+  "抽牌堆": null
+ },
+ "power:NOXIOUS_FUMES": {
+  "中毒": "power:POISON"
+ },
+ "power:NO_BLOCK": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:NO_ESCAPE": {
+  "灾厄": null
+ },
+ "power:OBLIVION": {
+  "灾厄": null
+ },
+ "power:ORB_GENERATOR": {
+  "充能球": null
+ },
+ "power:PAGESTORM": {
+  "虚无": "keyword:ETHEREAL"
+ },
+ "power:PAINFUL_STABS": {
+  "伤口": "card:WOUND",
+  "弃牌堆": null
+ },
+ "power:PAPER_CUTS": {
+  "最大生命": null
+ },
+ "power:PARRY": {
+  "君王之剑": null,
+  "格挡": null
+ },
+ "power:PERSONAL_HIVE": {
+  "抽牌堆": null,
+  "晕眩": "card:DAZED"
+ },
+ "power:PHANTOM_BLADES": {
+  "保留": "keyword:RETAIN",
+  "小刀": "card:SHIV"
+ },
+ "power:PILLAR_OF_CREATION": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:PLATING": {
+  "格挡": "keyword:BLOCK",
+  "覆甲": "power:PLATING"
+ },
+ "power:PLOW": {
+  "击晕": "keyword:STUN",
+  "力量": "power:STRENGTH"
+ },
+ "power:POISON": {
+  "中毒": "power:POISON"
+ },
+ "power:POSSESS_SPEED": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "power:POSSESS_STRENGTH": {
+  "力量": "power:STRENGTH"
+ },
+ "power:PREP_TIME": {
+  "活力": null
+ },
+ "power:PYRE": {
+  "能量": "keyword:ENERGY"
+ },
+ "power:QUIETUS": {
+  "射击": null
+ },
+ "power:RADIANCE": {
+  "能量": "keyword:ENERGY"
+ },
+ "power:RAGE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:RAMPART": {
+  "格挡": null
+ },
+ "power:RAVENOUS": {
+  "击晕": "keyword:STUN",
+  "力量": "power:STRENGTH"
+ },
+ "power:READ_THE_BONES": {
+  "召唤": null
+ },
+ "power:REAPER_FORM": {
+  "灾厄": "power:DOOM"
+ },
+ "power:REBOUND": {
+  "抽牌堆": null
+ },
+ "power:REFLECTIVE_FORTRESS": {
+  "格挡": null
+ },
+ "power:REGEN": {
+  "再生": "power:REGEN"
+ },
+ "power:RESERVES": {
+  "能量": null
+ },
+ "power:RESTORE_DEXTERITY": {
+  "敏捷": null
+ },
+ "power:RESTORE_FOCUS": {
+  "集中": null
+ },
+ "power:RETAIN_HAND": {
+  "保留": null,
+  "手牌": null
+ },
+ "power:RITUAL": {
+  "力量": "power:STRENGTH"
+ },
+ "power:ROYALTIES": {
+  "金币": null
+ },
+ "power:RUPTURE": {
+  "力量": "power:STRENGTH"
+ },
+ "power:SANDPIT": {
+  "无厌沙虫": null
+ },
+ "power:SEEKING_EDGE": {
+  "君王之剑": "card:SOVEREIGN_BLADE"
+ },
+ "power:SELF_FORMING_CLAY": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:SENTRY_MODE": {
+  "手牌": null,
+  "扫荡凝视": "card:SWEEPING_GAZE"
+ },
+ "power:SERRATED_ARROWS": {
+  "扎穿": "power:IMPALED"
+ },
+ "power:SHADOWMELD": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:SHARP_EDGE": {
+  "升级": null,
+  "小刀": null
+ },
+ "power:SHOW_OFF": {
+  "炫技": "power:SHOW_OFF",
+  "瞄准": null
+ },
+ "power:SHRIEK": {
+  "击晕": "keyword:STUN"
+ },
+ "power:SHROUD": {
+  "格挡": null,
+  "灾厄": "power:DOOM"
+ },
+ "power:SIC_EM": {
+  "召唤": "keyword:SUMMON_STATIC",
+  "奥斯提": null
+ },
+ "power:SIMPLETON": {
+  "手牌": null
+ },
+ "power:SKITTISH": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:SNEAKY": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:SOAR": {
+  "50%": null
+ },
+ "power:SONG_PATH": {
+  "啾 旋律": "keyword:CHO_MELODY",
+  "格挡": "keyword:BLOCK"
+ },
+ "power:SOULBOUND": {
+  "抽牌堆": null,
+  "灵魂": "card:SOUL"
+ },
+ "power:SOW": {
+  "保留": null,
+  "手牌": null
+ },
+ "power:SPECTRUM_SHIFT": {
+  "手牌": null
+ },
+ "power:SPINNER": {
+  "玻璃充能球": null,
+  "生成": "keyword:CHANNELING"
+ },
+ "power:SPIRIT_OF_ASH": {
+  "格挡": "keyword:BLOCK",
+  "虚无": "keyword:ETHEREAL"
+ },
+ "power:STAMPEDE": {
+  "手牌": null
+ },
+ "power:STORM": {
+  "生成": "keyword:CHANNELING",
+  "闪电充能球": null
+ },
+ "power:STRATAGEM": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "power:STRETCH": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:SUCK": {
+  "力量": "power:STRENGTH"
+ },
+ "power:SUMMON_NEXT_TURN": {
+  "召唤": "keyword:SUMMON_STATIC"
+ },
+ "power:SWORD_SAGE": {
+  "君王之剑": "card:SOVEREIGN_BLADE",
+  "重放": "keyword:REPLAY"
+ },
+ "power:TANGLED": {
+  "能量": null
+ },
+ "power:TAUNT": {
+  "易伤": null
+ },
+ "power:TEMPORARY_DEXTERITY": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "power:TEMPORARY_DEXTERITY_DOWN": {
+  "敏捷": null
+ },
+ "power:TEMPORARY_FOCUS": {
+  "集中": "power:FOCUS"
+ },
+ "power:TEMPORARY_FOCUS_DOWN": {
+  "集中": null
+ },
+ "power:TEMPORARY_STRENGTH": {
+  "力量": "power:STRENGTH"
+ },
+ "power:TEMPORARY_STRENGTH_DOWN": {
+  "力量": null
+ },
+ "power:TEMPORARY_THORNS": {
+  "荆棘": "power:THORNS"
+ },
+ "power:TENDER": {
+  "力量": "power:STRENGTH",
+  "敏捷": "power:DEXTERITY"
+ },
+ "power:TERRITORIAL": {
+  "力量": "power:STRENGTH"
+ },
+ "power:TEZCATARAS_BLIGHT": {
+  "力量": null
+ },
+ "power:THIEVERY": {
+  "金币": null
+ },
+ "power:THUNDER": {
+  "激发闪电": null,
+  "激发闪电充能球": null
+ },
+ "power:TORIC_TOUGHNESS": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:TRACKING": {
+  "虚弱": "power:WEAK"
+ },
+ "power:TRASH_TO_TREASURE": {
+  "生成": null
+ },
+ "power:TUNE": {
+  "升级": null,
+  "叽 旋律": "keyword:KI_MELODY",
+  "手牌": null
+ },
+ "power:TYRANNY": {
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "power:UNDERWORLD": {
+  "灾厄": "power:DOOM"
+ },
+ "power:UNMOVABLE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "power:UNSTEADY": {
+  "击晕": null
+ },
+ "power:VEILPIERCER": {
+  "虚无": "keyword:ETHEREAL"
+ },
+ "power:VICIOUS": {
+  "易伤": "power:VULNERABLE"
+ },
+ "power:VIOLENT_CHORD": {
+  "哇 旋律": "keyword:WAH_MELODY"
+ },
+ "power:VITAL_SPARK": {
+  "技能": null,
+  "污染": "affliction:TAINTED"
+ },
+ "power:WASTE_AWAY": {
+  "能量": "keyword:ENERGY"
+ },
+ "power:WELL_LAID_PLANS": {
+  "手牌": null
+ },
+ "power:WINGED_JUMP": {
+  "易伤": null
+ },
+ "power:WITHERING_PRESENCE": {
+  "凋萎": null,
+  "手牌": null
+ },
+ "power:WRAITH_FORM": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "power:WUPPYS_LOYALTY": {
+  "瓦皮": null
+ },
+ "power:YAH": {
+  "松脱": null,
+  "箭矢": null
+ },
+ "power:YOU_ARE_MINE": {
+  "易伤": "power:VULNERABLE",
+  "脆弱": "power:FRAIL",
+  "虚弱": "power:WEAK"
+ },
+ "relic:AKABEKO": {
+  "活力": "power:VIGOR"
+ },
+ "relic:ALCHEMICAL_COFFER": {
+  "药水": null
+ },
+ "relic:AMETHYST_AUBERGINE": {
+  "金币": null
+ },
+ "relic:ANCHOR": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:ARCANE_SCROLL": {
+  "牌组": null,
+  "稀有牌": null
+ },
+ "relic:ARCHAIC_TOOTH": {
+  "变化": null
+ },
+ "relic:ASTROLABE": {
+  "升级": null,
+  "变化": null
+ },
+ "relic:BAG_OF_MARBLES": {
+  "易伤": "power:VULNERABLE"
+ },
+ "relic:BATH_ROBES": {
+  "Boss": null
+ },
+ "relic:BEAUTIFUL_BRACELET": {
+  "牌组": null,
+  "附魔": null
+ },
+ "relic:BELLOWS": {
+  "升级": null,
+  "手牌": null
+ },
+ "relic:BELT_BUCKLE": {
+  "敏捷": "power:DEXTERITY",
+  "药水": null
+ },
+ "relic:BIG_HAT": {
+  "手牌": null,
+  "虚无": "keyword:ETHEREAL"
+ },
+ "relic:BIIIG_HUG": {
+  "抽牌堆": null,
+  "煤灰": "card:SOOT",
+  "牌组": null
+ },
+ "relic:BING_BONG": {
+  "牌组": null
+ },
+ "relic:BIZARRE_LAMP": {
+  "喜悦": "card:JOY",
+  "悲伤": "card:SADNESS",
+  "手牌": null
+ },
+ "relic:BLACK_STAR": {
+  "精英": null
+ },
+ "relic:BLESSED_ANTLER": {
+  "抽牌堆": null,
+  "晕眩": "card:DAZED"
+ },
+ "relic:BLOOD_SOAKED_ROSE": {
+  "牌组": null
+ },
+ "relic:BONE_FLUTE": {
+  "奥斯提": null,
+  "格挡": null
+ },
+ "relic:BONE_TEA": {
+  "升级": null
+ },
+ "relic:BOOKMARK": {
+  "保留": "keyword:RETAIN"
+ },
+ "relic:BOOK_OF_FIVE_RINGS": {
+  "牌组": null
+ },
+ "relic:BOOK_REPAIR_KNIFE": {
+  "灾厄": "power:DOOM"
+ },
+ "relic:BOOMING_CONCH": {
+  "精英": null
+ },
+ "relic:BOUND_PHYLACTERY": {
+  "召唤": "keyword:SUMMON_STATIC"
+ },
+ "relic:BOWLER_HAT": {
+  "金币": null
+ },
+ "relic:BRIMSTONE": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:BRONZE_SCALES": {
+  "荆棘": "power:THORNS"
+ },
+ "relic:BURNING_STICKS": {
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "relic:BYRDINE": {
+  "变化": null,
+  "小异鸟": "relic:BYRDINE",
+  "异鸟扑击": "card:BYRD_SWOOP",
+  "异鸟猛击": "card:GOD_BYRD"
+ },
+ "relic:BYRDPIP": {
+  "休息处": null,
+  "异鸟宝宝": "relic:BYRDPIP",
+  "异鸟扑击": "card:BYRD_SWOOP"
+ },
+ "relic:CALLING_BELL": {
+  "遗物": null
+ },
+ "relic:CAPTAINS_WHEEL": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:CAULDRON": {
+  "药水": null
+ },
+ "relic:CHARONS_ASHES": {
+  "消耗": null
+ },
+ "relic:CHOICES_PARADOX": {
+  "保留": "keyword:RETAIN",
+  "手牌": null
+ },
+ "relic:CIRCLET": {
+  "高塔": null
+ },
+ "relic:CLAWS": {
+  "变化": null,
+  "撕咬": "card:MAUL"
+ },
+ "relic:CLOAK_CLASP": {
+  "手牌": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:CONDUCTORS_BATON": {
+  "旋律": null
+ },
+ "relic:CRACKED_CORE": {
+  "生成": "keyword:CHANNELING",
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "relic:CROSSBOW": {
+  "手牌": null,
+  "攻击牌": null
+ },
+ "relic:CURSED_KETTLE": {
+  "力量": null,
+  "精英": null
+ },
+ "relic:CURSED_PEARL": {
+  "金币": null
+ },
+ "relic:DATA_DISK": {
+  "集中": "power:FOCUS"
+ },
+ "relic:DAUGHTER_OF_THE_WIND": {
+  "格挡": null
+ },
+ "relic:DELICATE_FROND": {
+  "药水": null
+ },
+ "relic:DIAMOND_DIADEM": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:DISTINGUISHED_CAPE": {
+  "灵体": "card:APPARITION",
+  "牌组": null
+ },
+ "relic:DOLLYS_MIRROR": {
+  "复制": null,
+  "牌组": null
+ },
+ "relic:DOWSING_ROD": {
+  "探寻": "card:DOWSING",
+  "牌组": null
+ },
+ "relic:DRAGON_FRUIT": {
+  "金币": null
+ },
+ "relic:DREAM_CATCHER": {
+  "休息": null,
+  "牌组": null
+ },
+ "relic:DUSTY_TOME": {
+  "先古牌": null
+ },
+ "relic:ECTOPLASM": {
+  "金币": null
+ },
+ "relic:ELECTRIC_SHRYMP": {
+  "附魔": null
+ },
+ "relic:EMBER_TEA": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:EMPTY_CAGE": {
+  "牌组": null
+ },
+ "relic:ENDLESS_APPETITE": {
+  "力量": null,
+  "消耗": null
+ },
+ "relic:ETERNAL_FEATHER": {
+  "休息处": null,
+  "牌组": null
+ },
+ "relic:EXERCISE_MAT": {
+  "拉伸": "power:STRETCH"
+ },
+ "relic:FAKE_ANCHOR": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:FAKE_ORICHALCUM": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:FAKE_VENERABLE_TEA_SET": {
+  "休息处": null
+ },
+ "relic:FENCING_MANUAL": {
+  "铸造": "keyword:FORGE"
+ },
+ "relic:FERTILIZER": {
+  "力量": "power:STRENGTH",
+  "悲伤": "card:SADNESS"
+ },
+ "relic:FISHING_ROD": {
+  "升级": null,
+  "牌组": null
+ },
+ "relic:FORGOTTEN_SOUL": {
+  "消耗": null
+ },
+ "relic:FRAGRANT_MUSHROOM": {
+  "升级": null
+ },
+ "relic:FRESNEL_LENS": {
+  "格挡": null,
+  "牌组": null,
+  "附魔": null
+ },
+ "relic:FROZEN_EGG": {
+  "升级": null
+ },
+ "relic:FUNERARY_MASK": {
+  "抽牌堆": null,
+  "灵魂": "card:SOUL"
+ },
+ "relic:GALACTIC_DUST": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:GHOST_SEED": {
+  "打击": null,
+  "虚无": "keyword:ETHEREAL",
+  "防御": null
+ },
+ "relic:GIRYA": {
+  "休息处": null,
+  "力量": "power:STRENGTH"
+ },
+ "relic:GLASS_EYE": {
+  "普通": null,
+  "稀有": null,
+  "罕见": null
+ },
+ "relic:GLITTER": {
+  "附魔": null
+ },
+ "relic:GLOWING_ORB": {
+  "精英": null
+ },
+ "relic:GNARLED_HAMMER": {
+  "牌组": null,
+  "附魔": null
+ },
+ "relic:GOLDEN_COMPASS": {
+  "阶段": null
+ },
+ "relic:GOLDEN_PEARL": {
+  "金币": null
+ },
+ "relic:GORGET": {
+  "覆甲": "power:PLATING"
+ },
+ "relic:HAND_DRILL": {
+  "易伤": "power:VULNERABLE",
+  "格挡": null
+ },
+ "relic:HEFTY_TABLET": {
+  "牌组": null
+ },
+ "relic:HELICAL_DART": {
+  "小刀": "card:SHIV",
+  "敏捷": "power:DEXTERITY"
+ },
+ "relic:HORN_CLEAT": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:INFUSED_CORE": {
+  "生成": "keyword:CHANNELING",
+  "闪电": "keyword:LIGHTNING_ORB"
+ },
+ "relic:INTIMIDATING_HELMET": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:JEWELED_MASK": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "relic:JEWELRY_BOX": {
+  "牌组": null,
+  "神化": "card:APOTHEOSIS"
+ },
+ "relic:JOSS_PAPER": {
+  "消耗": "keyword:EXHAUST"
+ },
+ "relic:JUZU_BRACELET": {
+  "?": null
+ },
+ "relic:KIFUDA": {
+  "牌组": null,
+  "附魔": null
+ },
+ "relic:KUNAI": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "relic:LARGE_CAPSULE": {
+  "打击": null,
+  "牌组": null,
+  "遗物": null,
+  "防御": null
+ },
+ "relic:LAVA_LAMP": {
+  "升级": null
+ },
+ "relic:LAVA_ROCK": {
+  "遗物": null,
+  "阶段": null
+ },
+ "relic:LEAD_PAPERWEIGHT": {
+  "牌组": null
+ },
+ "relic:LEAFY_POULTICE": {
+  "变化": "keyword:TRANSFORM",
+  "打击": null,
+  "防御": null
+ },
+ "relic:LORDS_PARASOL": {
+  "商人": null
+ },
+ "relic:LOST_COFFER": {
+  "药水": null
+ },
+ "relic:LUCKY_FYSH": {
+  "牌组": null,
+  "金币": null
+ },
+ "relic:MASSIVE_SCROLL": {
+  "多人游戏牌": null,
+  "牌组": null
+ },
+ "relic:MAW_BANK": {
+  "金币": null
+ },
+ "relic:MEAT_CLEAVER": {
+  "烹饪": "keyword:COOK"
+ },
+ "relic:METRONOME": {
+  "充能球": null,
+  "生成": null
+ },
+ "relic:MIGHTY_WINGS": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:MINIATURE_CANNON": {
+  "升级": null
+ },
+ "relic:MINIATURE_TENT": {
+  "休息处": null
+ },
+ "relic:MINI_REGENT": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:MOLTEN_EGG": {
+  "升级": null,
+  "攻击牌": null
+ },
+ "relic:MUMMIFIED_HAND": {
+  "手牌": null
+ },
+ "relic:MUSIC_BOX": {
+  "虚无": "keyword:ETHEREAL"
+ },
+ "relic:MYSTERIOUS_COCOON": {
+  "扎穿": null,
+  "训练打击": null
+ },
+ "relic:MYSTIC_LIGHTER": {
+  "附魔": null
+ },
+ "relic:NEOWS_BONES": {
+  "涅奥plural:遗物": null,
+  "涅奥遗物": null,
+  "牌组": null
+ },
+ "relic:NEOWS_SACRIFICE": {
+  "牌组": null,
+  "龙涎香": "potion:AMBERGRIS"
+ },
+ "relic:NEOWS_TALISMAN": {
+  "升级": null,
+  "打击": null,
+  "防御": null
+ },
+ "relic:NEOWS_TORMENT": {
+  "涅奥之怒": "card:NEOWS_FURY",
+  "牌组": null
+ },
+ "relic:NEW_LEAF": {
+  "变化": "keyword:TRANSFORM"
+ },
+ "relic:NINJA_SCROLL": {
+  "小刀": "card:SHIV",
+  "手牌": null
+ },
+ "relic:NUTRITIOUS_SOUP": {
+  "打击": null,
+  "牌组": null,
+  "附魔": null
+ },
+ "relic:OBSIDIAN_VICE": {
+  "手牌": null
+ },
+ "relic:OCARINA": {
+  "手牌": null
+ },
+ "relic:ODDLY_SMOOTH_STONE": {
+  "敏捷": "power:DEXTERITY"
+ },
+ "relic:OLD_COIN": {
+  "金币": null
+ },
+ "relic:ORANGE_DOUGH": {
+  "手牌": null
+ },
+ "relic:ORICHALCUM": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:ORNAMENTAL_FAN": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:PAELS_CLAW": {
+  "防御": null,
+  "附魔": null
+ },
+ "relic:PAELS_EYE": {
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "relic:PAELS_GROWTH": {
+  "牌组": null,
+  "附魔": null
+ },
+ "relic:PAELS_HORN": {
+  "放松": "card:RELAX",
+  "牌组": null
+ },
+ "relic:PAELS_LEGION": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:PAELS_TOOTH": {
+  "升级": null,
+  "牌组": null
+ },
+ "relic:PAELS_WING": {
+  "遗物": null
+ },
+ "relic:PANDORAS_BOX": {
+  "变化": null,
+  "打击": null,
+  "潘多拉魔盒": "relic:PANDORAS_BOX",
+  "防御": null
+ },
+ "relic:PANTOGRAPH": {
+  "Boss": null
+ },
+ "relic:PAPER_KRANE": {
+  "虚弱": "power:WEAK"
+ },
+ "relic:PAPER_PHROG": {
+  "易伤": "power:VULNERABLE"
+ },
+ "relic:PARRYING_SHIELD": {
+  "格挡": null
+ },
+ "relic:PERMAFROST": {
+  "格挡": null
+ },
+ "relic:PETRIFIED_TOAD": {
+  "药水形状的石头": "potion:POTION_SHAPED_ROCK"
+ },
+ "relic:PHIAL_HOLSTER": {
+  "药水": null
+ },
+ "relic:PHILOSOPHERS_STONE": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:PHYLACTERY_UNBOUND": {
+  "召唤": "keyword:SUMMON_STATIC"
+ },
+ "relic:PLANISPHERE": {
+  "？": null
+ },
+ "relic:POMANDER": {
+  "升级": null
+ },
+ "relic:POWER_CELL": {
+  "手牌": null,
+  "抽牌堆": null
+ },
+ "relic:PRECARIOUS_SHEARS": {
+  "牌组": null
+ },
+ "relic:PRECISE_SCISSORS": {
+  "牌组": null
+ },
+ "relic:PRESERVED_FOG": {
+  "牌组": null
+ },
+ "relic:PUMPKIN_CANDLE": {
+  "休息处": null,
+  "添火": null
+ },
+ "relic:PUNCH_DAGGER": {
+  "附魔": null
+ },
+ "relic:RADIANT_PEARL": {
+  "冷光": "card:LUMINESCE",
+  "手牌": null
+ },
+ "relic:RAINBOW_RING": {
+  "力量": "power:STRENGTH",
+  "敏捷": "power:DEXTERITY"
+ },
+ "relic:RAZOR_TOOTH": {
+  "升级": null
+ },
+ "relic:RED_MASK": {
+  "虚弱": "power:WEAK"
+ },
+ "relic:RED_SKULL": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:REGALITE": {
+  "格挡": null
+ },
+ "relic:REGAL_PILLOW": {
+  "休息": null
+ },
+ "relic:REPTILE_TRINKET": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:RINGING_TRIANGLE": {
+  "保留": "keyword:RETAIN",
+  "手牌": null
+ },
+ "relic:RIPPLE_BASIN": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:ROYAL_STAMP": {
+  "牌组": null,
+  "附魔": null
+ },
+ "relic:RUINED_HELMET": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:RUNIC_CAPACITOR": {
+  "充能球栏位": null
+ },
+ "relic:RUNIC_PYRAMID": {
+  "手牌": null
+ },
+ "relic:SAI": {
+  "格挡": null
+ },
+ "relic:SAND_CASTLE": {
+  "升级": null
+ },
+ "relic:SCREAMING_FLAGON": {
+  "手牌": null
+ },
+ "relic:SCROLL_BOXES": {
+  "牌组": null
+ },
+ "relic:SEAL_OF_GOLD": {
+  "金币": null
+ },
+ "relic:SEA_GLASS": {
+  "牌组": null
+ },
+ "relic:SELF_FORMING_CLAY": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:SERE_TALON": {
+  "牌组": null
+ },
+ "relic:SHOVEL": {
+  "休息处": null,
+  "遗物": null
+ },
+ "relic:SHURIKEN": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:SIGNET_RING": {
+  "金币": null
+ },
+ "relic:SILKEN_TRESS": {
+  "金币": null,
+  "附魔": null
+ },
+ "relic:SILVER_CRUCIBLE": {
+  "升级": null
+ },
+ "relic:SLING_OF_COURAGE": {
+  "力量": "power:STRENGTH",
+  "精英": null
+ },
+ "relic:SMALL_CAPSULE": {
+  "遗物": null
+ },
+ "relic:SNECKO_SKULL": {
+  "中毒": "power:POISON"
+ },
+ "relic:SONG_BOW": {
+  "瞄准": "power:AIM"
+ },
+ "relic:SOZU": {
+  "药水": null
+ },
+ "relic:SPARKLING_ROUGE": {
+  "力量": "power:STRENGTH",
+  "敏捷": "power:DEXTERITY"
+ },
+ "relic:STONE_CRACKER": {
+  "升级": null,
+  "抽牌堆": null
+ },
+ "relic:STONE_HUMIDIFIER": {
+  "休息": null,
+  "休息处": null
+ },
+ "relic:STORYBOOK": {
+  "牌组": null,
+  "至亮之焰": "card:BRIGHTEST_FLAME"
+ },
+ "relic:STORYTELLER": {
+  "瞄准": "power:AIM"
+ },
+ "relic:STURDY_CLAMP": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:SWORD_OF_JADE": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:SWORD_OF_STONE": {
+  "精英": null,
+  "遗物": null
+ },
+ "relic:SYMBIOTIC_VIRUS": {
+  "生成": "keyword:CHANNELING",
+  "黑暗": "keyword:DARK_ORB"
+ },
+ "relic:TANXS_WHISTLE": {
+  "吹哨": "card:WHISTLE",
+  "牌组": null
+ },
+ "relic:TEA_OF_DISCOURTESY": {
+  "抽牌堆": null,
+  "晕眩": "card:DAZED"
+ },
+ "relic:THE_ABACUS": {
+  "抽牌堆": null,
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:TINY_MAILBOX": {
+  "休息": null,
+  "药水": null
+ },
+ "relic:TOASTY_MITTENS": {
+  "力量": "power:STRENGTH",
+  "手牌": null,
+  "消耗": "keyword:EXHAUST"
+ },
+ "relic:TOOLBOX": {
+  "手牌": null
+ },
+ "relic:TORMENTOUS_COLLAR": {
+  "虚弱": "power:WEAK"
+ },
+ "relic:TOUCH_OF_OROBAS": {
+  "先古": null,
+  "遗物": null
+ },
+ "relic:TOUGH_BANDAGES": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:TOXIC_EGG": {
+  "升级": null,
+  "技能牌": null
+ },
+ "relic:TOY_BOX": {
+  "蜡制遗物": null
+ },
+ "relic:TRI_BOOMERANG": {
+  "牌组": null,
+  "附魔": null
+ },
+ "relic:TUNING_FORK": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:TWINE": {
+  "松脱": null,
+  "格挡": "keyword:BLOCK",
+  "箭矢": "keyword:ARROW"
+ },
+ "relic:TWISTED_FUNNEL": {
+  "中毒": "power:POISON"
+ },
+ "relic:UNCEASING_TOP": {
+  "手牌": null
+ },
+ "relic:UNDYING_SIGIL": {
+  "灾厄": "power:DOOM"
+ },
+ "relic:UNSETTLING_LAMP": {
+  "负面状态": null
+ },
+ "relic:VAJRA": {
+  "力量": "power:STRENGTH"
+ },
+ "relic:VAMBRACE": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:VENERABLE_TEA_SET": {
+  "休息处": null
+ },
+ "relic:VEXING_PUZZLEBOX": {
+  "手牌": null
+ },
+ "relic:VITRUVIAN_MINION": {
+  "格挡": "keyword:BLOCK"
+ },
+ "relic:WAR_HAMMER": {
+  "升级": null,
+  "精英": null
+ },
+ "relic:WAR_PAINT": {
+  "升级": null
+ },
+ "relic:WHETSTONE": {
+  "升级": null
+ },
+ "relic:WHITE_BEAST_STATUE": {
+  "药水": null
+ },
+ "relic:WHITE_STAR": {
+  "稀有": null,
+  "精英": null
+ },
+ "relic:WHITTLING_KNIFE": {
+  "抽牌堆": null,
+  "瞄准": "power:AIM"
+ },
+ "relic:WING_CHARM": {
+  "附魔": null
+ },
+ "relic:WONGOS_MYSTERY_TICKET": {
+  "遗物": null
+ },
+ "relic:WUPPY": {
+  "瓦皮": "relic:WUPPY"
+ },
+ "relic:YUMMY_COOKIE": {
+  "升级": null
+ }
+}

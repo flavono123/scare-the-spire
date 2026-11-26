@@ -226,6 +226,8 @@ export interface CodexBlitzEntry {
 
 /** A Dread mode boss's dominion over its act (ascension DREAD.*). */
 export interface CodexDominion {
+  /** Gold words and the game tip each names, or null (scripts/generate-game-tips.py). */
+  goldTips?: Record<string, string | null>;
   id: string;
   /** Boss encounter that brings it. */
   encounterId: string;
@@ -432,6 +434,8 @@ export type RelicPool =
   | "fool";
 
 export interface CodexRelic extends CodexLifecycle {
+  /** Gold words and the game tip each names, or null (scripts/generate-game-tips.py). */
+  goldTips?: Record<string, string | null>;
   id: string;
   name: string; // Korean
   nameEn: string; // English
@@ -687,6 +691,8 @@ export const POWER_STACK_TYPE_ALIASES: Record<string, PowerStackType> = {
 
 // Enchantment types
 export interface CodexEnchantment extends CodexLifecycle {
+  /** Gold words and the game tip each names, or null (scripts/generate-game-tips.py). */
+  goldTips?: Record<string, string | null>;
   id: string;
   name: string;        // Korean
   nameEn: string;      // English
@@ -704,6 +710,8 @@ export interface CodexEnchantment extends CodexLifecycle {
 
 // Affliction types
 export interface CodexAffliction extends CodexLifecycle {
+  /** Gold words and the game tip each names, or null (scripts/generate-game-tips.py). */
+  goldTips?: Record<string, string | null>;
   id: string;
   name: string;        // selected game locale
   nameEn: string;      // English

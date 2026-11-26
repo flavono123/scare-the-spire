@@ -1,0 +1,4274 @@
+{
+ "affliction:BOUND": {
+  "구속": "affliction:BOUND"
+ },
+ "affliction:HEXED": {
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "affliction:SMOG": {
+  "스킬": null
+ },
+ "affliction:TAINTED": {
+  "훼손됨": "power:TAINTED"
+ },
+ "ancient:NEOW": {
+  "“키...!”": null
+ },
+ "ancient:VAKUU": {
+  "바쿠": null
+ },
+ "ascension:BLITZ": {
+  "덱": null
+ },
+ "ascension:DREAD_RULE_02": {
+  "덱": null
+ },
+ "ascension:LEVEL_01": {
+  "엘리트": null
+ },
+ "ascension:LEVEL_03": {
+  "골드": null
+ },
+ "ascension:LEVEL_10": {
+  "막": null
+ },
+ "badge:KACHING": {
+  "골드": null
+ },
+ "badge:MONEY_MONEY": {
+  "골드": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "인챈트": null
+ },
+ "blitz:CARD_PACKS": {
+  "덱": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "덱": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "고급": null,
+  "일반": null,
+  "희귀": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "덱": null,
+  "변화": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "강화": null,
+  "덱": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "무색": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "인챈트": null
+ },
+ "blitz:GLAM": {
+  "인챈트": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "덱": null
+ },
+ "blitz:RELIC": {
+  "유물": null
+ },
+ "blitz:TWO_RELICS": {
+  "유물": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "강화": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "강화": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "강화": null
+ },
+ "card:ABRASIVE": {
+  "가시": "power:THORNS",
+  "민첩": "power:DEXTERITY"
+ },
+ "card:ABUNDANCE": {
+  "강화": null,
+  "손": null,
+  "파워": null
+ },
+ "card:ACCELERANT": {
+  "중독": "power:POISON"
+ },
+ "card:ACCURACY": {
+  "단도": "card:SHIV"
+ },
+ "card:ADAPTIVE_STRIKE": {
+  "버린 카드 더미": null
+ },
+ "card:AFTERIMAGE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:AFTERLIFE": {
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:AGGRESSION": {
+  "강화": null,
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "card:ALL_FOR_ONE": {
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "card:ALL_IS_WELL": {
+  "방어도": "keyword:BLOCK",
+  "슬픔": "card:SADNESS"
+ },
+ "card:ANGER": {
+  "버린 카드 더미": null
+ },
+ "card:ANGUISH": {
+  "슬픔": "card:SADNESS"
+ },
+ "card:ANOINTED": {
+  "뽑을 카드 더미": null,
+  "손": null,
+  "희귀": null
+ },
+ "card:ANTICIPATE": {
+  "민첩": "power:DEXTERITY"
+ },
+ "card:APOTHEOSIS": {
+  "강화": null
+ },
+ "card:APPARITION": {
+  "불가침": "power:INTANGIBLE"
+ },
+ "card:ARCHERY": {
+  "조준": "power:AIM"
+ },
+ "card:ARMAMENTS": {
+  "강화": null,
+  "방어도": "keyword:BLOCK",
+  "손": null
+ },
+ "card:ARROW_STAB": {
+  "조준": "power:AIM"
+ },
+ "card:ARSENAL": {
+  "힘": "power:STRENGTH"
+ },
+ "card:ASHEN_STRIKE": {
+  "소멸된 카드 더미": null
+ },
+ "card:ASSASSINATE": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:BACKFLIP": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:BALL_LIGHTNING": {
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "card:BANSHEES_CRY": {
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "card:BARRAGE": {
+  "영창": "keyword:CHANNELING"
+ },
+ "card:BARRICADE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:BASH": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:BEACON_OF_HOPE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:BEAM_CELL": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:BEAT_DOWN": {
+  "버린 카드 더미": null
+ },
+ "card:BEAT_INTO_SHAPE": {
+  "단조": "keyword:FORGE"
+ },
+ "card:BECKON": {
+  "손": null
+ },
+ "card:BEGONE": {
+  "변화": null,
+  "손": null,
+  "하수인 타격": "card:MINION_STRIKE",
+  "하수인 타격+": "card:MINION_STRIKE"
+ },
+ "card:BIASED_COGNITION": {
+  "밀집": "power:FOCUS"
+ },
+ "card:BIG_BANG": {
+  "단조": "keyword:FORGE"
+ },
+ "card:BLADE_DANCE": {
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "card:BLADE_OF_INK": {
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "card:BLADE_SYMPHONY": {
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "card:BLAZE": {
+  "힘": "power:STRENGTH"
+ },
+ "card:BLIGHT_STRIKE": {
+  "종말": "power:DOOM"
+ },
+ "card:BLOOD_WALL": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:BLOSSOM_SHOT": {
+  "발사": null,
+  "스트레칭": "power:STRETCH"
+ },
+ "card:BLOT_OUT_THE_SKY": {
+  "발사": null,
+  "손": null
+ },
+ "card:BLUR": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:BODYGUARD": {
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:BODY_SLAM": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:BOLAS": {
+  "손": null
+ },
+ "card:BOMBARDMENT": {
+  "소멸된 카드 더미": null
+ },
+ "card:BONE_SHARDS": {
+  "골골이": null
+ },
+ "card:BOOST_AWAY": {
+  "방어도": "keyword:BLOCK",
+  "버린 카드 더미": null,
+  "어지러움": "card:DAZED"
+ },
+ "card:BOOT_SEQUENCE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:BOUNCE": {
+  "손": null,
+  "스트레칭": "power:STRETCH"
+ },
+ "card:BOUNCING_FLASK": {
+  "중독": "power:POISON"
+ },
+ "card:BOW_SMACK": {
+  "꿰뚫린": "power:IMPALED"
+ },
+ "card:BRACE": {
+  "조준": "power:AIM"
+ },
+ "card:BRAND": {
+  "소멸": "keyword:EXHAUST",
+  "힘": "power:STRENGTH"
+ },
+ "card:BREAK": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:BRIGHTEN_UP": {
+  "기쁨": "card:JOY",
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:BUBBLE_BUBBLE": {
+  "중독": "power:POISON"
+ },
+ "card:BULK_UP": {
+  "민첩": "power:DEXTERITY",
+  "힘": "power:STRENGTH"
+ },
+ "card:BULLET_TIME": {
+  "손": null
+ },
+ "card:BULLY": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:BULWARK": {
+  "단조": "keyword:FORGE",
+  "방어도": "keyword:BLOCK"
+ },
+ "card:BUNDLE_OF_JOY": {
+  "손": null
+ },
+ "card:BURN": {
+  "손": null
+ },
+ "card:BURNING_PACT": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:BYRDONIS_EGG": {
+  "휴식 장소": null
+ },
+ "card:CALAMITY": {
+  "손": null
+ },
+ "card:CALCIFY": {
+  "골골이": null
+ },
+ "card:CALCULATED_GAMBLE": {
+  "손": null
+ },
+ "card:CALL_OF_THE_VOID": {
+  "손": null,
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "card:CAPTURE_SPIRIT": {
+  "뽑을 카드 더미": null,
+  "영혼": "card:SOUL"
+ },
+ "card:CASCADE": {
+  "뽑을 카드 더미": null
+ },
+ "card:CATASTROPHE": {
+  "뽑을 카드 더미": null
+ },
+ "card:CHAOS": {
+  "영창": "keyword:CHANNELING"
+ },
+ "card:CHARGE": {
+  "변화": null,
+  "뽑을 카드 더미": null,
+  "하수인 투하": "card:MINION_DIVE_BOMB",
+  "하수인 투하+": "card:MINION_DIVE_BOMB"
+ },
+ "card:CHARGE_BATTERY": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:CHILD_OF_THE_STARS": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:CHILL": {
+  "냉기": "keyword:FROST_ORB",
+  "영창": "keyword:CHANNELING"
+ },
+ "card:CHO_BARBS": {
+  "가시": "power:THORNS",
+  "방어도": "keyword:BLOCK"
+ },
+ "card:CHO_CHORUS": {
+  "방어도": "keyword:BLOCK",
+  "손": null
+ },
+ "card:CHO_FIRM": {
+  "방어도": "keyword:BLOCK",
+  "화살": "keyword:ARROW"
+ },
+ "card:CHO_KI": {
+  "방어도": "keyword:BLOCK",
+  "스트레칭": "power:STRETCH"
+ },
+ "card:CHO_LIMBS": {
+  "방어도": "keyword:BLOCK",
+  "와 선율": "keyword:WAH_MELODY",
+  "키 선율": "keyword:KI_MELODY"
+ },
+ "card:CHO_READY": {
+  "방어도": "keyword:BLOCK",
+  "조준": "power:AIM"
+ },
+ "card:CHRYSALIS": {
+  "뽑을 카드 더미": null
+ },
+ "card:CINDER": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:CLASH": {
+  "손": null
+ },
+ "card:CLEANSE": {
+  "뽑을 카드 더미": null,
+  "소멸": "keyword:EXHAUST",
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:CLOAK_AND_DAGGER": {
+  "단도": "card:SHIV",
+  "방어도": "keyword:BLOCK",
+  "손": null
+ },
+ "card:CLOAK_OF_STARS": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:CODA": {
+  "선율": null
+ },
+ "card:COLD_SNAP": {
+  "냉기": "keyword:FROST_ORB",
+  "영창": "keyword:CHANNELING"
+ },
+ "card:COLLISION_COURSE": {
+  "손": null,
+  "잔해": "card:DEBRIS"
+ },
+ "card:COLOSSUS": {
+  "방어도": "keyword:BLOCK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:COMET": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:COMPACT": {
+  "방어도": "keyword:BLOCK",
+  "변화": "keyword:TRANSFORM",
+  "손": null,
+  "연료": "card:FUEL",
+  "연료+": "card:FUEL"
+ },
+ "card:CONCOCT": {
+  "중독": "power:POISON"
+ },
+ "card:CONQUEROR": {
+  "군주의 칼날": "card:SOVEREIGN_BLADE",
+  "단조": "keyword:FORGE"
+ },
+ "card:CONSTELLATION": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:CONSUMING_SHADOW": {
+  "발현": "keyword:EVOKE",
+  "암흑": "keyword:DARK_ORB",
+  "영창": "keyword:CHANNELING"
+ },
+ "card:CONVERGENCE": {
+  "보존": "keyword:RETAIN",
+  "손": null
+ },
+ "card:COOLANT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:COOLHEADED": {
+  "냉기": "keyword:FROST_ORB",
+  "영창": "keyword:CHANNELING"
+ },
+ "card:COORDINATE": {
+  "힘": "power:STRENGTH"
+ },
+ "card:CORROSIVE_WAVE": {
+  "중독": "power:POISON"
+ },
+ "card:CORRUPTION": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:COSMIC_INDIFFERENCE": {
+  "방어도": "keyword:BLOCK",
+  "버린 카드 더미": null,
+  "뽑을 카드 더미": null
+ },
+ "card:COUNTDOWN": {
+  "종말": "power:DOOM"
+ },
+ "card:COVERING_FIRE": {
+  "발사": null,
+  "방어도": "keyword:BLOCK"
+ },
+ "card:CRASH_LANDING": {
+  "손": null,
+  "잔해": "card:DEBRIS"
+ },
+ "card:CREATIVE_AI": {
+  "손": null
+ },
+ "card:CRIMSON_MANTLE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:CRUELTY": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:CRUSH_UNDER": {
+  "힘": "power:STRENGTH"
+ },
+ "card:DANSE_MACABRE": {
+  "방어도": null
+ },
+ "card:DARKNESS": {
+  "암흑": "keyword:DARK_ORB",
+  "영창": "keyword:CHANNELING"
+ },
+ "card:DARK_EMBRACE": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:DARK_SHACKLES": {
+  "힘": "power:STRENGTH"
+ },
+ "card:DASH": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEADLY_POISON": {
+  "중독": "power:POISON"
+ },
+ "card:DEATH": {
+  "종말": "power:DOOM"
+ },
+ "card:DEATHBRINGER": {
+  "약화": "power:WEAK",
+  "종말": "power:DOOM"
+ },
+ "card:DEATHS_DOOR": {
+  "방어도": "keyword:BLOCK",
+  "종말": "power:DOOM"
+ },
+ "card:DEBILITATE": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:DEBT": {
+  "골드": null,
+  "손": null
+ },
+ "card:DECAY": {
+  "손": null
+ },
+ "card:DECISIONS_DECISIONS": {
+  "손": null
+ },
+ "card:DEEP_STRETCH": {
+  "스트레칭": "power:STRETCH"
+ },
+ "card:DEFEND_DEFECT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEFEND_FOOL": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEFEND_IRONCLAD": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEFEND_NECROBINDER": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEFEND_REGENT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEFEND_SILENT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEFLECT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEFRAGMENT": {
+  "밀집": "power:FOCUS"
+ },
+ "card:DEFY": {
+  "방어도": "keyword:BLOCK",
+  "약화": "power:WEAK"
+ },
+ "card:DELAY": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEMONIC_SHIELD": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DEMON_FORM": {
+  "힘": "power:STRENGTH"
+ },
+ "card:DEPRECATED_CARD": {
+  "제거": null
+ },
+ "card:DESPAIR": {
+  "방어도": null,
+  "종말": null
+ },
+ "card:DEVOUR_LIFE": {
+  "소환": "keyword:SUMMON_STATIC",
+  "영혼": "card:SOUL"
+ },
+ "card:DIRGE": {
+  "뽑을 카드 더미": null,
+  "소환": "keyword:SUMMON_STATIC",
+  "영혼": "card:SOUL",
+  "영혼+": "card:SOUL"
+ },
+ "card:DISCOVERY": {
+  "손": null
+ },
+ "card:DISLIKE_YOU": {
+  "사격": null
+ },
+ "card:DISMANTLE": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:DISTRACTION": {
+  "손": null
+ },
+ "card:DIVINE_SHOT": {
+  "발사": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:DODGE_AND_ROLL": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:DOMINATE": {
+  "취약": "power:VULNERABLE",
+  "힘": "power:STRENGTH"
+ },
+ "card:DOUBT": {
+  "손": null,
+  "약화": "power:WEAK"
+ },
+ "card:DOWSING": {
+  "?": null,
+  "풍요": "card:ABUNDANCE"
+ },
+ "card:DRAIN_POWER": {
+  "강화": null,
+  "버린 카드 더미": null
+ },
+ "card:DREDGE": {
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "card:DRUM_OF_BATTLE": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:DUALCAST": {
+  "발현": "keyword:EVOKE"
+ },
+ "card:DUAL_WIELD": {
+  "손": null
+ },
+ "card:DYING_STAR": {
+  "힘": "power:STRENGTH"
+ },
+ "card:ECSTASY": {
+  "기쁨": "card:JOY",
+  "변화": null,
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:EIDOLON": {
+  "소멸된 카드 더미": null,
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "card:END_OF_DAYS": {
+  "종말": "power:DOOM"
+ },
+ "card:ENFEEBLING_TOUCH": {
+  "힘": "power:STRENGTH"
+ },
+ "card:ENLIGHTENMENT": {
+  "손": null
+ },
+ "card:ENNUI": {
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:ENRAPTURE": {
+  "스트레칭": "power:STRETCH",
+  "활력": "power:VIGOR"
+ },
+ "card:ENTHRALLED": {
+  "손": null
+ },
+ "card:ENTRENCH": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:ENTROPY": {
+  "변화": "keyword:TRANSFORM",
+  "손": null
+ },
+ "card:ENVENOM": {
+  "중독": "power:POISON"
+ },
+ "card:EPIC_RETRIEVAL": {
+  "화살": "keyword:ARROW",
+  "회수": null
+ },
+ "card:EQUILIBRIUM": {
+  "방어도": "keyword:BLOCK",
+  "보존": "keyword:RETAIN",
+  "손": null
+ },
+ "card:ESCAPE_PLAN": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:ETERNAL_ARMOR": {
+  "판금": "power:PLATING"
+ },
+ "card:EVIL_EYE": {
+  "방어도": "keyword:BLOCK",
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:EXPECT_A_FIGHT": {
+  "방어도": "keyword:BLOCK",
+  "손": null
+ },
+ "card:EXPERTISE": {
+  "보존": "keyword:RETAIN",
+  "손": null
+ },
+ "card:EXPLOSIVE_ARROWS": {
+  "꿰뚫을": "power:IMPALED"
+ },
+ "card:EXPOSE": {
+  "방어도": "keyword:BLOCK",
+  "인공물": "power:ARTIFACT",
+  "취약": "power:VULNERABLE"
+ },
+ "card:FADE": {
+  "민첩": "power:DEXTERITY"
+ },
+ "card:FALLING_STAR": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:FAN_OF_KNIVES": {
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "card:FASTEN": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:FEAR": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:FEED": {
+  "치명타": "keyword:FATAL"
+ },
+ "card:FEEDING_FRENZY": {
+  "힘": "power:STRENGTH"
+ },
+ "card:FEEL_NO_PAIN": {
+  "방어도": "keyword:BLOCK",
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:FERAL": {
+  "손": null
+ },
+ "card:FETCH": {
+  "골골이": null
+ },
+ "card:FIEND_FIRE": {
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "card:FIGHT_ME": {
+  "힘": "power:STRENGTH"
+ },
+ "card:FIGHT_THROUGH": {
+  "방어도": "keyword:BLOCK",
+  "버린 카드 더미": null,
+  "부상": "card:WOUND"
+ },
+ "card:FINESSE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:FISTICUFFS": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:FLAK_CANNON": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:FLAME_BARRIER": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:FLATTEN": {
+  "골골이": null
+ },
+ "card:FLECHETTES": {
+  "손": null
+ },
+ "card:FLORESCENCE": {
+  "변화": null,
+  "손": null,
+  "최후의 한 발": "card:THE_SHOT",
+  "최후의 한 발+": "card:THE_SHOT"
+ },
+ "card:FOCUSED_STRIKE": {
+  "밀집": "power:FOCUS"
+ },
+ "card:FOOLISH_SHOT": {
+  "발사": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:FOOTWORK": {
+  "민첩": "power:DEXTERITY"
+ },
+ "card:FORBIDDEN_GRIMOIRE": {
+  "덱": null
+ },
+ "card:FOREGONE_CONCLUSION": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:FORGOTTEN_RITUAL": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:FRANTIC_ESCAPE": {
+  "모래 구덩이": "power:SANDPIT"
+ },
+ "card:FRIENDSHIP": {
+  "힘": null
+ },
+ "card:FURNACE": {
+  "단조": "keyword:FORGE"
+ },
+ "card:FUSION": {
+  "영창": "keyword:CHANNELING",
+  "플라즈마": "keyword:PLASMA_ORB"
+ },
+ "card:GAMMA_BLAST": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:GATHER_LIGHT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:GENETIC_ALGORITHM": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:GHOST_EATER": {
+  "종말": null
+ },
+ "card:GLACIER": {
+  "냉기": "keyword:FROST_ORB",
+  "방어도": "keyword:BLOCK",
+  "영창": "keyword:CHANNELING"
+ },
+ "card:GLASSWORK": {
+  "방어도": "keyword:BLOCK",
+  "영창": "keyword:CHANNELING",
+  "유리": "keyword:GLASS_ORB"
+ },
+ "card:GLIMMER": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:GLIMPSE_BEYOND": {
+  "뽑을 카드 더미": null,
+  "영혼": "card:SOUL"
+ },
+ "card:GLITTERSTREAM": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:GOOD_INSTINCTS": {
+  "방어도": null
+ },
+ "card:GO_FOR_THE_EYES": {
+  "약화": "power:WEAK"
+ },
+ "card:GRAND_FINALE": {
+  "뽑을 카드 더미": null
+ },
+ "card:GRAVEBLAST": {
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "card:GRAVE_WARDEN": {
+  "방어도": "keyword:BLOCK",
+  "뽑을 카드 더미": null,
+  "영혼": "card:SOUL"
+ },
+ "card:GROWTH": {
+  "방어도": "keyword:BLOCK",
+  "변화": null,
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:GUARDS": {
+  "변화": null,
+  "손": null,
+  "하수인 희생": "card:MINION_SACRIFICE",
+  "하수인 희생+": "card:MINION_SACRIFICE"
+ },
+ "card:GUILTY": {
+  "덱": null
+ },
+ "card:GUNK_UP": {
+  "버린 카드 더미": null,
+  "점액투성이": "card:SLIMED"
+ },
+ "card:HAILSTORM": {
+  "냉기": "keyword:FROST_ORB"
+ },
+ "card:HAMMER_TIME": {
+  "단조": "keyword:FORGE"
+ },
+ "card:HAND_OF_GREED": {
+  "골드": null,
+  "치명타": "keyword:FATAL"
+ },
+ "card:HAND_TRICK": {
+  "교활": "keyword:SLY",
+  "방어도": "keyword:BLOCK",
+  "손": null
+ },
+ "card:HARMONIC_SHIELD": {
+  "방어도": "keyword:BLOCK",
+  "선율": null
+ },
+ "card:HAUNT": {
+  "영혼": "card:SOUL"
+ },
+ "card:HAVOC": {
+  "뽑을 카드 더미": null,
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:HAZE": {
+  "약화": "power:WEAK",
+  "중독": "power:POISON"
+ },
+ "card:HEADBUTT": {
+  "버린 카드 더미": null,
+  "뽑을 카드 더미": null
+ },
+ "card:HEAVY_SHOT": {
+  "발사": null,
+  "조준": "power:AIM",
+  "화살": "keyword:ARROW"
+ },
+ "card:HEIRLOOM_HAMMER": {
+  "손": null
+ },
+ "card:HELLO_WORLD": {
+  "손": null
+ },
+ "card:HIBERNATE": {
+  "냉기": "keyword:FROST_ORB",
+  "방어도": "keyword:BLOCK"
+ },
+ "card:HIDDEN_DAGGERS": {
+  "단도": "card:SHIV",
+  "단도+": "card:SHIV",
+  "손": null
+ },
+ "card:HIDDEN_GEM": {
+  "뽑을 카드 더미": null,
+  "재사용": "keyword:REPLAY"
+ },
+ "card:HIDDEN_ROOTS": {
+  "스트레칭": "power:STRETCH"
+ },
+ "card:HIGH_FIVE": {
+  "골골이": null,
+  "취약": "power:VULNERABLE"
+ },
+ "card:HOBBLING_SHOT": {
+  "발사": null,
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE",
+  "화살": "keyword:ARROW"
+ },
+ "card:HOLOGRAM": {
+  "방어도": "keyword:BLOCK",
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "card:HONING": {
+  "화살": "keyword:ARROW"
+ },
+ "card:HOTFIX": {
+  "밀집": "power:FOCUS"
+ },
+ "card:HOWL_FROM_BEYOND": {
+  "소멸된 카드 더미": null
+ },
+ "card:HYPERBEAM": {
+  "밀집": "power:FOCUS"
+ },
+ "card:ICE_LANCE": {
+  "냉기": "keyword:FROST_ORB",
+  "영창": "keyword:CHANNELING"
+ },
+ "card:IGNITION": {
+  "영창": "keyword:CHANNELING",
+  "플라즈마": "keyword:PLASMA_ORB"
+ },
+ "card:IMMORTALITY": {
+  "불가침": null
+ },
+ "card:IMPALE": {
+  "중독": null
+ },
+ "card:IMPATIENCE": {
+  "손": null
+ },
+ "card:IMPERVIOUS": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:INFECTION": {
+  "손": null
+ },
+ "card:INFERNAL_BLADE": {
+  "손": null
+ },
+ "card:INFINITE_BLADES": {
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "card:INFLAME": {
+  "힘": "power:STRENGTH"
+ },
+ "card:INTERCEPT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:INVOKE": {
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:IRON_WAVE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:I_AM_INVINCIBLE": {
+  "방어도": "keyword:BLOCK",
+  "뽑을 카드 더미": null
+ },
+ "card:JACKPOT": {
+  "강화": null,
+  "손": null
+ },
+ "card:JACK_OF_ALL_TRADES": {
+  "손": null
+ },
+ "card:JEST": {
+  "방어도": "keyword:BLOCK",
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:JUGGERNAUT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:JUGGLING": {
+  "공격": null,
+  "손": null
+ },
+ "card:KI_CHANT": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:KI_HOP": {
+  "꿰뚫린": "power:IMPALED"
+ },
+ "card:KI_REST": {
+  "보존": "keyword:RETAIN",
+  "손": null,
+  "와 선율": "keyword:WAH_MELODY",
+  "초 선율": "keyword:CHO_MELODY"
+ },
+ "card:KNIFE_TRAP": {
+  "강화": null,
+  "단도": "card:SHIV",
+  "소멸된 카드 더미": null
+ },
+ "card:KNOW_THY_PLACE": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:LARGESSE": {
+  "강화": null,
+  "손": null
+ },
+ "card:LEADING_STRIKE": {
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "card:LEAP": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:LEGION_OF_BONE": {
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:LEG_SWEEP": {
+  "방어도": "keyword:BLOCK",
+  "약화": "power:WEAK"
+ },
+ "card:LIFT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:LIGHTNING_ROD": {
+  "방어도": "keyword:BLOCK",
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "card:LOCKED_IN": {
+  "발사": null,
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:LOST_LUTE": {
+  "뽑을 카드 더미": null,
+  "선율": null
+ },
+ "card:LULLABY": {
+  "방어도": "keyword:BLOCK",
+  "선율": null
+ },
+ "card:MAD_SCIENCE": {
+  "강화": null,
+  "민첩": null,
+  "방어도": null,
+  "손": null,
+  "약화": null,
+  "취약": null,
+  "힘": null
+ },
+ "card:MAKE_IT_SO": {
+  "손": null
+ },
+ "card:MALAISE": {
+  "약화": "power:WEAK",
+  "힘": "power:STRENGTH"
+ },
+ "card:MANGLE": {
+  "힘": "power:STRENGTH"
+ },
+ "card:MANIFEST_AUTHORITY": {
+  "강화": null,
+  "방어도": "keyword:BLOCK",
+  "손": null
+ },
+ "card:MASTER_PLANNER": {
+  "교활": "keyword:SLY"
+ },
+ "card:MAYHEM": {
+  "뽑을 카드 더미": null
+ },
+ "card:MELANCHOLY": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:MELODIC_SHOT": {
+  "발사": null,
+  "선율": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:METAMORPHOSIS": {
+  "뽑을 카드 더미": null
+ },
+ "card:METEOR_SHOWER": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:METEOR_STRIKE": {
+  "영창": "keyword:CHANNELING",
+  "플라즈마": "keyword:PLASMA_ORB"
+ },
+ "card:MIDNIGHT": {
+  "소멸": null
+ },
+ "card:MIGHTY_SHIELD": {
+  "방어도": "keyword:BLOCK",
+  "뽑을 카드 더미": null,
+  "어지러움": "card:DAZED"
+ },
+ "card:MIGHTY_WEAPON": {
+  "뽑을 카드 더미": null,
+  "어지러움": "card:DAZED"
+ },
+ "card:MIMIC": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:MIND_BLAST": {
+  "뽑을 카드 더미": null
+ },
+ "card:MINION_SACRIFICE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:MIRAGE": {
+  "방어도": "keyword:BLOCK",
+  "중독": "power:POISON"
+ },
+ "card:MOLTEN_FIST": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:MONARCHS_GAZE": {
+  "힘": "power:STRENGTH"
+ },
+ "card:MONOLOGUE": {
+  "힘": "power:STRENGTH"
+ },
+ "card:MOTIF": {
+  "선율": null
+ },
+ "card:MOURNING_BLOW": {
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:MULTI_CAST": {
+  "발현": "keyword:EVOKE"
+ },
+ "card:MYTHIC_FORM": {
+  "손": null,
+  "타로": "keyword:TAROT"
+ },
+ "card:MY_SHINIES": {
+  "골드": null
+ },
+ "card:NAIL": {
+  "꿰뚫린": "power:IMPALED",
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:NECRO_MASTERY": {
+  "골골이": null,
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:NEGATIVE_PULSE": {
+  "방어도": "keyword:BLOCK",
+  "종말": "power:DOOM"
+ },
+ "card:NEOWS_FURY": {
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "card:NEUROSURGE": {
+  "종말": "power:DOOM"
+ },
+ "card:NEUTRALIZE": {
+  "약화": "power:WEAK"
+ },
+ "card:NEUTRON_AEGIS": {
+  "판금": "power:PLATING"
+ },
+ "card:NIGHTMARE": {
+  "손": null
+ },
+ "card:NOCK": {
+  "조준": "power:AIM"
+ },
+ "card:NOSTALGIA": {
+  "뽑을 카드 더미": null
+ },
+ "card:NOXIOUS_FUMES": {
+  "중독": "power:POISON"
+ },
+ "card:NO_ESCAPE": {
+  "종말": "power:DOOM"
+ },
+ "card:NULL": {
+  "암흑": "keyword:DARK_ORB",
+  "약화": "power:WEAK",
+  "영창": "keyword:CHANNELING"
+ },
+ "card:OBLIVION": {
+  "종말": "power:DOOM"
+ },
+ "card:OFF_BY_ONE": {
+  "손": null
+ },
+ "card:OPTIMISM": {
+  "소멸": "keyword:EXHAUST",
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:OUTBREAK": {
+  "중독": "power:POISON"
+ },
+ "card:OUTRAGE": {
+  "버린 카드 더미": null
+ },
+ "card:OVERCLOCK": {
+  "버린 카드 더미": null,
+  "화상": "card:BURN"
+ },
+ "card:PACTS_END": {
+  "소멸된 카드 더미": null
+ },
+ "card:PAELS_STRIKE": {
+  "덱": null
+ },
+ "card:PAGESTORM": {
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "card:PANIC_BUTTON": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:PARRY": {
+  "군주의 칼날": "card:SOVEREIGN_BLADE",
+  "방어도": "keyword:BLOCK"
+ },
+ "card:PARTICLE_WALL": {
+  "방어도": "keyword:BLOCK",
+  "손": null
+ },
+ "card:PATTER": {
+  "방어도": "keyword:BLOCK",
+  "활력": "power:VIGOR"
+ },
+ "card:PHANTOM_BLADES": {
+  "단도": "card:SHIV",
+  "보존": "keyword:RETAIN"
+ },
+ "card:PHOTON_CUT": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:PIERCING_WAIL": {
+  "힘": "power:STRENGTH"
+ },
+ "card:PILLAR_OF_CREATION": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:POISONED_STAB": {
+  "중독": "power:POISON"
+ },
+ "card:POKE": {
+  "골골이": null
+ },
+ "card:PRECISE_CUT": {
+  "손": null
+ },
+ "card:PREP_TIME": {
+  "활력": "power:VIGOR"
+ },
+ "card:PRIMAL_FORCE": {
+  "거대한 바위": "card:GIANT_ROCK",
+  "거대한 바위+": "card:GIANT_ROCK",
+  "손": null
+ },
+ "card:PROLONG": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:PROTECTOR": {
+  "골골이": null,
+  "최대 체력": null
+ },
+ "card:PROWESS": {
+  "민첩": "power:DEXTERITY",
+  "힘": "power:STRENGTH"
+ },
+ "card:PULL_AGGRO": {
+  "방어도": "keyword:BLOCK",
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:PULL_FROM_BELOW": {
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "card:PUNCH_OF_JOY": {
+  "기쁨": "card:JOY",
+  "변화": null,
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:PURITY": {
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "card:PUTREFY": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:QUADCAST": {
+  "발현": "keyword:EVOKE"
+ },
+ "card:QUASAR": {
+  "강화": null,
+  "손": null
+ },
+ "card:QUICK_SHOT": {
+  "발사": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:QUIETUS": {
+  "사격": null
+ },
+ "card:QUIVER": {
+  "화살": "keyword:ARROW"
+ },
+ "card:RAGE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:RAINBOW": {
+  "냉기": "keyword:FROST_ORB",
+  "암흑": "keyword:DARK_ORB",
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "card:RAIN_SHOT": {
+  "발사": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:RALLY": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:RATTLE": {
+  "골골이": null
+ },
+ "card:REANIMATE": {
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:REAPER_FORM": {
+  "종말": "power:DOOM"
+ },
+ "card:REAVE": {
+  "뽑을 카드 더미": null,
+  "영혼": "card:SOUL",
+  "영혼+": "card:SOUL"
+ },
+ "card:REBOOT": {
+  "더미": null,
+  "뽑을 카드": null
+ },
+ "card:REBOUND": {
+  "뽑을 카드 더미": null
+ },
+ "card:RECALL": {
+  "꿰뚫린": "power:IMPALED",
+  "회수": null
+ },
+ "card:REFINE_BLADE": {
+  "단조": "keyword:FORGE"
+ },
+ "card:REFLECT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:REFRACT": {
+  "영창": "keyword:CHANNELING",
+  "유리": "keyword:GLASS_ORB"
+ },
+ "card:REGRET": {
+  "손": null
+ },
+ "card:RELAX": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:REPEAT_SHOT": {
+  "발사": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:RESONANCE": {
+  "힘": "power:STRENGTH"
+ },
+ "card:RESTLESSNESS": {
+  "손": null
+ },
+ "card:RHYTHM_STRIKE": {
+  "선율": null
+ },
+ "card:RIGHT_HAND_HAND": {
+  "골골이": null,
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "card:ROYALTIES": {
+  "골드": null
+ },
+ "card:RUMMAGE": {
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:RUPTURE": {
+  "힘": "power:STRENGTH"
+ },
+ "card:SACRIFICE": {
+  "골골이": null,
+  "방어도": "keyword:BLOCK"
+ },
+ "card:SALVO": {
+  "보존": "keyword:RETAIN",
+  "손": null
+ },
+ "card:SCAVENGE": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:SCOURGE": {
+  "종말": "power:DOOM"
+ },
+ "card:SCRAWL": {
+  "손": null
+ },
+ "card:SCULPTING_STRIKE": {
+  "손": null,
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "card:SEANCE": {
+  "뽑을 카드 더미": null,
+  "영혼": "card:SOUL"
+ },
+ "card:SECOND_WIND": {
+  "방어도": "keyword:BLOCK",
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "card:SECRET_TECHNIQUE": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:SECRET_WEAPON": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:SEEKER_STRIKE": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:SEEKING_EDGE": {
+  "군주의 칼날": "card:SOVEREIGN_BLADE",
+  "단조": "keyword:FORGE"
+ },
+ "card:SELF_DEPRECATE": {
+  "기쁨": "card:JOY",
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "card:SENTRY_MODE": {
+  "손": null,
+  "훑어보기": "card:SWEEPING_GAZE"
+ },
+ "card:SERRATED_ARROWS": {
+  "꿰뚫린": "power:IMPALED"
+ },
+ "card:SETUP_STRIKE": {
+  "힘": "power:STRENGTH"
+ },
+ "card:SEVERANCE": {
+  "버린 카드 더미": null,
+  "뽑을 카드 더미": null,
+  "손": null,
+  "영혼": "card:SOUL"
+ },
+ "card:SHADOWMELD": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:SHADOW_SHIELD": {
+  "방어도": "keyword:BLOCK",
+  "암흑": "keyword:DARK_ORB",
+  "영창": "keyword:CHANNELING"
+ },
+ "card:SHADOW_STEP": {
+  "손": null
+ },
+ "card:SHAME": {
+  "손": null,
+  "손상": "power:FRAIL"
+ },
+ "card:SHARED_FATE": {
+  "힘": "power:STRENGTH"
+ },
+ "card:SHARP_EDGE": {
+  "강화": null,
+  "단도": null
+ },
+ "card:SHATTER": {
+  "발현": "keyword:EVOKE"
+ },
+ "card:SHINING_STRIKE": {
+  "뽑을 카드 더미": null
+ },
+ "card:SHOCKWAVE": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:SHOW_OFF": {
+  "조준": "power:AIM"
+ },
+ "card:SHROUD": {
+  "방어도": "keyword:BLOCK",
+  "종말": "power:DOOM"
+ },
+ "card:SHRUG_IT_OFF": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:SIC_EM": {
+  "골골이": null,
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:SIMPLETON": {
+  "손": null
+ },
+ "card:SKY_SHOT": {
+  "발사": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:SNAKEBITE": {
+  "중독": "power:POISON"
+ },
+ "card:SNAP": {
+  "골골이": null,
+  "보존": "keyword:RETAIN",
+  "손": null
+ },
+ "card:SNEAKY": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:SONG_PATH": {
+  "방어도": "keyword:BLOCK",
+  "초 선율": "keyword:CHO_MELODY"
+ },
+ "card:SOULBOUND": {
+  "뽑을 카드 더미": null,
+  "영혼": "card:SOUL"
+ },
+ "card:SOUL_STORM": {
+  "소멸된 카드 더미": null,
+  "영혼": "card:SOUL"
+ },
+ "card:SOVEREIGN_BLADE": {
+  "방어도": null
+ },
+ "card:SPECTRUM_SHIFT": {
+  "손": null
+ },
+ "card:SPINNER": {
+  "영창": "keyword:CHANNELING",
+  "유리": "keyword:GLASS_ORB"
+ },
+ "card:SPIRIT_OF_ASH": {
+  "방어도": "keyword:BLOCK",
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "card:SPLASH": {
+  "강화": null,
+  "손": null
+ },
+ "card:SPOILS_MAP": {
+  "골드": null
+ },
+ "card:SPOILS_OF_BATTLE": {
+  "단조": "keyword:FORGE"
+ },
+ "card:SPUR": {
+  "골골이": null,
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "card:SQUASH": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:SQUEEZE": {
+  "골골이": null
+ },
+ "card:STACK": {
+  "방어도": "keyword:BLOCK",
+  "버린 카드 더미": null
+ },
+ "card:STAMPEDE": {
+  "손": null
+ },
+ "card:STAR_BLAST": {
+  "방어도": null
+ },
+ "card:STAR_SHIELD": {
+  "방어도": null
+ },
+ "card:STEADY_CADENCE": {
+  "선율": null
+ },
+ "card:STOKE": {
+  "강화": null,
+  "소멸": null,
+  "손": null
+ },
+ "card:STONE_ARMOR": {
+  "판금": "power:PLATING"
+ },
+ "card:STORM": {
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "card:STORM_OF_STEEL": {
+  "단도": "card:SHIV",
+  "단도+": "card:SHIV",
+  "손": null
+ },
+ "card:STRATAGEM": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:STRENGTH": {
+  "힘": "power:STRENGTH"
+ },
+ "card:SUCKER_PUNCH": {
+  "약화": "power:WEAK"
+ },
+ "card:SUMMON_FORTH": {
+  "군주의 칼날": "card:SOVEREIGN_BLADE",
+  "단조": "keyword:FORGE",
+  "손": null
+ },
+ "card:SUPPRESS": {
+  "약화": "power:WEAK"
+ },
+ "card:SURVIVOR": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:SWEEPING_GAZE": {
+  "골골이": null
+ },
+ "card:SWORD_SAGE": {
+  "군주의 칼날": "card:SOVEREIGN_BLADE",
+  "재사용": "keyword:REPLAY"
+ },
+ "card:SYNCHRONIZE": {
+  "밀집": "power:FOCUS"
+ },
+ "card:TAUNT": {
+  "방어도": "keyword:BLOCK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:TEMPERANCE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:TEMPEST": {
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "card:TERRAFORMING": {
+  "활력": "power:VIGOR"
+ },
+ "card:TESLA_COIL": {
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "card:TEZCATARAS_MIGHT": {
+  "힘": null
+ },
+ "card:THE_DEVIL": {
+  "강화": null,
+  "뽑을 카드 더미": null,
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "card:THE_EMPRESS": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:THE_FOOL": {
+  "손": null
+ },
+ "card:THE_GAMBIT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:THE_HERMIT": {
+  "소멸": "keyword:EXHAUST",
+  "저주": null
+ },
+ "card:THE_HIEROPHANT": {
+  "손": null
+ },
+ "card:THE_HUNT": {
+  "치명타": "keyword:FATAL"
+ },
+ "card:THE_LOVERS": {
+  "손": null
+ },
+ "card:THE_MAGICIAN": {
+  "영창": "keyword:CHANNELING"
+ },
+ "card:THE_MOON": {
+  "단도": "card:SHIV",
+  "단도+": "card:SHIV",
+  "손": null
+ },
+ "card:THE_SHOT": {
+  "발사": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:THE_SMITH": {
+  "단조": "keyword:FORGE"
+ },
+ "card:THE_SUN": {
+  "그을음": "card:SOOT",
+  "뽑을 카드 더미": null
+ },
+ "card:THE_WORLD": {
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "card:THINKING_AHEAD": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:THRASH": {
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "card:THRUMMING_HATCHET": {
+  "손": null
+ },
+ "card:THUNDER": {
+  "발현": "keyword:EVOKE",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "card:THUNDERCLAP": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:TIMES_UP": {
+  "종말": "power:DOOM"
+ },
+ "card:TORIC_TOUGHNESS": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:TOXIC": {
+  "손": null
+ },
+ "card:TRACKING": {
+  "약화": "power:WEAK"
+ },
+ "card:TRAINING_STRIKE": {
+  "치명타": null
+ },
+ "card:TRANSFIGURE": {
+  "손": null,
+  "재사용": "keyword:REPLAY"
+ },
+ "card:TRASH_TO_TREASURE": {
+  "영창": "keyword:CHANNELING"
+ },
+ "card:TREMBLE": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:TRICK_SHOT": {
+  "발사": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:TRUE_GRIT": {
+  "방어도": "keyword:BLOCK",
+  "소멸": "keyword:EXHAUST"
+ },
+ "card:TUNE": {
+  "강화": null,
+  "손": null,
+  "키 선율": "keyword:KI_MELODY"
+ },
+ "card:TURBO": {
+  "공허": "card:VOID",
+  "버린 카드 더미": null
+ },
+ "card:TUTOR": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:TWIN_SHOT": {
+  "발사": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:TYRANNY": {
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "card:ULTIMATE_DEFEND": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:UNDEATH": {
+  "방어도": "keyword:BLOCK",
+  "버린 카드 더미": null
+ },
+ "card:UNDERWORLD": {
+  "종말": "power:DOOM"
+ },
+ "card:UNLEASH": {
+  "골골이": null
+ },
+ "card:UNMOVABLE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:UNTOUCHABLE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:UPPERCUT": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "card:UPROAR": {
+  "뽑을 카드 더미": null
+ },
+ "card:UPROOT": {
+  "꿰뚫린": "power:IMPALED",
+  "취약": "power:VULNERABLE",
+  "회수": null
+ },
+ "card:UP_MY_SLEEVE": {
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "card:VEILPIERCER": {
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "card:VETERAN": {
+  "방어도": null,
+  "힘": null
+ },
+ "card:VICIOUS": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:VIOLENT_CHORD": {
+  "와 선율": "keyword:WAH_MELODY"
+ },
+ "card:VITRIOL": {
+  "손": null,
+  "슬픔": "card:SADNESS",
+  "약화": "power:WEAK"
+ },
+ "card:VOLTAIC": {
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "card:WAH_BLAST": {
+  "초 선율": "keyword:CHO_MELODY",
+  "키 선율": "keyword:KI_MELODY"
+ },
+ "card:WAH_CHO": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:WAH_CHO_KI": {
+  "방어도": "keyword:BLOCK"
+ },
+ "card:WAH_HAMMER": {
+  "꿰뚫린": "power:IMPALED"
+ },
+ "card:WAH_KI": {
+  "버린 카드 더미": null,
+  "뽑을 카드 더미": null
+ },
+ "card:WAH_TOUCH": {
+  "취약": "power:VULNERABLE"
+ },
+ "card:WARP_SPACE": {
+  "뽑을 카드 더미": null
+ },
+ "card:WELL_LAID_PLANS": {
+  "손": null
+ },
+ "card:WHEEL_OF_FORTUNE": {
+  "손": null
+ },
+ "card:WHISTLE": {
+  "기절": null
+ },
+ "card:WHISTLING_ARROWS": {
+  "발사": null,
+  "방어도": "keyword:BLOCK",
+  "버린 카드 더미": null,
+  "손": null,
+  "화살": "keyword:ARROW"
+ },
+ "card:WHITE_NOISE": {
+  "손": null
+ },
+ "card:WISH": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "card:WITHER": {
+  "손": null
+ },
+ "card:WRAITH_FORM": {
+  "민첩": "power:DEXTERITY",
+  "불가침": "power:INTANGIBLE"
+ },
+ "card:WREST": {
+  "꿰뚫린": "power:IMPALED",
+  "회수": null
+ },
+ "card:WROUGHT_IN_WAR": {
+  "단조": "keyword:FORGE"
+ },
+ "card:YAH": {
+  "화살": "keyword:ARROW",
+  "회수": null
+ },
+ "card:YOGA": {
+  "스트레칭": "power:STRETCH"
+ },
+ "card:ZAP": {
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "character:FOOL": {
+  "첨탑": null
+ },
+ "character:NECROBINDER": {
+  "골골이": null
+ },
+ "dominion:AEONGLASS": {
+  "뽑을 카드 더미": null,
+  "시듦": "card:WITHER"
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "의식": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "판금": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "손상": "power:FRAIL",
+  "약화": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "민첩": "power:DEXTERITY",
+  "힘": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "손상": "power:FRAIL",
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "dominion:SOUL_FYSH": {
+  "뽑을 카드 더미": null,
+  "유인": "card:BECKON"
+ },
+ "dominion:TEST_SUBJECT": {
+  "힘": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "미끈거림": "power:SLIPPERY"
+ },
+ "enchantment:ADROIT": {
+  "방어도": null
+ },
+ "enchantment:CLONE": {
+  "휴식 장소": null
+ },
+ "enchantment:GLAM": {
+  "재사용": "keyword:REPLAY"
+ },
+ "enchantment:GOOPY": {
+  "방어도": null,
+  "소멸": "keyword:EXHAUST"
+ },
+ "enchantment:INKY": {
+  "약화": "power:WEAK"
+ },
+ "enchantment:NIMBLE": {
+  "방어도": null
+ },
+ "enchantment:PERFECT_FIT": {
+  "뽑을 카드 더미": null
+ },
+ "enchantment:ROYALLY_APPROVED": {
+  "보존": "keyword:RETAIN",
+  "선천성": "keyword:INNATE"
+ },
+ "enchantment:SOULS_POWER": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "enchantment:SPIRAL": {
+  "재사용": "keyword:REPLAY"
+ },
+ "enchantment:STEADY": {
+  "보존": "keyword:RETAIN"
+ },
+ "enchantment:TEZCATARAS_EMBER": {
+  "영구": "keyword:ETERNAL"
+ },
+ "encounter:NEOW_CHOICE": {
+  "니오우 선택지:": null
+ },
+ "epoch:BLITZ_EPOCH": {
+  "골드는 흔적도 없이 사라졌으며": null,
+  "블리츠": null
+ },
+ "epoch:COLORLESS1_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:COLORLESS2_EPOCH": {
+  "상상 속의 짐승들": null
+ },
+ "epoch:COLORLESS5_EPOCH": {
+  "골드": null
+ },
+ "epoch:CUSTOM_AND_SEEDS_EPOCH": {
+  "“고대의 씨앗”": null,
+  "막": null
+ },
+ "epoch:DAILY_RUN_EPOCH": {
+  "막": null,
+  "첨탑": null
+ },
+ "epoch:DARV_EPOCH": {
+  "고대의 존재": null
+ },
+ "epoch:DEFECT2_EPOCH": {
+  "막": null
+ },
+ "epoch:DEFECT3_EPOCH": {
+  "막": null
+ },
+ "epoch:DEFECT4_EPOCH": {
+  "막": null,
+  "첨탑": null
+ },
+ "epoch:DEFECT7_EPOCH": {
+  "보물": null
+ },
+ "epoch:EVENT1_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:EVENT2_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:EVENT3_EPOCH": {
+  "고대의 나무들": null
+ },
+ "epoch:FOOL1_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:FOOL2_EPOCH": {
+  "막": null
+ },
+ "epoch:FOOL3_EPOCH": {
+  "막": null
+ },
+ "epoch:FOOL4_EPOCH": {
+  "막": null
+ },
+ "epoch:IRONCLAD2_EPOCH": {
+  "막": null,
+  "첨탑": null
+ },
+ "epoch:IRONCLAD3_EPOCH": {
+  "막": null
+ },
+ "epoch:IRONCLAD4_EPOCH": {
+  "막": null
+ },
+ "epoch:IRONCLAD6_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:IRONCLAD7_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:NECROBINDER2_EPOCH": {
+  "막": null
+ },
+ "epoch:NECROBINDER3_EPOCH": {
+  "막": null,
+  "사건 보고서": null
+ },
+ "epoch:NECROBINDER4_EPOCH": {
+  "기이한 공예품": null,
+  "막": null
+ },
+ "epoch:NECROBINDER7_EPOCH": {
+  "파엘": null
+ },
+ "epoch:POTION1_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:POTION2_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:REGENT2_EPOCH": {
+  "막": null
+ },
+ "epoch:REGENT3_EPOCH": {
+  "막": null,
+  "첨탑": null
+ },
+ "epoch:REGENT4_EPOCH": {
+  "막": null,
+  "스타리스의 리젠트": null
+ },
+ "epoch:REGENT7_EPOCH": {
+  "탄스": null
+ },
+ "epoch:RELIC1_EPOCH": {
+  "상상 속의 짐승들": null
+ },
+ "epoch:RELIC2_EPOCH": {
+  "고대의 존재": null
+ },
+ "epoch:SILENT1_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:SILENT2_EPOCH": {
+  "막": null
+ },
+ "epoch:SILENT3_EPOCH": {
+  "막": null
+ },
+ "epoch:SILENT4_EPOCH": {
+  "막": null
+ },
+ "epoch:SILENT5_EPOCH": {
+  "첨탑": null
+ },
+ "epoch:UNDERDOCKS_EPOCH": {
+  "지하 선착장": null,
+  "첨탑": null
+ },
+ "event:AMALGAMATOR": {
+  "덱": null,
+  "빛나는 문양들이 뒤엉켜 소용돌이": null,
+  "수비": null,
+  "타격": null
+ },
+ "event:AROMA_OF_CHAOS": {
+  "강화": null,
+  "덱": null,
+  "변화": "keyword:TRANSFORM",
+  "엄청난 적들과 싸우는": null
+ },
+ "event:BATTLEWORN_DUMMY": {
+  "강화": null,
+  "공장": null,
+  "유물": null,
+  "포션": null
+ },
+ "event:BRAIN_LEECH": {
+  "덱": null
+ },
+ "event:BUGSLAYER": {
+  "강인하고 거친 한 전사 사내": null,
+  "덱": null,
+  "박멸 기술": null,
+  "짓누르기 기술": null
+ },
+ "event:BYRDONIS_NEST": {
+  "덱": null,
+  "무방비한 상태의 알 하나": null
+ },
+ "event:COLORFUL_PHILOSOPHERS": {
+  "가장 위대한": null,
+  "프리즘 조각": null
+ },
+ "event:COLOSSAL_FLOWER": {
+  "골드": null,
+  "꽃가루 핵": "relic:POLLINOUS_CORE",
+  "꿀": null,
+  "품질 좋은 꿀": null,
+  "황금빛 꿀": null
+ },
+ "event:CRYSTAL_SPHERE": {
+  "골드": null,
+  "대형 점술": null,
+  "소형 점술": null,
+  "수정구 점술": null
+ },
+ "event:DENSE_VEGETATION": {
+  "골드": null,
+  "금화": null,
+  "무언가가 꿈틀거리는 감각": null
+ },
+ "event:DOLL_ROOM": {
+  "인형 유물": null
+ },
+ "event:DOORS_OF_LIGHT_AND_DARK": {
+  "강하게": null,
+  "강화": null,
+  "덱": null,
+  "빛 속으로...": null,
+  "잘 차려입은 문지기": null
+ },
+ "event:DROWNING_BEACON": {
+  "렌즈": null,
+  "조명실": null
+ },
+ "event:ENDLESS_CONVEYOR": {
+  "강화": null,
+  "골드": null,
+  "광란의 포식": null,
+  "덱": null,
+  "변화": null,
+  "포션": null
+ },
+ "event:FIELD_OF_MAN_SIZED_HOLES": {
+  "덱": null,
+  "인챈트": null,
+  "희미하던 빛": null
+ },
+ "event:GRAVE_OF_THE_FORGOTTEN": {
+  "덱": null,
+  "소멸": null,
+  "인챈트": null
+ },
+ "event:HUNGRY_FOR_MUSHROOMS": {
+  "격렬하게 몸을 단련": null
+ },
+ "event:INFESTED_AUTOMATON": {
+  "비용이 0인 카드": null,
+  "전기": null,
+  "파워 카드": null
+ },
+ "event:JUNGLE_MAZE_ADVENTURE": {
+  "골드": null,
+  "멋진 추억": null
+ },
+ "event:LOST_WISP": {
+  "골드": null,
+  "덱": null
+ },
+ "event:LUMINOUS_CHOIR": {
+  "골드": null,
+  "덱": null,
+  "유물": null
+ },
+ "event:MORPHIC_GROVE": {
+  "골드": null,
+  "변화": "keyword:TRANSFORM"
+ },
+ "event:POTION_COURIER": {
+  "고급 포션": null,
+  "역겨운 포션": "potion:FOUL_POTION",
+  "포션 배달원": null
+ },
+ "event:PUNCH_OFF": {
+  "구조체들": null,
+  "권투형 구조체": null,
+  "더 좋은 보상": null,
+  "덱": null,
+  "유물": null
+ },
+ "event:RANWID_THE_ELDER": {
+  "골드": null,
+  "유물": null
+ },
+ "event:REFLECTIONS": {
+  "덱": null
+ },
+ "event:ROOM_FULL_OF_CHEESE": {
+  "덱": null,
+  "엄선된 치즈": "relic:CHOSEN_CHEESE",
+  "일반": null
+ },
+ "event:ROUND_TEA_PARTY": {
+  "유물": null,
+  "지휘관": null,
+  "참가비": null,
+  "황금 왕관": null
+ },
+ "event:SAPPHIRE_SEED": {
+  "강화": null,
+  "덱": null,
+  "세상의 색이 선명해지며": null,
+  "인챈트": null,
+  "지구력이 크게 상승": null
+ },
+ "event:SELF_HELP_BOOK": {
+  "인챈트": null
+ },
+ "event:SHRINE_OF_THE_WARLORD": {
+  "덱": null,
+  "서로 다른 공예품": null
+ },
+ "event:SLIPPERY_BRIDGE": {
+  "덱": null,
+  "안돼애애애애": null
+ },
+ "event:SPIRALING_WHIRLPOOL": {
+  "“고마워요, 소용돌이.”": null,
+  "덱": null,
+  "수비": null,
+  "유물": null,
+  "인챈트": null,
+  "중심": null,
+  "타격": null
+ },
+ "event:SPIRIT_GRAFTER": {
+  "강화": null,
+  "덱": null,
+  "빛": null,
+  "탈바꿈": "card:METAMORPHOSIS"
+ },
+ "event:STONE_OF_ALL_TIME": {
+  "영원의 돌": null,
+  "인챈트": null
+ },
+ "event:SUNKEN_STATUE": {
+  "골드": null,
+  "반짝거리고": null,
+  "반짝거리던 것들": null,
+  "봉헌물": null
+ },
+ "event:SUNKEN_TREASURY": {
+  "골드": null,
+  "두 번째 상자:": null,
+  "상자": null,
+  "첫 번째 상자:": null
+ },
+ "event:SYMBIOTE": {
+  "변화": "keyword:TRANSFORM",
+  "인챈트": null
+ },
+ "event:TABLET_OF_TRUTH": {
+  "강화": null,
+  "마지막 단어": null,
+  "진리": null
+ },
+ "event:TEA_MASTER": {
+  "1.": null,
+  "2.": null,
+  "3.": null,
+  "4.": null,
+  "5.": null,
+  "고가": null,
+  "골드": null
+ },
+ "event:THERMAE_NONUPEIPE": {
+  "골드": null,
+  "덱": null
+ },
+ "event:THE_FUTURE_OF_POTIONS": {
+  "강화": null
+ },
+ "event:THE_LANTERN_KEY": {
+  "골드": null,
+  "수수께끼의 기사": null
+ },
+ "event:THE_LEGENDS_WERE_TRUE": {
+  "보물 지도": "card:SPOILS_MAP",
+  "포션": null
+ },
+ "event:THIS_OR_THAT": {
+  "골드": null,
+  "덱": null,
+  "보물이 담긴 수상한 자루": null,
+  "유물": null
+ },
+ "event:TINKER_TIME": {
+  "강화": null,
+  "덱": null,
+  "민첩": null,
+  "손": null,
+  "약화": null,
+  "취약": null,
+  "힘": null
+ },
+ "event:TRASH_HEAP": {
+  "골드": null,
+  "신기한 보물": null,
+  "오래된 유물": null,
+  "유물": null,
+  "잊힌 귀중품": null
+ },
+ "event:TRIAL": {
+  "강화": null,
+  "골드": null,
+  "귀족": null,
+  "뇌물": null,
+  "덱": null,
+  "법정의 대재판관": null,
+  "변화": "keyword:TRANSFORM",
+  "위엄 있는 귀족": null,
+  "유물": null,
+  "의장석": null,
+  "재판": null,
+  "판결하라": null,
+  "황금빛 아치": null
+ },
+ "event:UNREST_SITE": {
+  "유물": null,
+  "작은 상자": null,
+  "휴식 장소": null
+ },
+ "event:WAR_HISTORIAN_REPY": {
+  "두꺼운 가죽 표지의 책": null,
+  "랜턴 열쇠": "card:LANTERN_KEY",
+  "보물 상자": null,
+  "상자": null,
+  "역사 강의서": "relic:HISTORY_COURSE",
+  "유물": null,
+  "포션": null
+ },
+ "event:WATERFALL_OF_OBVIOUS_SECRETS": {
+  "골드": null,
+  "덱": null,
+  "초라한 단검": null,
+  "희귀": null
+ },
+ "event:WATERLOGGED_SCRIPTORIUM": {
+  "골드": null,
+  "꺼끌꺼끌한 스펀지": null,
+  "꿈틀거리는 펜": null,
+  "도구들": null,
+  "인챈트": null
+ },
+ "event:WELCOME_TO_WONGOS": {
+  "골드": null,
+  "웡고스 고객 감사 배지": null,
+  "웡고스 포인트": null,
+  "유물": null,
+  "일반 유물": null
+ },
+ "event:WELLSPRING": {
+  "덱": null,
+  "빛나는 알갱이": null,
+  "포션": null
+ },
+ "event:WHISPERING_HOLLOW": {
+  "골드": null,
+  "변화": "keyword:TRANSFORM",
+  "포션": null
+ },
+ "event:WOOD_CARVINGS": {
+  "변화": null,
+  "인챈트": null
+ },
+ "event:WUPPY_IN_TROUBLE": {
+  "덱": null,
+  "워피": null
+ },
+ "event:ZEN_WEAVER": {
+  "계몽": "card:ENLIGHTENMENT",
+  "골드": null,
+  "덱": null
+ },
+ "intent:ATTACK": {
+  "공격": null
+ },
+ "intent:BUFF": {
+  "이로운 효과": null
+ },
+ "intent:CARD_DEBUFF": {
+  "고난": null
+ },
+ "intent:DEBUFF": {
+  "해로운 효과": null
+ },
+ "intent:DEBUFF_STRONG": {
+  "해로운 효과": null
+ },
+ "intent:DEFEND": {
+  "방어도": null
+ },
+ "intent:ESCAPE": {
+  "도망": null
+ },
+ "intent:HEAL": {
+  "회복": null
+ },
+ "intent:STATUS": {
+  "상태이상": null
+ },
+ "intent:SUMMON": {
+  "몬스터": null
+ },
+ "intent:UNKNOWN": {
+  "알 수 없습니다": null
+ },
+ "keyword:ARROW": {
+  "꿰뚫고": null,
+  "꿰뚫을": null,
+  "회수": null
+ },
+ "keyword:CARD_REWARD": {
+  "덱": null
+ },
+ "keyword:CHANNELING": {
+  "발현": null
+ },
+ "keyword:COOK": {
+  "덱": null,
+  "제거": null,
+  "휴식 장소": null
+ },
+ "keyword:DREAD_ROTATION": {
+  "교대 연승": null
+ },
+ "keyword:ENERGY": {
+  "손": null
+ },
+ "keyword:ETERNAL": {
+  "덱": null
+ },
+ "keyword:ETHEREAL": {
+  "소멸": null,
+  "손": null
+ },
+ "keyword:FORGE": {
+  "군주의 칼날": null,
+  "단조": null,
+  "손": null
+ },
+ "keyword:INNATE": {
+  "손": null
+ },
+ "keyword:REPLAY": {
+  "재사용": null
+ },
+ "keyword:ROOM_ELITE": {
+  "유물": null
+ },
+ "keyword:ROOM_MERCHANT": {
+  "골드": null
+ },
+ "keyword:ROOM_REST": {
+  "강화": null
+ },
+ "keyword:ROOM_TREASURE": {
+  "골드": null,
+  "유물": null
+ },
+ "keyword:ROOM_UNKNOWN_MERCHANT": {
+  "골드": null
+ },
+ "keyword:SLY": {
+  "손": null
+ },
+ "keyword:SUMMON_DYNAMIC": {
+  "골골이": null
+ },
+ "keyword:SUMMON_STATIC": {
+  "골골이": null
+ },
+ "modifier:ALL_STAR": {
+  "무색": null
+ },
+ "modifier:BIG_GAME_HUNTER": {
+  "희귀한": null
+ },
+ "modifier:MIDAS": {
+  "휴식 장소": null
+ },
+ "modifier:MURDEROUS": {
+  "힘": null
+ },
+ "modifier:NIGHT_TERRORS": {
+  "휴식 장소": null
+ },
+ "modifier:TERMINAL": {
+  "판금": null
+ },
+ "monster:GREMLIN_MERC": {
+  "돈이다!": null
+ },
+ "orb:DARK_ORB": {
+  "발현": null,
+  "발현:": null,
+  "지속:": null
+ },
+ "orb:FROST_ORB": {
+  "발현:": null,
+  "방어도": null,
+  "지속:": null
+ },
+ "orb:GLASS_ORB": {
+  "발현:": null,
+  "지속:": null
+ },
+ "orb:LIGHTNING_ORB": {
+  "발현:": null,
+  "지속:": null
+ },
+ "orb:PLASMA_ORB": {
+  "밀집": null,
+  "발현:": null,
+  "지속:": null
+ },
+ "potion:ASHWATER": {
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "potion:ATTACK_POTION": {
+  "손": null
+ },
+ "potion:BLESSING_OF_THE_FORGE": {
+  "강화": null,
+  "손": null
+ },
+ "potion:BLOCK_POTION": {
+  "방어도": "keyword:BLOCK"
+ },
+ "potion:BONE_BREW": {
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "potion:BOTTLED_POTENTIAL": {
+  "뽑을 카드 더미": null
+ },
+ "potion:BOTTLED_SONG": {
+  "손": null
+ },
+ "potion:COLORLESS_POTION": {
+  "손": null
+ },
+ "potion:COSMIC_CONCOCTION": {
+  "강화": null,
+  "손": null
+ },
+ "potion:CRYSTALLINE_EUPHORIA": {
+  "기쁨": "card:JOY",
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "potion:CUNNING_POTION": {
+  "강화": null,
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "potion:DEXTERITY_POTION": {
+  "민첩": "power:DEXTERITY"
+ },
+ "potion:DISTILLED_CHAOS": {
+  "뽑을 카드 더미": null
+ },
+ "potion:DROPLET_OF_PRECOGNITION": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "potion:ESSENCE_OF_DARKNESS": {
+  "구체 슬롯": null,
+  "암흑": "keyword:DARK_ORB",
+  "영창": "keyword:CHANNELING"
+ },
+ "potion:FLEX_POTION": {
+  "힘": "power:STRENGTH"
+ },
+ "potion:FOCUS_POTION": {
+  "밀집": "power:FOCUS"
+ },
+ "potion:FORTIFIER": {
+  "방어도": "keyword:BLOCK"
+ },
+ "potion:FOUL_POTION": {
+  "골드": null,
+  "상인": null
+ },
+ "potion:FYSH_OIL": {
+  "민첩": "power:DEXTERITY",
+  "힘": "power:STRENGTH"
+ },
+ "potion:GHOST_IN_A_JAR": {
+  "불가침": "power:INTANGIBLE"
+ },
+ "potion:GLOWWATER_POTION": {
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "potion:HEART_OF_IRON": {
+  "판금": "power:PLATING"
+ },
+ "potion:KINGS_COURAGE": {
+  "단조": "keyword:FORGE"
+ },
+ "potion:LIQUID_BRONZE": {
+  "가시": "power:THORNS"
+ },
+ "potion:LIQUID_MEMORIES": {
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "potion:LUCKY_TONIC": {
+  "버퍼": "power:BUFFER"
+ },
+ "potion:MAZALETHS_GIFT": {
+  "의식": "power:RITUAL"
+ },
+ "potion:OROBIC_ACID": {
+  "손": null
+ },
+ "potion:POISON_POTION": {
+  "중독": "power:POISON"
+ },
+ "potion:POTION_OF_BINDING": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "potion:POTION_OF_CAPACITY": {
+  "구체 슬롯": null
+ },
+ "potion:POTION_OF_DOOM": {
+  "종말": "power:DOOM"
+ },
+ "potion:POT_OF_GHOULS": {
+  "손": null,
+  "영혼": "card:SOUL"
+ },
+ "potion:POWER_POTION": {
+  "손": null
+ },
+ "potion:PRECISION_POTION": {
+  "조준": "power:AIM"
+ },
+ "potion:REGEN_POTION": {
+  "재생": "power:REGEN"
+ },
+ "potion:SHACKLING_POTION": {
+  "힘": "power:STRENGTH"
+ },
+ "potion:SHIP_IN_A_BOTTLE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "potion:SKILL_POTION": {
+  "손": null
+ },
+ "potion:SNECKO_OIL": {
+  "손": null
+ },
+ "potion:SOLDIERS_STEW": {
+  "재사용": "keyword:REPLAY",
+  "타격": null
+ },
+ "potion:SPEED_POTION": {
+  "민첩": "power:DEXTERITY"
+ },
+ "potion:STABLE_SERUM": {
+  "보존": "keyword:RETAIN",
+  "손": null
+ },
+ "potion:STRENGTH_POTION": {
+  "힘": "power:STRENGTH"
+ },
+ "potion:TOUCH_OF_INSANITY": {
+  "손": null
+ },
+ "potion:VULNERABLE_POTION": {
+  "취약": "power:VULNERABLE"
+ },
+ "potion:WEAK_POTION": {
+  "약화": "power:WEAK"
+ },
+ "power:ACCELERANT": {
+  "중독": "power:POISON"
+ },
+ "power:ACCURACY": {
+  "단도": null
+ },
+ "power:ADAPTATION": {
+  "민첩": null,
+  "방어도": null
+ },
+ "power:AEONGLASS_DOMINION": {
+  "뽑을 카드 더미": null,
+  "시듦": "card:WITHER"
+ },
+ "power:AFTERIMAGE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:AGGRESSION": {
+  "강화": null,
+  "버린 카드 더미": null,
+  "손": null
+ },
+ "power:AIM": {
+  "화살": null
+ },
+ "power:ALL_IS_WELL": {
+  "방어도": "keyword:BLOCK",
+  "슬픔": "card:SADNESS"
+ },
+ "power:ARCHERY": {
+  "조준": "power:AIM"
+ },
+ "power:ARSENAL": {
+  "힘": "power:STRENGTH"
+ },
+ "power:ARTIFACT": {
+  "무효화": null
+ },
+ "power:AUTOMATION": {
+  "에너지": null
+ },
+ "power:BARRICADE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:BEACON_OF_HOPE": {
+  "방어도": null
+ },
+ "power:BIASED_COGNITION": {
+  "밀집": "power:FOCUS"
+ },
+ "power:BLOCK_NEXT_TURN": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:BLUR": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:BURROWED": {
+  "기절": null,
+  "방어도": null
+ },
+ "power:CALAMITY": {
+  "손": null
+ },
+ "power:CALCIFY": {
+  "골골이": null
+ },
+ "power:CALL_OF_THE_VOID": {
+  "손": null,
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "power:CHAINS_OF_BINDING": {
+  "구속": "affliction:BOUND"
+ },
+ "power:CHILD_OF_THE_STARS": {
+  "방어도": null
+ },
+ "power:COLOSSUS": {
+  "취약": "power:VULNERABLE"
+ },
+ "power:COMPOST": {
+  "에너지": "keyword:ENERGY"
+ },
+ "power:CONCOCT": {
+  "중독": "power:POISON"
+ },
+ "power:CONQUEROR": {
+  "군주의 칼날": "card:SOVEREIGN_BLADE"
+ },
+ "power:CONSUMING_SHADOW": {
+  "발현": null
+ },
+ "power:CONTRACTILITY": {
+  "방어도": null
+ },
+ "power:COOLANT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:CORROSIVE_WAVE": {
+  "중독": "power:POISON"
+ },
+ "power:CORRUPTION": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "power:COUNTDOWN": {
+  "종말": "power:DOOM"
+ },
+ "power:COVERING_FIRE": {
+  "발사": null,
+  "방어도": "keyword:BLOCK"
+ },
+ "power:CRAB_RAGE": {
+  "방어도": "keyword:BLOCK",
+  "힘": "power:STRENGTH"
+ },
+ "power:CREATIVE_AI": {
+  "손": null
+ },
+ "power:CRIMSON_MANTLE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:CRUELTY": {
+  "취약": "power:VULNERABLE"
+ },
+ "power:CURL_UP": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:DAMPEN": {
+  "열화": null
+ },
+ "power:DANSE_MACABRE": {
+  "방어도": null
+ },
+ "power:DARK_EMBRACE": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "power:DEBILITATE": {
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "power:DECREE_OF_ENTROPY": {
+  "강화": null
+ },
+ "power:DEMESNE": {
+  "에너지": "keyword:ENERGY"
+ },
+ "power:DEMON_FORM": {
+  "힘": "power:STRENGTH"
+ },
+ "power:DESPAIR": {
+  "방어도": null,
+  "종말": null
+ },
+ "power:DEVOUR_LIFE": {
+  "소환": "keyword:SUMMON_STATIC",
+  "영혼": "card:SOUL"
+ },
+ "power:DEXTERITY": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:DEXTERITY_DOWN": {
+  "민첩": null
+ },
+ "power:DIE_FOR_YOU": {
+  "골골이": null
+ },
+ "power:DISLIKE_YOU": {
+  "사격": null
+ },
+ "power:ECSTASY": {
+  "기쁨": "card:JOY",
+  "변화": null,
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "power:ENERGY_NEXT_TURN": {
+  "에너지": "keyword:ENERGY"
+ },
+ "power:ENNUI": {
+  "손": null,
+  "슬픔": null
+ },
+ "power:ENRAGE": {
+  "힘": null
+ },
+ "power:ENTROPY": {
+  "변화": "keyword:TRANSFORM",
+  "손": null
+ },
+ "power:ENVENOM": {
+  "중독": "power:POISON"
+ },
+ "power:EXPLOSIVE_ARROWS": {
+  "꿰뚫을": "power:IMPALED"
+ },
+ "power:FAN_OF_KNIVES": {
+  "단도": null
+ },
+ "power:FASTEN": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:FEEL_NO_PAIN": {
+  "방어도": "keyword:BLOCK",
+  "소멸": null
+ },
+ "power:FERAL": {
+  "손": null
+ },
+ "power:FLUTTER": {
+  "50%": null,
+  "기절": null
+ },
+ "power:FOCUS_DOWN": {
+  "밀집": null
+ },
+ "power:FORBIDDEN_GRIMOIRE": {
+  "덱": null
+ },
+ "power:FOREGONE_CONCLUSION": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "power:FRAIL": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:FRIENDSHIP": {
+  "에너지": "keyword:ENERGY"
+ },
+ "power:FURNACE": {
+  "단조": "keyword:FORGE"
+ },
+ "power:GALVANIC": {
+  "전기 자극": "affliction:GALVANIZED"
+ },
+ "power:HAILSTORM": {
+  "냉기": "keyword:FROST_ORB"
+ },
+ "power:HAMMER_TIME": {
+  "단조": "keyword:FORGE"
+ },
+ "power:HANG": {
+  "매달기": "card:HANG"
+ },
+ "power:HARD_TO_KILL": {
+  "갑각충": null
+ },
+ "power:HAUNT": {
+  "영혼": null
+ },
+ "power:HEIST": {
+  "골드": null
+ },
+ "power:HELLO_WORLD": {
+  "손": null
+ },
+ "power:HEX": {
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "power:HIBERNATE": {
+  "냉기": "keyword:FROST_ORB",
+  "방어도": "keyword:BLOCK"
+ },
+ "power:HIDDEN_ROOTS": {
+  "스트레칭": "power:STRETCH"
+ },
+ "power:HIGH_VOLTAGE": {
+  "힘": "power:STRENGTH"
+ },
+ "power:HONING": {
+  "화살": null
+ },
+ "power:IMBALANCED": {
+  "기절": null
+ },
+ "power:IMPALED": {
+  "꿰뚫린": "power:IMPALED",
+  "화살": null,
+  "회수": null
+ },
+ "power:IMPROVEMENT": {
+  "강화": null
+ },
+ "power:INFINITE_BLADES": {
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "power:JUGGERNAUT": {
+  "방어도": null
+ },
+ "power:JUGGLING": {
+  "손": null
+ },
+ "power:LAGAVULIN_MATRIARCH_DOMINION": {
+  "민첩": "power:DEXTERITY",
+  "힘": "power:STRENGTH"
+ },
+ "power:LIGHTNING_ROD": {
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "power:LOST_LUTE": {
+  "뽑을 카드 더미": null,
+  "선율": null
+ },
+ "power:LULLABY": {
+  "방어도": "keyword:BLOCK",
+  "선율": null
+ },
+ "power:MASTER_PLANNER": {
+  "교활": null
+ },
+ "power:MAYHEM": {
+  "뽑을 카드 더미": null
+ },
+ "power:MELANCHOLY": {
+  "종말": null
+ },
+ "power:MONARCHS_GAZE": {
+  "힘": null
+ },
+ "power:MONOLOGUE": {
+  "힘": "power:STRENGTH"
+ },
+ "power:MOTIF": {
+  "선율": null
+ },
+ "power:MYTHIC_FORM": {
+  "손": null,
+  "타로": "keyword:TAROT"
+ },
+ "power:NECRO_MASTERY": {
+  "골골이": null
+ },
+ "power:NEMESIS": {
+  "불가침": null
+ },
+ "power:NEUROSURGE": {
+  "종말": "power:DOOM"
+ },
+ "power:NIGHTMARE": {
+  "손": null
+ },
+ "power:NOSTALGIA": {
+  "뽑을 카드 더미": null
+ },
+ "power:NOXIOUS_FUMES": {
+  "중독": "power:POISON"
+ },
+ "power:NO_BLOCK": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:NO_ESCAPE": {
+  "종말": null
+ },
+ "power:OBLIVION": {
+  "종말": null
+ },
+ "power:ORB_GENERATOR": {
+  "구체": null
+ },
+ "power:PAGESTORM": {
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "power:PAINFUL_STABS": {
+  "버린 카드 더미": null,
+  "부상": "card:WOUND"
+ },
+ "power:PAPER_CUTS": {
+  "최대 체력": null
+ },
+ "power:PARRY": {
+  "군주의 칼날": null,
+  "방어도": null
+ },
+ "power:PERSONAL_HIVE": {
+  "뽑을 카드 더미": null,
+  "어지러움": "card:DAZED"
+ },
+ "power:PHANTOM_BLADES": {
+  "단도": "card:SHIV",
+  "보존": "keyword:RETAIN"
+ },
+ "power:PILLAR_OF_CREATION": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:PLATING": {
+  "방어도": "keyword:BLOCK",
+  "판금": "power:PLATING"
+ },
+ "power:PLOW": {
+  "기절": "keyword:STUN",
+  "힘": "power:STRENGTH"
+ },
+ "power:POISON": {
+  "중독": "power:POISON"
+ },
+ "power:POSSESS_SPEED": {
+  "민첩": "power:DEXTERITY"
+ },
+ "power:POSSESS_STRENGTH": {
+  "힘": "power:STRENGTH"
+ },
+ "power:PREP_TIME": {
+  "활력": null
+ },
+ "power:PYRE": {
+  "에너지": "keyword:ENERGY"
+ },
+ "power:QUIETUS": {
+  "사격": null
+ },
+ "power:RADIANCE": {
+  "에너지": "keyword:ENERGY"
+ },
+ "power:RAGE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:RAMPART": {
+  "방어도": null
+ },
+ "power:RAVENOUS": {
+  "기절": "keyword:STUN",
+  "힘": "power:STRENGTH"
+ },
+ "power:READ_THE_BONES": {
+  "소환": null
+ },
+ "power:REAPER_FORM": {
+  "종말": "power:DOOM"
+ },
+ "power:REBOUND": {
+  "뽑을 카드 더미": null
+ },
+ "power:REFLECTIVE_FORTRESS": {
+  "방어": null
+ },
+ "power:REGEN": {
+  "재생": "power:REGEN"
+ },
+ "power:RESERVES": {
+  "에너지": null
+ },
+ "power:RESTORE_DEXTERITY": {
+  "민첩": null
+ },
+ "power:RESTORE_FOCUS": {
+  "밀집": null
+ },
+ "power:RETAIN_HAND": {
+  "보존": null,
+  "손": null
+ },
+ "power:RITUAL": {
+  "힘": "power:STRENGTH"
+ },
+ "power:ROYALTIES": {
+  "골드": null
+ },
+ "power:RUPTURE": {
+  "힘": "power:STRENGTH"
+ },
+ "power:SANDPIT": {
+  "탐": null
+ },
+ "power:SEEKING_EDGE": {
+  "군주의 칼날": "card:SOVEREIGN_BLADE"
+ },
+ "power:SELF_FORMING_CLAY": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:SENTRY_MODE": {
+  "손": null,
+  "훑어보기": "card:SWEEPING_GAZE"
+ },
+ "power:SERRATED_ARROWS": {
+  "꿰뚫린": "power:IMPALED"
+ },
+ "power:SHADOWMELD": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:SHARP_EDGE": {
+  "강화": null,
+  "단도": null
+ },
+ "power:SHOW_OFF": {
+  "으스대기": "power:SHOW_OFF",
+  "조준": null
+ },
+ "power:SHRIEK": {
+  "기절": "keyword:STUN"
+ },
+ "power:SHROUD": {
+  "방어도": null,
+  "종말": "power:DOOM"
+ },
+ "power:SIC_EM": {
+  "골골이": null,
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "power:SIMPLETON": {
+  "손": null
+ },
+ "power:SKITTISH": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:SNEAKY": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:SOAR": {
+  "50%": null
+ },
+ "power:SONG_PATH": {
+  "방어도": "keyword:BLOCK",
+  "초 선율": "keyword:CHO_MELODY"
+ },
+ "power:SOULBOUND": {
+  "뽑을 카드 더미": null,
+  "영혼": "card:SOUL"
+ },
+ "power:SOW": {
+  "보존": null,
+  "손": null
+ },
+ "power:SPECTRUM_SHIFT": {
+  "손": null
+ },
+ "power:SPINNER": {
+  "영창": "keyword:CHANNELING",
+  "유리": "keyword:GLASS_ORB"
+ },
+ "power:SPIRIT_OF_ASH": {
+  "방어도": "keyword:BLOCK",
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "power:STAMPEDE": {
+  "손": null
+ },
+ "power:STORM": {
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "power:STRATAGEM": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "power:STRETCH": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:SUCK": {
+  "힘": "power:STRENGTH"
+ },
+ "power:SUMMON_NEXT_TURN": {
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "power:SWORD_SAGE": {
+  "군주의 칼날": "card:SOVEREIGN_BLADE",
+  "재사용": "keyword:REPLAY"
+ },
+ "power:TANGLED": {
+  "에너지": null
+ },
+ "power:TAUNT": {
+  "취약": null
+ },
+ "power:TEMPORARY_DEXTERITY": {
+  "민첩": "power:DEXTERITY"
+ },
+ "power:TEMPORARY_DEXTERITY_DOWN": {
+  "민첩": null
+ },
+ "power:TEMPORARY_FOCUS": {
+  "밀집": "power:FOCUS"
+ },
+ "power:TEMPORARY_FOCUS_DOWN": {
+  "밀집": null
+ },
+ "power:TEMPORARY_STRENGTH": {
+  "힘": "power:STRENGTH"
+ },
+ "power:TEMPORARY_STRENGTH_DOWN": {
+  "힘": null
+ },
+ "power:TEMPORARY_THORNS": {
+  "가시": "power:THORNS"
+ },
+ "power:TENDER": {
+  "민첩": "power:DEXTERITY",
+  "힘": "power:STRENGTH"
+ },
+ "power:TERRITORIAL": {
+  "힘": "power:STRENGTH"
+ },
+ "power:TEZCATARAS_BLIGHT": {
+  "힘": null
+ },
+ "power:THIEVERY": {
+  "골드": null
+ },
+ "power:THUNDER": {
+  "발현": "keyword:EVOKE",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "power:TORIC_TOUGHNESS": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:TRACKING": {
+  "약화": "power:WEAK"
+ },
+ "power:TRASH_TO_TREASURE": {
+  "영창": null
+ },
+ "power:TUNE": {
+  "강화": null,
+  "손": null,
+  "키 선율": "keyword:KI_MELODY"
+ },
+ "power:TYRANNY": {
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "power:UNDERWORLD": {
+  "종말": "power:DOOM"
+ },
+ "power:UNMOVABLE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "power:UNSTEADY": {
+  "기절": null
+ },
+ "power:VEILPIERCER": {
+  "휘발성": "keyword:ETHEREAL",
+  "휘발성 카드": null
+ },
+ "power:VICIOUS": {
+  "취약": "power:VULNERABLE"
+ },
+ "power:VIOLENT_CHORD": {
+  "와 선율": "keyword:WAH_MELODY"
+ },
+ "power:VITAL_SPARK": {
+  "스킬": null,
+  "훼손됨": "affliction:TAINTED"
+ },
+ "power:WASTE_AWAY": {
+  "에너지": "keyword:ENERGY"
+ },
+ "power:WELL_LAID_PLANS": {
+  "손": null
+ },
+ "power:WINGED_JUMP": {
+  "취약": null
+ },
+ "power:WITHERING_PRESENCE": {
+  "손": null,
+  "시듦": null
+ },
+ "power:WRAITH_FORM": {
+  "민첩": "power:DEXTERITY"
+ },
+ "power:WUPPYS_LOYALTY": {
+  "워피": null
+ },
+ "power:YAH": {
+  "화살": null,
+  "회수": null
+ },
+ "power:YOU_ARE_MINE": {
+  "손상": "power:FRAIL",
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "relic:AKABEKO": {
+  "활력": "power:VIGOR"
+ },
+ "relic:ALCHEMICAL_COFFER": {
+  "포션": null
+ },
+ "relic:AMETHYST_AUBERGINE": {
+  "골드": null
+ },
+ "relic:ANCHOR": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:ARCANE_SCROLL": {
+  "덱": null,
+  "희귀 카드": null
+ },
+ "relic:ARCHAIC_TOOTH": {
+  "변화": null
+ },
+ "relic:ASTROLABE": {
+  "강화": null,
+  "변화": null
+ },
+ "relic:BAG_OF_MARBLES": {
+  "취약": "power:VULNERABLE"
+ },
+ "relic:BATH_ROBES": {
+  "보스": null
+ },
+ "relic:BEAUTIFUL_BRACELET": {
+  "덱": null,
+  "인챈트": null
+ },
+ "relic:BELLOWS": {
+  "강화": null,
+  "손": null
+ },
+ "relic:BELT_BUCKLE": {
+  "민첩": "power:DEXTERITY",
+  "포션": null
+ },
+ "relic:BIG_HAT": {
+  "손": null,
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "relic:BIIIG_HUG": {
+  "그을음": "card:SOOT",
+  "덱": null,
+  "뽑을 카드 더미": null
+ },
+ "relic:BING_BONG": {
+  "덱": null
+ },
+ "relic:BIZARRE_LAMP": {
+  "기쁨": "card:JOY",
+  "손": null,
+  "슬픔": "card:SADNESS"
+ },
+ "relic:BLACK_STAR": {
+  "엘리트": null
+ },
+ "relic:BLESSED_ANTLER": {
+  "뽑을 카드 더미": null,
+  "어지러움": "card:DAZED"
+ },
+ "relic:BLOOD_SOAKED_ROSE": {
+  "덱": null
+ },
+ "relic:BONE_FLUTE": {
+  "골골이": null,
+  "방어도": null
+ },
+ "relic:BONE_TEA": {
+  "강화": null
+ },
+ "relic:BOOKMARK": {
+  "보존": "keyword:RETAIN"
+ },
+ "relic:BOOK_OF_FIVE_RINGS": {
+  "덱": null
+ },
+ "relic:BOOK_REPAIR_KNIFE": {
+  "종말": "power:DOOM"
+ },
+ "relic:BOOMING_CONCH": {
+  "엘리트": null
+ },
+ "relic:BOUND_PHYLACTERY": {
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "relic:BOWLER_HAT": {
+  "골드": null
+ },
+ "relic:BRIMSTONE": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:BRONZE_SCALES": {
+  "가시": "power:THORNS"
+ },
+ "relic:BURNING_STICKS": {
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "relic:BYRDINE": {
+  "변화": null,
+  "불섀": "card:GOD_BYRD",
+  "섀 급습": "card:BYRD_SWOOP",
+  "섀다인": "relic:BYRDINE"
+ },
+ "relic:BYRDPIP": {
+  "섀 급습": "card:BYRD_SWOOP",
+  "짹짹이": "relic:BYRDPIP",
+  "휴식 장소": null
+ },
+ "relic:CALLING_BELL": {
+  "유물": null
+ },
+ "relic:CAPTAINS_WHEEL": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:CAULDRON": {
+  "포션": null
+ },
+ "relic:CHARONS_ASHES": {
+  "소멸": null
+ },
+ "relic:CHOICES_PARADOX": {
+  "보존": "keyword:RETAIN",
+  "손": null
+ },
+ "relic:CIRCLET": {
+  "첨탑": null
+ },
+ "relic:CLAWS": {
+  "변화": null,
+  "할퀴기": "card:MAUL"
+ },
+ "relic:CLOAK_CLASP": {
+  "방어도": "keyword:BLOCK",
+  "손": null
+ },
+ "relic:CONDUCTORS_BATON": {
+  "선율": null
+ },
+ "relic:CRACKED_CORE": {
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "relic:CROSSBOW": {
+  "공격": null,
+  "손": null
+ },
+ "relic:CURSED_KETTLE": {
+  "엘리트": null,
+  "힘": null
+ },
+ "relic:CURSED_PEARL": {
+  "골드": null
+ },
+ "relic:DATA_DISK": {
+  "밀집": "power:FOCUS"
+ },
+ "relic:DAUGHTER_OF_THE_WIND": {
+  "방어도": null
+ },
+ "relic:DELICATE_FROND": {
+  "포션": null
+ },
+ "relic:DIAMOND_DIADEM": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:DISTINGUISHED_CAPE": {
+  "덱": null,
+  "영체화": "card:APPARITION"
+ },
+ "relic:DOLLYS_MIRROR": {
+  "덱": null,
+  "복사": null
+ },
+ "relic:DOWSING_ROD": {
+  "다우징": "card:DOWSING",
+  "덱": null
+ },
+ "relic:DRAGON_FRUIT": {
+  "골드": null
+ },
+ "relic:DREAM_CATCHER": {
+  "덱": null,
+  "휴식": null
+ },
+ "relic:DUSTY_TOME": {
+  "고대의 카드": null
+ },
+ "relic:ECTOPLASM": {
+  "골드": null
+ },
+ "relic:ELECTRIC_SHRYMP": {
+  "인챈트": null
+ },
+ "relic:EMBER_TEA": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:EMPTY_CAGE": {
+  "덱": null
+ },
+ "relic:ENDLESS_APPETITE": {
+  "소멸": null,
+  "힘": null
+ },
+ "relic:ETERNAL_FEATHER": {
+  "덱": null,
+  "휴식 장소": null
+ },
+ "relic:EXERCISE_MAT": {
+  "스트레칭": "power:STRETCH"
+ },
+ "relic:FAKE_ANCHOR": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:FAKE_ORICHALCUM": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:FAKE_VENERABLE_TEA_SET": {
+  "휴식 장소": null
+ },
+ "relic:FENCING_MANUAL": {
+  "단조": "keyword:FORGE"
+ },
+ "relic:FERTILIZER": {
+  "슬픔": "card:SADNESS",
+  "힘": "power:STRENGTH"
+ },
+ "relic:FISHING_ROD": {
+  "강화": null,
+  "덱": null
+ },
+ "relic:FORGOTTEN_SOUL": {
+  "소멸": null
+ },
+ "relic:FRAGRANT_MUSHROOM": {
+  "강화": null
+ },
+ "relic:FRESNEL_LENS": {
+  "덱": null,
+  "방어도": null,
+  "인챈트": null
+ },
+ "relic:FROZEN_EGG": {
+  "강화": null,
+  "덱": null
+ },
+ "relic:FUNERARY_MASK": {
+  "뽑을 카드 더미": null,
+  "영혼": "card:SOUL"
+ },
+ "relic:GALACTIC_DUST": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:GHOST_SEED": {
+  "수비": null,
+  "타격": null,
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "relic:GIRYA": {
+  "휴식 장소": null,
+  "힘": "power:STRENGTH"
+ },
+ "relic:GLASS_EYE": {
+  "고급": null,
+  "일반": null,
+  "희귀": null
+ },
+ "relic:GLITTER": {
+  "인챈트": null
+ },
+ "relic:GLOWING_ORB": {
+  "엘리트": null
+ },
+ "relic:GNARLED_HAMMER": {
+  "인챈트": null
+ },
+ "relic:GOLDEN_COMPASS": {
+  "막": null
+ },
+ "relic:GOLDEN_PEARL": {
+  "골드": null
+ },
+ "relic:GORGET": {
+  "판금": "power:PLATING"
+ },
+ "relic:HAND_DRILL": {
+  "방어도": null,
+  "취약": "power:VULNERABLE"
+ },
+ "relic:HEFTY_TABLET": {
+  "덱": null
+ },
+ "relic:HELICAL_DART": {
+  "단도": "card:SHIV",
+  "민첩": "power:DEXTERITY"
+ },
+ "relic:HORN_CLEAT": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:INFUSED_CORE": {
+  "영창": "keyword:CHANNELING",
+  "전기": "keyword:LIGHTNING_ORB"
+ },
+ "relic:INTIMIDATING_HELMET": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:JEWELED_MASK": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "relic:JEWELRY_BOX": {
+  "덱": null,
+  "신성": "card:APOTHEOSIS"
+ },
+ "relic:JOSS_PAPER": {
+  "소멸": "keyword:EXHAUST"
+ },
+ "relic:JUZU_BRACELET": {
+  "?": null
+ },
+ "relic:KIFUDA": {
+  "인챈트": null
+ },
+ "relic:KUNAI": {
+  "민첩": "power:DEXTERITY"
+ },
+ "relic:LARGE_CAPSULE": {
+  "덱": null,
+  "수비": null,
+  "유물": null,
+  "타격": null
+ },
+ "relic:LAVA_LAMP": {
+  "강화": null
+ },
+ "relic:LAVA_ROCK": {
+  "막": null,
+  "유물": null
+ },
+ "relic:LEAD_PAPERWEIGHT": {
+  "덱": null
+ },
+ "relic:LEAFY_POULTICE": {
+  "변화": "keyword:TRANSFORM",
+  "수비": null,
+  "타격": null
+ },
+ "relic:LORDS_PARASOL": {
+  "상인": null
+ },
+ "relic:LOST_COFFER": {
+  "포션": null
+ },
+ "relic:LUCKY_FYSH": {
+  "골드": null,
+  "덱": null
+ },
+ "relic:MASSIVE_SCROLL": {
+  "덱": null,
+  "멀티플레이 카드": null
+ },
+ "relic:MAW_BANK": {
+  "골드": null
+ },
+ "relic:MEAT_CLEAVER": {
+  "요리": "keyword:COOK"
+ },
+ "relic:METRONOME": {
+  "구체": null,
+  "영창": null
+ },
+ "relic:MIGHTY_WINGS": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:MINIATURE_CANNON": {
+  "강화": null
+ },
+ "relic:MINIATURE_TENT": {
+  "휴식 장소": null
+ },
+ "relic:MINI_REGENT": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:MOLTEN_EGG": {
+  "강화": null,
+  "덱": null
+ },
+ "relic:MUMMIFIED_HAND": {
+  "손": null
+ },
+ "relic:MUSIC_BOX": {
+  "휘발성": "keyword:ETHEREAL"
+ },
+ "relic:MYSTERIOUS_COCOON": {
+  "꿰뚫기": null,
+  "훈련 타격": null
+ },
+ "relic:MYSTIC_LIGHTER": {
+  "인챈트": null
+ },
+ "relic:NEOWS_BONES": {
+  "니오우 유물": null,
+  "덱": null
+ },
+ "relic:NEOWS_SACRIFICE": {
+  "덱": null,
+  "용연향": "potion:AMBERGRIS"
+ },
+ "relic:NEOWS_TALISMAN": {
+  "강화": null,
+  "수비": null,
+  "타격": null
+ },
+ "relic:NEOWS_TORMENT": {
+  "니오우의 격분": "card:NEOWS_FURY",
+  "덱": null
+ },
+ "relic:NEW_LEAF": {
+  "변화": "keyword:TRANSFORM"
+ },
+ "relic:NINJA_SCROLL": {
+  "단도": "card:SHIV",
+  "손": null
+ },
+ "relic:NUTRITIOUS_SOUP": {
+  "덱": null,
+  "인챈트": null,
+  "타격": null
+ },
+ "relic:OBSIDIAN_VICE": {
+  "손": null
+ },
+ "relic:OCARINA": {
+  "손": null
+ },
+ "relic:ODDLY_SMOOTH_STONE": {
+  "민첩": "power:DEXTERITY"
+ },
+ "relic:OLD_COIN": {
+  "골드": null
+ },
+ "relic:ORANGE_DOUGH": {
+  "손": null
+ },
+ "relic:ORICHALCUM": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:ORNAMENTAL_FAN": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:PAELS_CLAW": {
+  "수비": null,
+  "인챈트": null
+ },
+ "relic:PAELS_EYE": {
+  "소멸": "keyword:EXHAUST",
+  "손": null
+ },
+ "relic:PAELS_GROWTH": {
+  "인챈트": null
+ },
+ "relic:PAELS_HORN": {
+  "덱": null,
+  "안식": "card:RELAX"
+ },
+ "relic:PAELS_LEGION": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:PAELS_TOOTH": {
+  "강화": null,
+  "덱": null
+ },
+ "relic:PAELS_WING": {
+  "유물": null
+ },
+ "relic:PANDORAS_BOX": {
+  "변화": null,
+  "수비": null,
+  "타격": null,
+  "판도라의 상자": "relic:PANDORAS_BOX"
+ },
+ "relic:PANTOGRAPH": {
+  "보스": null
+ },
+ "relic:PAPER_KRANE": {
+  "약화": "power:WEAK"
+ },
+ "relic:PAPER_PHROG": {
+  "취약": "power:VULNERABLE"
+ },
+ "relic:PARRYING_SHIELD": {
+  "방어도": null
+ },
+ "relic:PERMAFROST": {
+  "방어도": null
+ },
+ "relic:PETRIFIED_TOAD": {
+  "포션 모양 돌": "potion:POTION_SHAPED_ROCK"
+ },
+ "relic:PHIAL_HOLSTER": {
+  "포션": null
+ },
+ "relic:PHILOSOPHERS_STONE": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:PHYLACTERY_UNBOUND": {
+  "소환": "keyword:SUMMON_STATIC"
+ },
+ "relic:PLANISPHERE": {
+  "?": null
+ },
+ "relic:POMANDER": {
+  "강화": null
+ },
+ "relic:POWER_CELL": {
+  "뽑을 카드 더미": null,
+  "손": null
+ },
+ "relic:PRECARIOUS_SHEARS": {
+  "덱": null
+ },
+ "relic:PRECISE_SCISSORS": {
+  "덱": null
+ },
+ "relic:PRESERVED_FOG": {
+  "덱": null
+ },
+ "relic:PUMPKIN_CANDLE": {
+  "불을 붙일": null,
+  "휴식 장소": null
+ },
+ "relic:PUNCH_DAGGER": {
+  "인챈트": null
+ },
+ "relic:RADIANT_PEARL": {
+  "발광": "card:LUMINESCE",
+  "손": null
+ },
+ "relic:RAINBOW_RING": {
+  "민첩": "power:DEXTERITY",
+  "힘": "power:STRENGTH"
+ },
+ "relic:RAZOR_TOOTH": {
+  "강화": null
+ },
+ "relic:RED_MASK": {
+  "약화": "power:WEAK"
+ },
+ "relic:RED_SKULL": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:REGALITE": {
+  "방어도": null
+ },
+ "relic:REGAL_PILLOW": {
+  "휴식": null
+ },
+ "relic:REPTILE_TRINKET": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:RINGING_TRIANGLE": {
+  "보존": "keyword:RETAIN",
+  "손": null
+ },
+ "relic:RIPPLE_BASIN": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:ROYAL_STAMP": {
+  "덱": null,
+  "인챈트": null
+ },
+ "relic:RUINED_HELMET": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:RUNIC_CAPACITOR": {
+  "구체 슬롯": null
+ },
+ "relic:RUNIC_PYRAMID": {
+  "손": null
+ },
+ "relic:SAI": {
+  "방어도": null
+ },
+ "relic:SAND_CASTLE": {
+  "강화": null
+ },
+ "relic:SCREAMING_FLAGON": {
+  "손": null
+ },
+ "relic:SCROLL_BOXES": {
+  "덱": null
+ },
+ "relic:SEAL_OF_GOLD": {
+  "골드": null
+ },
+ "relic:SEA_GLASS": {
+  "덱": null
+ },
+ "relic:SELF_FORMING_CLAY": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:SERE_TALON": {
+  "덱": null
+ },
+ "relic:SHOVEL": {
+  "유물": null,
+  "휴식 장소": null
+ },
+ "relic:SHURIKEN": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:SIGNET_RING": {
+  "골드": null
+ },
+ "relic:SILKEN_TRESS": {
+  "골드": null,
+  "인챈트": null
+ },
+ "relic:SILVER_CRUCIBLE": {
+  "강화": null
+ },
+ "relic:SLING_OF_COURAGE": {
+  "엘리트": null,
+  "힘": "power:STRENGTH"
+ },
+ "relic:SMALL_CAPSULE": {
+  "유물": null
+ },
+ "relic:SNECKO_SKULL": {
+  "중독": "power:POISON"
+ },
+ "relic:SONG_BOW": {
+  "조준": "power:AIM"
+ },
+ "relic:SOZU": {
+  "포션": null
+ },
+ "relic:SPARKLING_ROUGE": {
+  "민첩": "power:DEXTERITY",
+  "힘": "power:STRENGTH"
+ },
+ "relic:STONE_CRACKER": {
+  "강화": null,
+  "뽑을 카드 더미": null
+ },
+ "relic:STONE_HUMIDIFIER": {
+  "휴식": null,
+  "휴식 장소": null
+ },
+ "relic:STORYBOOK": {
+  "덱": null,
+  "찬란한 불꽃": "card:BRIGHTEST_FLAME"
+ },
+ "relic:STORYTELLER": {
+  "조준": "power:AIM"
+ },
+ "relic:STURDY_CLAMP": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:SWORD_OF_JADE": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:SWORD_OF_STONE": {
+  "엘리트": null,
+  "유물": null
+ },
+ "relic:SYMBIOTIC_VIRUS": {
+  "암흑": "keyword:DARK_ORB",
+  "영창": "keyword:CHANNELING"
+ },
+ "relic:TANXS_WHISTLE": {
+  "덱": null,
+  "호각 불기": "card:WHISTLE"
+ },
+ "relic:TEA_OF_DISCOURTESY": {
+  "뽑을 카드 더미": null,
+  "어지러움": "card:DAZED"
+ },
+ "relic:THE_ABACUS": {
+  "방어도": "keyword:BLOCK",
+  "뽑을 카드 더미": null
+ },
+ "relic:TINY_MAILBOX": {
+  "포션": null,
+  "휴식": null
+ },
+ "relic:TOASTY_MITTENS": {
+  "소멸": "keyword:EXHAUST",
+  "손": null,
+  "힘": "power:STRENGTH"
+ },
+ "relic:TOOLBOX": {
+  "손": null
+ },
+ "relic:TORMENTOUS_COLLAR": {
+  "약화": "power:WEAK"
+ },
+ "relic:TOUCH_OF_OROBAS": {
+  "고대": null,
+  "유물": null
+ },
+ "relic:TOUGH_BANDAGES": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:TOXIC_EGG": {
+  "강화": null,
+  "덱": null
+ },
+ "relic:TOY_BOX": {
+  "밀랍 유물": null
+ },
+ "relic:TRI_BOOMERANG": {
+  "덱": null,
+  "인챈트": null
+ },
+ "relic:TUNING_FORK": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:TWINE": {
+  "방어도": "keyword:BLOCK",
+  "화살": "keyword:ARROW",
+  "회수": null
+ },
+ "relic:TWISTED_FUNNEL": {
+  "중독": "power:POISON"
+ },
+ "relic:UNCEASING_TOP": {
+  "손": null
+ },
+ "relic:UNDYING_SIGIL": {
+  "종말": "power:DOOM"
+ },
+ "relic:UNSETTLING_LAMP": {
+  "해로운 효과": null
+ },
+ "relic:VAJRA": {
+  "힘": "power:STRENGTH"
+ },
+ "relic:VAMBRACE": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:VENERABLE_TEA_SET": {
+  "휴식 장소": null
+ },
+ "relic:VEXING_PUZZLEBOX": {
+  "손": null
+ },
+ "relic:VITRUVIAN_MINION": {
+  "방어도": "keyword:BLOCK"
+ },
+ "relic:WAR_HAMMER": {
+  "강화": null,
+  "엘리트": null
+ },
+ "relic:WAR_PAINT": {
+  "강화": null
+ },
+ "relic:WHETSTONE": {
+  "강화": null
+ },
+ "relic:WHITE_BEAST_STATUE": {
+  "포션": null
+ },
+ "relic:WHITE_STAR": {
+  "엘리트": null,
+  "희귀": null
+ },
+ "relic:WHITTLING_KNIFE": {
+  "뽑을 카드 더미": null,
+  "조준": "power:AIM"
+ },
+ "relic:WING_CHARM": {
+  "인챈트": null
+ },
+ "relic:WONGOS_MYSTERY_TICKET": {
+  "유물": null
+ },
+ "relic:WUPPY": {
+  "워피": "relic:WUPPY"
+ },
+ "relic:YUMMY_COOKIE": {
+  "강화": null
+ }
+}

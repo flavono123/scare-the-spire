@@ -3,13 +3,11 @@ import { bakeDescription } from "../src/lib/codex-bake";
 import {
   buildCardSideTipCatalog,
   collectCardSideTips,
-  extractGoldTerms,
   stripLocalizationTitleTemplates,
 } from "../src/lib/card-keyword-tips";
 import {
   getCodexCards,
   getCodexKeywords,
-  getCodexMonsters,
   getCodexPowers,
 } from "../src/lib/codex-data";
 import { readGameLocalizationTable } from "../src/lib/game-localization";
@@ -23,44 +21,34 @@ async function main() {
     stripLocalizationTitleTemplates("뽑을 카드 더미 {Hotkey:choose(None):| ({})}"),
     "뽑을 카드 더미",
   );
-  assert.deepEqual(extractGoldTerms("피해를 8 줍니다.\n[gold]취약[/gold]을 2 부여합니다."), ["취약"]);
 
   const gameLocale = "kor" as const;
   const [
     cards,
     keywords,
     powers,
-    monsters,
     staticHoverTips,
     engStaticHoverTips,
     orbs,
     engOrbs,
-    monsterNames,
-    engMonsterNames,
   ] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexKeywords({ gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),
-    getCodexMonsters({ gameLocale }),
     readGameLocalizationTable(gameLocale, "static_hover_tips"),
     readGameLocalizationTable("eng", "static_hover_tips"),
     readGameLocalizationTable(gameLocale, "orbs"),
     readGameLocalizationTable("eng", "orbs"),
-    readGameLocalizationTable(gameLocale, "monsters"),
-    readGameLocalizationTable("eng", "monsters"),
   ]);
 
   const catalog = buildCardSideTipCatalog({
     keywords,
     powers,
     cards,
-    monsters,
     staticHoverTips,
     engStaticHoverTips,
     orbs,
     engOrbs,
-    monsterNames,
-    engMonsterNames,
   });
 
   const byId = new Map(cards.map((card) => [card.id, card]));
@@ -77,30 +65,32 @@ async function main() {
   assert.ok(cloak);
   assert.deepEqual(
     tipKeys(collectCardSideTips(cloak, catalog)),
-    ["keyword:BLOCK", "card:SHIV"],
+    // CardModel.HoverTips order: ExtraHoverTips first, then Block for GainsBlock.
+    ["card:SHIV", "keyword:BLOCK"],
   );
 
   const turbo = byId.get("TURBO");
   assert.ok(turbo);
   assert.deepEqual(
     tipKeys(collectCardSideTips(turbo, catalog)),
-    ["keyword:DISCARD_PILE", "card:VOID"],
+    ["keyword:ENERGY", "card:VOID"],
   );
 
   const bone = byId.get("BONE_SHARDS");
   assert.ok(bone);
-  assert.deepEqual(tipKeys(collectCardSideTips(bone, catalog)), ["monster:OSTY"]);
+  // GainsBlock adds Block; naming Osty in gold adds no tip.
+  assert.deepEqual(tipKeys(collectCardSideTips(bone, catalog)), ["keyword:BLOCK"]);
 
   const rainbow = byId.get("RAINBOW");
   assert.ok(rainbow);
   assert.deepEqual(
     tipKeys(collectCardSideTips(rainbow, catalog)),
     [
-      "keyword:EXHAUST",
-      "keyword:LIGHTNING_ORB",
       "keyword:CHANNELING",
+      "keyword:LIGHTNING_ORB",
       "keyword:FROST_ORB",
       "keyword:DARK_ORB",
+      "keyword:EXHAUST",
     ],
   );
 
@@ -108,14 +98,14 @@ async function main() {
   assert.ok(apparition);
   assert.deepEqual(
     tipKeys(collectCardSideTips(apparition, catalog)),
-    ["keyword:EXHAUST", "keyword:ETHEREAL", "keyword:INTANGIBLE"],
+    ["keyword:INTANGIBLE", "keyword:EXHAUST", "keyword:ETHEREAL"],
   );
 
   const hiddenGem = byId.get("HIDDEN_GEM");
   assert.ok(hiddenGem);
   assert.deepEqual(
     tipKeys(collectCardSideTips(hiddenGem, catalog)),
-    ["keyword:DRAW_PILE", "keyword:REPLAY"],
+    ["keyword:REPLAY_STATIC"],
   );
 
   // FromForge(): Forge tip + Sovereign Blade preview + that card's Retain tip.
@@ -140,19 +130,16 @@ async function main() {
     false,
   );
 
-  // English Block gold on multiplayer card still resolves via eng static title.
+  // English catalog resolves the same game tips.
   const engCards = await getCodexCards({ includeDeprecated: true, gameLocale: "eng" });
   const engCatalog = buildCardSideTipCatalog({
     keywords: await getCodexKeywords({ gameLocale: "eng" }),
     powers: await getCodexPowers({ includeDeprecated: true, gameLocale: "eng" }),
     cards: engCards,
-    monsters: await getCodexMonsters({ gameLocale: "eng" }),
     staticHoverTips: engStaticHoverTips,
     engStaticHoverTips,
     orbs: engOrbs,
     engOrbs,
-    monsterNames: engMonsterNames,
-    engMonsterNames,
   });
   const constellation = engCards.find((card) => card.id === "CONSTELLATION");
   assert.ok(constellation);
@@ -240,3 +227,4 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+

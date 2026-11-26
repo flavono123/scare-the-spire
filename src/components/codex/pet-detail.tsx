@@ -112,7 +112,6 @@ export function PetInspect({
   action?: PetAction | null;
   actionNonce?: number;
 }) {
-  const excludeSelf = useMemo(() => new Set([pet.name, pet.nameEn]), [pet.name, pet.nameEn]);
   return (
     <div className="flex w-full max-w-[34rem] flex-col items-center gap-3 sm:flex-row sm:gap-5">
       <PetSpine pet={pet} skins={skins} action={action} actionNonce={actionNonce} fixedFrame className="relative h-56 w-56 shrink-0" />
@@ -122,7 +121,6 @@ export function PetInspect({
             gameUi={gameUi}
             description={pet.description}
             entities={entities}
-            excludeEntityTerms={excludeSelf}
             className="block text-left"
           />
         ) : (

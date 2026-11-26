@@ -157,7 +157,6 @@ export function PowerDetail({
         sources: tipCatalogSources,
         powers: tipCatalogPowers.length > 0 ? tipCatalogPowers : [power],
         cards: tipCatalogCards ?? relatedCards,
-        monsters: relatedMonsters,
       })
       : null,
     [tipCatalogSources, tipCatalogPowers, power, tipCatalogCards, relatedCards, relatedMonsters],

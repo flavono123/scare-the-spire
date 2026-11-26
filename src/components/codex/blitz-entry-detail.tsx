@@ -36,7 +36,6 @@ export function BlitzEntryInspect({
   size?: number;
 }) {
   const shown = variant ?? entry;
-  const excludeSelf = useMemo(() => new Set([shown.name, shown.nameEn]), [shown.name, shown.nameEn]);
   return (
     <div className="flex w-full max-w-[32rem] items-center gap-3 sm:gap-5">
       <ModifierToken modifier={entry} size={size} />
@@ -46,7 +45,6 @@ export function BlitzEntryInspect({
             gameUi={gameUi}
             description={shown.description}
             entities={entities}
-            excludeEntityTerms={excludeSelf}
             className="block text-left"
           />
         ) : (

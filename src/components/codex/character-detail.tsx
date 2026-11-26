@@ -43,7 +43,6 @@ import { STS2ChangeHistory } from "./sts2-change-history";
 
 type CharacterActionId = "IDLE" | "ATTACK" | "HEAVY_ATTACK" | "CAST" | "POWER_UP" | "SOVEREIGN_BLADE" | "HURT" | "DIE";
 
-const CHARACTER_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 const CHARACTER_WEARY_TRAVELER_ASCENSION_LEVEL = 2;
 const CHARACTER_ASCENDED_HP_PREVIEW_RATIO = 0.8;
 const HEALTH_BAR_CLIP_PATH = "polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%)";
@@ -323,10 +322,6 @@ export function CharacterDetail({
   const [selectedFormCardId, setSelectedFormCardId] = useState<string | null>(null);
   const formPlacementRef = useRef<MonsterStageFormPlacement | null>(null);
   const [commentCount, setCommentCount] = useState(0);
-  const excludeSelf = useMemo(
-    () => new Set([character.name, character.nameEn]),
-    [character.name, character.nameEn],
-  );
   const cardById = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
   const formOptions = characterFormVfxAssets.flatMap((asset) => {
     const card = cardById.get(asset.cardId);
@@ -551,8 +546,6 @@ export function CharacterDetail({
                 gameUi={gameUi}
                 description={character.description}
                 entities={entities}
-                excludeEntityTerms={excludeSelf}
-                excludeEntityTypes={CHARACTER_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                 className="block text-left"
               />
             ) : (
@@ -636,8 +629,6 @@ export function CharacterDetail({
                           gameUi={gameUi}
                           description={quote.text}
                           entities={entities}
-                          excludeEntityTerms={excludeSelf}
-                          excludeEntityTypes={CHARACTER_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                         />
                       ) : (
                         <DescriptionText description={quote.text} />
@@ -654,7 +645,6 @@ export function CharacterDetail({
               character={character}
               ancients={ancients}
               entities={entities}
-              excludeSelf={excludeSelf}
               gameUi={gameUi}
               serviceLocale={serviceLocale}
             />
@@ -821,7 +811,6 @@ function CharacterAncientInteractions({
   character,
   ancients,
   entities,
-  excludeSelf,
   gameUi,
   serviceLocale,
 }: {
@@ -829,7 +818,6 @@ function CharacterAncientInteractions({
   ancients: CodexAncient[];
   entities?: EntityInfo[];
   gameUi?: CodexGameUiLabels;
-  excludeSelf: ReadonlySet<string>;
   serviceLocale: ServiceLocale;
 }) {
   const groups = useMemo(() => {
@@ -1019,8 +1007,6 @@ function CharacterAncientInteractions({
                           gameUi={gameUi}
                           description={line.text}
                           entities={entities}
-                          excludeEntityTerms={excludeSelf}
-                          excludeEntityTypes={CHARACTER_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                         />
                       ) : (
                         <DescriptionText description={line.text} />

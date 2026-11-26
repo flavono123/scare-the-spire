@@ -30,7 +30,6 @@ export function DominionInspect({
   gameUi?: CodexGameUiLabels;
   size?: number;
 }) {
-  const excludeSelf = useMemo(() => new Set([dominion.name, dominion.nameEn]), [dominion.name, dominion.nameEn]);
   return (
     <div className="flex w-full max-w-[32rem] items-center gap-3 sm:gap-5">
       <ModifierToken modifier={dominion} size={size} />
@@ -40,7 +39,7 @@ export function DominionInspect({
             gameUi={gameUi}
             description={dominion.description}
             entities={entities}
-            excludeEntityTerms={excludeSelf}
+            goldTips={dominion.goldTips}
             className="block text-left"
           />
         ) : (
