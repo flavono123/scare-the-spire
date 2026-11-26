@@ -16,7 +16,6 @@ import {
   placeCardSideTip,
   type CardSideTipHorizontal,
 } from "@/lib/card-side-tip-placement";
-import { MONSTER_TYPE_CONFIG } from "@/lib/codex-types";
 import { usePageGameUiLabels } from "@/hooks/use-game-ui-labels";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib/hover-tip-layer";
@@ -59,59 +58,9 @@ function CardEntitySideTip({ tip }: { tip: Extract<CardSideTip, { kind: "card" }
   );
 }
 
-function MonsterEntitySideTip({ tip }: { tip: Extract<CardSideTip, { kind: "monster" }> }) {
-  const { gameUi, pending } = usePageGameUiLabels();
-  const monster = tip.monster;
-  const imageUrl = tip.imageUrl ?? monster?.bossImageUrl ?? monster?.imageUrl ?? null;
-  const meta = monster ? (
-    <>
-      <span style={{ color: MONSTER_TYPE_CONFIG[monster.type].color }}>
-        {gameUi?.monsterTypes[monster.type].label ?? (pending ? null : MONSTER_TYPE_CONFIG[monster.type].label)}
-      </span>
-      {monster.minHp != null && monster.minHp !== 9999 && (
-        <span className="text-gray-300">
-          HP{" "}
-          {monster.maxHp && monster.maxHp !== monster.minHp
-            ? `${monster.minHp}-${monster.maxHp}`
-            : monster.minHp}
-        </span>
-      )}
-    </>
-  ) : null;
-
-  return (
-    <span className="flex w-max max-w-[22rem] items-start gap-2.5">
-      {imageUrl && (
-        <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-black/20">
-          <Image
-            src={imageUrl}
-            alt={tip.title}
-            width={64}
-            height={64}
-            className="h-14 w-14 rounded object-cover"
-          />
-        </span>
-      )}
-      <GameHoverTip title={tip.title} style={{ minWidth: 200, maxWidth: 260 }}>
-        {meta && <span className="mb-1 flex flex-wrap gap-2 text-sm">{meta}</span>}
-        {monster ? (
-          <span className="block text-left text-sm text-[#FFF6E2]/80">
-            {monster.bestiaryMoves
-              .filter((move) => !["NOTHING", "SPAWNED", "DEAD"].includes(move.id))
-              .slice(0, 4)
-              .map((move) => move.name)
-              .join(", ")}
-          </span>
-        ) : null}
-      </GameHoverTip>
-    </span>
-  );
-}
-
 function renderSideTip(tip: CardSideTip) {
   if (tip.kind === "keyword") return <KeywordSideTip tip={tip} />;
-  if (tip.kind === "card") return <CardEntitySideTip tip={tip} />;
-  return <MonsterEntitySideTip tip={tip} />;
+  return <CardEntitySideTip tip={tip} />;
 }
 
 function TipStackBody({ tips }: { tips: readonly CardSideTip[] }) {

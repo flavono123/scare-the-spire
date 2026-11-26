@@ -10,7 +10,7 @@
   "Fertigkeiten": null
  },
  "affliction:TAINTED": {
-  "Schmutzig": "affliction:TAINTED"
+  "Schmutzig": "power:TAINTED"
  },
  "ancient:NEOW": {
   "„Ki...!“": null
@@ -20,19 +20,6 @@
  },
  "ascension:BLITZ": {
   "Deck": null
- },
- "ascension:DREAD": {
-  "Gebrechlich": null,
-  "Geschicklichkeit": null,
-  "Glitschig": null,
-  "Locken": null,
-  "Nachziehstapel": null,
-  "Panzerung": null,
-  "Ritual": null,
-  "Schwach": null,
-  "Stärke": null,
-  "Verdorren": null,
-  "Verwundbar": null
  },
  "ascension:DREAD_RULE_02": {
   "Deck": null
@@ -51,6 +38,55 @@
  },
  "badge:MONEY_MONEY": {
   "Gold": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Verzaubere": null
+ },
+ "blitz:CARD_PACKS": {
+  "Deck": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "Deck": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "Gewöhnliche": null,
+  "Seltene": null,
+  "Ungewöhnliche": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Deck": null,
+  "Transformiere": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Deck": null,
+  "Verbessere": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "Farblose": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Verzauberte": null
+ },
+ "blitz:GLAM": {
+  "Verzaubere": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Deck": null
+ },
+ "blitz:RELIC": {
+  "Relikt": null
+ },
+ "blitz:TWO_RELICS": {
+  "Relikte": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Verbesserte": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Verbesserte": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Verbesserte": null
  },
  "card:ABRASIVE": {
   "Geschicklichkeit": "power:DEXTERITY",
@@ -1663,7 +1699,7 @@
   "Nachziehstapel": null
  },
  "card:STRENGTH": {
-  "Stärke": "card:STRENGTH"
+  "Stärke": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
   "Schwach": "power:WEAK"
@@ -1963,7 +1999,7 @@
   "Dehnung": "power:STRETCH"
  },
  "card:ZAP": {
-  "Blitz": "card:ZAP",
+  "Blitz": "keyword:LIGHTNING_ORB",
   "Erschaffe": null
  },
  "character:FOOL": {
@@ -1971,6 +2007,39 @@
  },
  "character:NECROBINDER": {
   "Osty": null
+ },
+ "dominion:AEONGLASS": {
+  "Nachziehstapel": null,
+  "Verdorren": "card:WITHER"
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Ritual": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "Panzerung": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "Gebrechlich": "power:FRAIL",
+  "Schwach": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Geschicklichkeit": "power:DEXTERITY",
+  "Stärke": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "Gebrechlich": "power:FRAIL",
+  "Schwach": "power:WEAK",
+  "Verwundbar": "power:VULNERABLE"
+ },
+ "dominion:SOUL_FYSH": {
+  "Locken": "card:BECKON",
+  "Nachziehstapel": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Stärke": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "Glitschig": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "Block": null
@@ -3108,7 +3177,7 @@
   "Schmiedest": null
  },
  "power:HANG": {
-  "Erhängen": "power:HANG"
+  "Erhängen": "card:HANG"
  },
  "power:HARD_TO_KILL": {
   "Exoskeleton": null

@@ -22,7 +22,6 @@ export function AncientDialogueViewer({
   characters,
   messages,
   entities,
-  excludeSelf,
   className,
   gameUi,
 }: {
@@ -30,7 +29,6 @@ export function AncientDialogueViewer({
   characters: CodexCharacter[];
   messages: CodexServiceMessages;
   entities?: EntityInfo[];
-  excludeSelf?: ReadonlySet<string>;
   className?: string;
   gameUi?: CodexGameUiLabels;
 }) {
@@ -263,8 +261,6 @@ export function AncientDialogueViewer({
                           gameUi={gameUi}
                           description={line.text}
                           entities={entities}
-                          excludeEntityTerms={excludeSelf}
-                          excludeEntityTypes={new Set(["epoch"])}
                         />
                       ) : (
                         <DescriptionText description={line.text} />

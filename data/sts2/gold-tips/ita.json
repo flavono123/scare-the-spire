@@ -9,7 +9,7 @@
   "Abilità": null
  },
  "affliction:TAINTED": {
-  "Contaminazione": "affliction:TAINTED"
+  "Contaminazione": "power:TAINTED"
  },
  "ancient:NEOW": {
   "\"Ki...!\"": null
@@ -19,19 +19,6 @@
  },
  "ascension:BLITZ": {
   "mazzo": null
- },
- "ascension:DREAD": {
-  "Debolezza": null,
-  "Destrezza": null,
-  "Deterioramento": null,
-  "Forza": null,
-  "Fragilità": null,
-  "Placcatura": null,
-  "Richiamo": null,
-  "Rituale": null,
-  "Sfuggevolezza": null,
-  "Vulnerabilità": null,
-  "mazzo di pesca": null
  },
  "ascension:DREAD_RULE_02": {
   "mazzo": null
@@ -50,6 +37,55 @@
  },
  "badge:MONEY_MONEY": {
   "oro": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Incanti": null
+ },
+ "blitz:CARD_PACKS": {
+  "mazzo": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "mazzo": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "comuni": null,
+  "non comuni": null,
+  "rare": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Trasformi": null,
+  "mazzo": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Potenzi": null,
+  "mazzo": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "incolori": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "incantate": null
+ },
+ "blitz:GLAM": {
+  "Incanti": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "mazzo": null
+ },
+ "blitz:RELIC": {
+  "reliquia": null
+ },
+ "blitz:TWO_RELICS": {
+  "reliquie": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "potenziate": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "potenziata": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "potenziate": null
  },
  "card:ABRASIVE": {
   "Destrezza": "power:DEXTERITY",
@@ -991,7 +1027,7 @@
   "Blocco": "keyword:BLOCK"
  },
  "card:INVOKE": {
-  "Invocazione": "card:INVOKE"
+  "Invocazione": "keyword:SUMMON_STATIC"
  },
  "card:IRON_WAVE": {
   "Blocco": "keyword:BLOCK"
@@ -1970,6 +2006,39 @@
  },
  "character:NECROBINDER": {
   "Osty": null
+ },
+ "dominion:AEONGLASS": {
+  "Deterioramento": "card:WITHER",
+  "mazzo di pesca": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Rituale": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "Placcatura": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "Debolezza": "power:WEAK",
+  "Fragilità": "power:FRAIL"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Destrezza": "power:DEXTERITY",
+  "Forza": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "Debolezza": "power:WEAK",
+  "Fragilità": "power:FRAIL",
+  "Vulnerabilità": "power:VULNERABLE"
+ },
+ "dominion:SOUL_FYSH": {
+  "Richiamo": "card:BECKON",
+  "mazzo di pesca": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Forza": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "Sfuggevolezza": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "Blocco": null
@@ -3017,7 +3086,7 @@
   "forgiano": null
  },
  "power:HANG": {
-  "Impiccagione": "power:HANG"
+  "Impiccagione": "card:HANG"
  },
  "power:HARD_TO_KILL": {
   "Esoscheletro": null

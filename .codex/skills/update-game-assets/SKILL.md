@@ -34,7 +34,9 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    python3 scripts/parse-encounters.py
    python3 scripts/parse-entity-vars.py
    python3 scripts/parse-card-keywords.py   # card keywords = CanonicalKeywords
-   python3 scripts/generate-inflection-aliases.py   # Exhausted -> Exhaust, 꿰뚫린 -> 꿰뚫림 tips, as the game pairs them
+   python3 scripts/generate-inflection-aliases.py   # patch notes: Exhausted -> Exhaust, 꿰뚫린 -> 꿰뚫림
+   python3 scripts/generate-game-tips.py   # each element's game tip list + which gold words name a tip (data/sts2/game-tips.json, gold-tips/)
+   pnpm game-tips:audit                     # full audit of keywords, side tips and gold words; not part of any deploy
    ```
    Once `data/sts2/meta.json` and `data/sts2-changes.json` name the new
    patch, pin every locale's text for it and check older versions:

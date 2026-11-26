@@ -9,7 +9,7 @@
   "Técnicas": null
  },
  "affliction:TAINTED": {
-  "Contaminação": "affliction:TAINTED"
+  "Contaminação": "power:TAINTED"
  },
  "ancient:NEOW": {
   "“Ki...!”": null
@@ -19,19 +19,6 @@
  },
  "ascension:BLITZ": {
   "Baralho": null
- },
- "ascension:DREAD": {
-  "Blindagem": null,
-  "Definhar": null,
-  "Destreza": null,
-  "Escorregadio": null,
-  "Força": null,
-  "Fraqueza": null,
-  "Frágil": null,
-  "Instigar": null,
-  "Pilha de Compra": null,
-  "Ritual": null,
-  "Vulnerável": null
  },
  "ascension:DREAD_RULE_02": {
   "Baralho": null
@@ -50,6 +37,55 @@
  },
  "badge:MONEY_MONEY": {
   "Ouro": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Encante": null
+ },
+ "blitz:CARD_PACKS": {
+  "Baralho": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "Baralho": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "Comum": null,
+  "Incomum": null,
+  "Rara": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Baralho": null,
+  "Transforme": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Aprimore": null,
+  "Baralho": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "Incolor": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Encantada": null
+ },
+ "blitz:GLAM": {
+  "Encante": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Baralho": null
+ },
+ "blitz:RELIC": {
+  "Relíquia": null
+ },
+ "blitz:TWO_RELICS": {
+  "Relíquias": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Aprimorada": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Aprimorada": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Aprimorada": null
  },
  "card:ABRASIVE": {
   "Destreza": "power:DEXTERITY",
@@ -1658,7 +1694,7 @@
   "Pilha de Compra": null
  },
  "card:STRENGTH": {
-  "Força": "card:STRENGTH"
+  "Força": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
   "Fraqueza": "power:WEAK"
@@ -1966,6 +2002,39 @@
  },
  "character:NECROBINDER": {
   "Ostheo": null
+ },
+ "dominion:AEONGLASS": {
+  "Definhar": "card:WITHER",
+  "Pilha de Compra": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Ritual": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "Blindagem": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "Fraqueza": "power:WEAK",
+  "Frágil": "power:FRAIL"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Destreza": "power:DEXTERITY",
+  "Força": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "Fraqueza": "power:WEAK",
+  "Frágil": "power:FRAIL",
+  "Vulnerável": "power:VULNERABLE"
+ },
+ "dominion:SOUL_FYSH": {
+  "Instigar": "card:BECKON",
+  "Pilha de Compra": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Força": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "Escorregadio": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "Proteção": null
@@ -3009,7 +3078,7 @@
   "Forje": null
  },
  "power:GALVANIC": {
-  "Galvanização": "power:GALVANIC"
+  "Galvanização": "affliction:GALVANIZED"
  },
  "power:HAILSTORM": {
   "Gelo": "keyword:FROST_ORB"
@@ -3019,7 +3088,7 @@
   "Forjar": "keyword:FORGE"
  },
  "power:HANG": {
-  "Enforcar": "power:HANG"
+  "Enforcar": "card:HANG"
  },
  "power:HARD_TO_KILL": {
   "Exoesqueleto": null

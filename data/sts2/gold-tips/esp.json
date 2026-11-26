@@ -9,24 +9,13 @@
   "habilidades": null
  },
  "affliction:TAINTED": {
-  "corrupción": "affliction:TAINTED"
+  "corrupción": "power:TAINTED"
  },
  "ancient:VAKUU": {
   "Vakuu": null
  },
  "ascension:BLITZ": {
   "mazo": null
- },
- "ascension:DREAD": {
-  "Marchitamiento": null,
-  "Vislumbrar": null,
-  "debilitamiento": null,
-  "destreza": null,
-  "fragilidad": null,
-  "fuerza": null,
-  "mazo de robo": null,
-  "ritual": null,
-  "vulnerabilidad": null
  },
  "ascension:DREAD_RULE_02": {
   "mazo": null
@@ -45,6 +34,55 @@
  },
  "badge:MONEY_MONEY": {
   "oro": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Encantas": null
+ },
+ "blitz:CARD_PACKS": {
+  "mazo": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "mazo": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "común": null,
+  "infrecuente": null,
+  "rara": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Transformas": null,
+  "mazo": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Mejoras": null,
+  "mazo": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "incolora": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "encantada": null
+ },
+ "blitz:GLAM": {
+  "Encantas": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "mazo": null
+ },
+ "blitz:RELIC": {
+  "reliquia": null
+ },
+ "blitz:TWO_RELICS": {
+  "reliquias": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "mejorada": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "mejorada": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "mejorada": null
  },
  "card:ABRASIVE": {
   "destreza": "power:DEXTERITY",
@@ -867,7 +905,7 @@
   "mano": null
  },
  "card:HANG": {
-  "Cuelgue": "card:HANG"
+  "Cuelgue": null
  },
  "card:HAUNT": {
   "Alma": "card:SOUL"
@@ -1090,7 +1128,7 @@
   "astucia": "keyword:SLY"
  },
  "card:MAUL": {
-  "Devorar": "card:MAUL"
+  "Devorar": null
  },
  "card:MAYHEM": {
   "mazo de robo": null
@@ -1605,7 +1643,7 @@
   "mazo de robo": null
  },
  "card:STRENGTH": {
-  "fuerza": "card:STRENGTH"
+  "fuerza": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
   "debilitamiento": "power:WEAK"
@@ -1875,6 +1913,33 @@
  },
  "character:NECROBINDER": {
   "Puro Hueso": null
+ },
+ "dominion:AEONGLASS": {
+  "Marchitamiento": "card:WITHER",
+  "mazo de robo": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "ritual": "power:RITUAL"
+ },
+ "dominion:KIN": {
+  "debilitamiento": "power:WEAK",
+  "fragilidad": "power:FRAIL"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "destreza": "power:DEXTERITY",
+  "fuerza": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "debilitamiento": "power:WEAK",
+  "fragilidad": "power:FRAIL",
+  "vulnerabilidad": "power:VULNERABLE"
+ },
+ "dominion:SOUL_FYSH": {
+  "Vislumbrar": "card:BECKON",
+  "mazo de robo": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "fuerza": "power:STRENGTH"
  },
  "enchantment:ADROIT": {
   "bloqueo": null
@@ -2910,7 +2975,7 @@
   "forja": null
  },
  "power:GALVANIC": {
-  "galvanismo": "power:GALVANIC"
+  "galvanismo": "affliction:GALVANIZED"
  },
  "power:HAILSTORM": {
   "escarcha": "keyword:FROST_ORB"
@@ -2920,7 +2985,7 @@
   "lo harán": null
  },
  "power:HANG": {
-  "Cuelgue": "power:HANG"
+  "Cuelgue": "card:HANG"
  },
  "power:HAUNT": {
   "Alma": null

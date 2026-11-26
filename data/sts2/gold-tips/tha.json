@@ -9,11 +9,7 @@
   "ทักษะ": null
  },
  "affliction:TAINTED": {
-  "ปนเปื้อน": "affliction:TAINTED"
- },
- "ascension:DREAD": {
-  "กองจั่ว": null,
-  "เหี่ยวเฉา": null
+  "ปนเปื้อน": "power:TAINTED"
  },
  "ascension:LEVEL_01": {
   "ลูกพี่": null
@@ -1499,6 +1495,10 @@
   "ปลุกเสก": "keyword:CHANNELING",
   "สายฟ้า": "keyword:LIGHTNING_ORB"
  },
+ "dominion:AEONGLASS": {
+  "กองจั่ว": null,
+  "เหี่ยวเฉา": "card:WITHER"
+ },
  "enchantment:ADROIT": {
   "บล็อก": null
  },
@@ -2321,7 +2321,7 @@
   "หลอมสร้าง": "keyword:FORGE"
  },
  "power:GALVANIC": {
-  "กัดกร่อน": "power:GALVANIC"
+  "กัดกร่อน": "affliction:GALVANIZED"
  },
  "power:HAILSTORM": {
   "น้ำแข็ง": "keyword:FROST_ORB"

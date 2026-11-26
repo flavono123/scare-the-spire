@@ -9,7 +9,7 @@
   "Skills": null
  },
  "affliction:TAINTED": {
-  "Tainted": "affliction:TAINTED"
+  "Tainted": "power:TAINTED"
  },
  "ancient:NEOW": {
   "“Ki...!”": null
@@ -19,19 +19,6 @@
  },
  "ascension:BLITZ": {
   "Deck": null
- },
- "ascension:DREAD": {
-  "Beckon": null,
-  "Dexterity": null,
-  "Draw Pile": null,
-  "Frail": null,
-  "Plating": null,
-  "Ritual": null,
-  "Slippery": null,
-  "Strength": null,
-  "Vulnerable": null,
-  "Weak": null,
-  "Wither": null
  },
  "ascension:DREAD_RULE_02": {
   "Deck": null
@@ -50,6 +37,55 @@
  },
  "badge:MONEY_MONEY": {
   "Gold": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Enchant": null
+ },
+ "blitz:CARD_PACKS": {
+  "Deck": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "Deck": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "Common": null,
+  "Rare": null,
+  "Uncommon": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Deck": null,
+  "Transform": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Deck": null,
+  "Upgrade": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "Colorless": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Enchanted": null
+ },
+ "blitz:GLAM": {
+  "Enchant": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Deck": null
+ },
+ "blitz:RELIC": {
+  "Relic": null
+ },
+ "blitz:TWO_RELICS": {
+  "Relics": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Upgraded": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Upgraded": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Upgraded": null
  },
  "card:ABRASIVE": {
   "Dexterity": "power:DEXTERITY",
@@ -1665,7 +1701,7 @@
   "Hand": null
  },
  "card:STRENGTH": {
-  "Strength": "card:STRENGTH"
+  "Strength": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
   "Weak": "power:WEAK"
@@ -1972,6 +2008,39 @@
  },
  "character:NECROBINDER": {
   "Osty": null
+ },
+ "dominion:AEONGLASS": {
+  "Draw Pile": null,
+  "Wither": "card:WITHER"
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Ritual": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "Plating": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "Frail": "power:FRAIL",
+  "Weak": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Dexterity": "power:DEXTERITY",
+  "Strength": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "Frail": "power:FRAIL",
+  "Vulnerable": "power:VULNERABLE",
+  "Weak": "power:WEAK"
+ },
+ "dominion:SOUL_FYSH": {
+  "Beckon": "card:BECKON",
+  "Draw Pile": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Strength": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "Slippery": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "Block": null

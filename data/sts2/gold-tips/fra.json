@@ -21,19 +21,6 @@
  "ascension:BLITZ": {
   "Deck": null
  },
- "ascension:DREAD": {
-  "Affaibli": null,
-  "Appel": null,
-  "Blindage": null,
-  "Dextérité": null,
-  "Force": null,
-  "Fragilisé": null,
-  "Glissant": null,
-  "Pioche": null,
-  "Rituel": null,
-  "Vulnérable": null,
-  "Érosion": null
- },
  "ascension:DREAD_RULE_02": {
   "Deck": null
  },
@@ -51,6 +38,55 @@
  },
  "badge:MONEY_MONEY": {
   "Pièces d'or": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Envoûtez": null
+ },
+ "blitz:CARD_PACKS": {
+  "Deck": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "Deck": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "Commune": null,
+  "Inhabituelle": null,
+  "Rare": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Deck": null,
+  "Transformez": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Améliorez": null,
+  "Deck": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "Incolore": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Envoûtée": null
+ },
+ "blitz:GLAM": {
+  "Envoûtez": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Deck": null
+ },
+ "blitz:RELIC": {
+  "Relique": null
+ },
+ "blitz:TWO_RELICS": {
+  "Reliques": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Améliorée": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Améliorée": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Améliorée": null
  },
  "card:ABRASIVE": {
   "Dextérité": "power:DEXTERITY",
@@ -1664,7 +1700,7 @@
   "Pioche": null
  },
  "card:STRENGTH": {
-  "Force": "card:STRENGTH"
+  "Force": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
   "Affaibli": "power:WEAK"
@@ -1970,6 +2006,39 @@
  },
  "character:NECROBINDER": {
   "Titos": null
+ },
+ "dominion:AEONGLASS": {
+  "Pioche": null,
+  "Érosion": "card:WITHER"
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Rituel": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "Blindage": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "Affaibli": "power:WEAK",
+  "Fragilisé": "power:FRAIL"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Dextérité": "power:DEXTERITY",
+  "Force": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "Affaibli": "power:WEAK",
+  "Fragilisé": "power:FRAIL",
+  "Vulnérable": "power:VULNERABLE"
+ },
+ "dominion:SOUL_FYSH": {
+  "Appel": "card:BECKON",
+  "Pioche": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Force": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "Glissant": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "Armure": null

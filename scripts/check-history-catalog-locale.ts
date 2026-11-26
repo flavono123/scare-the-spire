@@ -87,8 +87,6 @@ async function main() {
         engStaticHoverTips: {},
         orbs: {},
         engOrbs: {},
-        monsterNames: {},
-        engMonsterNames: {},
       },
     },
     eng,

@@ -95,7 +95,6 @@ function keywordDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-const KEYWORD_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 
 function cardToReferenceTarget(card: CodexCard, entity?: EntityInfo): CodexReferenceTarget {
   const href = `/compendium/cards/${card.id.toLowerCase()}`;
@@ -154,10 +153,6 @@ export function KeywordDetail({
   const labels = keywordDetailLabels(serviceLocale);
   const sourceConfig = KEYWORD_SOURCE_CONFIG[keyword.source];
   const [commentCount, setCommentCount] = useState(0);
-  const excludeSelf = useMemo(
-    () => new Set([keyword.name, keyword.nameEn]),
-    [keyword.name, keyword.nameEn],
-  );
   const relatedCardTargets = useMemo(
     () => {
       const entityMap = entityByTypeAndId(entities ?? []);
@@ -236,8 +231,6 @@ export function KeywordDetail({
                 gameUi={gameUi}
                 description={keyword.description}
                 entities={entities}
-                excludeEntityTerms={excludeSelf}
-                excludeEntityTypes={KEYWORD_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                 className="block text-left"
               />
             ) : (

@@ -158,7 +158,6 @@ export function PotionDetail({
         sources: tipCatalogSources,
         powers: relatedPowers,
         cards: tipCatalogCards ?? relatedCards,
-        monsters: relatedMonsters,
       })
       : null,
     [tipCatalogSources, relatedPowers, tipCatalogCards, relatedCards, relatedMonsters],

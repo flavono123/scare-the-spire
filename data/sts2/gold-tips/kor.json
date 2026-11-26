@@ -9,7 +9,7 @@
   "스킬": null
  },
  "affliction:TAINTED": {
-  "훼손됨": "affliction:TAINTED"
+  "훼손됨": "power:TAINTED"
  },
  "ancient:NEOW": {
   "“키...!”": null
@@ -19,19 +19,6 @@
  },
  "ascension:BLITZ": {
   "덱": null
- },
- "ascension:DREAD": {
-  "미끈거림": null,
-  "민첩": null,
-  "뽑을 카드 더미": null,
-  "손상": null,
-  "시듦": null,
-  "약화": null,
-  "유인": null,
-  "의식": null,
-  "취약": null,
-  "판금": null,
-  "힘": null
  },
  "ascension:DREAD_RULE_02": {
   "덱": null
@@ -50,6 +37,55 @@
  },
  "badge:MONEY_MONEY": {
   "골드": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "인챈트": null
+ },
+ "blitz:CARD_PACKS": {
+  "덱": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "덱": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "고급": null,
+  "일반": null,
+  "희귀": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "덱": null,
+  "변화": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "강화": null,
+  "덱": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "무색": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "인챈트": null
+ },
+ "blitz:GLAM": {
+  "인챈트": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "덱": null
+ },
+ "blitz:RELIC": {
+  "유물": null
+ },
+ "blitz:TWO_RELICS": {
+  "유물": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "강화": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "강화": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "강화": null
  },
  "card:ABRASIVE": {
   "가시": "power:THORNS",
@@ -1646,7 +1682,7 @@
   "손": null
  },
  "card:STRENGTH": {
-  "힘": "card:STRENGTH"
+  "힘": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
   "약화": "power:WEAK"
@@ -1949,6 +1985,39 @@
  },
  "character:NECROBINDER": {
   "골골이": null
+ },
+ "dominion:AEONGLASS": {
+  "뽑을 카드 더미": null,
+  "시듦": "card:WITHER"
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "의식": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "판금": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "손상": "power:FRAIL",
+  "약화": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "민첩": "power:DEXTERITY",
+  "힘": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "손상": "power:FRAIL",
+  "약화": "power:WEAK",
+  "취약": "power:VULNERABLE"
+ },
+ "dominion:SOUL_FYSH": {
+  "뽑을 카드 더미": null,
+  "유인": "card:BECKON"
+ },
+ "dominion:TEST_SUBJECT": {
+  "힘": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "미끈거림": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "방어도": null
@@ -2984,7 +3053,7 @@
   "단조": "keyword:FORGE"
  },
  "power:HANG": {
-  "매달기": "power:HANG"
+  "매달기": "card:HANG"
  },
  "power:HARD_TO_KILL": {
   "갑각충": null

@@ -9,7 +9,7 @@
   "スキル": null
  },
  "affliction:TAINTED": {
-  "汚染": "affliction:TAINTED"
+  "汚染": "power:TAINTED"
  },
  "ancient:NEOW": {
   "「キ……！」": null
@@ -19,19 +19,6 @@
  },
  "ascension:BLITZ": {
   "デッキ": null
- },
- "ascension:DREAD": {
-  "スリップ": null,
-  "プレート": null,
-  "儀式": null,
-  "山札": null,
-  "弱体": null,
-  "敏捷": null,
-  "筋力": null,
-  "脆弱": null,
-  "脱力": null,
-  "衰微": null,
-  "誘い": null
  },
  "ascension:DREAD_RULE_02": {
   "デッキ": null
@@ -51,6 +38,55 @@
  },
  "badge:MONEY_MONEY": {
   "ゴールド": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "付与": null
+ },
+ "blitz:CARD_PACKS": {
+  "デッキ": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "デッキ": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "アンコモン": null,
+  "コモン": null,
+  "レア": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "デッキ": null,
+  "変化": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "アップグレード": null,
+  "デッキ": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "無色": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "エンチャント": null
+ },
+ "blitz:GLAM": {
+  "付与": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "デッキ": null
+ },
+ "blitz:RELIC": {
+  "レリック": null
+ },
+ "blitz:TWO_RELICS": {
+  "レリック": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "アップグレード済み": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "アップグレード済み": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "アップグレード済み": null
  },
  "card:ABRASIVE": {
   "トゲ": "power:THORNS",
@@ -1931,7 +1967,7 @@
  },
  "card:WREST": {
   "刺矢": "power:IMPALED",
-  "引き抜き": "card:WREST"
+  "引き抜き": null
  },
  "card:WROUGHT_IN_WAR": {
   "鍛造": "keyword:FORGE"
@@ -1952,6 +1988,39 @@
  },
  "character:NECROBINDER": {
   "オスティ": null
+ },
+ "dominion:AEONGLASS": {
+  "山札": null,
+  "衰微": "card:WITHER"
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "儀式": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "プレート": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "脆弱": "power:FRAIL",
+  "脱力": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "敏捷": "power:DEXTERITY",
+  "筋力": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "弱体": "power:VULNERABLE",
+  "脆弱": "power:FRAIL",
+  "脱力": "power:WEAK"
+ },
+ "dominion:SOUL_FYSH": {
+  "山札": null,
+  "誘い": "card:BECKON"
+ },
+ "dominion:TEST_SUBJECT": {
+  "筋力": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "スリップ": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "ブロック": null
@@ -3006,7 +3075,7 @@
   "鍛造": "keyword:FORGE"
  },
  "power:HANG": {
-  "絞首": "power:HANG"
+  "絞首": "card:HANG"
  },
  "power:HARD_TO_KILL": {
   "外骨格蟲": null

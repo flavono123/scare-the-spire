@@ -9,24 +9,13 @@
   "Beceri": null
  },
  "affliction:TAINTED": {
-  "Lekeli": "affliction:TAINTED"
+  "Lekeli": "power:TAINTED"
  },
  "ancient:VAKUU": {
   "Vakuu": null
  },
  "ascension:BLITZ": {
   "Deste": null
- },
- "ascension:DREAD": {
-  "Beceriklilik": null,
-  "Kuvvet": null,
-  "Kırılgan": null,
-  "Ritüel": null,
-  "Savunmasız": null,
-  "Solma": null,
-  "Zayıf": null,
-  "Çağrı": null,
-  "Çekme Deste": null
  },
  "ascension:DREAD_RULE_02": {
   "Deste": null
@@ -45,6 +34,55 @@
  },
  "badge:MONEY_MONEY": {
   "Altın": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Büyüle": null
+ },
+ "blitz:CARD_PACKS": {
+  "Deste": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "Deste": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "Az Yaygın": null,
+  "Nadir": null,
+  "Yaygın": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Deste": null,
+  "Dönüştür": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Deste": null,
+  "Geliştir": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "Renksiz": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Büyülenmiş": null
+ },
+ "blitz:GLAM": {
+  "Büyüle": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Deste": null
+ },
+ "blitz:RELIC": {
+  "Kalıntı": null
+ },
+ "blitz:TWO_RELICS": {
+  "Kalıntı": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Geliştirilmiş": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Geliştirilmiş": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Geliştirilmiş": null
  },
  "card:ABRASIVE": {
   "Beceriklilik": "power:DEXTERITY",
@@ -462,7 +500,7 @@
   "Blok": null
  },
  "card:DARKNESS": {
-  "Karanlık": "card:DARKNESS",
+  "Karanlık": "keyword:DARK_ORB",
   "Oluştur": "keyword:CHANNELING"
  },
  "card:DARK_EMBRACE": {
@@ -1875,6 +1913,33 @@
  "character:NECROBINDER": {
   "Osti": null
  },
+ "dominion:AEONGLASS": {
+  "Solma": "card:WITHER",
+  "Çekme Deste": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Ritüel": "power:RITUAL"
+ },
+ "dominion:KIN": {
+  "Kırılgan": "power:FRAIL",
+  "Zayıf": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Beceriklilik": "power:DEXTERITY",
+  "Kuvvet": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "Kırılgan": "power:FRAIL",
+  "Savunmasız": "power:VULNERABLE",
+  "Zayıf": "power:WEAK"
+ },
+ "dominion:SOUL_FYSH": {
+  "Çağrı": "card:BECKON",
+  "Çekme Deste": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Kuvvet": "power:STRENGTH"
+ },
  "enchantment:ADROIT": {
   "Blok": null
  },
@@ -2912,7 +2977,7 @@
   "Döv": "keyword:FORGE"
  },
  "power:GALVANIC": {
-  "Uyarıcı": "power:GALVANIC"
+  "Uyarıcı": "affliction:GALVANIZED"
  },
  "power:HAILSTORM": {
   "Buz": "keyword:FROST_ORB"
@@ -2922,7 +2987,7 @@
   "Döver": null
  },
  "power:HANG": {
-  "As": "power:HANG"
+  "As": "card:HANG"
  },
  "power:HAUNT": {
   "Ruh": null

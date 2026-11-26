@@ -129,7 +129,6 @@ function getEnchantmentDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-const ENCHANTMENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 
 export function EnchantmentDetail(props: EnchantmentDetailProps) {
   const localizeLink = useLocalizedHref();
@@ -168,7 +167,6 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
         sources: tipCatalogSources,
         powers: tipCatalogPowers ?? powers,
         cards: tipCatalogCards ?? cards,
-        monsters,
       })
       : null,
     [tipCatalogSources, tipCatalogPowers, powers, tipCatalogCards, cards, monsters],
@@ -217,10 +215,6 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
     .filter((monster): monster is CodexMonster => Boolean(monster))
     .map(monsterToReferenceTarget) : [];
 
-  const excludeSelf = useMemo(
-    () => new Set([resource.name, resource.nameEn]),
-    [resource.name, resource.nameEn],
-  );
 
   return (
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
@@ -316,8 +310,8 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
                         gameUi={gameUi}
                         description={resource.extraCardText}
                         entities={entities}
-                        excludeEntityTerms={excludeSelf}
-                        excludeEntityTypes={ENCHANTMENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
+                        goldTips={resource.goldTips}
+                        self={`${resourceKind}:${resource.id}`}
                       />
                     ) : (
                       <DescriptionText description={resource.extraCardText} />

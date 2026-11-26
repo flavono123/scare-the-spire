@@ -1,13 +1,12 @@
+import { getGameTipSpecs } from "../src/lib/game-tip-specs";
 import assert from "node:assert/strict";
 import { buildCardSideTipCatalog } from "../src/lib/card-keyword-tips";
 import {
   collectPotionSideTips,
-  getPotionExtraHoverTipSpecs,
 } from "../src/lib/potion-side-tips";
 import {
   getCodexCards,
   getCodexKeywords,
-  getCodexMonsters,
   getCodexPotions,
   getCodexPowers,
 } from "../src/lib/codex-data";
@@ -18,49 +17,40 @@ function tipKeys(tips: ReturnType<typeof collectPotionSideTips>): string[] {
 }
 
 async function main() {
-  assert.deepEqual(getPotionExtraHoverTipSpecs("CUNNING_POTION"), [
+  assert.deepEqual(getGameTipSpecs("potion", "CUNNING_POTION"), [
     { kind: "card", id: "SHIV", upgrade: true },
   ]);
-  assert.deepEqual(getPotionExtraHoverTipSpecs("KINGS_COURAGE"), [{ kind: "forge" }]);
+  assert.deepEqual(getGameTipSpecs("potion", "KINGS_COURAGE"), [{ kind: "forge" }]);
 
   const gameLocale = "kor" as const;
   const [
     cards,
     keywords,
     powers,
-    monsters,
     potions,
     staticHoverTips,
     engStaticHoverTips,
     orbs,
     engOrbs,
-    monsterNames,
-    engMonsterNames,
   ] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexKeywords({ gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),
-    getCodexMonsters({ gameLocale }),
     getCodexPotions({ gameLocale }),
     readGameLocalizationTable(gameLocale, "static_hover_tips"),
     readGameLocalizationTable("eng", "static_hover_tips"),
     readGameLocalizationTable(gameLocale, "orbs"),
     readGameLocalizationTable("eng", "orbs"),
-    readGameLocalizationTable(gameLocale, "monsters"),
-    readGameLocalizationTable("eng", "monsters"),
   ]);
 
   const catalog = buildCardSideTipCatalog({
     keywords,
     powers,
     cards,
-    monsters,
     staticHoverTips,
     engStaticHoverTips,
     orbs,
     engOrbs,
-    monsterNames,
-    engMonsterNames,
   });
 
   const byId = new Map(potions.map((potion) => [potion.id, potion]));

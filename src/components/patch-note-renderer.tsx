@@ -80,7 +80,6 @@ import { useGameLocale, useGameLocaleForService } from "@/hooks/use-game-locale"
 import { useGameUiLabels } from "@/hooks/use-game-ui-labels";
 import { isModifiedClick, NEW_TAB_LINK_PROPS } from "@/components/editor/editor-link";
 import { isInflectionOf } from "@/lib/inflection-aliases";
-import { isTextHoverTip } from "@/lib/hover-tip-scope";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "character" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch" | "modifier" | "ascension" | "blitzEntry" | "dominion" | "pet";
@@ -371,12 +370,6 @@ function EntityCardHoverPreview({
   const tips = catalog
     ? collectCardSideTips(card, catalog, {
         upgradeLevel,
-        description: upgradeLevel > 0 || enchant?.enchantStatMod
-          ? renderCardDescription(card, {
-              upgradeLevel,
-              enchantMod: enchant?.enchantStatMod ?? null,
-            })
-          : card.description,
         addedKeywords: enchant?.enchantAddedKeywords,
         removedKeywords: enchant?.enchantRemovedKeywords,
       })
@@ -1353,13 +1346,7 @@ export function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
   };
 }
 
-/** Gold words that name a UI part's tip (Deck, Draw Pile, Gold, Stars ...) stay highlight only, as in game. */
 export function findEntity(text: string, lookup: EntityLookup, typeHint?: string): EntityInfo | null {
-  const entity = findEntityByName(text, lookup, typeHint);
-  return entity?.keywordData && !isTextHoverTip(entity.keywordData.source, entity.keywordData.id) ? null : entity;
-}
-
-function findEntityByName(text: string, lookup: EntityLookup, typeHint?: string): EntityInfo | null {
   const lower = text.trim().toLowerCase();
   const upgradedCardToken = parseUpgradedCardToken(lower, typeHint);
   if (typeHint) {
@@ -1388,7 +1375,7 @@ function findEntityByName(text: string, lookup: EntityLookup, typeHint?: string)
 
   const preferDirectEntity = (matches: EntityInfo[] | undefined): EntityInfo | null => {
     if (!matches?.length) return null;
-    // Untyped gold is a game term: the keyword 별 (Regent's stars, highlight only) wins over the tarot card 별.
+    // Untyped gold is a game term: a keyword wins over a card or power of the same name.
     return matches.find((entity) => entity.type === "keyword")
       ?? matches.find((entity) => entity.type !== "epoch")
       ?? matches[0];

@@ -1,3 +1,4 @@
+import { getGameTipSpecs } from "../src/lib/game-tip-specs";
 import assert from "node:assert/strict";
 import {
   buildCardSideTipCatalog,
@@ -5,12 +6,10 @@ import {
 } from "../src/lib/card-keyword-tips";
 import {
   collectRelicSideTips,
-  getRelicExtraHoverTipSpecs,
 } from "../src/lib/relic-side-tips";
 import {
   getCodexCards,
   getCodexKeywords,
-  getCodexMonsters,
   getCodexPowers,
   getCodexRelics,
 } from "../src/lib/codex-data";
@@ -21,49 +20,40 @@ function tipKeys(tips: ReturnType<typeof collectRelicSideTips>): string[] {
 }
 
 async function main() {
-  assert.deepEqual(getRelicExtraHoverTipSpecs("PHYLACTERY_UNBOUND"), [
+  assert.deepEqual(getGameTipSpecs("relic", "PHYLACTERY_UNBOUND"), [
     { kind: "static", id: "SUMMON_STATIC" },
   ]);
-  assert.deepEqual(getRelicExtraHoverTipSpecs("FENCING_MANUAL"), [{ kind: "forge" }]);
+  assert.deepEqual(getGameTipSpecs("relic", "FENCING_MANUAL"), [{ kind: "forge" }]);
 
   const gameLocale = "kor" as const;
   const [
     cards,
     keywords,
     powers,
-    monsters,
     relics,
     staticHoverTips,
     engStaticHoverTips,
     orbs,
     engOrbs,
-    monsterNames,
-    engMonsterNames,
   ] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexKeywords({ gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),
-    getCodexMonsters({ gameLocale }),
     getCodexRelics({ gameLocale }),
     readGameLocalizationTable(gameLocale, "static_hover_tips"),
     readGameLocalizationTable("eng", "static_hover_tips"),
     readGameLocalizationTable(gameLocale, "orbs"),
     readGameLocalizationTable("eng", "orbs"),
-    readGameLocalizationTable(gameLocale, "monsters"),
-    readGameLocalizationTable("eng", "monsters"),
   ]);
 
   const catalog = buildCardSideTipCatalog({
     keywords,
     powers,
     cards,
-    monsters,
     staticHoverTips,
     engStaticHoverTips,
     orbs,
     engOrbs,
-    monsterNames,
-    engMonsterNames,
   });
 
   const byId = new Map(relics.map((relic) => [relic.id, relic]));

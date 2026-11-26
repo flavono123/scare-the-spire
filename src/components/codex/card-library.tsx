@@ -228,7 +228,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       sources: tipCatalogSources,
       powers: relatedPowers,
       cards,
-      monsters: relatedMonsters,
     }),
     [tipCatalogSources, relatedPowers, cards, relatedMonsters],
   );
@@ -875,9 +874,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                       mode="hover"
                       tips={collectCardSideTips(card, tipCatalog, {
                         upgradeLevel: showUpgrades ? 1 : 0,
-                        description: showUpgrades
-                          ? renderCardDescription(card, { upgradeLevel: 1 })
-                          : card.description,
                       })}
                     >
                       <CardTile

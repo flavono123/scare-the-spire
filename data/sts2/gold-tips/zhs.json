@@ -9,7 +9,7 @@
   "技能": null
  },
  "affliction:TAINTED": {
-  "污染": "affliction:TAINTED"
+  "污染": "power:TAINTED"
  },
  "ancient:NEOW": {
   "“叽...！”": null
@@ -19,19 +19,6 @@
  },
  "ascension:BLITZ": {
   "牌组": null
- },
- "ascension:DREAD": {
-  "仪式": null,
-  "凋萎": null,
-  "力量": null,
-  "呼唤": null,
-  "抽牌堆": null,
-  "敏捷": null,
-  "易伤": null,
-  "滑溜": null,
-  "脆弱": null,
-  "虚弱": null,
-  "覆甲": null
  },
  "ascension:DREAD_RULE_02": {
   "牌组": null
@@ -50,6 +37,55 @@
  },
  "badge:MONEY_MONEY": {
   "金币": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "附魔": null
+ },
+ "blitz:CARD_PACKS": {
+  "牌组": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "牌组": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "普通": null,
+  "稀有": null,
+  "罕见": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "变化": null,
+  "牌组": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "升级": null,
+  "牌组": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "无色": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "附魔": null
+ },
+ "blitz:GLAM": {
+  "附魔": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "牌组": null
+ },
+ "blitz:RELIC": {
+  "遗物": null
+ },
+ "blitz:TWO_RELICS": {
+  "遗物": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "升级": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "升级": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "升级": null
  },
  "card:ABRASIVE": {
   "敏捷": "power:DEXTERITY",
@@ -1647,7 +1683,7 @@
   "抽牌堆": null
  },
  "card:STRENGTH": {
-  "力量": "card:STRENGTH"
+  "力量": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
   "虚弱": "power:WEAK"
@@ -1950,6 +1986,39 @@
  },
  "character:NECROBINDER": {
   "奥斯提": null
+ },
+ "dominion:AEONGLASS": {
+  "凋萎": "card:WITHER",
+  "抽牌堆": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "仪式": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "覆甲": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "脆弱": "power:FRAIL",
+  "虚弱": "power:WEAK"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "力量": "power:STRENGTH",
+  "敏捷": "power:DEXTERITY"
+ },
+ "dominion:QUEEN": {
+  "易伤": "power:VULNERABLE",
+  "脆弱": "power:FRAIL",
+  "虚弱": "power:WEAK"
+ },
+ "dominion:SOUL_FYSH": {
+  "呼唤": "card:BECKON",
+  "抽牌堆": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "力量": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "滑溜": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "格挡": null
@@ -2974,7 +3043,7 @@
   "铸造": "keyword:FORGE"
  },
  "power:GALVANIC": {
-  "流电": "power:GALVANIC"
+  "流电": "affliction:GALVANIZED"
  },
  "power:HAILSTORM": {
   "冰霜": "keyword:FROST_ORB"
@@ -2983,7 +3052,7 @@
   "铸造": "keyword:FORGE"
  },
  "power:HANG": {
-  "吊杀": "power:HANG"
+  "吊杀": "card:HANG"
  },
  "power:HARD_TO_KILL": {
   "外骨骼虫": null

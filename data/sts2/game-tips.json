@@ -6951,6 +6951,109 @@
      "id": "ENLIGHTENMENT"
     }
    ]
-  }
+  },
+  "dominion": {
+   "AEONGLASS": [
+    {
+     "kind": "card_with_tips",
+     "id": "WITHER"
+    }
+   ],
+   "CEREMONIAL_BEAST": [
+    {
+     "kind": "power",
+     "id": "RITUAL"
+    },
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "KAISER_CRAB": [
+    {
+     "kind": "power",
+     "id": "PLATING"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "KIN": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "FRAIL"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "KNOWLEDGE_DEMON": [
+    {
+     "kind": "card_with_tips",
+     "id": "SLOTH"
+    },
+    {
+     "kind": "card_with_tips",
+     "id": "AMNESIA"
+    }
+   ],
+   "LAGAVULIN_MATRIARCH": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    },
+    {
+     "kind": "power",
+     "id": "DEXTERITY"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "QUEEN": [
+    {
+     "kind": "power",
+     "id": "WEAK"
+    },
+    {
+     "kind": "power",
+     "id": "VULNERABLE"
+    },
+    {
+     "kind": "power",
+     "id": "FRAIL"
+    },
+    {
+     "kind": "static",
+     "id": "BLOCK"
+    }
+   ],
+   "SOUL_FYSH": [
+    {
+     "kind": "card_with_tips",
+     "id": "BECKON"
+    }
+   ],
+   "TEST_SUBJECT": [
+    {
+     "kind": "power",
+     "id": "STRENGTH"
+    }
+   ],
+   "VANTOM": [
+    {
+     "kind": "power",
+     "id": "SLIPPERY"
+    }
+   ]
+  },
+  "blitz": {}
  }
 }

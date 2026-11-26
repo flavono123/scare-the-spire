@@ -9,7 +9,7 @@
   "Teknik": null
  },
  "affliction:TAINTED": {
-  "Noda": "affliction:TAINTED"
+  "Noda": "power:TAINTED"
  },
  "ancient:NEOW": {
   "“Ki...!”": null
@@ -19,19 +19,6 @@
  },
  "ascension:BLITZ": {
   "Dekmu": null
- },
- "ascension:DREAD": {
-  "Hasut": null,
-  "Kekuatan": null,
-  "Ketangkasan": null,
-  "Lapisan": null,
-  "Layu": null,
-  "Lemah": null,
-  "Licin": null,
-  "Rentan": null,
-  "Retak": null,
-  "Ritual": null,
-  "Tumpukan Ambil": null
  },
  "ascension:DREAD_RULE_02": {
   "Dekmu": null
@@ -50,6 +37,55 @@
  },
  "badge:MONEY_MONEY": {
   "Emas": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Efek": null
+ },
+ "blitz:CARD_PACKS": {
+  "Dekmu": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "Dekmu": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "Biasa": null,
+  "Langka": null,
+  "Tidak Biasa": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Dekmu": null,
+  "Transformasikan": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Dekmu": null,
+  "Tingkatkan": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "Tak Berwarna": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Efek": null
+ },
+ "blitz:GLAM": {
+  "Efek": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Dekmu": null
+ },
+ "blitz:RELIC": {
+  "Pusaka": null
+ },
+ "blitz:TWO_RELICS": {
+  "Pusaka": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Ditingkatkan": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Ditingkatkan": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Ditingkatkan": null
  },
  "card:ABRASIVE": {
   "Duri": "power:THORNS",
@@ -471,7 +507,7 @@
  },
  "card:DARKNESS": {
   "Gelap": "keyword:DARK_ORB",
-  "Kegelapan": "card:DARKNESS",
+  "Kegelapan": null,
   "Salurkan": "keyword:CHANNELING"
  },
  "card:DARK_EMBRACE": {
@@ -1661,7 +1697,7 @@
   "Tumpukan Ambil": null
  },
  "card:STRENGTH": {
-  "Kekuatan": "card:STRENGTH"
+  "Kekuatan": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
   "Lemah": "power:WEAK"
@@ -1967,6 +2003,39 @@
  },
  "character:NECROBINDER": {
   "Osty": null
+ },
+ "dominion:AEONGLASS": {
+  "Layu": "card:WITHER",
+  "Tumpukan Ambil": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Ritual": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "Lapisan": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "Lemah": "power:WEAK",
+  "Retak": "power:FRAIL"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Kekuatan": "power:STRENGTH",
+  "Ketangkasan": "power:DEXTERITY"
+ },
+ "dominion:QUEEN": {
+  "Lemah": "power:WEAK",
+  "Rentan": "power:VULNERABLE",
+  "Retak": "power:FRAIL"
+ },
+ "dominion:SOUL_FYSH": {
+  "Hasut": "card:BECKON",
+  "Tumpukan Ambil": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Kekuatan": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "Licin": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "Blok": null
@@ -3018,7 +3087,7 @@
   "Tempa": "keyword:FORGE"
  },
  "power:HANG": {
-  "Gantung": "power:HANG"
+  "Gantung": "card:HANG"
  },
  "power:HARD_TO_KILL": {
   "Eksoskeleton": null

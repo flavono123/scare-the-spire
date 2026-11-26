@@ -21,20 +21,6 @@
  "ascension:BLITZ": {
   "колоду": null
  },
- "ascension:DREAD": {
-  "«Приворот»": null,
-  "«Усыхание»": null,
-  "изворотливости": null,
-  "ловкости": null,
-  "панциря": null,
-  "ритуал": null,
-  "силы": null,
-  "слабости": null,
-  "стопки добора": null,
-  "стопку добора": null,
-  "уязвимости": null,
-  "хрупкости": null
- },
  "ascension:DREAD_RULE_02": {
   "колоду": null
  },
@@ -52,6 +38,55 @@
  },
  "badge:MONEY_MONEY": {
   "золота": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "чары": null
+ },
+ "blitz:CARD_PACKS": {
+  "колоду": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "колоды": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "необычный": null,
+  "обычный": null,
+  "редкий": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Преобразовать": null,
+  "колоде": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Улучшить": null,
+  "колоде": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "бесцветный": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "зачарованный": null
+ },
+ "blitz:GLAM": {
+  "чары": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "колоде": null
+ },
+ "blitz:RELIC": {
+  "реликвию": null
+ },
+ "blitz:TWO_RELICS": {
+  "реликвии": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "улучшенный": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "улучшенную": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "улучшенный": null
  },
  "card:ABRASIVE": {
   "ловкости": null,
@@ -1973,6 +2008,39 @@
  },
  "character:NECROBINDER": {
   "Костя": null
+ },
+ "dominion:AEONGLASS": {
+  "«Усыхание»": null,
+  "стопки добора": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "ритуал": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "панциря": null
+ },
+ "dominion:KIN": {
+  "слабости": null,
+  "хрупкости": null
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "ловкости": null,
+  "силы": null
+ },
+ "dominion:QUEEN": {
+  "слабости": null,
+  "уязвимости": null,
+  "хрупкости": null
+ },
+ "dominion:SOUL_FYSH": {
+  "«Приворот»": null,
+  "стопку добора": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "силы": null
+ },
+ "dominion:VANTOM": {
+  "изворотливости": null
  },
  "enchantment:ADROIT": {
   "защиты": null

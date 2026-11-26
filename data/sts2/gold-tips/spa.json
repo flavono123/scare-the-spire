@@ -10,7 +10,7 @@
   "Habilidades": null
  },
  "affliction:TAINTED": {
-  "Impureza": "affliction:TAINTED"
+  "Impureza": "power:TAINTED"
  },
  "ancient:NEOW": {
   "«¡Ki...!»": null
@@ -20,19 +20,6 @@
  },
  "ascension:BLITZ": {
   "Mazo": null
- },
- "ascension:DREAD": {
-  "Blindaje": null,
-  "Debilidad": null,
-  "Destreza": null,
-  "Deteriorar": null,
-  "Escurridizo": null,
-  "Fragilidad": null,
-  "Fuerza": null,
-  "Llamada": null,
-  "Pila de robo": null,
-  "Ritual": null,
-  "Vulnerabilidad": null
  },
  "ascension:DREAD_RULE_02": {
   "Mazo": null
@@ -51,6 +38,55 @@
  },
  "badge:MONEY_MONEY": {
   "Oro": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Encanta": null
+ },
+ "blitz:CARD_PACKS": {
+  "Mazo": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "Mazo": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "común": null,
+  "infrecuente": null,
+  "rara": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Mazo": null,
+  "Transforma": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Mazo": null,
+  "Mejora": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "Incolora": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Encantada": null
+ },
+ "blitz:GLAM": {
+  "Encanta": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Mazo": null
+ },
+ "blitz:RELIC": {
+  "Reliquia": null
+ },
+ "blitz:TWO_RELICS": {
+  "Reliquias": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Mejorada": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Mejorada": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Mejorada": null
  },
  "card:ABRASIVE": {
   "Destreza": "power:DEXTERITY",
@@ -473,7 +509,7 @@
  },
  "card:DARKNESS": {
   "Invoca": null,
-  "Oscuridad": "card:DARKNESS"
+  "Oscuridad": "keyword:DARK_ORB"
  },
  "card:DARK_EMBRACE": {
   "Agote": null
@@ -1661,7 +1697,7 @@
   "Pila de robo": null
  },
  "card:STRENGTH": {
-  "Fuerza": "card:STRENGTH"
+  "Fuerza": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
   "Debilidad": "power:WEAK"
@@ -1965,6 +2001,39 @@
  },
  "character:NECROBINDER": {
   "Nudillos": null
+ },
+ "dominion:AEONGLASS": {
+  "Deteriorar": "card:WITHER",
+  "Pila de robo": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Ritual": "power:RITUAL"
+ },
+ "dominion:KAISER_CRAB": {
+  "Blindaje": "power:PLATING"
+ },
+ "dominion:KIN": {
+  "Debilidad": "power:WEAK",
+  "Fragilidad": "power:FRAIL"
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Destreza": "power:DEXTERITY",
+  "Fuerza": "power:STRENGTH"
+ },
+ "dominion:QUEEN": {
+  "Debilidad": "power:WEAK",
+  "Fragilidad": "power:FRAIL",
+  "Vulnerabilidad": "power:VULNERABLE"
+ },
+ "dominion:SOUL_FYSH": {
+  "Llamada": "card:BECKON",
+  "Pila de robo": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Fuerza": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "Escurridizo": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "Bloqueo": null
@@ -3017,7 +3086,7 @@
   "Forja": null
  },
  "power:GALVANIC": {
-  "Galvanismo": "power:GALVANIC"
+  "Galvanismo": "affliction:GALVANIZED"
  },
  "power:HAILSTORM": {
   "Escarcha": "keyword:FROST_ORB"
@@ -3027,7 +3096,7 @@
   "Forjas": null
  },
  "power:HANG": {
-  "Colgar": "power:HANG"
+  "Colgar": "card:HANG"
  },
  "power:HARD_TO_KILL": {
   "Placóptero": null

@@ -194,6 +194,16 @@ def model_tips(src: Path) -> dict[str, dict[str, list[dict]]]:
                 out[id_] = specs
         tips[type_] = out
     tips["event"] = event_tips(src)
+    # Dread dominions ("DREAD.<ID>.description" in ascension) and Blitz shop wares ("MERCHANT.blitz.<key>_entry").
+    tips["dominion"] = {snake(p.stem).removesuffix("_DOMINION"): specs for p in sorted((src / "MegaCrit.Sts2.Core.Models.Dread.Dominions").glob("*.cs"))
+                        if (specs := tip_specs(member_body(read(p), "ExtraHoverTips"), src))}
+    tips["blitz"] = {}
+    for path in sorted((src / "MegaCrit.Sts2.Core.Entities.Merchant").glob("BlitzMerchant*Entry.cs")):
+        text = read(path)
+        entry = re.search(r"MerchantEntryType\s*=>\s*BlitzMerchantEntryType\.(\w+)", text)
+        specs = tip_specs(member_body(text, "ExtraHoverTips"), src)
+        if entry and specs:
+            tips["blitz"][snake(entry.group(1))] = specs
     return tips
 
 
@@ -333,7 +343,16 @@ def gold_tips(tips: dict[str, dict[str, list[dict]]], locale: str) -> dict[str, 
                 continue
             id_ = loc_id(type_, key)
             refs = [r for spec in tips[type_].get(id_, []) for r in spec_refs(spec)]
-            add(f"{type_}:{id_}", text, [f"{type_}:{id_}", *refs])  # an element's own tip comes first in its list
+            # HoverTips = [own tip] + ExtraHoverTips for all but cards; a word names its own element only when nothing else fits.
+            add(f"{type_}:{id_}", text, refs if type_ == "card" else [*refs, f"{type_}:{id_}"])
+    for table, type_, pattern in (("ascension", "dominion", r"DREAD\.([A-Z0-9_]+)\.description$"),
+                                  ("merchant_room", "blitz", r"MERCHANT\.blitz\.([a-z0-9_]+)_entry\.description$")):
+        path = LOC / locale / f"{table}.json"
+        for key, text in (json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}).items():
+            m = re.match(pattern, key)
+            if m and isinstance(text, str):
+                id_ = m.group(1).upper()
+                add(f"{type_}:{id_}", text, [r for spec in tips[type_].get(id_, []) for r in spec_refs(spec)])
     for type_, tables in PLAIN_TABLES.items():
         for table in tables:
             path = LOC / locale / f"{table}.json"
@@ -342,6 +361,8 @@ def gold_tips(tips: dict[str, dict[str, list[dict]]], locale: str) -> dict[str, 
             for key, text in json.loads(path.read_text(encoding="utf-8")).items():
                 if not isinstance(text, str) or key.endswith(".title"):
                     continue
+                if type_ == "ascension" and key.startswith("DREAD."):
+                    continue  # dominions, above
                 option = re.match(r"([A-Z0-9_]+\.pages\.[A-Z0-9_]+\.options\.[A-Z0-9_]+)\.", key)
                 refs = [r for spec in tips["event"].get(option.group(1), []) for r in spec_refs(spec)] if type_ == "event" and option else []
                 add(f"{type_}:{key.split('.', 1)[0]}", text, refs)
@@ -359,10 +380,34 @@ def self_check(tips: dict, gold: dict[str, dict]) -> None:
     assert {"kind": "keyword", "id": "EXHAUST"} in tips["card"]["ASCENDERS_BANE"], "Ethereal adds Exhaust"
 
 
+def audit() -> None:
+    """Without the DLL: re-pair every locale's current text with the committed tip lists and compare."""
+    committed = json.loads(TIPS_OUT.read_text(encoding="utf-8"))
+    tips = committed["tips"]
+    problems = []
+    for locale in sorted(p.name for p in LOC.iterdir() if p.is_dir()):
+        path = GOLD_OUT / f"{locale}.json"
+        want = gold_tips(tips, locale)
+        have = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+        for element in sorted(set(want) | set(have)):
+            if want.get(element) != have.get(element):
+                problems.append(f"{locale} {element}: committed {have.get(element)} != text {want.get(element)}")
+    self_check(tips, {locale: json.loads((GOLD_OUT / f"{locale}.json").read_text(encoding="utf-8")) for locale in ("kor", "eng")})
+    for line in problems[:40]:
+        print(line)
+    if problems:
+        sys.exit(f"{len(problems)} elements' gold words differ from the current text: rerun scripts/generate-game-tips.py")
+    words = sum(len(v) for v in json.loads((GOLD_OUT / "kor.json").read_text(encoding="utf-8")).values())
+    print(f"game tips ok: every gold word of every locale is decided (kor {words})")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=Path("/tmp/sts2-src"), help="decompiled sts2.dll root")
+    parser.add_argument("--audit", action="store_true", help="check the committed data against the current text, no DLL")
     args = parser.parse_args()
+    if args.audit:
+        return audit()
     tips = model_tips(args.source)
     locales = sorted(p.name for p in LOC.iterdir() if p.is_dir())
     gold = {locale: gold_tips(tips, locale) for locale in locales}

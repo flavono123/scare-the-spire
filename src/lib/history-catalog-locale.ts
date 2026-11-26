@@ -289,7 +289,6 @@ export function createLocalizedHistorySideTipCatalog(
     sources: catalog.tipSources,
     cards: catalog.allCards,
     powers: catalog.allPowers,
-    monsters: catalog.allMonsters,
   });
 }
 

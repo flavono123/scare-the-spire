@@ -21,19 +21,6 @@
  "ascension:BLITZ": {
   "talii": null
  },
- "ascension:DREAD": {
-  "Kruchości": null,
-  "Opancerzenia": null,
-  "Przemijanie": null,
-  "Rytuału": null,
-  "Siły": null,
-  "Słabości": null,
-  "Wrażliwości": null,
-  "Zgubę": null,
-  "Zręczności": null,
-  "stosu rozgrywającego": null,
-  "Śliskości": null
- },
  "ascension:DREAD_RULE_02": {
   "talii": null
  },
@@ -51,6 +38,56 @@
  },
  "badge:MONEY_MONEY": {
   "Złota": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Zaklęcie": null
+ },
+ "blitz:CARD_PACKS": {
+  "talii": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "talii": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "Niepospolitą": null,
+  "Pospolitą": null,
+  "Rzadką": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Zmień": null,
+  "talii": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Ulepsz": null,
+  "talii": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "bezbarwną": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Zaklęciem": null
+ },
+ "blitz:GLAM": {
+  "Zaklęcie": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Ulepsz": null,
+  "talii": null
+ },
+ "blitz:RELIC": {
+  "Artefakt": null
+ },
+ "blitz:TWO_RELICS": {
+  "Artefakty": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Ulepszoną": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Ulepszoną": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Ulepszoną": null
  },
  "card:ABRASIVE": {
   "Cierni": null,
@@ -1974,6 +2011,39 @@
  "character:NECROBINDER": {
   "Kostek": null
  },
+ "dominion:AEONGLASS": {
+  "Przemijanie": "card:WITHER",
+  "stosu rozgrywającego": null
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Rytuału": null
+ },
+ "dominion:KAISER_CRAB": {
+  "Opancerzenia": null
+ },
+ "dominion:KIN": {
+  "Kruchości": null,
+  "Słabości": null
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Siły": null,
+  "Zręczności": null
+ },
+ "dominion:QUEEN": {
+  "Kruchości": null,
+  "Słabości": null,
+  "Wrażliwości": null
+ },
+ "dominion:SOUL_FYSH": {
+  "Zgubę": null,
+  "stosu rozgrywającego": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Siły": null
+ },
+ "dominion:VANTOM": {
+  "Śliskości": null
+ },
  "enchantment:ADROIT": {
   "Bloku": null
  },
@@ -3216,7 +3286,7 @@
   "Wykuj": "keyword:FORGE"
  },
  "power:GALVANIC": {
-  "Zelektryzowanie": "power:GALVANIC"
+  "Zelektryzowanie": "affliction:GALVANIZED"
  },
  "power:HAILSTORM": {
   "Sferę Mrozu": null,
@@ -4372,7 +4442,7 @@
   "Załaduj": null
  },
  "relic:TANXS_WHISTLE": {
-  "Gwizdek Tanxa": "relic:TANXS_WHISTLE",
+  "Gwizdek Tanxa": "card:WHISTLE",
   "talii": null
  },
  "relic:TEA_OF_DISCOURTESY": {
