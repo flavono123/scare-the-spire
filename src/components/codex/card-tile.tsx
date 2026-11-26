@@ -732,6 +732,19 @@ interface CardTileProps {
   titleContent?: ReactNode;
   /** Replaces the rendered description while preserving the game card frame and keywords. */
   descriptionContent?: ReactNode;
+  /**
+   * Masks the plain description in place, so its layout stays the card's own.
+   * `text` renders each text run by slot (`d<part index>`, `k:<keyword>`);
+   * icon parts are hidden while `iconHidden` says so.
+   */
+  descriptionMask?: {
+    text: (slot: string, text: string) => ReactNode;
+    iconHidden: (slot: string) => boolean;
+  };
+  /** CSS filter appended to the character layers (frame, energy orb) and the rarity layers (banner, portrait border, type plaque). */
+  layerFilterSuffix?: { character?: string; rarity?: string };
+  /** Replaces the portrait art inside its type clip. */
+  artContent?: ReactNode;
   /** Replaces the energy-cost text while preserving the game energy orb. */
   costContent?: ReactNode;
   /** Replaces the Regent star-cost text while preserving the star orb. */
@@ -780,6 +793,9 @@ export const CardTile = memo(function CardTile({
   interactive = true,
   titleContent,
   descriptionContent,
+  descriptionMask,
+  layerFilterSuffix,
+  artContent,
   costContent,
   starCostContent,
   editableContent = false,
@@ -840,9 +856,10 @@ export const CardTile = memo(function CardTile({
   const portraitBorderAsset = PORTRAIT_BORDER_ASSETS[card.type] ?? PORTRAIT_BORDER_ASSETS["스킬"];
   const visualColor = card.visualColor ?? card.color;
   const charHsv = CHAR_FRAME_HSV[visualColor] ?? CHAR_FRAME_HSV.colorless;
-  const frameFilter = hsvToFilter(charHsv);
+  const characterFilterSuffix = layerFilterSuffix?.character;
+  const frameFilter = [hsvToFilter(charHsv), characterFilterSuffix].filter(Boolean).join(" ");
   const bannerHsv = RARITY_BANNER_HSV[card.rarity] ?? RARITY_BANNER_HSV["일반"];
-  const bannerFilter = hsvToFilter(bannerHsv);
+  const bannerFilter = [hsvToFilter(bannerHsv), layerFilterSuffix?.rarity].filter(Boolean).join(" ");
 
   const titleOutline = isUpgraded
     ? TITLE_UPGRADED_OUTLINE
@@ -890,10 +907,10 @@ export const CardTile = memo(function CardTile({
   const renderKeyword = (kw: string) => {
     // 인챈트/강화 추가 키워드도 게임에선 일반 키워드와 동일한 골드.
     // 사이드 tip은 CardSideTipsAnchor가 담당 — 본문에서는 색만 유지.
-    const displayText = getCardKeywordDisplayText(card, kw);
+    const displayText = `${getCardKeywordDisplayText(card, kw)}.`;
     return (
       <span className="font-bold" style={{ color: TEXT_GOLD }}>
-        {displayText}.
+        {descriptionMask ? descriptionMask.text(`k:${kw}`, displayText) : displayText}
       </span>
     );
   };
@@ -902,6 +919,9 @@ export const CardTile = memo(function CardTile({
   // mode="suffix": 인챈트 추가 본문 — 모든 색을 분홍(#EE82EE)로 통일
   const renderParts = (parts: ReturnType<typeof parseDescription>, mode: "card" | "suffix") =>
     parts.map((part, i) => {
+      const mask = mode === "card" ? descriptionMask : undefined;
+      const text = mask ? mask.text(`d${i}`, part.text) : part.text;
+      const iconStyle = mask?.iconHidden(`d${i}`) ? { visibility: "hidden" as const } : undefined;
       // suffix 모드에선 모든 색 BBCode를 분홍으로 통일
       if (mode === "suffix" && (
         part.type === "gold" || part.type === "blue" ||
@@ -918,18 +938,18 @@ export const CardTile = memo(function CardTile({
           className="font-bold"
           style={{ color: TEXT_GOLD }}
         >
-          {part.text}
+          {text}
         </span>
       ) : part.type === "upgrade" ? (
-        <span key={i} className="font-bold" style={{ color: TEXT_GREEN }}>{part.text}</span>
+        <span key={i} className="font-bold" style={{ color: TEXT_GREEN }}>{text}</span>
       ) : part.type === "blue" ? (
-        <span key={i} className="font-bold" style={{ color: "#87CEEB" }}>{part.text}</span>
+        <span key={i} className="font-bold" style={{ color: "#87CEEB" }}>{text}</span>
       ) : part.type === "red" ? (
-        <span key={i} style={{ color: "#FF5555" }}>{part.text}</span>
+        <span key={i} style={{ color: "#FF5555" }}>{text}</span>
       ) : part.type === "purple" ? (
-        <span key={i} className="font-bold" style={{ color: "#EE82EE" }}>{part.text}</span>
+        <span key={i} className="font-bold" style={{ color: "#EE82EE" }}>{text}</span>
       ) : part.type === "energy" ? (
-        <span key={i} className="inline-flex items-baseline gap-0">
+        <span key={i} className="inline-flex items-baseline gap-0" style={iconStyle}>
           {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
             <Image
               key={j}
@@ -938,12 +958,12 @@ export const CardTile = memo(function CardTile({
               width={14}
               height={14}
               className="inline-block align-text-bottom mx-[0.1em]"
-              style={{ width: "1em", height: "1em" }}
+              style={{ width: "1em", height: "1em", filter: characterFilterSuffix }}
             />
           ))}
         </span>
       ) : part.type === "star" ? (
-        <span key={i} className="inline-flex items-baseline gap-0">
+        <span key={i} className="inline-flex items-baseline gap-0" style={iconStyle}>
           {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
             <Image
               key={j}
@@ -959,7 +979,7 @@ export const CardTile = memo(function CardTile({
       ) : part.type === "newline" ? (
         <br key={i} />
       ) : (
-        <span key={i}>{part.text}</span>
+        <span key={i}>{text}</span>
       );
     });
 
@@ -1128,7 +1148,13 @@ export const CardTile = memo(function CardTile({
         aspectRatio: "1",
       }}
     >
-      <Image src={energyIcon} alt="cost" fill className="object-contain" />
+      <Image
+        src={energyIcon}
+        alt="cost"
+        fill
+        className="object-contain"
+        style={characterFilterSuffix ? { filter: characterFilterSuffix } : undefined}
+      />
       <span
         className="absolute inset-0 flex items-center justify-center font-black"
         style={{
@@ -1425,7 +1451,7 @@ export const CardTile = memo(function CardTile({
           className="absolute overflow-hidden"
           style={{ ...L.art, clipPath: PORTRAIT_CLIP_PATHS[card.type] }}
         >
-          {imageSrc && !imgError ? (
+          {artContent ?? (imageSrc && !imgError ? (
             <Image
               src={imageSrc}
               alt={renderedCardName}
@@ -1438,7 +1464,7 @@ export const CardTile = memo(function CardTile({
             <div className="flex items-center justify-center h-full bg-black/30 text-gray-500 text-[10px]">
               No Image
             </div>
-          )}
+          ))}
         </div>
 
         <Image
