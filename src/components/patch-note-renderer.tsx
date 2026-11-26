@@ -1048,6 +1048,7 @@ function LocalizedEntityPreview({
       ref={ref}
       className={forceShow ? "inline-block" : pendingStaticPreview ? "group relative inline-flex max-w-full items-center" : "relative inline-flex max-w-full items-center"}
       data-static-card-trigger={staticPreviewKey}
+      data-hover-trigger=""
       onMouseEnter={() => {
         if (!useTapPreview) handleMouseEnter();
       }}

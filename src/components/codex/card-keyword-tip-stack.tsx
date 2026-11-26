@@ -203,6 +203,7 @@ export function CardSideTipsAnchor({
   return (
     <div
       ref={anchorRef}
+      data-hover-trigger=""
       className={`relative ${className}`}
       style={style}
       onMouseEnter={() => {

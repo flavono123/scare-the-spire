@@ -53,6 +53,7 @@
     "codex:relations": "python3 scripts/extract-code-relations.py && tsx scripts/check-event-templates.ts",
     "codex:event-templates": "tsx scripts/check-event-templates.ts",
     "test:version-api": "tsx scripts/versioned-entity-api.spec.ts",
+    "hover:audit": "tsx scripts/audit-hover-overlap.ts",
     "game-tips:audit": "python3 scripts/generate-game-tips.py --audit && tsx scripts/audit-game-tips.ts",
     "test:version-canonical": "tsx scripts/versioned-canonical.spec.ts",
     "test:monster-static-art": "tsx scripts/monster-static-art.spec.ts",
