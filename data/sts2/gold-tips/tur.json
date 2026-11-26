@@ -11,6 +11,9 @@
  "affliction:TAINTED": {
   "Lekeli": "power:TAINTED"
  },
+ "ancient:NEOW": {
+  "“Ki...!”": null
+ },
  "ancient:VAKUU": {
   "Vakuu": null
  },
@@ -97,7 +100,7 @@
   "Zehir": "power:POISON"
  },
  "card:ACCURACY": {
-  "Kamalar": null
+  "Kamalar": "card:SHIV"
  },
  "card:ADAPTIVE_STRIKE": {
   "Atık Destesi": null
@@ -149,6 +152,9 @@
   "El": null,
   "Geliştir": null
  },
+ "card:ARROW_STAB": {
+  "Aim": null
+ },
  "card:ARSENAL": {
   "Kuvvet": "power:STRENGTH"
  },
@@ -169,7 +175,7 @@
   "Ruhani": "keyword:ETHEREAL"
  },
  "card:BARRAGE": {
-  "Oluşturulan": null
+  "Oluşturulan": "keyword:CHANNELING"
  },
  "card:BARRICADE": {
   "Blok": "keyword:BLOCK"
@@ -188,7 +194,7 @@
  },
  "card:BEAT_INTO_SHAPE": {
   "Döv": "keyword:FORGE",
-  "Dövme": null
+  "Dövme": "keyword:FORGE"
  },
  "card:BECKON": {
   "El": null
@@ -408,7 +414,11 @@
   "Blok": "keyword:BLOCK"
  },
  "card:CODA": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
   "Buz": "keyword:FROST_ORB",
@@ -466,7 +476,7 @@
   "Zehir": "power:POISON"
  },
  "card:CORRUPTION": {
-  "Tüketilir": null
+  "Tüketilir": "keyword:EXHAUST"
  },
  "card:COSMIC_INDIFFERENCE": {
   "Atık Deste": null,
@@ -504,7 +514,7 @@
   "Oluştur": "keyword:CHANNELING"
  },
  "card:DARK_EMBRACE": {
-  "Tüketilirse": null
+  "Tüketilirse": "keyword:EXHAUST"
  },
  "card:DARK_SHACKLES": {
   "Kuvvet": "power:STRENGTH"
@@ -637,7 +647,7 @@
   "El": null
  },
  "card:DRUM_OF_BATTLE": {
-  "Tüketildiğinde": null
+  "Tüketildiğinde": "keyword:EXHAUST"
  },
  "card:DUALCAST": {
   "Tetikle": "keyword:EVOKE"
@@ -705,7 +715,7 @@
  },
  "card:EVIL_EYE": {
   "Blok": "keyword:BLOCK",
-  "Tükettiysen": null
+  "Tükettiysen": "keyword:EXHAUST"
  },
  "card:EXPECT_A_FIGHT": {
   "Blok": "keyword:BLOCK",
@@ -733,7 +743,7 @@
  "card:FAN_OF_KNIVES": {
   "El": null,
   "Kama": "card:SHIV",
-  "Kamalar": null
+  "Kamalar": "card:SHIV"
  },
  "card:FASTEN": {
   "Blok": "keyword:BLOCK"
@@ -749,7 +759,7 @@
  },
  "card:FEEL_NO_PAIN": {
   "Blok": "keyword:BLOCK",
-  "Tüketildiğinde": null
+  "Tüketildiğinde": "keyword:EXHAUST"
  },
  "card:FERAL": {
   "El": null
@@ -760,7 +770,7 @@
  "card:FIEND_FIRE": {
   "El": null,
   "Tüket": "keyword:EXHAUST",
-  "Tüketilen": null
+  "Tüketilen": "keyword:EXHAUST"
  },
  "card:FIGHT_ME": {
   "Kuvvet": "power:STRENGTH"
@@ -778,7 +788,7 @@
  },
  "card:FLAK_CANNON": {
   "Tüket": "keyword:EXHAUST",
-  "Tüketilen": null
+  "Tüketilen": "keyword:EXHAUST"
  },
  "card:FLAME_BARRIER": {
   "Blok": "keyword:BLOCK"
@@ -788,6 +798,12 @@
  },
  "card:FLECHETTES": {
   "El": null
+ },
+ "card:FLORESCENCE": {
+  "Hand": null,
+  "The Shot": null,
+  "The Shot+": null,
+  "Transform": null
  },
  "card:FOCUSED_STRIKE": {
   "Odak": "power:FOCUS"
@@ -807,7 +823,7 @@
   "Çekme Deste": null
  },
  "card:FORGOTTEN_RITUAL": {
-  "Tükettiysen": null
+  "Tükettiysen": "keyword:EXHAUST"
  },
  "card:FRANTIC_ESCAPE": {
   "Kum Havuzu": "power:SANDPIT"
@@ -875,6 +891,12 @@
   "Ruh": "card:SOUL",
   "Çekme Deste": null
  },
+ "card:GROWTH": {
+  "Block": "keyword:BLOCK",
+  "Hand": null,
+  "Sadness": null,
+  "Transform": null
+ },
  "card:GUARDS": {
   "Dönüştür": null,
   "Dönüştürmek": null,
@@ -894,7 +916,7 @@
  },
  "card:HAMMER_TIME": {
   "Dövdüğünde": null,
-  "Döver": null
+  "Döver": "keyword:FORGE"
  },
  "card:HAND_OF_GREED": {
   "Altın": null,
@@ -904,6 +926,14 @@
   "Blok": "keyword:BLOCK",
   "El": null,
   "Kurnaz": "keyword:SLY"
+ },
+ "card:HARMONIC_SHIELD": {
+  "Block": "keyword:BLOCK",
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:HAUNT": {
   "Ruh": "card:SOUL"
@@ -960,6 +990,9 @@
   "Blok": "keyword:BLOCK",
   "El": null
  },
+ "card:HONING": {
+  "Arrows": null
+ },
  "card:HOTFIX": {
   "Odak": "power:FOCUS"
  },
@@ -974,7 +1007,7 @@
   "Oluştur": "keyword:CHANNELING"
  },
  "card:IGNITION": {
-  "Oluşturur": null,
+  "Oluşturur": "keyword:CHANNELING",
   "Plazma": "keyword:PLASMA_ORB"
  },
  "card:IMMORTALITY": {
@@ -1050,7 +1083,7 @@
  "card:KNIFE_TRAP": {
   "Geliştir": null,
   "Kama": "card:SHIV",
-  "Kamaları": null,
+  "Kamaları": "card:SHIV",
   "Tüketim Deste": null,
   "plural:Kama": null
  },
@@ -1071,7 +1104,7 @@
   "Blok": "keyword:BLOCK"
  },
  "card:LEGION_OF_BONE": {
-  "Çağırır": null
+  "Çağırır": "keyword:SUMMON_STATIC"
  },
  "card:LEG_SWEEP": {
   "Blok": "keyword:BLOCK",
@@ -1091,12 +1124,20 @@
   "Çekme Deste": null
  },
  "card:LOST_LUTE": {
-  "Melodi": null,
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Çekme Deste": null
  },
  "card:LULLABY": {
   "Blok": "keyword:BLOCK",
-  "Melodileri": null
+  "Melodileri": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MAD_SCIENCE": {
   "Beceriklilik": null,
@@ -1133,7 +1174,11 @@
  },
  "card:MELODIC_SHOT": {
   "Fırlat": null,
-  "Melodi": null,
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Ok": "keyword:ARROW"
  },
  "card:METAMORPHOSIS": {
@@ -1182,7 +1227,11 @@
   "Kuvvet": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "El": null,
@@ -1190,6 +1239,18 @@
  },
  "card:MULTI_CAST": {
   "Tetikle": "keyword:EVOKE"
+ },
+ "card:MYTHIC_FORM": {
+  "Hand": null,
+  "Tarot": "keyword:TAROT"
+ },
+ "card:MY_SHINIES": {
+  "Gold": null
+ },
+ "card:NAIL": {
+  "Impaled": null,
+  "Vulnerable": null,
+  "Weak": null
  },
  "card:NECRO_MASTERY": {
   "Osti": null,
@@ -1238,6 +1299,12 @@
  "card:OFF_BY_ONE": {
   "El": null
  },
+ "card:OPTIMISM": {
+  "Exhaust": null,
+  "Exhausted": null,
+  "Hand": null,
+  "Sadness": null
+ },
  "card:OUTBREAK": {
   "Zehir": "power:POISON"
  },
@@ -1274,7 +1341,7 @@
  },
  "card:PHANTOM_BLADES": {
   "Kama": "card:SHIV",
-  "Kamaların": null,
+  "Kamaların": "card:SHIV",
   "Sakla": "keyword:RETAIN"
  },
  "card:PHOTON_CUT": {
@@ -1322,9 +1389,15 @@
  "card:PULL_FROM_BELOW": {
   "Ruhani": "keyword:ETHEREAL"
  },
+ "card:PUNCH_OF_JOY": {
+  "Hand": null,
+  "Joy": null,
+  "Sadness": null,
+  "Transform": null
+ },
  "card:PURITY": {
   "El": null,
-  "Tüketmek": null
+  "Tüketmek": "keyword:EXHAUST"
  },
  "card:PUTREFY": {
   "Savunmasız": "power:VULNERABLE",
@@ -1340,6 +1413,9 @@
  "card:QUICK_SHOT": {
   "Fırlat": null,
   "Ok": "keyword:ARROW"
+ },
+ "card:QUIETUS": {
+  "Shot": null
  },
  "card:QUIVER": {
   "Ok": "keyword:ARROW",
@@ -1381,6 +1457,10 @@
  "card:REBOUND": {
   "Çekme Deste": null
  },
+ "card:RECALL": {
+  "Dislodge": null,
+  "Impaled": null
+ },
  "card:REFINE_BLADE": {
   "Döv": "keyword:FORGE"
  },
@@ -1408,7 +1488,11 @@
   "El": null
  },
  "card:RHYTHM_STRIKE": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "Atık Deste": null,
@@ -1454,7 +1538,7 @@
   "Blok": "keyword:BLOCK",
   "El": null,
   "Tüket": "keyword:EXHAUST",
-  "Tüketilen": null
+  "Tüketilen": "keyword:EXHAUST"
  },
  "card:SECRET_TECHNIQUE": {
   "El": null,
@@ -1561,6 +1645,10 @@
   "Blok": "keyword:BLOCK",
   "Ço Melodisi": "keyword:CHO_MELODY"
  },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
+ },
  "card:SOULBOUND": {
   "Ruh": "card:SOUL",
   "Çekme Destesi": null
@@ -1617,7 +1705,11 @@
   "Blok": null
  },
  "card:STEADY_CADENCE": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "El": null,
@@ -1692,7 +1784,7 @@
   "El": null,
   "Geliştir": null,
   "Tüket": "keyword:EXHAUST",
-  "Tüketilen": null,
+  "Tüketilen": "keyword:EXHAUST",
   "Çekme Deste": null
  },
  "card:THE_EMPRESS": {
@@ -1707,7 +1799,10 @@
  },
  "card:THE_HERMIT": {
   "Lanet": null,
-  "Tüketilir": null
+  "Tüketilir": "keyword:EXHAUST"
+ },
+ "card:THE_HIEROPHANT": {
+  "Hand": null
  },
  "card:THE_HUNT": {
   "Öldürürse": null
@@ -1723,8 +1818,16 @@
   "Kama": "card:SHIV",
   "Kama+": "card:SHIV"
  },
+ "card:THE_SHOT": {
+  "Arrow": null,
+  "Shoot": null
+ },
  "card:THE_SMITH": {
   "Döv": "keyword:FORGE"
+ },
+ "card:THE_SUN": {
+  "Draw Pile": null,
+  "Soot": null
  },
  "card:THE_WORLD": {
   "Atık Deste": null,
@@ -1772,9 +1875,18 @@
  "card:TREMBLE": {
   "Savunmasız": "power:VULNERABLE"
  },
+ "card:TRICK_SHOT": {
+  "Arrow": null,
+  "Shoot": null
+ },
  "card:TRUE_GRIT": {
   "Blok": "keyword:BLOCK",
   "Tüket": "keyword:EXHAUST"
+ },
+ "card:TUNE": {
+  "Hand": null,
+  "Ki Melody": "keyword:KI_MELODY",
+  "Upgrade": null
  },
  "card:TURBO": {
   "Atık Deste": null,
@@ -1783,6 +1895,10 @@
  "card:TUTOR": {
   "El": null,
   "Çekme Destesi": null
+ },
+ "card:TWIN_SHOT": {
+  "Arrow": null,
+  "Shoot": null
  },
  "card:TYRANNY": {
   "El": null,
@@ -1837,9 +1953,14 @@
  "card:VIOLENT_CHORD": {
   "Vah Melodisi": "keyword:WAH_MELODY"
  },
+ "card:VITRIOL": {
+  "Hand": null,
+  "Sadness": null,
+  "Weak": null
+ },
  "card:VOLTAIC": {
   "Oluştur": "keyword:CHANNELING",
-  "Oluşturulan": null,
+  "Oluşturulan": "keyword:CHANNELING",
   "Yıldırım": "keyword:LIGHTNING_ORB",
   "Yıldırım Oluştur": null
  },
@@ -1850,8 +1971,15 @@
  "card:WAH_CHO": {
   "Blok": "keyword:BLOCK"
  },
+ "card:WAH_CHO_KI": {
+  "Block": "keyword:BLOCK"
+ },
  "card:WAH_HAMMER": {
   "Saplanmış": "power:IMPALED"
+ },
+ "card:WAH_KI": {
+  "Discard Pile": null,
+  "Draw Pile": null
  },
  "card:WAH_TOUCH": {
   "Savunmasız": "power:VULNERABLE"
@@ -1920,6 +2048,9 @@
  "dominion:CEREMONIAL_BEAST": {
   "Ritüel": "power:RITUAL"
  },
+ "dominion:KAISER_CRAB": {
+  "Plating": null
+ },
  "dominion:KIN": {
   "Kırılgan": "power:FRAIL",
   "Zayıf": "power:WEAK"
@@ -1939,6 +2070,9 @@
  },
  "dominion:TEST_SUBJECT": {
   "Kuvvet": "power:STRENGTH"
+ },
+ "dominion:VANTOM": {
+  "Slippery": null
  },
  "enchantment:ADROIT": {
   "Blok": null
@@ -2026,6 +2160,9 @@
  },
  "epoch:EVENT3_EPOCH": {
   "Kadim Ağaçlar": null
+ },
+ "epoch:FOOL1_EPOCH": {
+  "Spire": null
  },
  "epoch:FOOL2_EPOCH": {
   "Sahne": null
@@ -2307,7 +2444,7 @@
  },
  "event:SYMBIOTE": {
   "Büyüle": null,
-  "Dönüştürmek": null
+  "Dönüştürmek": "keyword:TRANSFORM"
  },
  "event:TABLET_OF_TRUTH": {
   "Geliştir": null,
@@ -2421,7 +2558,7 @@
  },
  "event:WHISPERING_HOLLOW": {
   "Altın": null,
-  "Dönüştürmek": null,
+  "Dönüştürmek": "keyword:TRANSFORM",
   "altın": null,
   "dönüştürür": null,
   "İksir": null
@@ -2585,7 +2722,7 @@
  "potion:ASHWATER": {
   "El": null,
   "Tüket": "keyword:EXHAUST",
-  "Tüketmek": null
+  "Tüketmek": "keyword:EXHAUST"
  },
  "potion:ATTACK_POTION": {
   "El": null
@@ -2777,6 +2914,7 @@
   "Hüzün": "card:SADNESS"
  },
  "power:ARCHERY": {
+  "Aim": null,
   "Nişan": "power:AIM"
  },
  "power:ARSENAL": {
@@ -2849,7 +2987,7 @@
   "Zehir": "power:POISON"
  },
  "power:CORRUPTION": {
-  "Tüketilir": null
+  "Tüketilir": "keyword:EXHAUST"
  },
  "power:COUNTDOWN": {
   "Kader": "power:DOOM"
@@ -2874,11 +3012,14 @@
  "power:CURL_UP": {
   "Blok": "keyword:BLOCK"
  },
+ "power:DAMPEN": {
+  "Downgraded": null
+ },
  "power:DANSE_MACABRE": {
   "Blok": null
  },
  "power:DARK_EMBRACE": {
-  "Tüketilirse": null
+  "Tüketilirse": "keyword:EXHAUST"
  },
  "power:DEBILITATE": {
   "Savunmasız": "power:VULNERABLE",
@@ -2906,7 +3047,7 @@
   "Blok": "keyword:BLOCK"
  },
  "power:DEXTERITY_DOWN": {
-  "Beceriklilik": null
+  "Beceriklilik": "power:DEXTERITY_DOWN"
  },
  "power:DIE_FOR_YOU": {
   "Osti": null
@@ -2938,6 +3079,7 @@
   "Zehir": "power:POISON"
  },
  "power:EXPLOSIVE_ARROWS": {
+  "Impale": null,
   "Sapladığında": null
  },
  "power:FAN_OF_KNIVES": {
@@ -2958,7 +3100,7 @@
   "Sersemletmek": null
  },
  "power:FOCUS_DOWN": {
-  "Odak": null
+  "Odak": "power:FOCUS_DOWN"
  },
  "power:FORBIDDEN_GRIMOIRE": {
   "Deste": null
@@ -2984,10 +3126,13 @@
  },
  "power:HAMMER_TIME": {
   "Dövdüğünde": null,
-  "Döver": null
+  "Döver": "keyword:FORGE"
  },
  "power:HANG": {
   "As": "card:HANG"
+ },
+ "power:HARD_TO_KILL": {
+  "Exoskeleton": null
  },
  "power:HAUNT": {
   "Ruh": null
@@ -3012,6 +3157,7 @@
   "Kuvvet": "power:STRENGTH"
  },
  "power:HONING": {
+  "Arrows": null,
   "Oklar": null
  },
  "power:IMBALANCED": {
@@ -3019,12 +3165,12 @@
  },
  "power:IMPALED": {
   "Ok": null,
-  "Saplanır": null,
+  "Saplanır": "power:IMPALED",
   "Çıkarılacak": null,
   "Çıkarılır": null
  },
  "power:IMPROVEMENT": {
-  "Geliştir": null
+  "Geliştir": "power:IMPROVEMENT"
  },
  "power:INFINITE_BLADES": {
   "El": null,
@@ -3045,12 +3191,20 @@
   "Yıldırım": "keyword:LIGHTNING_ORB"
  },
  "power:LOST_LUTE": {
-  "Melodi": null,
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Çekme Deste": null
  },
  "power:LULLABY": {
   "Blok": "keyword:BLOCK",
-  "Melodileri": null
+  "Melodileri": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "Kurnaz": null
@@ -3068,7 +3222,11 @@
   "Kuvvet": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "El": null,
@@ -3102,8 +3260,8 @@
   "Kader": null
  },
  "power:ORB_GENERATOR": {
-  "Küreler": null,
-  "Kürelerin": null
+  "Küreler": "power:ORB_GENERATOR",
+  "Kürelerin": "power:ORB_GENERATOR"
  },
  "power:PAGESTORM": {
   "Ruhani": "keyword:ETHEREAL"
@@ -3126,7 +3284,7 @@
  },
  "power:PHANTOM_BLADES": {
   "Kama": "card:SHIV",
-  "Kamalar": null,
+  "Kamalar": "card:SHIV",
   "Sakla": "keyword:RETAIN"
  },
  "power:PILLAR_OF_CREATION": {
@@ -3138,7 +3296,7 @@
  },
  "power:PLOW": {
   "Kuvvet": "power:STRENGTH",
-  "Sersemler": null
+  "Sersemler": "keyword:STUN"
  },
  "power:POISON": {
   "Zehir": "power:POISON"
@@ -3155,6 +3313,9 @@
  "power:PYRE": {
   "Enerji": "keyword:ENERGY"
  },
+ "power:QUIETUS": {
+  "Shot": null
+ },
  "power:RADIANCE": {
   "Enerji": "keyword:ENERGY"
  },
@@ -3166,7 +3327,7 @@
  },
  "power:RAVENOUS": {
   "Kuvvet": "power:STRENGTH",
-  "Sersemler": null
+  "Sersemler": "keyword:STUN"
  },
  "power:READ_THE_BONES": {
   "Çağırdığında": null
@@ -3233,7 +3394,7 @@
   "Nişan": null
  },
  "power:SHRIEK": {
-  "Sersemler": null
+  "Sersemler": "keyword:STUN"
  },
  "power:SHROUD": {
   "Blok": null,
@@ -3256,7 +3417,9 @@
   "%50": null
  },
  "power:SONG_PATH": {
+  "Block": "keyword:BLOCK",
   "Blok": "keyword:BLOCK",
+  "Cho Melody": null,
   "Ço Melodisi": "keyword:CHO_MELODY"
  },
  "power:SOULBOUND": {
@@ -3355,6 +3518,11 @@
  "power:TRASH_TO_TREASURE": {
   "Oluştur": null
  },
+ "power:TUNE": {
+  "Hand": null,
+  "Ki Melody": "keyword:KI_MELODY",
+  "Upgrade": null
+ },
  "power:TYRANNY": {
   "El": null,
   "Tüket": "keyword:EXHAUST"
@@ -3375,7 +3543,8 @@
   "Savunmasız": "power:VULNERABLE"
  },
  "power:VIOLENT_CHORD": {
-  "Vah Melodisi": "keyword:WAH_MELODY"
+  "Vah Melodisi": "keyword:WAH_MELODY",
+  "Wah Melody": null
  },
  "power:VITAL_SPARK": {
   "Beceriler": null,
@@ -3392,7 +3561,7 @@
  },
  "power:WITHERING_PRESENCE": {
   "El": null,
-  "Solma": null
+  "Solma": "card:WITHER"
  },
  "power:WRAITH_FORM": {
   "Beceriklilik": "power:DEXTERITY"
@@ -3488,7 +3657,7 @@
   "Geliştir": null
  },
  "relic:BOOKMARK": {
-  "Saklanan": null
+  "Saklanan": "keyword:RETAIN"
  },
  "relic:BOOK_OF_FIVE_RINGS": {
   "Deste": null
@@ -3513,7 +3682,7 @@
  },
  "relic:BURNING_STICKS": {
   "El": null,
-  "Tükettiğinde": null
+  "Tükettiğinde": "keyword:EXHAUST"
  },
  "relic:BYRDINE": {
   "Dönüştür": null,
@@ -3557,7 +3726,11 @@
   "El": null
  },
  "relic:CONDUCTORS_BATON": {
-  "Melodileri": null
+  "Melodileri": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
   "Oluştur": "keyword:CHANNELING",
@@ -3703,7 +3876,7 @@
   "Sahne": null
  },
  "relic:GOLDEN_PEARL": {
-  "Altın": null
+  "Altın": "relic:GOLDEN_PEARL"
  },
  "relic:GORGET": {
   "Zırh": "power:PLATING"
@@ -3738,7 +3911,7 @@
   "Tanrısallaşma": "card:APOTHEOSIS"
  },
  "relic:JOSS_PAPER": {
-  "Tükettiğinde": null
+  "Tükettiğinde": "keyword:EXHAUST"
  },
  "relic:JUZU_BRACELET": {
   "?": null
@@ -3927,7 +4100,7 @@
  },
  "relic:PHIAL_HOLSTER": {
   "plural:İksir": null,
-  "İksir": null
+  "İksir": "relic:PHIAL_HOLSTER"
  },
  "relic:PHILOSOPHERS_STONE": {
   "Kuvvet": "power:STRENGTH"
@@ -4021,7 +4194,7 @@
   "Deste": null
  },
  "relic:SEAL_OF_GOLD": {
-  "Altın": null
+  "Altın": "relic:SEAL_OF_GOLD"
  },
  "relic:SEA_GLASS": {
   "Deste": null

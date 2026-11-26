@@ -11,6 +11,18 @@
  "affliction:TAINTED": {
   "ปนเปื้อน": "power:TAINTED"
  },
+ "ancient:NEOW": {
+  "“Ki...!”": null
+ },
+ "ancient:VAKUU": {
+  "Vakuu": null
+ },
+ "ascension:BLITZ": {
+  "Deck": null
+ },
+ "ascension:DREAD_RULE_02": {
+  "Deck": null
+ },
  "ascension:LEVEL_01": {
   "ลูกพี่": null
  },
@@ -25,6 +37,55 @@
  },
  "badge:MONEY_MONEY": {
   "ทอง": null
+ },
+ "blitz:CARD_ENCHANT": {
+  "Enchant": null
+ },
+ "blitz:CARD_PACKS": {
+  "Deck": null
+ },
+ "blitz:CARD_REMOVAL": {
+  "Deck": null
+ },
+ "blitz:CARD_REWARD_OF_EACH_RARITY": {
+  "Common": null,
+  "Rare": null,
+  "Uncommon": null
+ },
+ "blitz:CARD_TRANSFORM": {
+  "Deck": null,
+  "Transform": null
+ },
+ "blitz:CARD_UPGRADE": {
+  "Deck": null,
+  "Upgrade": null
+ },
+ "blitz:COLORLESS_CARD_REWARD": {
+  "Colorless": null
+ },
+ "blitz:ENCHANTED_CARD_REWARD": {
+  "Enchanted": null
+ },
+ "blitz:GLAM": {
+  "Enchant": null
+ },
+ "blitz:RANDOM_UPGRADES": {
+  "Deck": null
+ },
+ "blitz:RELIC": {
+  "Relic": null
+ },
+ "blitz:TWO_RELICS": {
+  "Relics": null
+ },
+ "blitz:UPGRADED_CARD_REWARD": {
+  "Upgraded": null
+ },
+ "blitz:UPGRADED_RARE_CARD": {
+  "Upgraded": null
+ },
+ "blitz:UPGRADED_RARE_CARD_REWARD": {
+  "Upgraded": null
  },
  "card:ABRASIVE": {
   "ความชำนาญ": "power:DEXTERITY",
@@ -59,8 +120,15 @@
   "กองทิ้ง": null,
   "มือ": null
  },
+ "card:ALL_IS_WELL": {
+  "Block": null,
+  "Sadness": "card:SADNESS"
+ },
  "card:ANGER": {
   "กองทิ้ง": null
+ },
+ "card:ANGUISH": {
+  "Sadness": "card:SADNESS"
  },
  "card:ANOINTED": {
   "กองจั่ว": null,
@@ -76,10 +144,16 @@
  "card:APPARITION": {
   "ไร้ตัวตน": "power:INTANGIBLE"
  },
+ "card:ARCHERY": {
+  "Aim": "power:AIM"
+ },
  "card:ARMAMENTS": {
   "บล็อก": "keyword:BLOCK",
   "พัฒนา": null,
   "มือ": null
+ },
+ "card:ARROW_STAB": {
+  "Aim": "power:AIM"
  },
  "card:ARSENAL": {
   "ความแข็งแรง": "power:STRENGTH"
@@ -99,6 +173,9 @@
  },
  "card:BANSHEES_CRY": {
   "กึ่งสลาย": "keyword:ETHEREAL"
+ },
+ "card:BARRAGE": {
+  "Channeled": null
  },
  "card:BARRICADE": {
   "บล็อก": "keyword:BLOCK"
@@ -154,6 +231,14 @@
  "card:BLOOD_WALL": {
   "บล็อก": "keyword:BLOCK"
  },
+ "card:BLOSSOM_SHOT": {
+  "Shoot": null,
+  "Stretch": "power:STRETCH"
+ },
+ "card:BLOT_OUT_THE_SKY": {
+  "Hand": null,
+  "Shoot": null
+ },
  "card:BLUR": {
   "บล็อก": "keyword:BLOCK"
  },
@@ -181,8 +266,18 @@
  "card:BOOT_SEQUENCE": {
   "บล็อก": "keyword:BLOCK"
  },
+ "card:BOUNCE": {
+  "Hand": null,
+  "Stretch": "power:STRETCH"
+ },
  "card:BOUNCING_FLASK": {
   "พิษ": "power:POISON"
+ },
+ "card:BOW_SMACK": {
+  "Impaled": "power:IMPALED"
+ },
+ "card:BRACE": {
+  "Aim": "power:AIM"
  },
  "card:BRAND": {
   "ความแข็งแรง": "power:STRENGTH",
@@ -190,6 +285,11 @@
  },
  "card:BREAK": {
   "จุดอ่อน": "power:VULNERABLE"
+ },
+ "card:BRIGHTEN_UP": {
+  "Hand": null,
+  "Joy": "card:JOY",
+  "Sadness": "card:SADNESS"
  },
  "card:BUBBLE_BUBBLE": {
   "พิษ": "power:POISON"
@@ -262,6 +362,31 @@
   "น้ำแข็ง": "keyword:FROST_ORB",
   "ปลุกเสก": "keyword:CHANNELING"
  },
+ "card:CHO_BARBS": {
+  "Block": null,
+  "Thorns": null
+ },
+ "card:CHO_CHORUS": {
+  "Block": null,
+  "Hand": null
+ },
+ "card:CHO_FIRM": {
+  "Arrow": "keyword:ARROW",
+  "Block": null
+ },
+ "card:CHO_KI": {
+  "Block": null,
+  "Stretch": "power:STRETCH"
+ },
+ "card:CHO_LIMBS": {
+  "Block": null,
+  "Ki Melody": "keyword:KI_MELODY",
+  "Wah Melody": "keyword:WAH_MELODY"
+ },
+ "card:CHO_READY": {
+  "Aim": "power:AIM",
+  "Block": null
+ },
  "card:CHRYSALIS": {
   "กองจั่ว": null
  },
@@ -283,6 +408,13 @@
  },
  "card:CLOAK_OF_STARS": {
   "บล็อก": "keyword:BLOCK"
+ },
+ "card:CODA": {
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
   "น้ำแข็ง": "keyword:FROST_ORB",
@@ -350,6 +482,10 @@
  "card:COUNTDOWN": {
   "อายุขัย": "power:DOOM"
  },
+ "card:COVERING_FIRE": {
+  "Block": null,
+  "Shoot": null
+ },
  "card:CRASH_LANDING": {
   "มือ": null,
   "เศษซาก": "card:DEBRIS"
@@ -385,6 +521,9 @@
  "card:DEADLY_POISON": {
   "พิษ": "power:POISON"
  },
+ "card:DEATH": {
+  "Doom": null
+ },
  "card:DEATHBRINGER": {
   "ความอ่อนแอ": "power:WEAK",
   "อายุขัย": "power:DOOM"
@@ -407,8 +546,14 @@
  "card:DECISIONS_DECISIONS": {
   "มือ": null
  },
+ "card:DEEP_STRETCH": {
+  "Stretch": "power:STRETCH"
+ },
  "card:DEFEND_DEFECT": {
   "บล็อก": "keyword:BLOCK"
+ },
+ "card:DEFEND_FOOL": {
+  "Block": null
  },
  "card:DEFEND_IRONCLAD": {
   "บล็อก": "keyword:BLOCK"
@@ -461,8 +606,18 @@
  "card:DISCOVERY": {
   "มือ": null
  },
+ "card:DISLIKE_YOU": {
+  "Shots": null
+ },
+ "card:DISMANTLE": {
+  "Vulnerable": null
+ },
  "card:DISTRACTION": {
   "มือ": null
+ },
+ "card:DIVINE_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
  },
  "card:DODGE_AND_ROLL": {
   "บล็อก": "keyword:BLOCK"
@@ -477,7 +632,7 @@
  },
  "card:DOWSING": {
   "?": null,
-  "Abundance": null
+  "Abundance": "card:ABUNDANCE"
  },
  "card:DRAIN_POWER": {
   "กองทิ้ง": null,
@@ -499,6 +654,12 @@
  "card:DYING_STAR": {
   "ความแข็งแรง": "power:STRENGTH"
  },
+ "card:ECSTASY": {
+  "Hand": null,
+  "Joy": "card:JOY",
+  "Sadness": "card:SADNESS",
+  "Transform": null
+ },
  "card:EIDOLON": {
   "กองสลาย": null,
   "กึ่งสลาย": "keyword:ETHEREAL"
@@ -512,6 +673,14 @@
  "card:ENLIGHTENMENT": {
   "มือ": null
  },
+ "card:ENNUI": {
+  "Hand": null,
+  "Sadness": "card:SADNESS"
+ },
+ "card:ENRAPTURE": {
+  "Stretch": "power:STRETCH",
+  "Vigor": null
+ },
  "card:ENTHRALLED": {
   "มือ": null
  },
@@ -524,6 +693,10 @@
  },
  "card:ENVENOM": {
   "พิษ": "power:POISON"
+ },
+ "card:EPIC_RETRIEVAL": {
+  "Arrow": "keyword:ARROW",
+  "Dislodges": null
  },
  "card:EQUILIBRIUM": {
   "Block": null,
@@ -547,6 +720,9 @@
  "card:EXPERTISE": {
   "คงสภาพ": "keyword:RETAIN",
   "มือ": null
+ },
+ "card:EXPLOSIVE_ARROWS": {
+  "Impale": null
  },
  "card:EXPOSE": {
   "จุดอ่อน": "power:VULNERABLE",
@@ -591,6 +767,9 @@
   "มือ": null,
   "สลาย": "keyword:EXHAUST"
  },
+ "card:FIGHT_ME": {
+  "Strength": null
+ },
  "card:FIGHT_THROUGH": {
   "กองทิ้ง": null,
   "บล็อก": "keyword:BLOCK",
@@ -602,14 +781,31 @@
  "card:FISTICUFFS": {
   "บล็อก": "keyword:BLOCK"
  },
+ "card:FLAK_CANNON": {
+  "Exhaust": null,
+  "Exhausted": null
+ },
  "card:FLAME_BARRIER": {
   "บล็อก": "keyword:BLOCK"
  },
  "card:FLATTEN": {
   "น้าผี": null
  },
+ "card:FLECHETTES": {
+  "Hand": null
+ },
+ "card:FLORESCENCE": {
+  "Hand": null,
+  "The Shot": "card:THE_SHOT",
+  "The Shot+": "card:THE_SHOT",
+  "Transform": null
+ },
  "card:FOCUSED_STRIKE": {
   "โฟกัส": "power:FOCUS"
+ },
+ "card:FOOLISH_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
  },
  "card:FOOTWORK": {
   "ความชำนาญ": "power:DEXTERITY"
@@ -689,6 +885,12 @@
   "บล็อก": "keyword:BLOCK",
   "วิญญาณ": "card:SOUL"
  },
+ "card:GROWTH": {
+  "Block": null,
+  "Hand": null,
+  "Sadness": "card:SADNESS",
+  "Transform": null
+ },
  "card:GUARDS": {
   "บริวารสละชีพ": "card:MINION_SACRIFICE",
   "บริวารสละชีพ+": "card:MINION_SACRIFICE",
@@ -697,6 +899,10 @@
  },
  "card:GUILTY": {
   "กองการ์ด": null
+ },
+ "card:GUNK_UP": {
+  "Discard Pile": null,
+  "Slimed": null
  },
  "card:HAILSTORM": {
   "น้ำแข็ง": "keyword:FROST_ORB"
@@ -713,6 +919,14 @@
   "มือ": null,
   "เล่ห์เหลี่ยม": "keyword:SLY"
  },
+ "card:HARMONIC_SHIELD": {
+  "Block": null,
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
+ },
  "card:HAUNT": {
   "วิญญาณ": "card:SOUL"
  },
@@ -727,6 +941,11 @@
  "card:HEADBUTT": {
   "กองจั่ว": null,
   "กองทิ้ง": null
+ },
+ "card:HEAVY_SHOT": {
+  "Aim": "power:AIM",
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
  },
  "card:HEIRLOOM_HAMMER": {
   "มือ": null
@@ -747,14 +966,26 @@
   "กองจั่ว": null,
   "เล่นซ้ำ": "keyword:REPLAY"
  },
+ "card:HIDDEN_ROOTS": {
+  "Stretch": "power:STRETCH"
+ },
  "card:HIGH_FIVE": {
   "จุดอ่อน": "power:VULNERABLE",
   "น้าผี": null
+ },
+ "card:HOBBLING_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null,
+  "Vulnerable": null,
+  "Weak": null
  },
  "card:HOLOGRAM": {
   "กองทิ้ง": null,
   "บล็อก": "keyword:BLOCK",
   "มือ": null
+ },
+ "card:HONING": {
+  "Arrows": null
  },
  "card:HOTFIX": {
   "โฟกัส": "power:FOCUS"
@@ -818,12 +1049,30 @@
  "card:JACK_OF_ALL_TRADES": {
   "มือ": null
  },
+ "card:JEST": {
+  "Block": null,
+  "Hand": null,
+  "Sadness": "card:SADNESS"
+ },
  "card:JUGGERNAUT": {
   "บล็อก": "keyword:BLOCK"
  },
  "card:JUGGLING": {
   "มือ": null,
   "โจมตี": null
+ },
+ "card:KI_CHANT": {
+  "Draw Pile": null,
+  "Hand": null
+ },
+ "card:KI_HOP": {
+  "Impaled": "power:IMPALED"
+ },
+ "card:KI_REST": {
+  "Cho Melody": "keyword:CHO_MELODY",
+  "Hand": null,
+  "Retain": null,
+  "Wah Melody": "keyword:WAH_MELODY"
  },
  "card:KNIFE_TRAP": {
   "กองสลาย": null,
@@ -860,6 +1109,27 @@
   "ปลุกเสก": "keyword:CHANNELING",
   "สายฟ้า": "keyword:LIGHTNING_ORB"
  },
+ "card:LOCKED_IN": {
+  "Draw Pile": null,
+  "Hand": null,
+  "Shoot": null
+ },
+ "card:LOST_LUTE": {
+  "Draw Pile": null,
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
+ },
+ "card:LULLABY": {
+  "Block": null,
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
+ },
  "card:MAD_SCIENCE": {
   "ความชำนาญ": null,
   "ความอ่อนแอ": null,
@@ -893,6 +1163,15 @@
  "card:MELANCHOLY": {
   "บล็อก": "keyword:BLOCK"
  },
+ "card:MELODIC_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
+  "Shoot": null
+ },
  "card:METAMORPHOSIS": {
   "กองจั่ว": null
  },
@@ -906,6 +1185,15 @@
  },
  "card:MIDNIGHT": {
   "ถูกสลาย": null
+ },
+ "card:MIGHTY_SHIELD": {
+  "Block": null,
+  "Dazed": null,
+  "Draw Pile": null
+ },
+ "card:MIGHTY_WEAPON": {
+  "Dazed": null,
+  "Draw Pile": null
  },
  "card:MIMIC": {
   "บล็อก": "keyword:BLOCK"
@@ -929,8 +1217,31 @@
  "card:MONOLOGUE": {
   "ความแข็งแรง": "power:STRENGTH"
  },
+ "card:MOTIF": {
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
+ },
+ "card:MOURNING_BLOW": {
+  "Hand": null,
+  "Sadness": "card:SADNESS"
+ },
  "card:MULTI_CAST": {
   "ปล่อยพลัง": "keyword:EVOKE"
+ },
+ "card:MYTHIC_FORM": {
+  "Hand": null,
+  "Tarot": "keyword:TAROT"
+ },
+ "card:MY_SHINIES": {
+  "Gold": null
+ },
+ "card:NAIL": {
+  "Impaled": "power:IMPALED",
+  "Vulnerable": null,
+  "Weak": null
  },
  "card:NECRO_MASTERY": {
   "น้าผี": null,
@@ -956,6 +1267,9 @@
  "card:NIGHTMARE": {
   "มือ": null
  },
+ "card:NOCK": {
+  "Aim": "power:AIM"
+ },
  "card:NOSTALGIA": {
   "กองจั่ว": null
  },
@@ -975,6 +1289,12 @@
  },
  "card:OFF_BY_ONE": {
   "มือ": null
+ },
+ "card:OPTIMISM": {
+  "Exhaust": null,
+  "Exhausted": null,
+  "Hand": null,
+  "Sadness": "card:SADNESS"
  },
  "card:OUTBREAK": {
   "พิษ": "power:POISON"
@@ -1056,6 +1376,15 @@
   "บล็อก": "keyword:BLOCK",
   "อัญเชิญ": "keyword:SUMMON_STATIC"
  },
+ "card:PULL_FROM_BELOW": {
+  "Ethereal": null
+ },
+ "card:PUNCH_OF_JOY": {
+  "Hand": null,
+  "Joy": "card:JOY",
+  "Sadness": "card:SADNESS",
+  "Transform": null
+ },
  "card:PURITY": {
   "มือ": null,
   "สลาย": "keyword:EXHAUST"
@@ -1071,6 +1400,17 @@
   "มือ": null,
   "แบบพัฒนาแล้ว": null
  },
+ "card:QUICK_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
+ },
+ "card:QUIETUS": {
+  "Shot": null
+ },
+ "card:QUIVER": {
+  "Arrows": null,
+  "plural:Arrow": null
+ },
  "card:RAGE": {
   "บล็อก": "keyword:BLOCK"
  },
@@ -1080,8 +1420,15 @@
   "ปลุกเสก": "keyword:CHANNELING",
   "สายฟ้า": "keyword:LIGHTNING_ORB"
  },
+ "card:RAIN_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
+ },
  "card:RALLY": {
   "บล็อก": "keyword:BLOCK"
+ },
+ "card:RATTLE": {
+  "Osty": null
  },
  "card:REANIMATE": {
   "อัญเชิญ": "keyword:SUMMON_STATIC"
@@ -1100,11 +1447,19 @@
  "card:REBOUND": {
   "กองจั่ว": null
  },
+ "card:RECALL": {
+  "Dislodge": null,
+  "Impaled": "power:IMPALED"
+ },
  "card:REFINE_BLADE": {
   "หลอมสร้าง": "keyword:FORGE"
  },
  "card:REFLECT": {
   "บล็อก": "keyword:BLOCK"
+ },
+ "card:REFRACT": {
+  "Channel": null,
+  "Glass": null
  },
  "card:REGRET": {
   "มือ": null
@@ -1112,11 +1467,22 @@
  "card:RELAX": {
   "บล็อก": "keyword:BLOCK"
  },
+ "card:REPEAT_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
+ },
  "card:RESONANCE": {
   "ความแข็งแรง": "power:STRENGTH"
  },
  "card:RESTLESSNESS": {
   "มือ": null
+ },
+ "card:RHYTHM_STRIKE": {
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "กองทิ้ง": null,
@@ -1125,6 +1491,10 @@
  },
  "card:ROYALTIES": {
   "ทอง": null
+ },
+ "card:RUMMAGE": {
+  "Hand": null,
+  "Sadness": "card:SADNESS"
  },
  "card:RUPTURE": {
   "ความแข็งแรง": "power:STRENGTH"
@@ -1176,9 +1546,18 @@
   "พระแสงอาญาสิทธิ์": "card:SOVEREIGN_BLADE",
   "หลอมสร้าง": "keyword:FORGE"
  },
+ "card:SELF_DEPRECATE": {
+  "Hand": null,
+  "Hands": null,
+  "Joy": "card:JOY",
+  "Sadness": "card:SADNESS"
+ },
  "card:SENTRY_MODE": {
   "กวาดสายตา": "card:SWEEPING_GAZE",
   "มือ": null
+ },
+ "card:SERRATED_ARROWS": {
+  "Impaled": "power:IMPALED"
  },
  "card:SETUP_STRIKE": {
   "ความแข็งแรง": "power:STRENGTH"
@@ -1221,6 +1600,9 @@
   "ความอ่อนแอ": "power:WEAK",
   "จุดอ่อน": "power:VULNERABLE"
  },
+ "card:SHOW_OFF": {
+  "Aim": "power:AIM"
+ },
  "card:SHROUD": {
   "บล็อก": "keyword:BLOCK",
   "อายุขัย": "power:DOOM"
@@ -1231,6 +1613,13 @@
  "card:SIC_EM": {
   "น้าผี": null,
   "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "card:SIMPLETON": {
+  "Hand": null
+ },
+ "card:SKY_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
  },
  "card:SNAKEBITE": {
   "พิษ": "power:POISON"
@@ -1243,6 +1632,14 @@
  "card:SNEAKY": {
   "บล็อก": "keyword:BLOCK"
  },
+ "card:SONG_PATH": {
+  "Block": null,
+  "Cho Melody": "keyword:CHO_MELODY"
+ },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": "card:SADNESS"
+ },
  "card:SOULBOUND": {
   "กองจั่ว": null,
   "วิญญาณ": "card:SOUL"
@@ -1250,6 +1647,9 @@
  "card:SOUL_STORM": {
   "กองสลาย": null,
   "วิญญาณ": "card:SOUL"
+ },
+ "card:SOVEREIGN_BLADE": {
+  "Block": null
  },
  "card:SPECTRUM_SHIFT": {
   "มือ": null
@@ -1295,6 +1695,13 @@
  "card:STAR_SHIELD": {
   "บล็อก": null
  },
+ "card:STEADY_CADENCE": {
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
+ },
  "card:STOKE": {
   "มือ": null,
   "สลาย": null,
@@ -1315,6 +1722,9 @@
  "card:STRATAGEM": {
   "กองจั่ว": null,
   "มือ": null
+ },
+ "card:STRENGTH": {
+  "Strength": null
  },
  "card:SUCKER_PUNCH": {
   "ความอ่อนแอ": "power:WEAK"
@@ -1344,6 +1754,9 @@
   "จุดอ่อน": "power:VULNERABLE",
   "บล็อก": "keyword:BLOCK"
  },
+ "card:TEMPERANCE": {
+  "Block": null
+ },
  "card:TEMPEST": {
   "ปลุกเสก": "keyword:CHANNELING",
   "สายฟ้า": "keyword:LIGHTNING_ORB"
@@ -1357,18 +1770,66 @@
  "card:TEZCATARAS_MIGHT": {
   "ความแข็งแรง": null
  },
+ "card:THE_DEVIL": {
+  "Draw Pile": null,
+  "Exhaust": null,
+  "Exhausted": null,
+  "Hand": null,
+  "Upgrade": null
+ },
+ "card:THE_EMPRESS": {
+  "Vulnerable": null,
+  "Weak": null
+ },
+ "card:THE_FOOL": {
+  "Hand": null
+ },
  "card:THE_GAMBIT": {
   "บล็อก": "keyword:BLOCK"
+ },
+ "card:THE_HERMIT": {
+  "Curses": null,
+  "Exhausted": null
+ },
+ "card:THE_HIEROPHANT": {
+  "Hand": null
  },
  "card:THE_HUNT": {
   "สังหาร": "keyword:FATAL"
  },
+ "card:THE_LOVERS": {
+  "Hand": null
+ },
+ "card:THE_MAGICIAN": {
+  "Channel": null
+ },
+ "card:THE_MOON": {
+  "Hand": null,
+  "Shivs": null,
+  "Shivs+": null
+ },
+ "card:THE_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
+ },
  "card:THE_SMITH": {
   "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:THE_SUN": {
+  "Draw Pile": null,
+  "Soot": null
+ },
+ "card:THE_WORLD": {
+  "Discard Pile": null,
+  "Hand": null
  },
  "card:THINKING_AHEAD": {
   "กองจั่ว": null,
   "มือ": null
+ },
+ "card:THRASH": {
+  "Exhaust": null,
+  "Hand": null
  },
  "card:THRUMMING_HATCHET": {
   "มือ": null
@@ -1404,9 +1865,18 @@
  "card:TREMBLE": {
   "จุดอ่อน": "power:VULNERABLE"
  },
+ "card:TRICK_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
+ },
  "card:TRUE_GRIT": {
   "บล็อก": "keyword:BLOCK",
   "สลาย": "keyword:EXHAUST"
+ },
+ "card:TUNE": {
+  "Hand": null,
+  "Ki Melody": "keyword:KI_MELODY",
+  "Upgrade": null
  },
  "card:TURBO": {
   "กองทิ้ง": null,
@@ -1415,6 +1885,10 @@
  "card:TUTOR": {
   "กองจั่ว": null,
   "มือ": null
+ },
+ "card:TWIN_SHOT": {
+  "Arrow": "keyword:ARROW",
+  "Shoot": null
  },
  "card:TYRANNY": {
   "มือ": null,
@@ -1446,6 +1920,11 @@
  "card:UPROAR": {
   "กองจั่ว": null
  },
+ "card:UPROOT": {
+  "Dislodge": null,
+  "Impaled": "power:IMPALED",
+  "Vulnerable": null
+ },
  "card:UP_MY_SLEEVE": {
   "มีดสั้น": "card:SHIV",
   "มือ": null
@@ -1460,10 +1939,38 @@
  "card:VICIOUS": {
   "จุดอ่อน": "power:VULNERABLE"
  },
+ "card:VIOLENT_CHORD": {
+  "Wah Melody": "keyword:WAH_MELODY"
+ },
+ "card:VITRIOL": {
+  "Hand": null,
+  "Sadness": "card:SADNESS",
+  "Weak": null
+ },
  "card:VOLTAIC": {
   "ปลุกเสก": "keyword:CHANNELING",
   "ปลุกเสกสายฟ้า": null,
   "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "card:WAH_BLAST": {
+  "Cho Melody": "keyword:CHO_MELODY",
+  "Ki Melody": "keyword:KI_MELODY"
+ },
+ "card:WAH_CHO": {
+  "Block": null
+ },
+ "card:WAH_CHO_KI": {
+  "Block": null
+ },
+ "card:WAH_HAMMER": {
+  "Impaled": "power:IMPALED"
+ },
+ "card:WAH_KI": {
+  "Discard Pile": null,
+  "Draw Pile": null
+ },
+ "card:WAH_TOUCH": {
+  "Vulnerable": null
  },
  "card:WARP_SPACE": {
   "กองจั่ว": null
@@ -1471,8 +1978,18 @@
  "card:WELL_LAID_PLANS": {
   "มือ": null
  },
+ "card:WHEEL_OF_FORTUNE": {
+  "Hand": null
+ },
  "card:WHISTLE": {
   "สตัน": null
+ },
+ "card:WHISTLING_ARROWS": {
+  "Arrow": "keyword:ARROW",
+  "Block": null,
+  "Discard Pile": null,
+  "Hand": null,
+  "Shoot": null
  },
  "card:WHITE_NOISE": {
   "มือ": null
@@ -1488,16 +2005,62 @@
   "ความชำนาญ": "power:DEXTERITY",
   "ไร้ตัวตน": "power:INTANGIBLE"
  },
+ "card:WREST": {
+  "Dislodge": null,
+  "Impaled": "power:IMPALED"
+ },
  "card:WROUGHT_IN_WAR": {
   "หลอมสร้าง": "keyword:FORGE"
+ },
+ "card:YAH": {
+  "Arrow": "keyword:ARROW",
+  "Dislodge": null
+ },
+ "card:YOGA": {
+  "Stretch": "power:STRETCH"
  },
  "card:ZAP": {
   "ปลุกเสก": "keyword:CHANNELING",
   "สายฟ้า": "keyword:LIGHTNING_ORB"
  },
+ "character:FOOL": {
+  "Spire": null
+ },
+ "character:NECROBINDER": {
+  "Osty": null
+ },
  "dominion:AEONGLASS": {
   "กองจั่ว": null,
   "เหี่ยวเฉา": "card:WITHER"
+ },
+ "dominion:CEREMONIAL_BEAST": {
+  "Ritual": null
+ },
+ "dominion:KAISER_CRAB": {
+  "Plating": null
+ },
+ "dominion:KIN": {
+  "Frail": null,
+  "Weak": null
+ },
+ "dominion:LAGAVULIN_MATRIARCH": {
+  "Dexterity": null,
+  "Strength": null
+ },
+ "dominion:QUEEN": {
+  "Frail": null,
+  "Vulnerable": null,
+  "Weak": null
+ },
+ "dominion:SOUL_FYSH": {
+  "Beckon": null,
+  "Draw Pile": null
+ },
+ "dominion:TEST_SUBJECT": {
+  "Strength": null
+ },
+ "dominion:VANTOM": {
+  "Slippery": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "บล็อก": null
@@ -1537,17 +2100,142 @@
  "enchantment:TEZCATARAS_EMBER": {
   "นิรันดร์": "keyword:ETERNAL"
  },
+ "encounter:NEOW_CHOICE": {
+  "Neow Choice:": null
+ },
+ "epoch:BLITZ_EPOCH": {
+  "Blitz": null,
+  "gold vaporized": null
+ },
+ "epoch:COLORLESS1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:COLORLESS2_EPOCH": {
+  "Beasts of Imagination": null
+ },
+ "epoch:COLORLESS5_EPOCH": {
+  "Gold": null
+ },
+ "epoch:CUSTOM_AND_SEEDS_EPOCH": {
+  "Act": null,
+  "“The Ancient Seeds”": null
+ },
+ "epoch:DAILY_RUN_EPOCH": {
+  "Act": null,
+  "Spire": null
+ },
  "epoch:DARV_EPOCH": {
   "เทพโบราณ": null
+ },
+ "epoch:DEFECT2_EPOCH": {
+  "Act": null
+ },
+ "epoch:DEFECT3_EPOCH": {
+  "Act": null
+ },
+ "epoch:DEFECT4_EPOCH": {
+  "Act": null,
+  "Spire’s": null
+ },
+ "epoch:DEFECT7_EPOCH": {
+  "treasures": null
+ },
+ "epoch:EVENT1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:EVENT2_EPOCH": {
+  "Spire": null
+ },
+ "epoch:EVENT3_EPOCH": {
+  "Ancient Trees": null
+ },
+ "epoch:FOOL1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:FOOL2_EPOCH": {
+  "Act": null
+ },
+ "epoch:FOOL3_EPOCH": {
+  "Act": null
+ },
+ "epoch:FOOL4_EPOCH": {
+  "Act": null
+ },
+ "epoch:IRONCLAD2_EPOCH": {
+  "Act": null,
+  "Spire": null
+ },
+ "epoch:IRONCLAD3_EPOCH": {
+  "Act": null
+ },
+ "epoch:IRONCLAD4_EPOCH": {
+  "Act": null
+ },
+ "epoch:IRONCLAD6_EPOCH": {
+  "Spire": null
+ },
+ "epoch:IRONCLAD7_EPOCH": {
+  "Spire": null
  },
  "epoch:NECROBINDER2_EPOCH": {
   "องก์": null
  },
  "epoch:NECROBINDER3_EPOCH": {
+  "Incident Report": null,
   "องก์": null
  },
  "epoch:NECROBINDER4_EPOCH": {
+  "curious artifacts": null,
   "องก์": null
+ },
+ "epoch:NECROBINDER7_EPOCH": {
+  "Pael": null
+ },
+ "epoch:POTION1_EPOCH": {
+  "Spire": null
+ },
+ "epoch:POTION2_EPOCH": {
+  "Spire": null
+ },
+ "epoch:REGENT2_EPOCH": {
+  "Act": null
+ },
+ "epoch:REGENT3_EPOCH": {
+  "Act": null,
+  "Spire": null
+ },
+ "epoch:REGENT4_EPOCH": {
+  "Act": null,
+  "Regent of Starris": null
+ },
+ "epoch:REGENT7_EPOCH": {
+  "Tanx": null
+ },
+ "epoch:RELIC1_EPOCH": {
+  "Beasts of Imagination": null
+ },
+ "epoch:RELIC2_EPOCH": {
+  "Ancient": null
+ },
+ "epoch:SILENT1_EPOCH": {
+  "Spire": null,
+  "Spire’s": null
+ },
+ "epoch:SILENT2_EPOCH": {
+  "Act": null
+ },
+ "epoch:SILENT3_EPOCH": {
+  "Act": null
+ },
+ "epoch:SILENT4_EPOCH": {
+  "Act": null
+ },
+ "epoch:SILENT5_EPOCH": {
+  "Spire": null
+ },
+ "epoch:UNDERDOCKS_EPOCH": {
+  "Spire": null,
+  "Underdocks": null
  },
  "event:AMALGAMATOR": {
   "กองการ์ด": null,
@@ -1698,6 +2386,10 @@
  "event:SELF_HELP_BOOK": {
   "ร่ายมนตร์": null
  },
+ "event:SHRINE_OF_THE_WARLORD": {
+  "Deck": null,
+  "distinct artifacts": null
+ },
  "event:SLIPPERY_BRIDGE": {
   "กองการ์ด": null,
   "ม่ายยยยยยยย": null
@@ -1749,6 +2441,10 @@
   "5.": null,
   "ทอง": null,
   "ราคาแบบพรีเมียม": null
+ },
+ "event:THERMAE_NONUPEIPE": {
+  "Deck": null,
+  "Gold": null
  },
  "event:THE_FUTURE_OF_POTIONS": {
   "แบบพัฒนาแล้ว": null
@@ -1812,6 +2508,13 @@
   "หลักสูตรประวัติศาสตร์": "relic:HISTORY_COURSE",
   "เครื่องราง": null
  },
+ "event:WATERFALL_OF_OBVIOUS_SECRETS": {
+  "Deck": null,
+  "Dingy Dagger": null,
+  "Gold": null,
+  "Rare": null,
+  "gold": null
+ },
  "event:WATERLOGGED_SCRIPTORIUM": {
   "ทอง": null,
   "ปากกาขนนกที่บิดงอ": null,
@@ -1839,6 +2542,10 @@
  "event:WOOD_CARVINGS": {
   "ร่ายมนตร์": null,
   "แปรสภาพ": null
+ },
+ "event:WUPPY_IN_TROUBLE": {
+  "Deck": null,
+  "Wuppy": null
  },
  "event:ZEN_WEAVER": {
   "กองการ์ด": null,
@@ -1878,6 +2585,11 @@
  "intent:UNKNOWN": {
   "ปริศนา": null
  },
+ "keyword:ARROW": {
+  "Dislodge": null,
+  "Impale": null,
+  "Impaled": null
+ },
  "keyword:CARD_REWARD": {
   "กองการ์ด": null
  },
@@ -1888,6 +2600,9 @@
   "กองการ์ด": null,
   "กำจัด": null,
   "จุดพัก": null
+ },
+ "keyword:DREAD_ROTATION": {
+  "Rotating Streak": null
  },
  "keyword:ENERGY": {
   "มือ": null
@@ -1953,6 +2668,9 @@
  "modifier:TERMINAL": {
   "เกราะโลหะ": null
  },
+ "monster:GREMLIN_MERC": {
+  "Money!": null
+ },
  "orb:DARK_ORB": {
   "ต่อเนื่อง:": null,
   "ปล่อยพลัง": null,
@@ -1996,12 +2714,20 @@
  "potion:BOTTLED_POTENTIAL": {
   "กองจั่ว": null
  },
+ "potion:BOTTLED_SONG": {
+  "Hand": null
+ },
  "potion:COLORLESS_POTION": {
   "มือ": null
  },
  "potion:COSMIC_CONCOCTION": {
   "มือ": null,
   "แบบพัฒนาแล้ว": null
+ },
+ "potion:CRYSTALLINE_EUPHORIA": {
+  "Hand": null,
+  "Joy": "card:JOY",
+  "Sadness": "card:SADNESS"
  },
  "potion:CUNNING_POTION": {
   "มีดสั้นแบบพัฒนาแล้ว": null,
@@ -2088,6 +2814,9 @@
  "potion:POWER_POTION": {
   "มือ": null
  },
+ "potion:PRECISION_POTION": {
+  "Aim": "power:AIM"
+ },
  "potion:REGEN_POTION": {
   "การฟื้นพลัง": "power:REGEN"
  },
@@ -2148,6 +2877,16 @@
   "พัฒนา": null,
   "มือ": null
  },
+ "power:AIM": {
+  "Arrow": null
+ },
+ "power:ALL_IS_WELL": {
+  "Block": null,
+  "Sadness": "card:SADNESS"
+ },
+ "power:ARCHERY": {
+  "Aim": "power:AIM"
+ },
  "power:ARSENAL": {
   "ความแข็งแรง": "power:STRENGTH"
  },
@@ -2195,6 +2934,9 @@
  "power:COLOSSUS": {
   "จุดอ่อน": "power:VULNERABLE"
  },
+ "power:COMPOST": {
+  "Energy": null
+ },
  "power:CONCOCT": {
   "พิษ": "power:POISON"
  },
@@ -2219,6 +2961,10 @@
  "power:COUNTDOWN": {
   "อายุขัย": "power:DOOM"
  },
+ "power:COVERING_FIRE": {
+  "Block": null,
+  "Shoot": null
+ },
  "power:CRAB_RAGE": {
   "ความแข็งแรง": "power:STRENGTH",
   "บล็อก": "keyword:BLOCK"
@@ -2234,6 +2980,9 @@
  },
  "power:CURL_UP": {
   "บล็อก": "keyword:BLOCK"
+ },
+ "power:DAMPEN": {
+  "Downgraded": null
  },
  "power:DANSE_MACABRE": {
   "บล็อก": null
@@ -2271,8 +3020,21 @@
  "power:DIE_FOR_YOU": {
   "น้าผี": null
  },
+ "power:DISLIKE_YOU": {
+  "Shots": null
+ },
+ "power:ECSTASY": {
+  "Hand": null,
+  "Joy": "card:JOY",
+  "Sadness": "card:SADNESS",
+  "Transform": null
+ },
  "power:ENERGY_NEXT_TURN": {
   "พลังงาน": "keyword:ENERGY"
+ },
+ "power:ENNUI": {
+  "Hand": null,
+  "Sadness": null
  },
  "power:ENRAGE": {
   "ความแข็งแรง": null
@@ -2283,6 +3045,9 @@
  },
  "power:ENVENOM": {
   "พิษ": "power:POISON"
+ },
+ "power:EXPLOSIVE_ARROWS": {
+  "Impale": null
  },
  "power:FAN_OF_KNIVES": {
   "มีดสั้น": null
@@ -2330,7 +3095,10 @@
   "หลอมสร้าง": "keyword:FORGE"
  },
  "power:HANG": {
-  "Hang": null
+  "Hang": "power:HANG"
+ },
+ "power:HARD_TO_KILL": {
+  "Exoskeleton": null
  },
  "power:HAUNT": {
   "วิญญาณ": null
@@ -2348,11 +3116,22 @@
   "น้ำแข็ง": "keyword:FROST_ORB",
   "บล็อก": "keyword:BLOCK"
  },
+ "power:HIDDEN_ROOTS": {
+  "Stretch": "power:STRETCH"
+ },
  "power:HIGH_VOLTAGE": {
   "ความแข็งแรง": "power:STRENGTH"
  },
+ "power:HONING": {
+  "Arrows": null
+ },
  "power:IMBALANCED": {
   "ติดสตัน": null
+ },
+ "power:IMPALED": {
+  "Arrow": null,
+  "Dislodged": null,
+  "Impaled": "power:IMPALED"
  },
  "power:IMPROVEMENT": {
   "พัฒนา": null
@@ -2367,9 +3146,29 @@
  "power:JUGGLING": {
   "มือ": null
  },
+ "power:LAGAVULIN_MATRIARCH_DOMINION": {
+  "Dexterity": null,
+  "Strength": null
+ },
  "power:LIGHTNING_ROD": {
   "ปลุกเสก": "keyword:CHANNELING",
   "สายฟ้า": "keyword:LIGHTNING_ORB"
+ },
+ "power:LOST_LUTE": {
+  "Draw Pile": null,
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
+ },
+ "power:LULLABY": {
+  "Block": null,
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "เล่ห์เหลี่ยม": null
@@ -2385,6 +3184,18 @@
  },
  "power:MONOLOGUE": {
   "ความแข็งแรง": "power:STRENGTH"
+ },
+ "power:MOTIF": {
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
+ },
+ "power:MYTHIC_FORM": {
+  "Hand": null,
+  "Tarot": "keyword:TAROT",
+  "Tarots": null
  },
  "power:NECRO_MASTERY": {
   "น้าผี": null
@@ -2464,6 +3275,9 @@
  "power:PYRE": {
   "พลังงาน": "keyword:ENERGY"
  },
+ "power:QUIETUS": {
+  "Shot": null
+ },
  "power:RADIANCE": {
   "พลังงาน": "keyword:ENERGY"
  },
@@ -2527,12 +3341,19 @@
   "Sweeping Gaze": null,
   "มือ": null
  },
+ "power:SERRATED_ARROWS": {
+  "Impaled": "power:IMPALED"
+ },
  "power:SHADOWMELD": {
   "บล็อก": "keyword:BLOCK"
  },
  "power:SHARP_EDGE": {
   "พัฒนา": null,
   "มีดสั้น": null
+ },
+ "power:SHOW_OFF": {
+  "Aim": null,
+  "Show Off": "power:SHOW_OFF"
  },
  "power:SHRIEK": {
   "ติดสตัน": null
@@ -2542,8 +3363,13 @@
   "อายุขัย": "power:DOOM"
  },
  "power:SIC_EM": {
+  "Osty": null,
+  "Summon": null,
   "น้าผี": null,
   "อัญเชิญ": "keyword:SUMMON_STATIC"
+ },
+ "power:SIMPLETON": {
+  "Hand": null
  },
  "power:SKITTISH": {
   "บล็อก": "keyword:BLOCK"
@@ -2553,6 +3379,10 @@
  },
  "power:SOAR": {
   "50%": null
+ },
+ "power:SONG_PATH": {
+  "Block": null,
+  "Cho Melody": "keyword:CHO_MELODY"
  },
  "power:SOULBOUND": {
   "กองจั่ว": null,
@@ -2583,6 +3413,9 @@
  "power:STRATAGEM": {
   "กองจั่ว": null,
   "มือ": null
+ },
+ "power:STRETCH": {
+  "Block": null
  },
  "power:SUCK": {
   "ความแข็งแรง": "power:STRENGTH"
@@ -2618,6 +3451,9 @@
  "power:TEMPORARY_STRENGTH_DOWN": {
   "ความแข็งแรง": null
  },
+ "power:TEMPORARY_THORNS": {
+  "Thorns": null
+ },
  "power:TENDER": {
   "ความชำนาญ": "power:DEXTERITY",
   "ความแข็งแรง": "power:STRENGTH"
@@ -2643,6 +3479,11 @@
  "power:TRASH_TO_TREASURE": {
   "ปลุกเสก": null
  },
+ "power:TUNE": {
+  "Hand": null,
+  "Ki Melody": "keyword:KI_MELODY",
+  "Upgrade": null
+ },
  "power:TYRANNY": {
   "มือ": null,
   "สลาย": "keyword:EXHAUST"
@@ -2662,6 +3503,9 @@
  "power:VICIOUS": {
   "จุดอ่อน": "power:VULNERABLE"
  },
+ "power:VIOLENT_CHORD": {
+  "Wah Melody": "keyword:WAH_MELODY"
+ },
  "power:VITAL_SPARK": {
   "ทักษะ": null,
   "ปนเปื้อน": "affliction:TAINTED"
@@ -2677,10 +3521,22 @@
  },
  "power:WITHERING_PRESENCE": {
   "มือ": null,
-  "เหี่ยวเฉา": null
+  "เหี่ยวเฉา": "card:WITHER"
  },
  "power:WRAITH_FORM": {
   "ความชำนาญ": "power:DEXTERITY"
+ },
+ "power:WUPPYS_LOYALTY": {
+  "Wuppy": null
+ },
+ "power:YAH": {
+  "Arrow": null,
+  "Dislodge": null
+ },
+ "power:YOU_ARE_MINE": {
+  "Frail": null,
+  "Vulnerable": null,
+  "Weak": null
  },
  "relic:AKABEKO": {
   "ความกำยำ": "power:VIGOR"
@@ -2708,6 +3564,9 @@
  "relic:BAG_OF_MARBLES": {
   "จุดอ่อน": "power:VULNERABLE"
  },
+ "relic:BATH_ROBES": {
+  "Boss": null
+ },
  "relic:BEAUTIFUL_BRACELET": {
   "กองการ์ด": null,
   "ร่ายมนต์": null
@@ -2731,6 +3590,11 @@
  },
  "relic:BING_BONG": {
   "กองการ์ด": null
+ },
+ "relic:BIZARRE_LAMP": {
+  "Hand": null,
+  "Joy": "card:JOY",
+  "Sadness": "card:SADNESS"
  },
  "relic:BLACK_STAR": {
   "ลูกพี่": null
@@ -2777,6 +3641,17 @@
   "มือ": null,
   "สลาย": "keyword:EXHAUST"
  },
+ "relic:BYRDINE": {
+  "Byrd Swoop": null,
+  "Byrdine": "relic:BYRDINE",
+  "God Byrd": "card:GOD_BYRD",
+  "Transform": null
+ },
+ "relic:BYRDPIP": {
+  "Byrd Swoop": null,
+  "Byrdpip": null,
+  "Rest Site": null
+ },
  "relic:CALLING_BELL": {
   "เครื่องราง": null
  },
@@ -2800,6 +3675,13 @@
  "relic:CLOAK_CLASP": {
   "บล็อก": "keyword:BLOCK",
   "มือ": null
+ },
+ "relic:CONDUCTORS_BATON": {
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
   "ปลุกเสก": "keyword:CHANNELING",
@@ -2837,7 +3719,7 @@
   "ทำสำเนา": null
  },
  "relic:DOWSING_ROD": {
-  "Dowsing": null,
+  "Dowsing": "card:DOWSING",
   "กองการ์ด": null
  },
  "relic:DRAGON_FRUIT": {
@@ -2870,6 +3752,9 @@
   "กองการ์ด": null,
   "จุดพัก": null
  },
+ "relic:EXERCISE_MAT": {
+  "Stretch": "power:STRETCH"
+ },
  "relic:FAKE_ANCHOR": {
   "บล็อก": "keyword:BLOCK"
  },
@@ -2881,6 +3766,10 @@
  },
  "relic:FENCING_MANUAL": {
   "หลอมสร้าง": "keyword:FORGE"
+ },
+ "relic:FERTILIZER": {
+  "Sadness": "card:SADNESS",
+  "Strength": null
  },
  "relic:FISHING_ROD": {
   "กองการ์ด": null,
@@ -2990,6 +3879,10 @@
  "relic:LAVA_LAMP": {
   "พัฒนา": null
  },
+ "relic:LAVA_ROCK": {
+  "Act": null,
+  "Relics": null
+ },
  "relic:LEAD_PAPERWEIGHT": {
   "กองการ์ด": null
  },
@@ -3021,6 +3914,9 @@
  "relic:METRONOME": {
   "ปลุกเสก": null,
   "ลูกแก้ว": null
+ },
+ "relic:MIGHTY_WINGS": {
+  "Strength": null
  },
  "relic:MINIATURE_CANNON": {
   "พัฒนาแล้ว": null
@@ -3062,7 +3958,7 @@
   "พัฒนา": null
  },
  "relic:NEOWS_TORMENT": {
-  "Neow's Fury": null,
+  "Neow's Fury": "card:NEOWS_FURY",
   "กองการ์ด": null
  },
  "relic:NEW_LEAF": {
@@ -3076,6 +3972,12 @@
   "กองการ์ด": null,
   "จู่โจม": null,
   "ร่ายมนตร์": null
+ },
+ "relic:OBSIDIAN_VICE": {
+  "Hand": null
+ },
+ "relic:OCARINA": {
+  "Hand": null
  },
  "relic:ODDLY_SMOOTH_STONE": {
   "ความชำนาญ": "power:DEXTERITY"
@@ -3177,7 +4079,7 @@
   "ร่ายมนตร์": null
  },
  "relic:RADIANT_PEARL": {
-  "Luminesce": null,
+  "Luminesce": "card:LUMINESCE",
   "มือ": null
  },
  "relic:RAINBOW_RING": {
@@ -3273,6 +4175,9 @@
  "relic:SNECKO_SKULL": {
   "พิษ": "power:POISON"
  },
+ "relic:SONG_BOW": {
+  "Aim": "power:AIM"
+ },
  "relic:SOZU": {
   "ขวดยา": null
  },
@@ -3291,6 +4196,9 @@
  "relic:STORYBOOK": {
   "กองการ์ด": null,
   "เพลิงที่โชติช่วงที่สุด": "card:BRIGHTEST_FLAME"
+ },
+ "relic:STORYTELLER": {
+  "Aim": "power:AIM"
  },
  "relic:STURDY_CLAMP": {
   "บล็อก": "keyword:BLOCK"
@@ -3330,6 +4238,9 @@
  "relic:TOOLBOX": {
   "มือ": null
  },
+ "relic:TORMENTOUS_COLLAR": {
+  "Weak": null
+ },
  "relic:TOUCH_OF_OROBAS": {
   "เครื่องราง": null,
   "เทพโบราณ": null
@@ -3350,6 +4261,11 @@
  },
  "relic:TUNING_FORK": {
   "บล็อก": "keyword:BLOCK"
+ },
+ "relic:TWINE": {
+  "Arrow": "keyword:ARROW",
+  "Block": null,
+  "Dislodge": null
  },
  "relic:TWISTED_FUNNEL": {
   "พิษ": "power:POISON"
@@ -3395,11 +4311,18 @@
   "ลูกพี่": null,
   "หายาก": null
  },
+ "relic:WHITTLING_KNIFE": {
+  "Aim": "power:AIM",
+  "Draw Pile": null
+ },
  "relic:WING_CHARM": {
   "ร่ายมนตร์": null
  },
  "relic:WONGOS_MYSTERY_TICKET": {
   "เครื่องราง": null
+ },
+ "relic:WUPPY": {
+  "Wuppy": "relic:WUPPY"
  },
  "relic:YUMMY_COOKIE": {
   "พัฒนา": null

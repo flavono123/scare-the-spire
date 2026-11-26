@@ -8,6 +8,9 @@ import {
   EFFECT_CLASSES,
 } from "@/components/rich-text";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
+import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
+import type { CardSideKeywordTip } from "@/lib/card-keyword-tips";
+import type { GoldTip } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 
 /**
@@ -35,7 +38,7 @@ function extractPlainText(nodes: BBNode[]): string {
 
 interface RenderCtx {
   entitiesByRef: ReadonlyMap<string, EntityInfo>;
-  goldTips?: Readonly<Record<string, string | null>>;
+  goldTips?: Readonly<Record<string, GoldTip>>;
   self?: string;
   gameUi?: CodexGameUiLabels;
   energyIcon: string;
@@ -56,7 +59,21 @@ function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode
 
       const inner = extractPlainText(node.children).trim();
       const ref = tag === "gold" && inner ? ctx.goldTips?.[inner] : null;
-      const entity = ref && ref !== ctx.self ? ctx.entitiesByRef.get(ref) : undefined;
+      if (Array.isArray(ref)) {
+        // One word for several tips (선율 for the three melodies): hovering it shows all of them, as the game does.
+        const tips = ref.flatMap((one): CardSideKeywordTip[] => {
+          const keyword = ctx.entitiesByRef.get(one)?.keywordData;
+          return keyword ? [{ kind: "keyword", id: keyword.id, title: keyword.name, description: keyword.description, iconUrl: null, variant: "default", source: "staticHoverTip" }] : [];
+        });
+        if (tips.length) {
+          return (
+            <CardSideTipsAnchor key={key} mode="hover" tips={tips} className="inline">
+              <span className={[className, "underline decoration-current/30 underline-offset-2"].filter(Boolean).join(" ")}>{inner}</span>
+            </CardSideTipsAnchor>
+          );
+        }
+      }
+      const entity = typeof ref === "string" && ref !== ctx.self ? ctx.entitiesByRef.get(ref) : undefined;
       if (entity) {
         return (
           <span key={key} className={className || undefined}>
@@ -130,8 +147,8 @@ export interface RichDescriptionProps {
   description: string;
   /** Entities a paired gold word can show (found by "type:id"). */
   entities?: EntityInfo[];
-  /** The element's gold words and the tip each names, or null: its `goldTips` from the data layer. */
-  goldTips?: Readonly<Record<string, string | null>>;
+  /** The element's gold words and the tip(s) each names, or null: its `goldTips` from the data layer. */
+  goldTips?: Readonly<Record<string, GoldTip>>;
   /** The element itself ("relic:BYRDPIP"): a word naming it is not linked to its own page. */
   self?: string;
   energyIcon?: string;

@@ -4,13 +4,16 @@
   "запечатанную": null
  },
  "affliction:HEXED": {
-  "эфирной": null
+  "эфирной": "keyword:ETHEREAL"
  },
  "affliction:SMOG": {
   "Навыки": null
  },
  "affliction:TAINTED": {
-  "порчи": null
+  "порчи": [
+   "power:TAINTED",
+   "affliction:TAINTED"
+  ]
  },
  "ancient:NEOW": {
   "“Ки...!”": null
@@ -89,8 +92,8 @@
   "улучшенный": null
  },
  "card:ABRASIVE": {
-  "ловкости": null,
-  "шипов": null
+  "ловкости": "power:DEXTERITY",
+  "шипов": "power:THORNS"
  },
  "card:ABUNDANCE": {
   "Талантов": null,
@@ -101,13 +104,13 @@
   "Яд": "power:POISON"
  },
  "card:ACCURACY": {
-  "«Заточки»": null
+  "«Заточки»": "card:SHIV"
  },
  "card:ADAPTIVE_STRIKE": {
   "стопку сброса": null
  },
  "card:AFTERIMAGE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:AFTERLIFE": {
   "Призывает": null
@@ -120,96 +123,96 @@
   "стопки сброса": null
  },
  "card:ALL_IS_WELL": {
-  "«Печаль»": null,
-  "защиты": null
+  "«Печаль»": "card:SADNESS",
+  "защиты": "keyword:BLOCK"
  },
  "card:ANGER": {
   "стопку сброса": null
  },
  "card:ANGUISH": {
-  "«Печаль»": null
+  "«Печаль»": "card:SADNESS"
  },
  "card:ANOINTED": {
   "редкие": null,
   "стопки добора": null
  },
  "card:ANTICIPATE": {
-  "ловкости": null
+  "ловкости": "power:DEXTERITY"
  },
  "card:APOTHEOSIS": {
   "Улучшает": null
  },
  "card:APPARITION": {
-  "неосязаемости": null
+  "неосязаемости": "power:INTANGIBLE"
  },
  "card:ARCHERY": {
-  "тяги": null
+  "тяги": "power:AIM"
  },
  "card:ARMAMENTS": {
   "Улучшает": null,
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "руке": null
  },
  "card:ARROW_STAB": {
-  "тяги": null
+  "тяги": "power:AIM"
  },
  "card:ARSENAL": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:ASHEN_STRIKE": {
   "стопке пепла": null
  },
  "card:ASSASSINATE": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:BACKFLIP": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:BAD_LUCK": {
   "руке": null
  },
  "card:BALL_LIGHTNING": {
-  "Заряжает": null,
-  "сферу молнии": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу молнии": "keyword:LIGHTNING_ORB"
  },
  "card:BANSHEES_CRY": {
-  "эфирную": null
+  "эфирную": "keyword:ETHEREAL"
  },
  "card:BARRAGE": {
-  "заряженную": null
+  "заряженную": "keyword:CHANNELING"
  },
  "card:BARRICADE": {
   "Защита": "keyword:BLOCK"
  },
  "card:BASH": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:BEACON_OF_HOPE": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "card:BEAM_CELL": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:BEAT_DOWN": {
   "стопки сброса": null
  },
  "card:BEAT_INTO_SHAPE": {
-  "Закаляет": null
+  "Закаляет": "keyword:FORGE"
  },
  "card:BECKON": {
   "руке": null
  },
  "card:BEGONE": {
-  "«Удар слуги+»": null,
-  "«Удар слуги»": null,
+  "«Удар слуги+»": "card:MINION_STRIKE",
+  "«Удар слуги»": "card:MINION_STRIKE",
   "Преобразует": null,
   "руке": null
  },
  "card:BIASED_COGNITION": {
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "card:BIG_BANG": {
-  "Закаляет": null
+  "Закаляет": "keyword:FORGE"
  },
  "card:BLADE_DANCE": {
   "руку": null
@@ -221,18 +224,18 @@
   "руку": null
  },
  "card:BLAZE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:BLIGHT_STRIKE": {
   "злой рок": "power:DOOM"
  },
  "card:BLOOD_WALL": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:BLOSSOM_SHOT": {
   "Пронзает": null,
-  "растяжку": null,
-  "стрелой": null
+  "растяжку": "power:STRETCH",
+  "стрелой": "keyword:ARROW"
  },
  "card:BLOT_OUT_THE_SKY": {
   "пронзить": null,
@@ -241,13 +244,13 @@
  },
  "card:BLUR": {
   "Защита": "keyword:BLOCK",
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:BODYGUARD": {
   "Призывает": null
  },
  "card:BODY_SLAM": {
-  "защите": null
+  "защите": "keyword:BLOCK"
  },
  "card:BOLAS": {
   "руку": null
@@ -257,48 +260,48 @@
  },
  "card:BONE_SHARDS": {
   "Костя": null,
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:BOOST_AWAY": {
-  "«Головокружение»": null,
-  "защиты": null,
+  "«Головокружение»": "card:DAZED",
+  "защиты": "keyword:BLOCK",
   "стопку сброса": null
  },
  "card:BOOT_SEQUENCE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:BOUNCE": {
-  "растяжки": null,
+  "растяжки": "power:STRETCH",
   "руку": null
  },
  "card:BOUNCING_FLASK": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:BOW_SMACK": {
   "пронзен": null
  },
  "card:BRACE": {
-  "тяги": null
+  "тяги": "power:AIM"
  },
  "card:BRAND": {
-  "Сжигает": null,
-  "силы": null
+  "Сжигает": "keyword:EXHAUST",
+  "силы": "power:STRENGTH"
  },
  "card:BREAK": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:BRIGHTEN_UP": {
-  "«Печали»": null,
-  "«Радости»": null,
+  "«Печали»": "card:SADNESS",
+  "«Радости»": "card:JOY",
   "руку": null
  },
  "card:BUBBLE_BUBBLE": {
   "яд": "power:POISON",
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:BULK_UP": {
-  "ловкости": null,
-  "силы": null
+  "ловкости": "power:DEXTERITY",
+  "силы": "power:STRENGTH"
  },
  "card:BULLET_TIME": {
   "руке": null
@@ -307,8 +310,8 @@
   "уязвимость": "power:VULNERABLE"
  },
  "card:BULWARK": {
-  "Закаляет": null,
-  "защиты": null
+  "Закаляет": "keyword:FORGE",
+  "защиты": "keyword:BLOCK"
  },
  "card:BUNDLE_OF_JOY": {
   "руку": null
@@ -317,7 +320,7 @@
   "руке": null
  },
  "card:BURNING_PACT": {
-  "Сжигает": null
+  "Сжигает": "keyword:EXHAUST"
  },
  "card:BYRDONIS_EGG": {
   "лагере": null
@@ -330,8 +333,8 @@
  },
  "card:CALL_OF_THE_VOID": {
   "руку": null,
-  "эфирной": null,
-  "эфирными": null
+  "эфирной": "keyword:ETHEREAL",
+  "эфирными": "keyword:ETHEREAL"
  },
  "card:CAPTURE_SPIRIT": {
   "стопку добора": null
@@ -343,188 +346,192 @@
   "стопки добора": null
  },
  "card:CHAOS": {
-  "Заряжает": null
+  "Заряжает": "keyword:CHANNELING"
  },
  "card:CHARGE": {
   "Преобразует": null,
   "стопке добора": null
  },
  "card:CHARGE_BATTERY": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:CHILD_OF_THE_STARS": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:CHILL": {
-  "Заряжает": null,
-  "сферу льда": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу льда": "keyword:FROST_ORB"
  },
  "card:CHO_BARBS": {
-  "защиты": null,
-  "шипов": null
+  "защиты": "keyword:BLOCK",
+  "шипов": "power:THORNS"
  },
  "card:CHO_CHORUS": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "руке": null
  },
  "card:CHO_FIRM": {
-  "защиту": null,
-  "защиты": null,
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK",
   "стрела": "keyword:ARROW"
  },
  "card:CHO_KI": {
-  "защиты": null,
-  "растяжку": null
+  "защиты": "keyword:BLOCK",
+  "растяжку": "power:STRETCH"
  },
  "card:CHO_LIMBS": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "мелодия Ва": "keyword:WAH_MELODY",
   "мелодия Ки": "keyword:KI_MELODY"
  },
  "card:CHO_READY": {
-  "защиты": null,
-  "тяги": null
+  "защиты": "keyword:BLOCK",
+  "тяги": "power:AIM"
  },
  "card:CHRYSALIS": {
   "стопку добора": null
  },
  "card:CINDER": {
-  "Сжигает": null
+  "Сжигает": "keyword:EXHAUST"
  },
  "card:CLASH": {
   "руке": null
  },
  "card:CLEANSE": {
   "Призывает": null,
-  "Сжигает": null,
+  "Сжигает": "keyword:EXHAUST",
   "стопке добора": null
  },
  "card:CLOAK_AND_DAGGER": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "руку": null
  },
  "card:CLOAK_OF_STARS": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:CODA": {
-  "мелодию": null
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
-  "Заряжает": null,
-  "сферу льда": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу льда": "keyword:FROST_ORB"
  },
  "card:COLLISION_COURSE": {
-  "«Обломок»": null,
+  "«Обломок»": "card:DEBRIS",
   "руку": null
  },
  "card:COLOSSUS": {
-  "защиты": null,
-  "уязвимых": null
+  "защиты": "keyword:BLOCK",
+  "уязвимых": "power:VULNERABLE"
  },
  "card:COMET": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:COMPACT": {
-  "«Топливо+»": null,
-  "«Топливо»": null,
-  "Преобразует": null,
-  "защиты": null,
+  "«Топливо+»": "card:FUEL",
+  "«Топливо»": "card:FUEL",
+  "Преобразует": "keyword:TRANSFORM",
+  "защиты": "keyword:BLOCK",
   "руке": null
  },
  "card:CONCOCT": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:CONQUEROR": {
-  "Закаляет": null,
+  "Закаляет": "keyword:FORGE",
   "Клинок монарха": "card:SOVEREIGN_BLADE"
  },
  "card:CONSTELLATION": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:CONSUMING_SHADOW": {
-  "Заряжает": null,
-  "Разряжает": null,
-  "сферы тьмы": null
+  "Заряжает": "keyword:CHANNELING",
+  "Разряжает": "keyword:EVOKE",
+  "сферы тьмы": "keyword:DARK_ORB"
  },
  "card:CONVERGENCE": {
-  "оставляете": null,
+  "оставляете": "keyword:RETAIN",
   "руке": null
  },
  "card:COOLANT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:COOLHEADED": {
-  "Заряжает": null,
-  "сферу льда": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу льда": "keyword:FROST_ORB"
  },
  "card:COORDINATE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:CORROSIVE_WAVE": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:CORRUPTION": {
   "сжигаются": null
  },
  "card:COSMIC_INDIFFERENCE": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "стопки добора": null,
   "стопки сброса": null
  },
  "card:COUNTDOWN": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "card:COVERING_FIRE": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "пронзаете": null,
   "стрелой": null
  },
  "card:CRASH_LANDING": {
-  "«Обломками»": null,
+  "«Обломками»": "card:DEBRIS",
   "руку": null
  },
  "card:CREATIVE_AI": {
   "руку": null
  },
  "card:CRIMSON_MANTLE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:CRUELTY": {
-  "Уязвимые": null
+  "Уязвимые": "power:VULNERABLE"
  },
  "card:CRUSH_UNDER": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:DANSE_MACABRE": {
   "защиты": null
  },
  "card:DARKNESS": {
-  "Заряжает": null,
-  "сфер тьмы": null,
-  "сферу тьмы": null
+  "Заряжает": "keyword:CHANNELING",
+  "сфер тьмы": "keyword:DARK_ORB",
+  "сферу тьмы": "keyword:DARK_ORB"
  },
  "card:DARK_EMBRACE": {
   "сжигается": "keyword:EXHAUST"
  },
  "card:DARK_SHACKLES": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:DASH": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DEADLY_POISON": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:DEATH": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "card:DEATHBRINGER": {
-  "злого рока": null,
-  "слабости": null
+  "злого рока": "power:DOOM",
+  "слабости": "power:WEAK"
  },
  "card:DEATHS_DOOR": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "злой рок": "power:DOOM"
  },
  "card:DEBILITATE": {
@@ -542,46 +549,46 @@
   "руке": null
  },
  "card:DEEP_STRETCH": {
-  "растяжки": null
+  "растяжки": "power:STRETCH"
  },
  "card:DEFEND_DEFECT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DEFEND_FOOL": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DEFEND_IRONCLAD": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DEFEND_NECROBINDER": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DEFEND_REGENT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DEFEND_SILENT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DEFLECT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DEFRAGMENT": {
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "card:DEFY": {
-  "защиты": null,
-  "слабости": null
+  "защиты": "keyword:BLOCK",
+  "слабости": "power:WEAK"
  },
  "card:DELAY": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DEMONIC_SHIELD": {
-  "защите": null,
-  "защиту": null,
-  "защиты": null
+  "защите": "keyword:BLOCK",
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "card:DEMON_FORM": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:DEPRECATED_CARD": {
   "колоды": null
@@ -591,12 +598,12 @@
   "злому року": null
  },
  "card:DEVOUR_LIFE": {
-  "«Душу»": null,
-  "Призывает": null
+  "«Душу»": "card:SOUL",
+  "Призывает": "keyword:SUMMON_STATIC"
  },
  "card:DIRGE": {
-  "«Душ+»": null,
-  "«Душ»": null,
+  "«Душ+»": "card:SOUL",
+  "«Душ»": "card:SOUL",
   "Призывает": null,
   "стопку добора": null
  },
@@ -604,7 +611,7 @@
   "руку": null
  },
  "card:DISLIKE_YOU": {
-  "стрел": null
+  "стрел": "keyword:ARROW"
  },
  "card:DISMANTLE": {
   "уязвим": null
@@ -614,19 +621,19 @@
  },
  "card:DIVINE_SHOT": {
   "Пронзает": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:DODGE_AND_ROLL": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:DOMINATE": {
-  "силы": null,
-  "уязвимости": null,
+  "силы": "power:STRENGTH",
+  "уязвимости": "power:VULNERABLE",
   "уязвимость": "power:VULNERABLE"
  },
  "card:DOUBT": {
   "руке": null,
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "card:DOWSING": {
   "?": null,
@@ -643,81 +650,81 @@
   "сжигается": "keyword:EXHAUST"
  },
  "card:DUALCAST": {
-  "Разряжает": null
+  "Разряжает": "keyword:EVOKE"
  },
  "card:DUAL_WIELD": {
   "руки": null,
   "руку": null
  },
  "card:DYING_STAR": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:ECSTASY": {
   "«Отраду»": null,
-  "«Печаль»": null,
+  "«Печаль»": "card:SADNESS",
   "Преобразует": null,
   "руке": null
  },
  "card:EIDOLON": {
   "стопки пепла": null,
-  "эфирные": null
+  "эфирные": "keyword:ETHEREAL"
  },
  "card:END_OF_DAYS": {
-  "злого рока": null,
+  "злого рока": "power:DOOM",
   "злой рок": "power:DOOM"
  },
  "card:ENFEEBLING_TOUCH": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:ENLIGHTENMENT": {
   "руке": null
  },
  "card:ENNUI": {
-  "«Печаль»": null,
+  "«Печаль»": "card:SADNESS",
   "руку": null
  },
  "card:ENRAPTURE": {
-  "бодрости": null,
-  "растяжки": null
+  "бодрости": "power:VIGOR",
+  "растяжки": "power:STRETCH"
  },
  "card:ENTHRALLED": {
   "руке": null
  },
  "card:ENTRENCH": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "card:ENTROPY": {
-  "Преобразует": null,
+  "Преобразует": "keyword:TRANSFORM",
   "руке": null
  },
  "card:ENVENOM": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:EPIC_RETRIEVAL": {
   "извлекает": null,
-  "стрелу": null
+  "стрелу": "keyword:ARROW"
  },
  "card:EQUILIBRIUM": {
-  "защиты": null,
-  "оставляете": null,
+  "защиты": "keyword:BLOCK",
+  "оставляете": "keyword:RETAIN",
   "руке": null
  },
  "card:ESCAPE_PLAN": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:ETERNAL_ARMOR": {
-  "панциря": null
+  "панциря": "power:PLATING"
  },
  "card:EVIL_EYE": {
-  "защиты": null,
-  "сжигали": null
+  "защиты": "keyword:BLOCK",
+  "сжигали": "keyword:EXHAUST"
  },
  "card:EXPECT_A_FIGHT": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "руке": null
  },
  "card:EXPERTISE": {
-  "оставляете": null,
+  "оставляете": "keyword:RETAIN",
   "руке": null
  },
  "card:EXPLOSIVE_ARROWS": {
@@ -725,35 +732,35 @@
   "стрелой": null
  },
  "card:EXPOSE": {
-  "артефакты": null,
-  "защиту": null,
-  "уязвимости": null
+  "артефакты": "power:ARTIFACT",
+  "защиту": "keyword:BLOCK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:FADE": {
-  "ловкости": null
+  "ловкости": "power:DEXTERITY"
  },
  "card:FALLING_STAR": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:FAN_OF_KNIVES": {
-  "«Заточки»": null,
+  "«Заточки»": "card:SHIV",
   "руку": null
  },
  "card:FASTEN": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "card:FEAR": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:FEED": {
-  "казнит": null
+  "казнит": "keyword:FATAL"
  },
  "card:FEEDING_FRENZY": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:FEEL_NO_PAIN": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "сжигается": "keyword:EXHAUST"
  },
  "card:FERAL": {
@@ -763,28 +770,28 @@
   "Костя": null
  },
  "card:FIEND_FIRE": {
-  "Сжигает": null,
+  "Сжигает": "keyword:EXHAUST",
   "руке": null
  },
  "card:FIGHT_ME": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:FIGHT_THROUGH": {
-  "«Раны»": null,
-  "защиты": null,
+  "«Раны»": "card:WOUND",
+  "защиты": "keyword:BLOCK",
   "стопку сброса": null
  },
  "card:FINESSE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:FISTICUFFS": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "card:FLAK_CANNON": {
-  "Сжигает": null
+  "Сжигает": "keyword:EXHAUST"
  },
  "card:FLAME_BARRIER": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:FLATTEN": {
   "Костя": null
@@ -793,20 +800,20 @@
   "руке": null
  },
  "card:FLORESCENCE": {
-  "«Выстрел+»": null,
-  "«Выстрел»": null,
+  "«Выстрел+»": "card:THE_SHOT",
+  "«Выстрел»": "card:THE_SHOT",
   "Преобразует": null,
   "руке": null
  },
  "card:FOCUSED_STRIKE": {
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "card:FOOLISH_SHOT": {
   "Пронзает": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:FOOTWORK": {
-  "ловкости": null
+  "ловкости": "power:DEXTERITY"
  },
  "card:FORBIDDEN_GRIMOIRE": {
   "колоды": null
@@ -815,45 +822,45 @@
   "стопки добора": null
  },
  "card:FORGOTTEN_RITUAL": {
-  "сжигали": null
+  "сжигали": "keyword:EXHAUST"
  },
  "card:FRANTIC_ESCAPE": {
-  "«Зыбучие пески»": null
+  "«Зыбучие пески»": "power:SANDPIT"
  },
  "card:FRIENDSHIP": {
   "силы": null
  },
  "card:FURNACE": {
-  "Закаляет": null
+  "Закаляет": "keyword:FORGE"
  },
  "card:FUSION": {
-  "Заряжает": null,
-  "сферу плазмы": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу плазмы": "keyword:PLASMA_ORB"
  },
  "card:GAMMA_BLAST": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:GATHER_LIGHT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:GENETIC_ALGORITHM": {
   "защита": "keyword:BLOCK",
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:GHOST_EATER": {
   "злого рока": null,
   "злой рок": null
  },
  "card:GLACIER": {
-  "Заряжает": null,
-  "защиты": null,
-  "сферы льда": null
+  "Заряжает": "keyword:CHANNELING",
+  "защиты": "keyword:BLOCK",
+  "сферы льда": "keyword:FROST_ORB"
  },
  "card:GLASSWORK": {
-  "Заряжает": null,
-  "защиты": null,
-  "сферу стекла": null
+  "Заряжает": "keyword:CHANNELING",
+  "защиты": "keyword:BLOCK",
+  "сферу стекла": "keyword:GLASS_ORB"
  },
  "card:GLIMMER": {
   "руки": null,
@@ -863,13 +870,13 @@
   "стопку добора": null
  },
  "card:GLITTERSTREAM": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:GOOD_INSTINCTS": {
   "защиты": null
  },
  "card:GO_FOR_THE_EYES": {
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "card:GRAND_FINALE": {
   "стопке добора": null
@@ -878,14 +885,14 @@
   "стопки сброса": null
  },
  "card:GRAVE_WARDEN": {
-  "«Душу»": null,
-  "защиты": null,
+  "«Душу»": "card:SOUL",
+  "защиты": "keyword:BLOCK",
   "стопку добора": null
  },
  "card:GROWTH": {
-  "«Печаль»": null,
+  "«Печаль»": "card:SADNESS",
   "Преобразует": null,
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "руке": null
  },
  "card:GUARDS": {
@@ -899,40 +906,44 @@
   "колоды": null
  },
  "card:GUNK_UP": {
-  "«Слизь»": null,
+  "«Слизь»": "card:SLIMED",
   "стопку сброса": null
  },
  "card:HAILSTORM": {
   "сфера льда": "keyword:FROST_ORB"
  },
  "card:HAMMER_TIME": {
-  "закаляете": null,
-  "закаляют": null
+  "закаляете": "keyword:FORGE",
+  "закаляют": "keyword:FORGE"
  },
  "card:HAND_OF_GREED": {
   "золота": null,
-  "казнит": null
+  "казнит": "keyword:FATAL"
  },
  "card:HAND_TRICK": {
-  "защиты": null,
-  "коварной": null,
-  "коварным": null,
+  "защиты": "keyword:BLOCK",
+  "коварной": "keyword:SLY",
+  "коварным": "keyword:SLY",
   "руке": null
  },
  "card:HARMONIC_SHIELD": {
-  "защиты": null,
-  "мелодию": null
+  "защиты": "keyword:BLOCK",
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:HAUNT": {
-  "«Душу»": null
+  "«Душу»": "card:SOUL"
  },
  "card:HAVOC": {
-  "сжигаете": null,
+  "сжигаете": "keyword:EXHAUST",
   "стопки добора": null
  },
  "card:HAZE": {
-  "слабости": null,
-  "яда": null
+  "слабости": "power:WEAK",
+  "яда": "power:POISON"
  },
  "card:HEADBUTT": {
   "стопки добора": null,
@@ -941,7 +952,7 @@
  "card:HEAVY_SHOT": {
   "Пронзает": null,
   "Тяга": "power:AIM",
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:HEIRLOOM_HAMMER": {
   "руке": null,
@@ -951,53 +962,53 @@
   "руку": null
  },
  "card:HIBERNATE": {
-  "Заряжает": null,
-  "защиту": null,
-  "сферы льда": null
+  "Заряжает": "keyword:CHANNELING",
+  "защиту": "keyword:BLOCK",
+  "сферы льда": "keyword:FROST_ORB"
  },
  "card:HIDDEN_DAGGERS": {
   "руку": null
  },
  "card:HIDDEN_GEM": {
   "повтор": "keyword:REPLAY",
-  "повтора": null,
+  "повтора": "keyword:REPLAY",
   "стопке добора": null
  },
  "card:HIDDEN_ROOTS": {
-  "растяжки": null
+  "растяжки": "power:STRETCH"
  },
  "card:HIGH_FIVE": {
   "Костя": null,
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:HOBBLING_SHOT": {
   "Пронзает": null,
-  "слабости": null,
-  "стрелой": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "стрелой": "keyword:ARROW",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:HOLOGRAM": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "стопки сброса": null
  },
  "card:HONING": {
-  "Стрелы": null
+  "Стрелы": "keyword:ARROW"
  },
  "card:HOTFIX": {
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "card:HOWL_FROM_BEYOND": {
   "стопке пепла": null
  },
  "card:HYPERBEAM": {
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "card:ICE_LANCE": {
-  "Заряжает": null
+  "Заряжает": "keyword:CHANNELING"
  },
  "card:IGNITION": {
-  "заряжает": null,
-  "сферу плазмы": null
+  "заряжает": "keyword:CHANNELING",
+  "сферу плазмы": "keyword:PLASMA_ORB"
  },
  "card:IMMORTALITY": {
   "неосязаемости": null
@@ -1009,7 +1020,7 @@
   "руке": null
  },
  "card:IMPERVIOUS": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:INFECTION": {
   "руке": null
@@ -1018,23 +1029,23 @@
   "руку": null
  },
  "card:INFINITE_BLADES": {
-  "«Заточку»": null,
+  "«Заточку»": "card:SHIV",
   "руку": null
  },
  "card:INFLAME": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:INTERCEPT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:INVOKE": {
   "призовет": null
  },
  "card:IRON_WAVE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:I_AM_INVINCIBLE": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "стопки добора": null
  },
  "card:JACKPOT": {
@@ -1047,12 +1058,12 @@
   "руку": null
  },
  "card:JEST": {
-  "«Печаль»": null,
-  "защиты": null,
+  "«Печаль»": "card:SADNESS",
+  "защиты": "keyword:BLOCK",
   "руку": null
  },
  "card:JUGGERNAUT": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "card:JUGGLING": {
   "Атаки": null,
@@ -1067,17 +1078,17 @@
  "card:KI_REST": {
   "мелодия Ва": "keyword:WAH_MELODY",
   "мелодия Чу": "keyword:CHO_MELODY",
-  "оставляете": null,
+  "оставляете": "keyword:RETAIN",
   "руке": null
  },
  "card:KNIFE_TRAP": {
-  "«Заточки»": null,
+  "«Заточки»": "card:SHIV",
   "сожженные": null,
   "улучшаются": null
  },
  "card:KNOW_THY_PLACE": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:LARGESSE": {
   "руку": null,
@@ -1087,23 +1098,23 @@
   "руку": null
  },
  "card:LEAP": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:LEGION_OF_BONE": {
   "призывают": null
  },
  "card:LEG_SWEEP": {
-  "защиты": null,
-  "слабости": null
+  "защиты": "keyword:BLOCK",
+  "слабости": "power:WEAK"
  },
  "card:LIFT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:LIGHTNING_ROD": {
-  "Зарядит": null,
-  "Заряжает": null,
-  "защиты": null,
-  "сферу молнии": null
+  "Зарядит": "keyword:CHANNELING",
+  "Заряжает": "keyword:CHANNELING",
+  "защиты": "keyword:BLOCK",
+  "сферу молнии": "keyword:LIGHTNING_ORB"
  },
  "card:LOCKED_IN": {
   "пронзить": null,
@@ -1111,12 +1122,20 @@
   "стрелой": null
  },
  "card:LOST_LUTE": {
-  "мелодию": null,
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "стопки добора": null
  },
  "card:LULLABY": {
-  "защиты": null,
-  "мелодии": null
+  "защиты": "keyword:BLOCK",
+  "мелодии": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MAD_SCIENCE": {
   "Улучшает": null,
@@ -1131,91 +1150,99 @@
   "руку": null
  },
  "card:MALAISE": {
-  "силы": null,
-  "слабости": null
+  "силы": "power:STRENGTH",
+  "слабости": "power:WEAK"
  },
  "card:MANGLE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:MANIFEST_AUTHORITY": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "руку": null,
   "улучшенную": null
  },
  "card:MASTER_PLANNER": {
-  "коварными": null
+  "коварными": "keyword:SLY"
  },
  "card:MAYHEM": {
   "стопки добора": null
  },
  "card:MELANCHOLY": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:MELODIC_SHOT": {
   "Пронзает": null,
-  "мелодию": null,
-  "стрелой": null
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
+  "стрелой": "keyword:ARROW"
  },
  "card:METAMORPHOSIS": {
   "стопку добора": null
  },
  "card:METEOR_SHOWER": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:METEOR_STRIKE": {
-  "Заряжает": null,
-  "сферы плазмы": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферы плазмы": "keyword:PLASMA_ORB"
  },
  "card:MIDNIGHT": {
   "сожженную": null
  },
  "card:MIGHTY_SHIELD": {
-  "«Головокружение»": null,
-  "«Головокружений»": null,
-  "«Головокружения»": null,
-  "защиты": null,
+  "«Головокружение»": "card:DAZED",
+  "«Головокружений»": "card:DAZED",
+  "«Головокружения»": "card:DAZED",
+  "защиты": "keyword:BLOCK",
   "стопку добора": null
  },
  "card:MIGHTY_WEAPON": {
-  "«Головокружение»": null,
-  "«Головокружений»": null,
-  "«Головокружения»": null,
+  "«Головокружение»": "card:DAZED",
+  "«Головокружений»": "card:DAZED",
+  "«Головокружения»": "card:DAZED",
   "стопку добора": null
  },
  "card:MIMIC": {
-  "защите": null,
-  "защиту": null
+  "защите": "keyword:BLOCK",
+  "защиту": "keyword:BLOCK"
  },
  "card:MIND_BLAST": {
   "стопке добора": null
  },
  "card:MINION_SACRIFICE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:MIRAGE": {
-  "защиту": null,
-  "защиты": null,
-  "яду": null
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK",
+  "яду": "power:POISON"
  },
  "card:MOLTEN_FIST": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:MONARCHS_GAZE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:MONOLOGUE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "мелодию": null
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
-  "«Печаль»": null,
+  "«Печаль»": "card:SADNESS",
   "руку": null
  },
  "card:MULTI_CAST": {
-  "Разряжает": null
+  "Разряжает": "keyword:EVOKE"
  },
  "card:MYTHIC_FORM": {
   "руку": null,
@@ -1226,71 +1253,71 @@
  },
  "card:NAIL": {
   "пронзен": null,
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:NECRO_MASTERY": {
   "Костя": null,
   "Призывает": null
  },
  "card:NEGATIVE_PULSE": {
-  "защиты": null,
-  "злого рока": null
+  "защиты": "keyword:BLOCK",
+  "злого рока": "power:DOOM"
  },
  "card:NEOWS_FURY": {
   "стопки сброса": null
  },
  "card:NEUROSURGE": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "card:NEUTRALIZE": {
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "card:NEUTRON_AEGIS": {
-  "панциря": null
+  "панциря": "power:PLATING"
  },
  "card:NIGHTMARE": {
   "руке": null,
   "руку": null
  },
  "card:NOCK": {
-  "тяги": null
+  "тяги": "power:AIM"
  },
  "card:NOSTALGIA": {
   "стопки добора": null
  },
  "card:NOXIOUS_FUMES": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:NO_ESCAPE": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "card:NULL": {
-  "Заряжает": null,
-  "слабости": null,
-  "сферу тьмы": null
+  "Заряжает": "keyword:CHANNELING",
+  "слабости": "power:WEAK",
+  "сферу тьмы": "keyword:DARK_ORB"
  },
  "card:OBLIVION": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "card:OFF_BY_ONE": {
   "руке": null
  },
  "card:OPTIMISM": {
-  "\"Печаль\"": null,
-  "Сжигает": null,
+  "\"Печаль\"": "card:SADNESS",
+  "Сжигает": "keyword:EXHAUST",
   "руке": null,
   "сожженную": null
  },
  "card:OUTBREAK": {
   "Яд": "power:POISON",
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:OUTRAGE": {
   "стопку сброса": null
  },
  "card:OVERCLOCK": {
-  "«Ожог»": null,
+  "«Ожог»": "card:BURN",
   "стопку сброса": null
  },
  "card:PACTS_END": {
@@ -1300,27 +1327,27 @@
   "колоде": null
  },
  "card:PAGESTORM": {
-  "эфирную": null
+  "эфирную": "keyword:ETHEREAL"
  },
  "card:PANIC_BUTTON": {
-  "защиту": null,
-  "защиты": null
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "card:PARRY": {
   "Клинок монарха": "card:SOVEREIGN_BLADE",
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:PARTICLE_WALL": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "руку": null
  },
  "card:PATTER": {
-  "бодрости": null,
-  "защиты": null
+  "бодрости": "power:VIGOR",
+  "защиты": "keyword:BLOCK"
  },
  "card:PHANTOM_BLADES": {
-  "«Заточка»": null,
-  "«Заточки»": null,
+  "«Заточка»": "card:SHIV",
+  "«Заточки»": "card:SHIV",
   "оставляются": null
  },
  "card:PHOTON_CUT": {
@@ -1328,13 +1355,13 @@
   "стопки добора": null
  },
  "card:PIERCING_WAIL": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:PILLAR_OF_CREATION": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:POISONED_STAB": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:POKE": {
   "Костя": null
@@ -1343,17 +1370,17 @@
   "руке": null
  },
  "card:PREP_TIME": {
-  "бодрости": null
+  "бодрости": "power:VIGOR"
  },
  "card:PRIMAL_FORCE": {
-  "«Булыжники+»": null,
-  "«Булыжники»": null,
+  "«Булыжники+»": "card:GIANT_ROCK",
+  "«Булыжники»": "card:GIANT_ROCK",
   "Преобразует": null,
   "руке": null
  },
  "card:PROLONG": {
-  "защите": null,
-  "защиту": null
+  "защите": "keyword:BLOCK",
+  "защиту": "keyword:BLOCK"
  },
  "card:PROTECTOR": {
   "Кости": null,
@@ -1361,36 +1388,36 @@
   "максимальным ОЗ": null
  },
  "card:PROWESS": {
-  "ловкости": null,
-  "силы": null
+  "ловкости": "power:DEXTERITY",
+  "силы": "power:STRENGTH"
  },
  "card:PULL_AGGRO": {
   "Призывает": null,
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:PULL_FROM_BELOW": {
-  "эфирную": null
+  "эфирную": "keyword:ETHEREAL"
  },
  "card:PUNCH_OF_JOY": {
   "«Отраду»": null,
   "«Отрады»": null,
-  "«Печалей»": null,
-  "«Печали»": null,
-  "«Печаль»": null,
+  "«Печалей»": "card:SADNESS",
+  "«Печали»": "card:SADNESS",
+  "«Печаль»": "card:SADNESS",
   "Преобразует": null,
   "руке": null
  },
  "card:PURITY": {
-  "Сжигает": null,
+  "Сжигает": "keyword:EXHAUST",
   "руке": null,
   "сжечь": null
  },
  "card:PUTREFY": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:QUADCAST": {
-  "Разряжает": null
+  "Разряжает": "keyword:EVOKE"
  },
  "card:QUASAR": {
   "руку": null,
@@ -1398,31 +1425,31 @@
  },
  "card:QUICK_SHOT": {
   "Пронзает": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:QUIETUS": {
   "стрела": "keyword:ARROW"
  },
  "card:QUIVER": {
-  "стрел": null,
-  "стрелу": null,
-  "стрелы": null
+  "стрел": "keyword:ARROW",
+  "стрелу": "keyword:ARROW",
+  "стрелы": "keyword:ARROW"
  },
  "card:RAGE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:RAINBOW": {
-  "Заряжает": null,
-  "сферу льда": null,
-  "сферу молнии": null,
-  "сферу тьмы": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу льда": "keyword:FROST_ORB",
+  "сферу молнии": "keyword:LIGHTNING_ORB",
+  "сферу тьмы": "keyword:DARK_ORB"
  },
  "card:RAIN_SHOT": {
   "Пронзает": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:RALLY": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:RATTLE": {
   "Кости": null,
@@ -1435,8 +1462,8 @@
   "злой рок": "power:DOOM"
  },
  "card:REAVE": {
-  "«Душу+»": null,
-  "«Душу»": null,
+  "«Душу+»": "card:SOUL",
+  "«Душу»": "card:SOUL",
   "стопку добора": null
  },
  "card:REBOOT": {
@@ -1451,33 +1478,37 @@
   "стрелу": null
  },
  "card:REFINE_BLADE": {
-  "Закаляет": null
+  "Закаляет": "keyword:FORGE"
  },
  "card:REFLECT": {
-  "защите": null,
-  "защиты": null
+  "защите": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "card:REFRACT": {
-  "Заряжает": null
+  "Заряжает": "keyword:CHANNELING"
  },
  "card:REGRET": {
   "руке": null
  },
  "card:RELAX": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:REPEAT_SHOT": {
   "Пронзает": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:RESONANCE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:RESTLESSNESS": {
   "руке": null
  },
  "card:RHYTHM_STRIKE": {
-  "мелодию": null
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "Костя": null,
@@ -1487,42 +1518,42 @@
   "золота": null
  },
  "card:RUMMAGE": {
-  "«Печаль»": null,
+  "«Печаль»": "card:SADNESS",
   "руку": null
  },
  "card:RUPTURE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:SACRIFICE": {
   "Костя": null,
-  "защиту": null,
-  "защиты": null
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "card:SALVO": {
-  "оставляете": null,
+  "оставляете": "keyword:RETAIN",
   "руке": null
  },
  "card:SCAVENGE": {
-  "Сжигает": null
+  "Сжигает": "keyword:EXHAUST"
  },
  "card:SCOURGE": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "card:SCRAWL": {
   "рука": null
  },
  "card:SCULPTING_STRIKE": {
   "руке": null,
-  "эфирной": null
+  "эфирной": "keyword:ETHEREAL"
  },
  "card:SEANCE": {
-  "«Душу»": null,
+  "«Душу»": "card:SOUL",
   "Преобразует": null,
   "стопке добора": null
  },
  "card:SECOND_WIND": {
-  "Сжигает": null,
-  "защиты": null,
+  "Сжигает": "keyword:EXHAUST",
+  "защиты": "keyword:BLOCK",
   "руке": null
  },
  "card:SECRET_TECHNIQUE": {
@@ -1535,16 +1566,16 @@
   "стопки добора": null
  },
  "card:SEEKING_EDGE": {
-  "Закаляет": null,
+  "Закаляет": "keyword:FORGE",
   "Клинок монарха": "card:SOVEREIGN_BLADE"
  },
  "card:SELF_DEPRECATE": {
   "«Отрад»": null,
   "«Отраду»": null,
   "«Отрады»": null,
-  "«Печалей»": null,
-  "«Печали»": null,
-  "«Печаль»": null,
+  "«Печалей»": "card:SADNESS",
+  "«Печали»": "card:SADNESS",
+  "«Печаль»": "card:SADNESS",
   "руку": null
  },
  "card:SENTRY_MODE": {
@@ -1554,87 +1585,91 @@
   "Пронзенные": null
  },
  "card:SETUP_STRIKE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:SEVERANCE": {
-  "«Душу»": null,
+  "«Душу»": "card:SOUL",
   "руку": null,
   "стопку добора": null,
   "стопку сброса": null
  },
  "card:SHADOWMELD": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "card:SHADOW_SHIELD": {
-  "Заряжает": null,
-  "защиты": null,
-  "сферу тьмы": null
+  "Заряжает": "keyword:CHANNELING",
+  "защиты": "keyword:BLOCK",
+  "сферу тьмы": "keyword:DARK_ORB"
  },
  "card:SHAME": {
   "руке": null,
-  "хрупкости": null
+  "хрупкости": "power:FRAIL"
  },
  "card:SHARED_FATE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:SHARP_EDGE": {
   "«Заточки»": null,
   "Улучшает": null
  },
  "card:SHATTER": {
-  "Разряжает": null
+  "Разряжает": "keyword:EVOKE"
  },
  "card:SHINING_STRIKE": {
   "стопки добора": null
  },
  "card:SHOCKWAVE": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:SHOW_OFF": {
-  "тяги": null,
-  "тягу": null
+  "тяги": "power:AIM",
+  "тягу": "power:AIM"
  },
  "card:SHROUD": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "злой рок": "power:DOOM"
  },
  "card:SHRUG_IT_OFF": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:SIC_EM": {
   "Костя": null,
-  "Призывает": null
+  "Призывает": "keyword:SUMMON_STATIC"
  },
  "card:SIMPLETON": {
   "руки": null
  },
  "card:SKY_SHOT": {
   "Пронзает": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:SNAKEBITE": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "card:SNAP": {
   "Костя": null,
-  "оставить": null,
+  "оставить": "keyword:RETAIN",
   "оставляется": "keyword:RETAIN",
   "руке": null
  },
  "card:SNEAKY": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:SONG_PATH": {
-  "защиты": null,
-  "мелодию Чу": null
+  "защиты": "keyword:BLOCK",
+  "мелодию Чу": "keyword:CHO_MELODY"
+ },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
  },
  "card:SOULBOUND": {
-  "«Душу»": null,
+  "«Душу»": "card:SOUL",
   "стопку добора": null
  },
  "card:SOUL_STORM": {
-  "«Душу»": null,
+  "«Душу»": "card:SOUL",
   "стопке пепла": null
  },
  "card:SOVEREIGN_BLADE": {
@@ -1644,12 +1679,12 @@
   "руку": null
  },
  "card:SPINNER": {
-  "Заряжает": null,
-  "сферу стекла": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу стекла": "keyword:GLASS_ORB"
  },
  "card:SPIRIT_OF_ASH": {
-  "защиты": null,
-  "эфирную": null
+  "защиты": "keyword:BLOCK",
+  "эфирную": "keyword:ETHEREAL"
  },
  "card:SPLASH": {
   "руку": null,
@@ -1659,22 +1694,22 @@
   "золота": null
  },
  "card:SPOILS_OF_BATTLE": {
-  "Закаляет": null
+  "Закаляет": "keyword:FORGE"
  },
  "card:SPUR": {
   "Костя": null,
   "Призывает": null
  },
  "card:SQUASH": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:SQUEEZE": {
   "Кости": null,
   "Костя": null
  },
  "card:STACK": {
-  "защиту": null,
-  "защиты": null,
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK",
   "стопке сброса": null
  },
  "card:STAMPEDE": {
@@ -1687,7 +1722,11 @@
   "защиты": null
  },
  "card:STEADY_CADENCE": {
-  "мелодию": null
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "Сжигает": null,
@@ -1697,35 +1736,35 @@
   "улучшенной": null
  },
  "card:STONE_ARMOR": {
-  "панциря": null
+  "панциря": "power:PLATING"
  },
  "card:STORM": {
-  "Заряжает": null
+  "Заряжает": "keyword:CHANNELING"
  },
  "card:STORM_OF_STEEL": {
-  "«Заточке+»": null,
-  "«Заточке»": null,
+  "«Заточке+»": "card:SHIV",
+  "«Заточке»": "card:SHIV",
   "руку": null
  },
  "card:STRATAGEM": {
   "стопка добора": null
  },
  "card:STRENGTH": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "card:SUCKER_PUNCH": {
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "card:SUMMON_FORTH": {
-  "Закаляет": null,
+  "Закаляет": "keyword:FORGE",
   "Клинок монарха": "card:SOVEREIGN_BLADE",
   "руку": null
  },
  "card:SUPPRESS": {
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "card:SURVIVOR": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:SWEEPING_GAZE": {
   "Костя": null
@@ -1734,43 +1773,43 @@
   "Клинок монарха": "card:SOVEREIGN_BLADE"
  },
  "card:SYNCHRONIZE": {
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "card:TAUNT": {
-  "защиты": null,
-  "уязвимости": null
+  "защиты": "keyword:BLOCK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:TEMPERANCE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:TEMPEST": {
-  "Заряжает": null,
-  "сфер молнии": null
+  "Заряжает": "keyword:CHANNELING",
+  "сфер молнии": "keyword:LIGHTNING_ORB"
  },
  "card:TERRAFORMING": {
-  "бодрости": null
+  "бодрости": "power:VIGOR"
  },
  "card:TESLA_COIL": {
-  "сфер молнии": null
+  "сфер молнии": "keyword:LIGHTNING_ORB"
  },
  "card:TEZCATARAS_MIGHT": {
   "силы": null
  },
  "card:THE_DEVIL": {
-  "Сжигает": null,
+  "Сжигает": "keyword:EXHAUST",
   "руке": null,
   "стопки добора": null,
   "улучшаете": null
  },
  "card:THE_EMPRESS": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:THE_FOOL": {
   "руки": null
  },
  "card:THE_GAMBIT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:THE_HERMIT": {
   "проклятия": null,
@@ -1780,28 +1819,28 @@
   "руку": null
  },
  "card:THE_HUNT": {
-  "казнит": null
+  "казнит": "keyword:FATAL"
  },
  "card:THE_LOVERS": {
   "руку": null
  },
  "card:THE_MAGICIAN": {
-  "Заряжает": null
+  "Заряжает": "keyword:CHANNELING"
  },
  "card:THE_MOON": {
-  "«Заточками+»": null,
-  "«Заточками»": null,
+  "«Заточками+»": "card:SHIV",
+  "«Заточками»": "card:SHIV",
   "руку": null
  },
  "card:THE_SHOT": {
   "Пронзает": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:THE_SMITH": {
-  "Закаляет": null
+  "Закаляет": "keyword:FORGE"
  },
  "card:THE_SUN": {
-  "«Сажи»": null,
+  "«Сажи»": "card:SOOT",
   "стопку добора": null
  },
  "card:THE_WORLD": {
@@ -1812,7 +1851,7 @@
   "стопки добора": null
  },
  "card:THRASH": {
-  "Сжигает": null,
+  "Сжигает": "keyword:EXHAUST",
   "руке": null
  },
  "card:THRUMMING_HATCHET": {
@@ -1822,19 +1861,19 @@
   "разряженная молния": null
  },
  "card:THUNDERCLAP": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:TIMES_UP": {
-  "злому року": null
+  "злому року": "power:DOOM"
  },
  "card:TORIC_TOUGHNESS": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:TOXIC": {
   "руке": null
  },
  "card:TRACKING": {
-  "Слабые": null
+  "Слабые": "power:WEAK"
  },
  "card:TRAINING_STRIKE": {
   "казнит": null
@@ -1844,26 +1883,26 @@
   "руке": null
  },
  "card:TRASH_TO_TREASURE": {
-  "Заряжает": null
+  "Заряжает": "keyword:CHANNELING"
  },
  "card:TREMBLE": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:TRICK_SHOT": {
   "Пронзает": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:TRUE_GRIT": {
-  "Сжигает": null,
-  "защиты": null
+  "Сжигает": "keyword:EXHAUST",
+  "защиты": "keyword:BLOCK"
  },
  "card:TUNE": {
-  "мелодию Ки": null,
+  "мелодию Ки": "keyword:KI_MELODY",
   "руке": null,
   "улучшает": null
  },
  "card:TURBO": {
-  "«Бездну»": null,
+  "«Бездну»": "card:VOID",
   "стопку сброса": null
  },
  "card:TUTOR": {
@@ -1872,17 +1911,17 @@
  },
  "card:TWIN_SHOT": {
   "Пронзает": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:TYRANNY": {
   "руке": null,
-  "сжигаете": null
+  "сжигаете": "keyword:EXHAUST"
  },
  "card:ULTIMATE_DEFEND": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:UNDEATH": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "стопку сброса": null
  },
  "card:UNDERWORLD": {
@@ -1896,11 +1935,11 @@
   "Защита": "keyword:BLOCK"
  },
  "card:UNTOUCHABLE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:UPPERCUT": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "card:UPROAR": {
   "стопки добора": null
@@ -1909,7 +1948,7 @@
   "Извлекает": null,
   "пронзен": null,
   "стрелу": null,
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:UP_MY_SLEEVE": {
   "руку": null
@@ -1925,28 +1964,28 @@
   "уязвимость": "power:VULNERABLE"
  },
  "card:VIOLENT_CHORD": {
-  "мелодию Ва": null
+  "мелодию Ва": "keyword:WAH_MELODY"
  },
  "card:VITRIOL": {
-  "«Печалей»": null,
-  "«Печали»": null,
-  "«Печаль»": null,
+  "«Печалей»": "card:SADNESS",
+  "«Печали»": "card:SADNESS",
+  "«Печаль»": "card:SADNESS",
   "руку": null,
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "card:VOLTAIC": {
-  "Заряжает": null,
-  "сфер молнии": null
+  "Заряжает": "keyword:CHANNELING",
+  "сфер молнии": "keyword:LIGHTNING_ORB"
  },
  "card:WAH_BLAST": {
   "мелодия Ки": "keyword:KI_MELODY",
   "мелодия Чу": "keyword:CHO_MELODY"
  },
  "card:WAH_CHO": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:WAH_CHO_KI": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "card:WAH_HAMMER": {
   "пронзенным": null
@@ -1956,7 +1995,7 @@
   "стопки сброса": null
  },
  "card:WAH_TOUCH": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "card:WARP_SPACE": {
   "стопку добора": null
@@ -1965,11 +2004,11 @@
   "Оглушает": null
  },
  "card:WHISTLING_ARROWS": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "пронзаете": null,
   "руку": null,
   "стопки сброса": null,
-  "стрелой": null
+  "стрелой": "keyword:ARROW"
  },
  "card:WHITE_NOISE": {
   "руку": null
@@ -1981,8 +2020,8 @@
   "руке": null
  },
  "card:WRAITH_FORM": {
-  "ловкости": null,
-  "неосязаемости": null
+  "ловкости": "power:DEXTERITY",
+  "неосязаемости": "power:INTANGIBLE"
  },
  "card:WREST": {
   "извлекаете": null,
@@ -1990,18 +2029,18 @@
   "стрелу": null
  },
  "card:WROUGHT_IN_WAR": {
-  "Закаляет": null
+  "Закаляет": "keyword:FORGE"
  },
  "card:YAH": {
   "извлекаете": null,
-  "стрелу": null
+  "стрелу": "keyword:ARROW"
  },
  "card:YOGA": {
-  "растяжки": null
+  "растяжки": "power:STRETCH"
  },
  "card:ZAP": {
-  "Заряжает": null,
-  "сферу молнии": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу молнии": "keyword:LIGHTNING_ORB"
  },
  "character:FOOL": {
   "Шпиле": null
@@ -2010,37 +2049,37 @@
   "Костя": null
  },
  "dominion:AEONGLASS": {
-  "«Усыхание»": null,
+  "«Усыхание»": "card:WITHER",
   "стопки добора": null
  },
  "dominion:CEREMONIAL_BEAST": {
   "ритуал": "power:RITUAL"
  },
  "dominion:KAISER_CRAB": {
-  "панциря": null
+  "панциря": "power:PLATING"
  },
  "dominion:KIN": {
-  "слабости": null,
-  "хрупкости": null
+  "слабости": "power:WEAK",
+  "хрупкости": "power:FRAIL"
  },
  "dominion:LAGAVULIN_MATRIARCH": {
-  "ловкости": null,
-  "силы": null
+  "ловкости": "power:DEXTERITY",
+  "силы": "power:STRENGTH"
  },
  "dominion:QUEEN": {
-  "слабости": null,
-  "уязвимости": null,
-  "хрупкости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE",
+  "хрупкости": "power:FRAIL"
  },
  "dominion:SOUL_FYSH": {
-  "«Приворот»": null,
+  "«Приворот»": "card:BECKON",
   "стопку добора": null
  },
  "dominion:TEST_SUBJECT": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "dominion:VANTOM": {
-  "изворотливости": null
+  "изворотливости": "power:SLIPPERY"
  },
  "enchantment:ADROIT": {
   "защиты": null
@@ -2056,7 +2095,7 @@
   "сжигается": "keyword:EXHAUST"
  },
  "enchantment:INKY": {
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "enchantment:NIMBLE": {
   "защиту": null
@@ -2065,7 +2104,7 @@
   "стопки добора": null
  },
  "enchantment:ROYALLY_APPROVED": {
-  "начальной": null,
+  "начальной": "keyword:INNATE",
   "оставляется": "keyword:RETAIN"
  },
  "enchantment:SOULS_POWER": {
@@ -2078,7 +2117,7 @@
   "оставляется": "keyword:RETAIN"
  },
  "enchantment:TEZCATARAS_EMBER": {
-  "вечной": null
+  "вечной": "keyword:ETERNAL"
  },
  "encounter:NEOW_CHOICE": {
   "Выбор от Ньяу:": null
@@ -2230,7 +2269,7 @@
   "кружащей спиралью из печатей": null
  },
  "event:AROMA_OF_CHAOS": {
-  "Преобразовать": null,
+  "Преобразовать": "keyword:TRANSFORM",
   "Улучшить": null,
   "колоде": null,
   "сокрушаете могучих врагов": null
@@ -2339,7 +2378,7 @@
   "реликвию": null
  },
  "event:MORPHIC_GROVE": {
-  "Преобразовать": null,
+  "Преобразовать": "keyword:TRANSFORM",
   "золото": null
  },
  "event:POTION_COURIER": {
@@ -2363,7 +2402,7 @@
   "колоду": null
  },
  "event:ROOM_FULL_OF_CHEESE": {
-  "«Избранный сыр»": null,
+  "«Избранный сыр»": "relic:CHOSEN_CHEESE",
   "колоду": null,
   "обычных": null,
   "сырной комнате": null
@@ -2403,7 +2442,7 @@
   "чары": null
  },
  "event:SPIRIT_GRAFTER": {
-  "«Метаморфоза»": null,
+  "«Метаморфоза»": "card:METAMORPHOSIS",
   "колоду": null,
   "свет": null,
   "улучшить": null
@@ -2426,7 +2465,7 @@
   "сундука": null
  },
  "event:SYMBIOTE": {
-  "преобразовать": null,
+  "преобразовать": "keyword:TRANSFORM",
   "чары": null
  },
  "event:TABLET_OF_TRUTH": {
@@ -2458,7 +2497,7 @@
   "золота": null
  },
  "event:THE_LEGENDS_WERE_TRUE": {
-  "«Карту сокровищ»": null,
+  "«Карту сокровищ»": "card:SPOILS_MAP",
   "зелье": null
  },
  "event:THIS_OR_THAT": {
@@ -2496,7 +2535,7 @@
   "колоду": null,
   "могущественный дворянин": null,
   "подзаработать": null,
-  "преобразовать": null,
+  "преобразовать": "keyword:TRANSFORM",
   "приговорное кресло": null,
   "реликвии": null,
   "улучшить": null
@@ -2507,8 +2546,8 @@
   "реликвию": null
  },
  "event:WAR_HISTORIAN_REPY": {
-  "«Ключ-фонарь»": null,
-  "«Лекцию по истории»": null,
+  "«Ключ-фонарь»": "card:LANTERN_KEY",
+  "«Лекцию по истории»": "relic:HISTORY_COURSE",
   "Зелья": null,
   "зелья": null,
   "реликвии": null,
@@ -2546,7 +2585,7 @@
   "золота": null,
   "монет": null,
   "новое": null,
-  "преобразовать": null
+  "преобразовать": "keyword:TRANSFORM"
  },
  "event:WOOD_CARVINGS": {
   "Преобразовать": null,
@@ -2558,7 +2597,7 @@
   "колоду": null
  },
  "event:ZEN_WEAVER": {
-  "«Просветление»": null,
+  "«Просветление»": "card:ENLIGHTENMENT",
   "золота": null,
   "золото": null,
   "колоду": null,
@@ -2703,7 +2742,7 @@
   "фокуса": null
  },
  "potion:ASHWATER": {
-  "Сжигает": null,
+  "Сжигает": "keyword:EXHAUST",
   "руке": null,
   "сжечь": null
  },
@@ -2715,7 +2754,7 @@
   "руке": null
  },
  "potion:BLOCK_POTION": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "potion:BONE_BREW": {
   "Призывает": null
@@ -2739,7 +2778,7 @@
   "«Отрад»": null,
   "«Отраду»": null,
   "«Отрады»": null,
-  "«Печалями»": null,
+  "«Печалями»": "card:SADNESS",
   "руку": null
  },
  "potion:CUNNING_POTION": {
@@ -2747,7 +2786,7 @@
   "улучшенных": null
  },
  "potion:DEXTERITY_POTION": {
-  "ловкости": null
+  "ловкости": "power:DEXTERITY"
  },
  "potion:DISTILLED_CHAOS": {
   "стопки добора": null
@@ -2756,39 +2795,39 @@
   "стопки добора": null
  },
  "potion:ESSENCE_OF_DARKNESS": {
-  "Заряжает": null,
+  "Заряжает": "keyword:CHANNELING",
   "слоте": null,
-  "сферу тьмы": null
+  "сферу тьмы": "keyword:DARK_ORB"
  },
  "potion:FLEX_POTION": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "potion:FOCUS_POTION": {
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "potion:FORTIFIER": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "potion:FOUL_POTION": {
   "золота": null,
   "торговцу": null
  },
  "potion:FYSH_OIL": {
-  "ловкости": null,
-  "силы": null
+  "ловкости": "power:DEXTERITY",
+  "силы": "power:STRENGTH"
  },
  "potion:GHOST_IN_A_JAR": {
-  "неосязаемости": null
+  "неосязаемости": "power:INTANGIBLE"
  },
  "potion:GLOWWATER_POTION": {
-  "Сжигает": null,
+  "Сжигает": "keyword:EXHAUST",
   "руке": null
  },
  "potion:HEART_OF_IRON": {
-  "панциря": null
+  "панциря": "power:PLATING"
  },
  "potion:KINGS_COURAGE": {
-  "Закаляет": null
+  "Закаляет": "keyword:FORGE"
  },
  "potion:LIQUID_MEMORIES": {
   "стопки сброса": null
@@ -2797,14 +2836,14 @@
   "руку": null
  },
  "potion:POISON_POTION": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "potion:POTION_OF_BINDING": {
-  "слабости": null,
-  "уязвимости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE"
  },
  "potion:POTION_OF_DOOM": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "potion:POT_OF_GHOULS": {
   "руку": null
@@ -2813,16 +2852,16 @@
   "руку": null
  },
  "potion:PRECISION_POTION": {
-  "тяги": null
+  "тяги": "power:AIM"
  },
  "potion:REGEN_POTION": {
-  "регенерации": null
+  "регенерации": "power:REGEN"
  },
  "potion:SHACKLING_POTION": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "potion:SHIP_IN_A_BOTTLE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "potion:SKILL_POTION": {
   "руку": null
@@ -2835,23 +2874,23 @@
   "повтор": "keyword:REPLAY"
  },
  "potion:SPEED_POTION": {
-  "ловкости": null
+  "ловкости": "power:DEXTERITY"
  },
  "potion:STABLE_SERUM": {
-  "оставляете": null,
+  "оставляете": "keyword:RETAIN",
   "руке": null
  },
  "potion:STRENGTH_POTION": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "potion:TOUCH_OF_INSANITY": {
   "руке": null
  },
  "potion:VULNERABLE_POTION": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "potion:WEAK_POTION": {
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "power:ACCELERANT": {
   "Яд": "power:POISON"
@@ -2864,11 +2903,11 @@
   "ловкости": null
  },
  "power:AEONGLASS_DOMINION": {
-  "«Усыхание»": null,
+  "«Усыхание»": "card:WITHER",
   "стопки добора": null
  },
  "power:AFTERIMAGE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:AGGRESSION": {
   "стопки cброса": null,
@@ -2880,14 +2919,14 @@
   "стрела": null
  },
  "power:ALL_IS_WELL": {
-  "«Печаль»": null,
-  "защиты": null
+  "«Печаль»": "card:SADNESS",
+  "защиты": "keyword:BLOCK"
  },
  "power:ARCHERY": {
-  "тяги": null
+  "тяги": "power:AIM"
  },
  "power:ARSENAL": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "power:ARTIFACT": {
   "Блокирует": null
@@ -2903,10 +2942,10 @@
   "защиты": null
  },
  "power:BIASED_COGNITION": {
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "power:BLOCK_NEXT_TURN": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:BLUR": {
   "Защита": "keyword:BLOCK"
@@ -2924,8 +2963,8 @@
  },
  "power:CALL_OF_THE_VOID": {
   "руку": null,
-  "эфирной": null,
-  "эфирными": null
+  "эфирной": "keyword:ETHEREAL",
+  "эфирными": "keyword:ETHEREAL"
  },
  "power:CHAINS_OF_BINDING": {
   "запечатывает": null
@@ -2934,16 +2973,16 @@
   "защиты": null
  },
  "power:COLOSSUS": {
-  "уязвимых": null
+  "уязвимых": "power:VULNERABLE"
  },
  "power:COMPOST": {
-  "энергию": null
+  "энергию": "keyword:ENERGY"
  },
  "power:CONCOCT": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "power:CONQUEROR": {
-  "Клинка монарха": null,
+  "Клинка монарха": "card:SOVEREIGN_BLADE",
   "Клинок монарха": "card:SOVEREIGN_BLADE"
  },
  "power:CONSUMING_SHADOW": {
@@ -2953,39 +2992,39 @@
   "защиты": null
  },
  "power:COOLANT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:CORROSIVE_WAVE": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "power:CORRUPTION": {
   "сжигаются": null
  },
  "power:COUNTDOWN": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "power:COVERING_FIRE": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "пронзаете": null,
   "стрелой": null
  },
  "power:CRAB_RAGE": {
-  "защиты": null,
-  "силы": null
+  "защиты": "keyword:BLOCK",
+  "силы": "power:STRENGTH"
  },
  "power:CREATIVE_AI": {
   "руку": null
  },
  "power:CRIMSON_MANTLE": {
-  "защиту": null,
-  "защиты": null
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "power:CRUELTY": {
-  "Уязвимые": null
+  "Уязвимые": "power:VULNERABLE"
  },
  "power:CURL_UP": {
-  "защиту": null,
-  "защиты": null
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "power:DAMPEN": {
   "ухудшаются": null
@@ -3006,22 +3045,22 @@
   "улучшенных": null
  },
  "power:DEMESNE": {
-  "энергии": null
+  "энергии": "keyword:ENERGY"
  },
  "power:DEMON_FORM": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "power:DESPAIR": {
   "защиты": null,
   "злого рока": null
  },
  "power:DEVOUR_LIFE": {
-  "«Душу»": null,
-  "Призвать": null,
-  "призываете": null
+  "«Душу»": "card:SOUL",
+  "Призвать": "keyword:SUMMON_STATIC",
+  "призываете": "keyword:SUMMON_STATIC"
  },
  "power:DEXTERITY": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "power:DEXTERITY_DOWN": {
   "ловкости": null,
@@ -3036,14 +3075,14 @@
  "power:ECSTASY": {
   "«Отраду»": null,
   "«Отрады»": null,
-  "«Печалей»": null,
-  "«Печали»": null,
-  "«Печаль»": null,
+  "«Печалей»": "card:SADNESS",
+  "«Печали»": "card:SADNESS",
+  "«Печаль»": "card:SADNESS",
   "Преобразует": null,
   "руке": null
  },
  "power:ENERGY_NEXT_TURN": {
-  "энергию": null
+  "энергию": "keyword:ENERGY"
  },
  "power:ENNUI": {
   "«Печалей»": null,
@@ -3055,11 +3094,11 @@
   "силы": null
  },
  "power:ENTROPY": {
-  "Преобразует": null,
+  "Преобразует": "keyword:TRANSFORM",
   "руке": null
  },
  "power:ENVENOM": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "power:EXPLOSIVE_ARROWS": {
   "пронзаете": null
@@ -3068,10 +3107,10 @@
   "«Заточки»": null
  },
  "power:FASTEN": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:FEEL_NO_PAIN": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:FERAL": {
   "руку": null
@@ -3090,14 +3129,14 @@
   "стопки добора": null
  },
  "power:FRAIL": {
-  "защиту": null,
-  "защиты": null
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "power:FRIENDSHIP": {
-  "энергии": null
+  "энергии": "keyword:ENERGY"
  },
  "power:FURNACE": {
-  "закаляете": null
+  "закаляете": "keyword:FORGE"
  },
  "power:GALVANIC": {
   "гальваническими": null
@@ -3106,11 +3145,14 @@
   "сфера льда": "keyword:FROST_ORB"
  },
  "power:HAMMER_TIME": {
-  "закаляете": null,
-  "закаляют": null
+  "закаляете": "keyword:FORGE",
+  "закаляют": "keyword:FORGE"
  },
  "power:HANG": {
-  "«Повешение»": null
+  "«Повешение»": [
+   "card:HANG",
+   "power:HANG"
+  ]
  },
  "power:HARD_TO_KILL": {
   "Экзоскелет": null
@@ -3125,17 +3167,17 @@
   "руку": null
  },
  "power:HEX": {
-  "эфирные": null
+  "эфирные": "keyword:ETHEREAL"
  },
  "power:HIBERNATE": {
-  "защиту": null,
-  "сферы льда": null
+  "защиту": "keyword:BLOCK",
+  "сферы льда": "keyword:FROST_ORB"
  },
  "power:HIDDEN_ROOTS": {
-  "растяжки": null
+  "растяжки": "power:STRETCH"
  },
  "power:HIGH_VOLTAGE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "power:HONING": {
   "Стрелы": null
@@ -3155,9 +3197,9 @@
   "Улучшает": null
  },
  "power:INFINITE_BLADES": {
-  "«Заточек»": null,
-  "«Заточки»": null,
-  "«Заточку»": null,
+  "«Заточек»": "card:SHIV",
+  "«Заточки»": "card:SHIV",
+  "«Заточку»": "card:SHIV",
   "руку": null
  },
  "power:JUGGERNAUT": {
@@ -3167,20 +3209,28 @@
   "руку": null
  },
  "power:LAGAVULIN_MATRIARCH_DOMINION": {
-  "ловкости": null,
-  "силы": null
+  "ловкости": "power:DEXTERITY",
+  "силы": "power:STRENGTH"
  },
  "power:LIGHTNING_ROD": {
-  "Заряжает": null,
-  "сферу молнии": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу молнии": "keyword:LIGHTNING_ORB"
  },
  "power:LOST_LUTE": {
-  "мелодию": null,
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "стопки добора": null
  },
  "power:LULLABY": {
-  "защиты": null,
-  "мелодии": null
+  "защиты": "keyword:BLOCK",
+  "мелодии": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "коварными": null
@@ -3195,10 +3245,14 @@
   "силы": null
  },
  "power:MONOLOGUE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "мелодию": null
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "руку": null,
@@ -3211,7 +3265,7 @@
   "неосязаемости": null
  },
  "power:NEUROSURGE": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "power:NIGHTMARE": {
   "руку": null
@@ -3220,10 +3274,10 @@
   "стопки добора": null
  },
  "power:NOXIOUS_FUMES": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "power:NO_BLOCK": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "power:NO_ESCAPE": {
   "злого рока": null
@@ -3236,10 +3290,10 @@
   "сфер": null
  },
  "power:PAGESTORM": {
-  "эфирную": null
+  "эфирную": "keyword:ETHEREAL"
  },
  "power:PAINFUL_STABS": {
-  "«Рану»": null,
+  "«Рану»": "card:WOUND",
   "стопку сброса": null
  },
  "power:PAPER_CUTS": {
@@ -3251,25 +3305,25 @@
   "защиты": null
  },
  "power:PERSONAL_HIVE": {
-  "«Головокружение»": null,
+  "«Головокружение»": "card:DAZED",
   "стопку добора": null
  },
  "power:PHANTOM_BLADES": {
-  "«Заточка»": null,
-  "«Заточки»": null,
+  "«Заточка»": "card:SHIV",
+  "«Заточки»": "card:SHIV",
   "оставляются": null
  },
  "power:PILLAR_OF_CREATION": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:PLATING": {
-  "защиту": null,
-  "защиты": null
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "power:PLOW": {
   "Оглушается": null,
   "оглушается": null,
-  "силу": null
+  "силу": "power:STRENGTH"
  },
  "power:POISON": {
   "яд": "power:POISON"
@@ -3278,30 +3332,30 @@
   "ловкость": "power:DEXTERITY"
  },
  "power:POSSESS_STRENGTH": {
-  "силу": null
+  "силу": "power:STRENGTH"
  },
  "power:PREP_TIME": {
   "бодрости": null
  },
  "power:PYRE": {
-  "энергии": null
+  "энергии": "keyword:ENERGY"
  },
  "power:QUIETUS": {
   "пронзившая": null,
   "стрела": null
  },
  "power:RADIANCE": {
-  "энергию": null
+  "энергию": "keyword:ENERGY"
  },
  "power:RAGE": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:RAMPART": {
   "защиты": null
  },
  "power:RAVENOUS": {
   "оглушение": "keyword:STUN",
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "power:READ_THE_BONES": {
   "призываете": null
@@ -3336,14 +3390,14 @@
   "руке": null
  },
  "power:RITUAL": {
-  "силу": null,
-  "силы": null
+  "силу": "power:STRENGTH",
+  "силы": "power:STRENGTH"
  },
  "power:ROYALTIES": {
   "золота": null
  },
  "power:RUPTURE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "power:SANDPIT": {
   "Проглота": null
@@ -3352,24 +3406,24 @@
   "Клинок монарха": "card:SOVEREIGN_BLADE"
  },
  "power:SELF_FORMING_CLAY": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:SENTRY_MODE": {
-  "«Всевидящее око»": null,
+  "«Всевидящее око»": "card:SWEEPING_GAZE",
   "руку": null
  },
  "power:SERRATED_ARROWS": {
   "Пронзенные": null
  },
  "power:SHADOWMELD": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "power:SHARP_EDGE": {
   "«Заточки»": null,
   "Улучшает": null
  },
  "power:SHOW_OFF": {
-  "«Хвастовством»": null,
+  "«Хвастовством»": "power:SHOW_OFF",
   "Тяга": null
  },
  "power:SHRIEK": {
@@ -3383,28 +3437,28 @@
  "power:SIC_EM": {
   "Кости": null,
   "Костя": null,
-  "Призывает": null,
-  "призываете": null
+  "Призывает": "keyword:SUMMON_STATIC",
+  "призываете": "keyword:SUMMON_STATIC"
  },
  "power:SIMPLETON": {
   "руке": null
  },
  "power:SKITTISH": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:SNEAKY": {
-  "защиту": null,
-  "защиты": null
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "power:SOAR": {
   "50%": null
  },
  "power:SONG_PATH": {
-  "защиты": null,
-  "мелодию Чу": null
+  "защиты": "keyword:BLOCK",
+  "мелодию Чу": "keyword:CHO_MELODY"
  },
  "power:SOULBOUND": {
-  "«Душу»": null,
+  "«Душу»": "card:SOUL",
   "стопку добора": null
  },
  "power:SOW": {
@@ -3415,33 +3469,33 @@
   "руку": null
  },
  "power:SPINNER": {
-  "Заряжает": null,
-  "сферу стекла": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу стекла": "keyword:GLASS_ORB"
  },
  "power:SPIRIT_OF_ASH": {
-  "защиты": null,
-  "эфирную": null
+  "защиты": "keyword:BLOCK",
+  "эфирную": "keyword:ETHEREAL"
  },
  "power:STAMPEDE": {
   "руки": null
  },
  "power:STORM": {
-  "Заряжает": null,
-  "сферу молнии": null
+  "Заряжает": "keyword:CHANNELING",
+  "сферу молнии": "keyword:LIGHTNING_ORB"
  },
  "power:STRATAGEM": {
   "руку": null,
   "стопки добора": null
  },
  "power:STRETCH": {
-  "защиту": null,
-  "защиты": null
+  "защиту": "keyword:BLOCK",
+  "защиты": "keyword:BLOCK"
  },
  "power:SUCK": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "power:SUMMON_NEXT_TURN": {
-  "призовете": null
+  "призовете": "keyword:SUMMON_STATIC"
  },
  "power:SWIPE": {
   "руку": null
@@ -3457,7 +3511,7 @@
   "уязвимости": null
  },
  "power:TEMPORARY_DEXTERITY": {
-  "ловкости": null,
+  "ловкости": "power:DEXTERITY",
   "ловкость": "power:DEXTERITY"
  },
  "power:TEMPORARY_DEXTERITY_DOWN": {
@@ -3466,30 +3520,30 @@
  },
  "power:TEMPORARY_FOCUS": {
   "фокус": "power:FOCUS",
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "power:TEMPORARY_FOCUS_DOWN": {
   "фокус": null,
   "фокуса": null
  },
  "power:TEMPORARY_STRENGTH": {
-  "силу": null,
-  "силы": null
+  "силу": "power:STRENGTH",
+  "силы": "power:STRENGTH"
  },
  "power:TEMPORARY_STRENGTH_DOWN": {
   "силу": null,
   "силы": null
  },
  "power:TEMPORARY_THORNS": {
-  "шипов": null,
+  "шипов": "power:THORNS",
   "шипы": "power:THORNS"
  },
  "power:TENDER": {
-  "ловкости": null,
-  "силы": null
+  "ловкости": "power:DEXTERITY",
+  "силы": "power:STRENGTH"
  },
  "power:TERRITORIAL": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "power:TEZCATARAS_BLIGHT": {
   "силы": null
@@ -3502,60 +3556,63 @@
   "разряженная сфера молнии": null
  },
  "power:TORIC_TOUGHNESS": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "power:TRACKING": {
-  "Слабые": null
+  "Слабые": "power:WEAK"
  },
  "power:TRASH_TO_TREASURE": {
   "Заряжает": null
  },
  "power:TUNE": {
-  "мелодию Ки": null,
+  "мелодию Ки": "keyword:KI_MELODY",
   "руке": null,
   "улучшает": null
  },
  "power:TYRANNY": {
   "руке": null,
-  "сжигаете": null
+  "сжигаете": "keyword:EXHAUST"
  },
  "power:UNDERWORLD": {
   "злой рок": "power:DOOM"
  },
  "power:UNMOVABLE": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "power:UNSTEADY": {
   "оглушается": null
  },
  "power:VEILPIERCER": {
   "эфирная": "keyword:ETHEREAL",
-  "эфирные": null,
-  "эфирных": null
+  "эфирные": "keyword:ETHEREAL",
+  "эфирных": "keyword:ETHEREAL"
  },
  "power:VICIOUS": {
   "уязвимость": "power:VULNERABLE"
  },
  "power:VIOLENT_CHORD": {
-  "мелодию Ва": null
+  "мелодию Ва": "keyword:WAH_MELODY"
  },
  "power:VITAL_SPARK": {
   "навыки": null,
-  "порчи": null
+  "порчи": [
+   "affliction:TAINTED",
+   "power:TAINTED"
+  ]
  },
  "power:WASTE_AWAY": {
-  "энергии": null
+  "энергии": "keyword:ENERGY"
  },
  "power:WINGED_JUMP": {
   "уязвимости": null
  },
  "power:WITHERING_PRESENCE": {
-  "«Усыхание»": null,
-  "Усыхание": null,
+  "«Усыхание»": "card:WITHER",
+  "Усыхание": "card:WITHER",
   "руку": null
  },
  "power:WRAITH_FORM": {
-  "ловкости": null
+  "ловкости": "power:DEXTERITY"
  },
  "power:WUPPYS_LOYALTY": {
   "Вопс": null
@@ -3565,12 +3622,12 @@
   "стрелу": null
  },
  "power:YOU_ARE_MINE": {
-  "слабости": null,
-  "уязвимости": null,
-  "хрупкости": null
+  "слабости": "power:WEAK",
+  "уязвимости": "power:VULNERABLE",
+  "хрупкости": "power:FRAIL"
  },
  "relic:AKABEKO": {
-  "бодрости": null
+  "бодрости": "power:VIGOR"
  },
  "relic:ALCHEMICAL_COFFER": {
   "зелий": null,
@@ -3581,7 +3638,7 @@
   "золота": null
  },
  "relic:ANCHOR": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:ARCANE_SCROLL": {
   "колоду": null,
@@ -3598,7 +3655,7 @@
   "улучшить": null
  },
  "relic:BAG_OF_MARBLES": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "relic:BATH_ROBES": {
   "боссом": null
@@ -3612,16 +3669,16 @@
  },
  "relic:BELT_BUCKLE": {
   "зелий": null,
-  "ловкости": null
+  "ловкости": "power:DEXTERITY"
  },
  "relic:BIG_HAT": {
   "руку": null,
-  "эфирную": null,
-  "эфирные": null,
-  "эфирных": null
+  "эфирную": "keyword:ETHEREAL",
+  "эфирные": "keyword:ETHEREAL",
+  "эфирных": "keyword:ETHEREAL"
  },
  "relic:BIIIG_HUG": {
-  "«Сажа»": null,
+  "«Сажа»": "card:SOOT",
   "колоды": null,
   "стопки добора": null,
   "стопку добора": null
@@ -3630,8 +3687,8 @@
   "колоду": null
  },
  "relic:BIZARRE_LAMP": {
-  "«Печаль»": null,
-  "«Радость»": null,
+  "«Печаль»": "card:SADNESS",
+  "«Радость»": "card:JOY",
   "руку": null
  },
  "relic:BLACK_STAR": {
@@ -3645,7 +3702,7 @@
   "колоду": null
  },
  "relic:BONE_FLUTE": {
-  "Костя": null,
+  "Костя": "relic:BONE_FLUTE",
   "защиты": null
  },
  "relic:BONE_TEA": {
@@ -3659,7 +3716,7 @@
   "колоду": null
  },
  "relic:BOOK_REPAIR_KNIFE": {
-  "злого рока": null
+  "злого рока": "power:DOOM"
  },
  "relic:BOOMING_CONCH": {
   "элитными врагами": null
@@ -3671,30 +3728,33 @@
   "золота": null
  },
  "relic:BRIMSTONE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:BURNING_STICKS": {
   "руку": null,
   "сожженного": null
  },
  "relic:BYRDINE": {
-  "«Абсолютного птаха»": null,
-  "«Налет птаха»": null,
+  "«Абсолютного птаха»": "card:GOD_BYRD",
+  "«Налет птаха»": "card:BYRD_SWOOP",
   "Птахун": "relic:BYRDINE",
   "преобразует": null
  },
  "relic:BYRDPIP": {
-  "«Налет птаха»": null,
-  "Птахоню": null,
+  "«Налет птаха»": "card:BYRD_SWOOP",
+  "Птахоню": "relic:BYRDPIP",
   "Птахоня": "relic:BYRDPIP",
   "колоду": null,
   "лагере": null
  },
  "relic:CALLING_BELL": {
-  "колоду": null
+  "колоду": [
+   "card:CURSE_OF_THE_BELL",
+   "relic:CALLING_BELL"
+  ]
  },
  "relic:CAPTAINS_WHEEL": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:CAULDRON": {
   "зелий": null,
@@ -3712,20 +3772,24 @@
   "Шпиле": null
  },
  "relic:CLAWS": {
-  "«Побои»": null,
+  "«Побои»": "card:MAUL",
   "Преобразовать": null,
   "преобразовать": null,
   "преобразует": null
  },
  "relic:CLOAK_CLASP": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "руке": null
  },
  "relic:CONDUCTORS_BATON": {
-  "мелодию": null
+  "мелодию": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
-  "Заряжает": null
+  "Заряжает": "keyword:CHANNELING"
  },
  "relic:CROSSBOW": {
   "Атаку": null,
@@ -3744,7 +3808,7 @@
   "колоду": null
  },
  "relic:DATA_DISK": {
-  "фокуса": null
+  "фокуса": "power:FOCUS"
  },
  "relic:DAUGHTER_OF_THE_WIND": {
   "защиты": null
@@ -3754,7 +3818,7 @@
  },
  "relic:DIAMOND_DIADEM": {
   "Защита": "keyword:BLOCK",
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:DISTINGUISHED_CAPE": {
   "колоду": null
@@ -3764,7 +3828,7 @@
   "скопировать": null
  },
  "relic:DOWSING_ROD": {
-  "«Лозоходство»": null,
+  "«Лозоходство»": "card:DOWSING",
   "колоду": null
  },
  "relic:DRAGON_FRUIT": {
@@ -3785,7 +3849,7 @@
   "чары": null
  },
  "relic:EMBER_TEA": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:EMPTY_CAGE": {
   "колоды": null
@@ -3799,23 +3863,23 @@
   "лагерь": null
  },
  "relic:EXERCISE_MAT": {
-  "растяжки": null
+  "растяжки": "power:STRETCH"
  },
  "relic:FAKE_ANCHOR": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:FAKE_ORICHALCUM": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:FAKE_VENERABLE_TEA_SET": {
   "лагеря": null
  },
  "relic:FENCING_MANUAL": {
-  "Закаляет": null
+  "Закаляет": "keyword:FORGE"
  },
  "relic:FERTILIZER": {
-  "«Печаль»": null,
-  "силы": null
+  "«Печаль»": "card:SADNESS",
+  "силы": "power:STRENGTH"
  },
  "relic:FISHING_ROD": {
   "Улучшает": null,
@@ -3841,16 +3905,16 @@
   "стопку добора": null
  },
  "relic:GALACTIC_DUST": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:GHOST_SEED": {
   "«Обороны»": null,
   "«Удары»": null,
-  "эфирными": null
+  "эфирными": "keyword:ETHEREAL"
  },
  "relic:GIRYA": {
   "лагере": null,
-  "силу": null
+  "силу": "power:STRENGTH"
  },
  "relic:GLASS_EYE": {
   "колоду": null,
@@ -3871,41 +3935,44 @@
   "акта": null
  },
  "relic:GOLDEN_PEARL": {
-  "золота": null
+  "золота": "relic:GOLDEN_PEARL"
  },
  "relic:GORGET": {
-  "панциря": null
+  "панциря": "power:PLATING"
  },
  "relic:HAND_DRILL": {
   "защиту": null,
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "relic:HEFTY_TABLET": {
   "колоду": null
  },
  "relic:HELICAL_DART": {
-  "«Заточку»": null,
-  "ловкости": null
+  "«Заточку»": "card:SHIV",
+  "ловкости": "power:DEXTERITY"
  },
  "relic:HORN_CLEAT": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:ICE_CREAM": {
   "энергия": null
  },
  "relic:INFUSED_CORE": {
-  "Заряжает": null,
-  "Сферы молнии": null,
-  "сферы молнии": null
+  "Заряжает": [
+   "keyword:CHANNELING",
+   "relic:INFUSED_CORE"
+  ],
+  "Сферы молнии": "keyword:LIGHTNING_ORB",
+  "сферы молнии": "keyword:LIGHTNING_ORB"
  },
  "relic:INTIMIDATING_HELMET": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:JEWELED_MASK": {
   "стопки добора": null
  },
  "relic:JEWELRY_BOX": {
-  "«Апофеоз»": null,
+  "«Апофеоз»": "card:APOTHEOSIS",
   "колоду": null
  },
  "relic:JOSS_PAPER": {
@@ -3920,7 +3987,7 @@
   "чары": null
  },
  "relic:KUNAI": {
-  "ловкости": null
+  "ловкости": "power:DEXTERITY"
  },
  "relic:LARGE_CAPSULE": {
   "«Оборону»": null,
@@ -3944,8 +4011,8 @@
  "relic:LEAFY_POULTICE": {
   "«Оборону»": null,
   "«Удар»": null,
-  "Преобразовать": null,
-  "преобразует": null
+  "Преобразовать": "keyword:TRANSFORM",
+  "преобразует": "keyword:TRANSFORM"
  },
  "relic:LORDS_PARASOL": {
   "Торговцем": null
@@ -3969,13 +4036,13 @@
   "магазин": null
  },
  "relic:MEAT_CLEAVER": {
-  "готовить": null
+  "готовить": "keyword:COOK"
  },
  "relic:METRONOME": {
   "заряжаете": null
  },
  "relic:MIGHTY_WINGS": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:MINIATURE_CANNON": {
   "улучшенных": null
@@ -3984,7 +4051,7 @@
   "лагере": null
  },
  "relic:MINI_REGENT": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:MOLTEN_EGG": {
   "Улучшает": null,
@@ -3995,7 +4062,7 @@
  },
  "relic:MUSIC_BOX": {
   "руку": null,
-  "эфирную": null
+  "эфирную": "keyword:ETHEREAL"
  },
  "relic:MYSTERIOUS_COCOON": {
   "«Рогатину»": null,
@@ -4008,7 +4075,7 @@
   "колоду": null
  },
  "relic:NEOWS_SACRIFICE": {
-  "Амбру": null,
+  "Амбру": "potion:AMBERGRIS",
   "колоду": null
  },
  "relic:NEOWS_TALISMAN": {
@@ -4018,12 +4085,12 @@
   "улучшает": null
  },
  "relic:NEOWS_TORMENT": {
-  "«Ярость Ньяу»": null,
+  "«Ярость Ньяу»": "card:NEOWS_FURY",
   "колоду": null
  },
  "relic:NEW_LEAF": {
-  "Преобразовать": null,
-  "преобразует": null
+  "Преобразовать": "keyword:TRANSFORM",
+  "преобразует": "keyword:TRANSFORM"
  },
  "relic:NINJA_SCROLL": {
   "руку": null
@@ -4041,7 +4108,7 @@
   "руку": null
  },
  "relic:ODDLY_SMOOTH_STONE": {
-  "ловкости": null
+  "ловкости": "power:DEXTERITY"
  },
  "relic:OLD_COIN": {
   "золота": null
@@ -4050,28 +4117,28 @@
   "руку": null
  },
  "relic:ORICHALCUM": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:ORNAMENTAL_FAN": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:PAELS_CLAW": {
   "«Обороны»": null,
   "чары": null
  },
  "relic:PAELS_EYE": {
-  "Сжигает": null,
+  "Сжигает": "keyword:EXHAUST",
   "руке": null
  },
  "relic:PAELS_GROWTH": {
   "чары": null
  },
  "relic:PAELS_HORN": {
-  "«Передышки»": null,
+  "«Передышки»": "card:RELAX",
   "колоду": null
  },
  "relic:PAELS_LEGION": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "relic:PAELS_TOOTH": {
   "Улучшает": null,
@@ -4085,16 +4152,16 @@
   "«Обороны»": null,
   "«Удары»": null,
   "Преобразует": null,
-  "ящиком Пандоры": null
+  "ящиком Пандоры": "relic:PANDORAS_BOX"
  },
  "relic:PANTOGRAPH": {
   "боссом": null
  },
  "relic:PAPER_KRANE": {
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "relic:PAPER_PHROG": {
-  "уязвимости": null
+  "уязвимости": "power:VULNERABLE"
  },
  "relic:PARRYING_SHIELD": {
   "защиты": null
@@ -4112,10 +4179,10 @@
   "случайных зелий": null
  },
  "relic:PHILOSOPHERS_STONE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:PHYLACTERY_UNBOUND": {
-  "Призывает": null
+  "Призывает": "keyword:SUMMON_STATIC"
  },
  "relic:PLANISPHERE": {
   "?": null
@@ -4149,17 +4216,17 @@
   "руку": null
  },
  "relic:RAINBOW_RING": {
-  "ловкости": null,
-  "силы": null
+  "ловкости": "power:DEXTERITY",
+  "силы": "power:STRENGTH"
  },
  "relic:RAZOR_TOOTH": {
   "Улучшает": null
  },
  "relic:RED_MASK": {
-  "слабости": null
+  "слабости": "power:WEAK"
  },
  "relic:RED_SKULL": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:REGALITE": {
   "защиты": null
@@ -4168,20 +4235,20 @@
   "отдыхаете": null
  },
  "relic:REPTILE_TRINKET": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:RINGING_TRIANGLE": {
-  "оставляете": null,
+  "оставляете": "keyword:RETAIN",
   "руке": null
  },
  "relic:RIPPLE_BASIN": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:ROYAL_STAMP": {
   "чары": null
  },
  "relic:RUINED_HELMET": {
-  "силу": null
+  "силу": "power:STRENGTH"
  },
  "relic:SAI": {
   "защиты": null
@@ -4196,13 +4263,13 @@
   "колоду": null
  },
  "relic:SEAL_OF_GOLD": {
-  "золота": null
+  "золота": "relic:SEAL_OF_GOLD"
  },
  "relic:SEA_GLASS": {
   "колоду": null
  },
  "relic:SELF_FORMING_CLAY": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:SERE_TALON": {
   "колоду": null
@@ -4212,7 +4279,7 @@
   "реликвии": null
  },
  "relic:SHURIKEN": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:SIGNET_RING": {
   "золота": null
@@ -4225,7 +4292,7 @@
   "улучшены": null
  },
  "relic:SLING_OF_COURAGE": {
-  "силы": null,
+  "силы": "power:STRENGTH",
   "элитным врагом": null
  },
  "relic:SMALL_CAPSULE": {
@@ -4235,14 +4302,14 @@
   "яд": "power:POISON"
  },
  "relic:SONG_BOW": {
-  "тяги": null
+  "тяги": "power:AIM"
  },
  "relic:SOZU": {
   "зелья": null
  },
  "relic:SPARKLING_ROUGE": {
-  "ловкости": null,
-  "силы": null
+  "ловкости": "power:DEXTERITY",
+  "силы": "power:STRENGTH"
  },
  "relic:STONE_CRACKER": {
   "Улучшает": null,
@@ -4253,34 +4320,37 @@
   "отдыхаете": null
  },
  "relic:STORYBOOK": {
-  "«Ярчайшее пламя»": null,
+  "«Ярчайшее пламя»": "card:BRIGHTEST_FLAME",
   "колоду": null
  },
  "relic:STORYTELLER": {
-  "тяги": null
+  "тяги": "power:AIM"
  },
  "relic:STURDY_CLAMP": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:SWORD_OF_JADE": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:SWORD_OF_STONE": {
   "реликвию": null
  },
  "relic:SYMBIOTIC_VIRUS": {
-  "Заряжает": null
+  "Заряжает": "keyword:CHANNELING"
  },
  "relic:TANXS_WHISTLE": {
-  "«Свисток»": null,
+  "«Свисток»": [
+   "card:WHISTLE",
+   "relic:TANXS_WHISTLE"
+  ],
   "колоду": null
  },
  "relic:TEA_OF_DISCOURTESY": {
-  "«Головокружения»": null,
+  "«Головокружения»": "card:DAZED",
   "стопку добора": null
  },
  "relic:THE_ABACUS": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "стопка добора": null
  },
  "relic:TINY_MAILBOX": {
@@ -4288,15 +4358,15 @@
   "отдыхаете": null
  },
  "relic:TOASTY_MITTENS": {
-  "Сжигает": null,
+  "Сжигает": "keyword:EXHAUST",
   "руке": null,
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:TOOLBOX": {
   "руку": null
  },
  "relic:TORMENTOUS_COLLAR": {
-  "слабости": null,
+  "слабости": "power:WEAK",
   "элитным врагом": null
  },
  "relic:TOUCH_OF_OROBAS": {
@@ -4304,7 +4374,7 @@
   "реликвию": null
  },
  "relic:TOUGH_BANDAGES": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:TOXIC_EGG": {
   "Улучшает": null,
@@ -4317,15 +4387,15 @@
   "чары": null
  },
  "relic:TUNING_FORK": {
-  "защиты": null
+  "защиты": "keyword:BLOCK"
  },
  "relic:TWINE": {
-  "защиты": null,
+  "защиты": "keyword:BLOCK",
   "извлекаете": null,
-  "стрелу": null
+  "стрелу": "keyword:ARROW"
  },
  "relic:TWISTED_FUNNEL": {
-  "яда": null
+  "яда": "power:POISON"
  },
  "relic:UNCEASING_TOP": {
   "руке": null
@@ -4337,10 +4407,10 @@
   "отрицательные эффекты": null
  },
  "relic:VAJRA": {
-  "силы": null
+  "силы": "power:STRENGTH"
  },
  "relic:VAMBRACE": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "relic:VENERABLE_TEA_SET": {
   "лагеря": null
@@ -4349,7 +4419,7 @@
   "руку": null
  },
  "relic:VITRUVIAN_MINION": {
-  "защиту": null
+  "защиту": "keyword:BLOCK"
  },
  "relic:WAR_HAMMER": {
   "Улучшает": null,
@@ -4370,7 +4440,7 @@
  },
  "relic:WHITTLING_KNIFE": {
   "стопки добора": null,
-  "тяги": null
+  "тяги": "power:AIM"
  },
  "relic:WING_CHARM": {
   "чары": null
@@ -4383,7 +4453,7 @@
  "relic:WUPPY": {
   "Вопс": "relic:WUPPY",
   "вопс": "relic:WUPPY",
-  "вопса": null
+  "вопса": "relic:WUPPY"
  },
  "relic:YUMMY_COOKIE": {
   "Улучшить": null,

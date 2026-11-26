@@ -100,7 +100,7 @@
   "Veneno": "power:POISON"
  },
  "card:ACCURACY": {
-  "Lâminas": null
+  "Lâminas": "card:SHIV"
  },
  "card:ADAPTIVE_STRIKE": {
   "Pilha de Descarte": null
@@ -109,7 +109,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:AFTERLIFE": {
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:AGGRESSION": {
   "Aprimore": null,
@@ -168,14 +168,14 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:BALL_LIGHTNING": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
  "card:BANSHEES_CRY": {
   "Etérea": "keyword:ETHEREAL"
  },
  "card:BARRAGE": {
-  "Canalizada": null
+  "Canalizada": "keyword:CHANNELING"
  },
  "card:BARRICADE": {
   "Proteção": "keyword:BLOCK"
@@ -193,7 +193,7 @@
   "Pilha de Descarte": null
  },
  "card:BEAT_INTO_SHAPE": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "card:BECKON": {
   "Mão": null
@@ -208,20 +208,20 @@
   "Foco": "power:FOCUS"
  },
  "card:BIG_BANG": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "card:BLADE_DANCE": {
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "Mão": null,
   "plural:Lâmina": null
  },
  "card:BLADE_OF_INK": {
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "Mão": null,
   "plural:Lâmina": null
  },
  "card:BLADE_SYMPHONY": {
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "Mão": null,
   "plural:Lâmina": null
  },
@@ -246,7 +246,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:BODYGUARD": {
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:BODY_SLAM": {
   "Proteção": "keyword:BLOCK"
@@ -283,16 +283,16 @@
   "Mira": "power:AIM"
  },
  "card:BRAND": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Força": "power:STRENGTH"
  },
  "card:BREAK": {
   "Vulnerável": "power:VULNERABLE"
  },
  "card:BRIGHTEN_UP": {
-  "Alegrias": null,
+  "Alegrias": "card:JOY",
   "Mão": null,
-  "Tristezas": null
+  "Tristezas": "card:SADNESS"
  },
  "card:BUBBLE_BUBBLE": {
   "Envenenado": null,
@@ -309,7 +309,7 @@
   "Vulnerável": "power:VULNERABLE"
  },
  "card:BULWARK": {
-  "Forje": null,
+  "Forje": "keyword:FORGE",
   "Proteção": "keyword:BLOCK"
  },
  "card:BUNDLE_OF_JOY": {
@@ -319,7 +319,7 @@
   "Mão": null
  },
  "card:BURNING_PACT": {
-  "Exaure": null
+  "Exaure": "keyword:EXHAUST"
  },
  "card:BYRDONIS_EGG": {
   "Local de Descanso": null
@@ -338,7 +338,7 @@
   "Mão": null
  },
  "card:CAPTURE_SPIRIT": {
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Pilha de Compra": null,
   "plural:Alma": null
  },
@@ -349,7 +349,7 @@
   "Pilha de Compra": null
  },
  "card:CHAOS": {
-  "Canalize": null
+  "Canalize": "keyword:CHANNELING"
  },
  "card:CHARGE": {
   "Pilha de Compra": null,
@@ -362,7 +362,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:CHILL": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Gelo": "keyword:FROST_ORB"
  },
  "card:CHO_BARBS": {
@@ -394,18 +394,18 @@
   "Pilha de Compra": null
  },
  "card:CINDER": {
-  "Exaure": null
+  "Exaure": "keyword:EXHAUST"
  },
  "card:CLASH": {
   "Mão": null
  },
  "card:CLEANSE": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Pilha de Compra": null,
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:CLOAK_AND_DAGGER": {
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "Mão": null,
   "Proteção": "keyword:BLOCK",
   "plural:Lâmina": null
@@ -414,10 +414,14 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:CODA": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Gelo": "keyword:FROST_ORB"
  },
  "card:COLLISION_COURSE": {
@@ -426,7 +430,7 @@
  },
  "card:COLOSSUS": {
   "Proteção": "keyword:BLOCK",
-  "Vulneráveis": null
+  "Vulneráveis": "power:VULNERABLE"
  },
  "card:COMET": {
   "Fraqueza": "power:WEAK",
@@ -437,32 +441,32 @@
   "Combustível+": "card:FUEL",
   "Mão": null,
   "Proteção": "keyword:BLOCK",
-  "Transforme": null
+  "Transforme": "keyword:TRANSFORM"
  },
  "card:CONCOCT": {
   "Veneno": "power:POISON"
  },
  "card:CONQUEROR": {
   "Espada Soberana": "card:SOVEREIGN_BLADE",
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "card:CONSTELLATION": {
   "Proteção": "keyword:BLOCK"
  },
  "card:CONSUMING_SHADOW": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Evoque": null,
   "Trevas": "keyword:DARK_ORB"
  },
  "card:CONVERGENCE": {
-  "Mantenha": null,
+  "Mantenha": "keyword:RETAIN",
   "Mão": null
  },
  "card:COOLANT": {
   "Proteção": "keyword:BLOCK"
  },
  "card:COOLHEADED": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Gelo": "keyword:FROST_ORB"
  },
  "card:COORDINATE": {
@@ -472,7 +476,7 @@
   "Veneno": "power:POISON"
  },
  "card:CORRUPTION": {
-  "Exaure": null
+  "Exaure": "keyword:EXHAUST"
  },
  "card:COSMIC_INDIFFERENCE": {
   "Pilha de Compra": null,
@@ -497,7 +501,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:CRUELTY": {
-  "Vulneráveis": null
+  "Vulneráveis": "power:VULNERABLE"
  },
  "card:CRUSH_UNDER": {
   "Força": "power:STRENGTH"
@@ -506,11 +510,11 @@
   "Proteção": null
  },
  "card:DARKNESS": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Trevas": "keyword:DARK_ORB"
  },
  "card:DARK_EMBRACE": {
-  "Exaurida": null
+  "Exaurida": "keyword:EXHAUST"
  },
  "card:DARK_SHACKLES": {
   "Força": "power:STRENGTH"
@@ -595,13 +599,13 @@
  },
  "card:DEVOUR_LIFE": {
   "Alma": "card:SOUL",
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:DIRGE": {
-  "Almas": null,
-  "Almas+": null,
+  "Almas": "card:SOUL",
+  "Almas+": "card:SOUL",
   "Pilha de Compra": null,
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:DISCOVERY": {
   "Mão": null
@@ -643,7 +647,7 @@
   "Pilha de Descarte": null
  },
  "card:DRUM_OF_BATTLE": {
-  "Exaurida": null
+  "Exaurida": "keyword:EXHAUST"
  },
  "card:DUALCAST": {
   "Evoque": null
@@ -662,7 +666,7 @@
  },
  "card:EIDOLON": {
   "Cartas Exauridas": null,
-  "Etéreas": null
+  "Etéreas": "keyword:ETHEREAL"
  },
  "card:END_OF_DAYS": {
   "Ruína": "power:DOOM"
@@ -689,7 +693,7 @@
  },
  "card:ENTROPY": {
   "Mão": null,
-  "Transforme": null
+  "Transforme": "keyword:TRANSFORM"
  },
  "card:ENVENOM": {
   "Veneno": "power:POISON"
@@ -699,7 +703,7 @@
   "Flecha": "keyword:ARROW"
  },
  "card:EQUILIBRIUM": {
-  "Mantenha": null,
+  "Mantenha": "keyword:RETAIN",
   "Mão": null,
   "Proteção": "keyword:BLOCK"
  },
@@ -710,7 +714,7 @@
   "Blindagem": "power:PLATING"
  },
  "card:EVIL_EYE": {
-  "Exauriu": null,
+  "Exauriu": "keyword:EXHAUST",
   "Proteção": "keyword:BLOCK"
  },
  "card:EXPECT_A_FIGHT": {
@@ -718,11 +722,11 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:EXPERTISE": {
-  "Mantenha": null,
+  "Mantenha": "keyword:RETAIN",
   "Mão": null
  },
  "card:EXPLOSIVE_ARROWS": {
-  "Empalar": null
+  "Empalar": "power:IMPALED"
  },
  "card:EXPOSE": {
   "Artefato": "power:ARTIFACT",
@@ -737,7 +741,7 @@
   "Vulnerável": "power:VULNERABLE"
  },
  "card:FAN_OF_KNIVES": {
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "Mão": null
  },
  "card:FASTEN": {
@@ -753,7 +757,7 @@
   "Força": "power:STRENGTH"
  },
  "card:FEEL_NO_PAIN": {
-  "Exaurida": null,
+  "Exaurida": "keyword:EXHAUST",
   "Proteção": "keyword:BLOCK"
  },
  "card:FERAL": {
@@ -763,15 +767,15 @@
   "Ostheo": null
  },
  "card:FIEND_FIRE": {
-  "Exaure": null,
-  "Exaurida": null,
+  "Exaure": "keyword:EXHAUST",
+  "Exaurida": "keyword:EXHAUST",
   "Mão": null
  },
  "card:FIGHT_ME": {
   "Força": "power:STRENGTH"
  },
  "card:FIGHT_THROUGH": {
-  "Ferimentos": null,
+  "Ferimentos": "card:WOUND",
   "Pilha de Descarte": null,
   "Proteção": "keyword:BLOCK"
  },
@@ -782,8 +786,8 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:FLAK_CANNON": {
-  "Exaure": null,
-  "Exaurida": null
+  "Exaure": "keyword:EXHAUST",
+  "Exaurida": "keyword:EXHAUST"
  },
  "card:FLAME_BARRIER": {
   "Proteção": "keyword:BLOCK"
@@ -818,7 +822,7 @@
   "Pilha de Compra": null
  },
  "card:FORGOTTEN_RITUAL": {
-  "Exauriu": null
+  "Exauriu": "keyword:EXHAUST"
  },
  "card:FRANTIC_ESCAPE": {
   "Fosso Arenoso": "power:SANDPIT"
@@ -827,10 +831,10 @@
   "Força": null
  },
  "card:FURNACE": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "card:FUSION": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Plasma": "keyword:PLASMA_ORB"
  },
  "card:GAMMA_BLAST": {
@@ -847,12 +851,12 @@
   "Ruína": null
  },
  "card:GLACIER": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Gelo": "keyword:FROST_ORB",
   "Proteção": "keyword:BLOCK"
  },
  "card:GLASSWORK": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Proteção": "keyword:BLOCK",
   "Vidro": "keyword:GLASS_ORB"
  },
@@ -861,7 +865,7 @@
   "Pilha de Compra": null
  },
  "card:GLIMPSE_BEYOND": {
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Pilhas de Descarte": null,
   "plural:Alma": null
  },
@@ -910,7 +914,7 @@
   "Gelo": "keyword:FROST_ORB"
  },
  "card:HAMMER_TIME": {
-  "Forjam": null,
+  "Forjam": "keyword:FORGE",
   "Forjar": "keyword:FORGE"
  },
  "card:HAND_OF_GREED": {
@@ -923,14 +927,18 @@
   "Sagaz": "keyword:SLY"
  },
  "card:HARMONIC_SHIELD": {
-  "Melodia": null,
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Proteção": "keyword:BLOCK"
  },
  "card:HAUNT": {
   "Alma": "card:SOUL"
  },
  "card:HAVOC": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Pilha de Compra": null
  },
  "card:HAZE": {
@@ -982,7 +990,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:HONING": {
-  "Flechas": null
+  "Flechas": "keyword:ARROW"
  },
  "card:HOTFIX": {
   "Foco": "power:FOCUS"
@@ -994,11 +1002,11 @@
   "Foco": "power:FOCUS"
  },
  "card:ICE_LANCE": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Gelo": "keyword:FROST_ORB"
  },
  "card:IGNITION": {
-  "Canaliza": null,
+  "Canaliza": "keyword:CHANNELING",
   "Plasma": "keyword:PLASMA_ORB"
  },
  "card:IMMORTALITY": {
@@ -1030,7 +1038,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:INVOKE": {
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:IRON_WAVE": {
   "Proteção": "keyword:BLOCK"
@@ -1066,7 +1074,7 @@
   "Empalado": "power:IMPALED"
  },
  "card:KI_REST": {
-  "Mantenha": null,
+  "Mantenha": "keyword:RETAIN",
   "Melodia Cho": "keyword:CHO_MELODY",
   "Melodia Wah": "keyword:WAH_MELODY",
   "Mão": null
@@ -1075,7 +1083,7 @@
   "Aprimore": null,
   "Cartas Exauridas": null,
   "Lâmina": "card:SHIV",
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "plural:Lâmina": null
  },
  "card:KNOW_THY_PLACE": {
@@ -1087,7 +1095,7 @@
   "Mão": null
  },
  "card:LEADING_STRIKE": {
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "Mão": null,
   "plural:Lâmina": null
  },
@@ -1095,7 +1103,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:LEGION_OF_BONE": {
-  "Vinculam": null
+  "Vinculam": "keyword:SUMMON_STATIC"
  },
  "card:LEG_SWEEP": {
   "Fraqueza": "power:WEAK",
@@ -1105,7 +1113,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:LIGHTNING_ROD": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Proteção": "keyword:BLOCK",
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
@@ -1115,11 +1123,19 @@
   "Pilha de Compra": null
  },
  "card:LOST_LUTE": {
-  "Melodia": null,
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Pilha de Compra": null
  },
  "card:LULLABY": {
-  "Melodias": null,
+  "Melodias": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Proteção": "keyword:BLOCK"
  },
  "card:MAD_SCIENCE": {
@@ -1158,7 +1174,11 @@
  "card:MELODIC_SHOT": {
   "Dispare": null,
   "Flecha": "keyword:ARROW",
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:METAMORPHOSIS": {
   "Pilha de Compra": null
@@ -1168,7 +1188,7 @@
   "Vulnerável": "power:VULNERABLE"
  },
  "card:METEOR_STRIKE": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Plasma": "keyword:PLASMA_ORB"
  },
  "card:MIDNIGHT": {
@@ -1206,7 +1226,11 @@
   "Força": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "Mão": null,
@@ -1229,7 +1253,7 @@
  },
  "card:NECRO_MASTERY": {
   "Ostheo": null,
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:NEGATIVE_PULSE": {
   "Proteção": "keyword:BLOCK",
@@ -1264,7 +1288,7 @@
   "Ruína": "power:DOOM"
  },
  "card:NULL": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Fraqueza": "power:WEAK",
   "Trevas": "keyword:DARK_ORB"
  },
@@ -1275,10 +1299,10 @@
   "Mão": null
  },
  "card:OPTIMISM": {
-  "Exaure": null,
-  "Exaurida": null,
+  "Exaure": "keyword:EXHAUST",
+  "Exaurida": "keyword:EXHAUST",
   "Mão": null,
-  "Tristezas": null
+  "Tristezas": "card:SADNESS"
  },
  "card:OUTBREAK": {
   "Veneno": "power:POISON"
@@ -1316,7 +1340,7 @@
  },
  "card:PHANTOM_BLADES": {
   "Lâmina": "card:SHIV",
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "Manter": "keyword:RETAIN"
  },
  "card:PHOTON_CUT": {
@@ -1343,8 +1367,8 @@
  },
  "card:PRIMAL_FORCE": {
   "Mão": null,
-  "Rocha Gigante": null,
-  "Rocha Gigante+": null
+  "Rocha Gigante": "card:GIANT_ROCK",
+  "Rocha Gigante+": "card:GIANT_ROCK"
  },
  "card:PROLONG": {
   "Proteção": "keyword:BLOCK"
@@ -1359,7 +1383,7 @@
  },
  "card:PULL_AGGRO": {
   "Proteção": "keyword:BLOCK",
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:PULL_FROM_BELOW": {
   "Etérea": "keyword:ETHEREAL"
@@ -1369,7 +1393,7 @@
   "Mão": null,
   "Transforme": null,
   "Tristeza": "card:SADNESS",
-  "Tristezas": null
+  "Tristezas": "card:SADNESS"
  },
  "card:PURITY": {
   "Exaurir": "keyword:EXHAUST",
@@ -1395,13 +1419,13 @@
  },
  "card:QUIVER": {
   "Flecha": "keyword:ARROW",
-  "Flechas": null
+  "Flechas": "keyword:ARROW"
  },
  "card:RAGE": {
   "Proteção": "keyword:BLOCK"
  },
  "card:RAINBOW": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Gelo": "keyword:FROST_ORB",
   "Relâmpago": "keyword:LIGHTNING_ORB",
   "Trevas": "keyword:DARK_ORB"
@@ -1417,7 +1441,7 @@
   "Ostheo": null
  },
  "card:REANIMATE": {
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:REAPER_FORM": {
   "Ruína": "power:DOOM"
@@ -1439,13 +1463,13 @@
   "Flecha": null
  },
  "card:REFINE_BLADE": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "card:REFLECT": {
   "Proteção": "keyword:BLOCK"
  },
  "card:REFRACT": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Vidro": "keyword:GLASS_ORB"
  },
  "card:REGRET": {
@@ -1465,7 +1489,11 @@
   "Mão": null
  },
  "card:RHYTHM_STRIKE": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "Mão": null,
@@ -1487,11 +1515,11 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:SALVO": {
-  "Mantenha": null,
+  "Mantenha": "keyword:RETAIN",
   "Mão": null
  },
  "card:SCAVENGE": {
-  "Exaure": null
+  "Exaure": "keyword:EXHAUST"
  },
  "card:SCOURGE": {
   "Ruína": "power:DOOM"
@@ -1508,8 +1536,8 @@
   "Pilha de Compra": null
  },
  "card:SECOND_WIND": {
-  "Exaure": null,
-  "Exaurida": null,
+  "Exaure": "keyword:EXHAUST",
+  "Exaurida": "keyword:EXHAUST",
   "Mão": null,
   "Proteção": "keyword:BLOCK"
  },
@@ -1527,14 +1555,20 @@
  },
  "card:SEEKING_EDGE": {
   "Espada Soberana": "card:SOVEREIGN_BLADE",
-  "Forje": null
+  "Forje": "keyword:FORGE"
+ },
+ "card:SELF_DEPRECATE": {
+  "Hand": null,
+  "Hands": null,
+  "Joy": null,
+  "Sadness": null
  },
  "card:SENTRY_MODE": {
   "Mão": null,
   "Varredura Ocular": "card:SWEEPING_GAZE"
  },
  "card:SERRATED_ARROWS": {
-  "Empalados": null
+  "Empalados": "power:IMPALED"
  },
  "card:SETUP_STRIKE": {
   "Força": "power:STRENGTH"
@@ -1549,7 +1583,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:SHADOW_SHIELD": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Proteção": "keyword:BLOCK",
   "Trevas": "keyword:DARK_ORB"
  },
@@ -1589,7 +1623,7 @@
  },
  "card:SIC_EM": {
   "Ostheo": null,
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:SIMPLETON": {
   "Mão": null
@@ -1613,6 +1647,10 @@
   "Melodia Cho": "keyword:CHO_MELODY",
   "Proteção": "keyword:BLOCK"
  },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
+ },
  "card:SOULBOUND": {
   "Alma": "card:SOUL",
   "Pilha de Compra": null
@@ -1628,7 +1666,7 @@
   "Mão": null
  },
  "card:SPINNER": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Vidro": "keyword:GLASS_ORB"
  },
  "card:SPIRIT_OF_ASH": {
@@ -1643,11 +1681,11 @@
   "Ouro": null
  },
  "card:SPOILS_OF_BATTLE": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "card:SPUR": {
   "Ostheo": null,
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "card:SQUASH": {
   "Vulnerável": "power:VULNERABLE"
@@ -1669,7 +1707,11 @@
   "Proteção": null
  },
  "card:STEADY_CADENCE": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "Aprimorada": null,
@@ -1681,7 +1723,7 @@
   "Blindagem": "power:PLATING"
  },
  "card:STORM": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
  "card:STORM_OF_STEEL": {
@@ -1701,7 +1743,7 @@
  },
  "card:SUMMON_FORTH": {
   "Espada Soberana": "card:SOVEREIGN_BLADE",
-  "Forje": null,
+  "Forje": "keyword:FORGE",
   "Mão": null
  },
  "card:SUPPRESS": {
@@ -1728,22 +1770,22 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:TEMPEST": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
  "card:TERRAFORMING": {
   "Vigor": "power:VIGOR"
  },
  "card:TESLA_COIL": {
-  "Relâmpagos": null
+  "Relâmpagos": "keyword:LIGHTNING_ORB"
  },
  "card:TEZCATARAS_MIGHT": {
   "Força": null
  },
  "card:THE_DEVIL": {
   "Aprimore": null,
-  "Exaure": null,
-  "Exaurida": null,
+  "Exaure": "keyword:EXHAUST",
+  "Exaurida": "keyword:EXHAUST",
   "Mão": null,
   "Pilha de Compra": null
  },
@@ -1758,7 +1800,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:THE_HERMIT": {
-  "Exauridas": null,
+  "Exauridas": "keyword:EXHAUST",
   "Maldições": null
  },
  "card:THE_HIEROPHANT": {
@@ -1771,11 +1813,11 @@
   "Mão": null
  },
  "card:THE_MAGICIAN": {
-  "Canalize": null
+  "Canalize": "keyword:CHANNELING"
  },
  "card:THE_MOON": {
-  "Lâminas": null,
-  "Lâminas+": null,
+  "Lâminas": "card:SHIV",
+  "Lâminas+": "card:SHIV",
   "Mão": null
  },
  "card:THE_SHOT": {
@@ -1783,10 +1825,10 @@
   "Flecha": "keyword:ARROW"
  },
  "card:THE_SMITH": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "card:THE_SUN": {
-  "Fuligens": null,
+  "Fuligens": "card:SOOT",
   "Pilha de Compra": null
  },
  "card:THE_WORLD": {
@@ -1798,7 +1840,7 @@
   "Pilha de Compra": null
  },
  "card:THRASH": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Mão": null
  },
  "card:THRUMMING_HATCHET": {
@@ -1830,7 +1872,7 @@
   "Repetir": "keyword:REPLAY"
  },
  "card:TRASH_TO_TREASURE": {
-  "Canalize": null
+  "Canalize": "keyword:CHANNELING"
  },
  "card:TREMBLE": {
   "Vulnerável": "power:VULNERABLE"
@@ -1840,7 +1882,7 @@
   "Flecha": "keyword:ARROW"
  },
  "card:TRUE_GRIT": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Proteção": "keyword:BLOCK"
  },
  "card:TUNE": {
@@ -1861,7 +1903,7 @@
   "Flecha": "keyword:ARROW"
  },
  "card:TYRANNY": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Mão": null
  },
  "card:ULTIMATE_DEFEND": {
@@ -1897,7 +1939,7 @@
   "Vulnerável": "power:VULNERABLE"
  },
  "card:UP_MY_SLEEVE": {
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "Mão": null,
   "plural:Lâmina": null
  },
@@ -1917,11 +1959,11 @@
  "card:VITRIOL": {
   "Fraqueza": "power:WEAK",
   "Mão": null,
-  "Tristezas": null
+  "Tristezas": "card:SADNESS"
  },
  "card:VOLTAIC": {
-  "Canalizada": null,
-  "Canalize": null,
+  "Canalizada": "keyword:CHANNELING",
+  "Canalize": "keyword:CHANNELING",
   "Canalize Relâmpago": null,
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
@@ -1936,7 +1978,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "card:WAH_HAMMER": {
-  "Empalados": null
+  "Empalados": "power:IMPALED"
  },
  "card:WAH_KI": {
   "Pilha de Compra": null,
@@ -1984,7 +2026,7 @@
   "Flecha": null
  },
  "card:WROUGHT_IN_WAR": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "card:YAH": {
   "Extrair": null,
@@ -1994,7 +2036,7 @@
   "Alongamento": "power:STRETCH"
  },
  "card:ZAP": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
  "character:FOOL": {
@@ -2219,7 +2261,7 @@
  "event:AROMA_OF_CHAOS": {
   "Aprimore": null,
   "Baralho": null,
-  "Transforme": null,
+  "Transforme": "keyword:TRANSFORM",
   "combatendo grandiosos adversários": null
  },
  "event:BATTLEWORN_DUMMY": {
@@ -2287,7 +2329,7 @@
  },
  "event:FIELD_OF_MAN_SIZED_HOLES": {
   "Baralho": null,
-  "Encante": null,
+  "Encante": "enchantment:PERFECT_FIT",
   "luz fraca": null
  },
  "event:GRAVE_OF_THE_FORGOTTEN": {
@@ -2318,7 +2360,7 @@
  },
  "event:MORPHIC_GROVE": {
   "Ouro": null,
-  "Transforme": null
+  "Transforme": "keyword:TRANSFORM"
  },
  "event:POTION_COURIER": {
   "Caixeiro de Poções": null,
@@ -2404,7 +2446,7 @@
  },
  "event:SYMBIOTE": {
   "Encante": null,
-  "Transformá-la": null
+  "Transformá-la": "keyword:TRANSFORM"
  },
  "event:TABLET_OF_TRUTH": {
   "Aprimore": null,
@@ -2465,7 +2507,7 @@
   "Ouro...": null,
   "Relíquias": null,
   "Supremo Juiz das Cortes": null,
-  "Transforme": null,
+  "Transforme": "keyword:TRANSFORM",
   "Trono das Decisões": null,
   "arco dourado": null,
   "decidir": null,
@@ -2518,7 +2560,7 @@
  "event:WHISPERING_HOLLOW": {
   "Ouro": null,
   "Poções": null,
-  "Transformá-la": null,
+  "Transformá-la": "keyword:TRANSFORM",
   "transforma": null
  },
  "event:WOOD_CARVINGS": {
@@ -2677,7 +2719,7 @@
   "Passiva:": null
  },
  "potion:ASHWATER": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Exaurir": "keyword:EXHAUST",
   "Mão": null
  },
@@ -2692,7 +2734,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "potion:BONE_BREW": {
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "potion:BOTTLED_POTENTIAL": {
   "Pilha de Compra": null
@@ -2727,7 +2769,7 @@
   "Pilha de Compra": null
  },
  "potion:ESSENCE_OF_DARKNESS": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Espaços de Orbe": null,
   "Trevas": "keyword:DARK_ORB"
  },
@@ -2752,14 +2794,14 @@
   "Intangível": "power:INTANGIBLE"
  },
  "potion:GLOWWATER_POTION": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Mão": null
  },
  "potion:HEART_OF_IRON": {
   "Blindagem": "power:PLATING"
  },
  "potion:KINGS_COURAGE": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "potion:LIQUID_BRONZE": {
   "Espinhos": "power:THORNS"
@@ -2792,7 +2834,7 @@
   "Ruína": "power:DOOM"
  },
  "potion:POT_OF_GHOULS": {
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Mão": null,
   "plural:Alma": null
  },
@@ -2825,7 +2867,7 @@
   "Destreza": "power:DEXTERITY"
  },
  "potion:STABLE_SERUM": {
-  "Mantenha": null,
+  "Mantenha": "keyword:RETAIN",
   "Mão": null
  },
  "potion:STRENGTH_POTION": {
@@ -2917,7 +2959,7 @@
   "Proteção": null
  },
  "power:COLOSSUS": {
-  "Vulneráveis": null
+  "Vulneráveis": "power:VULNERABLE"
  },
  "power:COMPOST": {
   "Energia": "keyword:ENERGY"
@@ -2941,7 +2983,7 @@
   "Veneno": "power:POISON"
  },
  "power:CORRUPTION": {
-  "Exaure": null
+  "Exaure": "keyword:EXHAUST"
  },
  "power:COUNTDOWN": {
   "Ruína": "power:DOOM"
@@ -2961,7 +3003,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "power:CRUELTY": {
-  "Vulneráveis": null
+  "Vulneráveis": "power:VULNERABLE"
  },
  "power:CURL_UP": {
   "Proteção": "keyword:BLOCK"
@@ -2973,7 +3015,7 @@
   "Proteção": null
  },
  "power:DARK_EMBRACE": {
-  "Exaurida": null
+  "Exaurida": "keyword:EXHAUST"
  },
  "power:DEBILITATE": {
   "Fraqueza": "power:WEAK",
@@ -2995,7 +3037,7 @@
  },
  "power:DEVOUR_LIFE": {
   "Alma": "card:SOUL",
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "power:DEXTERITY": {
   "Proteção": "keyword:BLOCK"
@@ -3011,11 +3053,11 @@
  },
  "power:ECSTASY": {
   "Alegria": "card:JOY",
-  "Alegrias": null,
+  "Alegrias": "card:JOY",
   "Mão": null,
   "Transforme": null,
   "Tristeza": "card:SADNESS",
-  "Tristezas": null,
+  "Tristezas": "card:SADNESS",
   "plural:Alegria": null,
   "plural:Tristeza": null
  },
@@ -3033,13 +3075,13 @@
  },
  "power:ENTROPY": {
   "Mão": null,
-  "Transforma": null
+  "Transforma": "keyword:TRANSFORM"
  },
  "power:ENVENOM": {
   "Veneno": "power:POISON"
  },
  "power:EXPLOSIVE_ARROWS": {
-  "Empalar": null
+  "Empalar": "power:IMPALED"
  },
  "power:FAN_OF_KNIVES": {
   "Lâminas": null
@@ -3059,7 +3101,7 @@
   "Atordoar": null
  },
  "power:FOCUS_DOWN": {
-  "Foco": null
+  "Foco": "power:FOCUS_DOWN"
  },
  "power:FORBIDDEN_GRIMOIRE": {
   "Baralho": null
@@ -3075,7 +3117,7 @@
   "Energia": "keyword:ENERGY"
  },
  "power:FURNACE": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "power:GALVANIC": {
   "Galvanização": "affliction:GALVANIZED"
@@ -3084,7 +3126,7 @@
   "Gelo": "keyword:FROST_ORB"
  },
  "power:HAMMER_TIME": {
-  "Forjam": null,
+  "Forjam": "keyword:FORGE",
   "Forjar": "keyword:FORGE"
  },
  "power:HANG": {
@@ -3103,7 +3145,7 @@
   "Mão": null
  },
  "power:HEX": {
-  "Etéreas": null
+  "Etéreas": "keyword:ETHEREAL"
  },
  "power:HIBERNATE": {
   "Gelo": "keyword:FROST_ORB",
@@ -3131,7 +3173,10 @@
  },
  "power:INFINITE_BLADES": {
   "Lâmina": "card:SHIV",
-  "Lâminas": null,
+  "Lâminas": [
+   "card:SHIV",
+   "power:INFINITE_BLADES"
+  ],
   "Mão": null
  },
  "power:JUGGERNAUT": {
@@ -3145,15 +3190,23 @@
   "Força": "power:STRENGTH"
  },
  "power:LIGHTNING_ROD": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
  "power:LOST_LUTE": {
-  "Melodia": null,
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Pilha de Compra": null
  },
  "power:LULLABY": {
-  "Melodias": null,
+  "Melodias": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Proteção": "keyword:BLOCK"
  },
  "power:MASTER_PLANNER": {
@@ -3172,7 +3225,11 @@
   "Força": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "Mão": null,
@@ -3213,7 +3270,7 @@
  },
  "power:PAINFUL_STABS": {
   "Ferimento": "card:WOUND",
-  "Ferimentos": null,
+  "Ferimentos": "card:WOUND",
   "Pilha de Descarte": null,
   "plural:Ferimento": null
  },
@@ -3231,7 +3288,10 @@
  },
  "power:PHANTOM_BLADES": {
   "Lâmina": "card:SHIV",
-  "Lâminas": null,
+  "Lâminas": [
+   "card:SHIV",
+   "power:PHANTOM_BLADES"
+  ],
   "Manter": "keyword:RETAIN"
  },
  "power:PILLAR_OF_CREATION": {
@@ -3242,7 +3302,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "power:PLOW": {
-  "Atordoada": null,
+  "Atordoada": "keyword:STUN",
   "Força": "power:STRENGTH"
  },
  "power:POISON": {
@@ -3273,7 +3333,7 @@
   "Proteção": null
  },
  "power:RAVENOUS": {
-  "Atordoada": null,
+  "Atordoada": "keyword:STUN",
   "Força": "power:STRENGTH"
  },
  "power:READ_THE_BONES": {
@@ -3301,7 +3361,7 @@
   "Foco": null
  },
  "power:RETAIN_HAND": {
-  "Mantenha": null,
+  "Mantenha": "power:RETAIN_HAND",
   "Mão": null
  },
  "power:RITUAL": {
@@ -3327,7 +3387,7 @@
   "Varredura Ocular": "card:SWEEPING_GAZE"
  },
  "power:SERRATED_ARROWS": {
-  "Empalados": null
+  "Empalados": "power:IMPALED"
  },
  "power:SHADOWMELD": {
   "Proteção": "keyword:BLOCK"
@@ -3341,7 +3401,7 @@
   "Ostentação": "power:SHOW_OFF"
  },
  "power:SHRIEK": {
-  "Atordoada": null
+  "Atordoada": "keyword:STUN"
  },
  "power:SHROUD": {
   "Proteção": null,
@@ -3349,7 +3409,7 @@
  },
  "power:SIC_EM": {
   "Ostheo": null,
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "power:SIMPLETON": {
   "Mão": null
@@ -3369,7 +3429,7 @@
  },
  "power:SOULBOUND": {
   "Alma": "card:SOUL",
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Pilha de Compra": null,
   "plural:Alma": null
  },
@@ -3381,7 +3441,7 @@
   "Mão": null
  },
  "power:SPINNER": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Vidro": "keyword:GLASS_ORB"
  },
  "power:SPIRIT_OF_ASH": {
@@ -3392,7 +3452,7 @@
   "Mão": null
  },
  "power:STORM": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
  "power:STRATAGEM": {
@@ -3406,7 +3466,10 @@
   "Força": "power:STRENGTH"
  },
  "power:SUMMON_NEXT_TURN": {
-  "Vincule": null
+  "Vincule": [
+   "keyword:SUMMON_STATIC",
+   "power:SUMMON_NEXT_TURN"
+  ]
  },
  "power:SWORD_SAGE": {
   "Espada Soberana": "card:SOVEREIGN_BLADE",
@@ -3470,7 +3533,7 @@
   "Mão": null
  },
  "power:TYRANNY": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Mão": null
  },
  "power:UNDERWORLD": {
@@ -3484,7 +3547,7 @@
  },
  "power:VEILPIERCER": {
   "Etérea": "keyword:ETHEREAL",
-  "Etéreas": null,
+  "Etéreas": "keyword:ETHEREAL",
   "carta Etérea": null
  },
  "power:VICIOUS": {
@@ -3507,7 +3570,7 @@
   "Vulnerável": null
  },
  "power:WITHERING_PRESENCE": {
-  "Definhar": null,
+  "Definhar": "card:WITHER",
   "Mão": null
  },
  "power:WRAITH_FORM": {
@@ -3569,7 +3632,7 @@
  },
  "relic:BIG_HAT": {
   "Etérea": "keyword:ETHEREAL",
-  "Etéreas": null,
+  "Etéreas": "keyword:ETHEREAL",
   "Mão": null
  },
  "relic:BIIIG_HUG": {
@@ -3604,7 +3667,7 @@
   "Mão": null
  },
  "relic:BOOKMARK": {
-  "Mantida": null
+  "Mantida": "keyword:RETAIN"
  },
  "relic:BOOK_OF_FIVE_RINGS": {
   "Baralho": null
@@ -3616,7 +3679,7 @@
   "Elites": null
  },
  "relic:BOUND_PHYLACTERY": {
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "relic:BOWLER_HAT": {
   "Ouro": null
@@ -3672,10 +3735,14 @@
   "Proteção": "keyword:BLOCK"
  },
  "relic:CONDUCTORS_BATON": {
-  "Melodias": null
+  "Melodias": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
  "relic:CROSSBOW": {
@@ -3703,7 +3770,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "relic:DISTINGUISHED_CAPE": {
-  "Aparições": null,
+  "Aparições": "card:APPARITION",
   "Baralho": null,
   "plural:Aparição": null
  },
@@ -3758,7 +3825,7 @@
   "Local de Descanso": null
  },
  "relic:FENCING_MANUAL": {
-  "Forje": null
+  "Forje": "keyword:FORGE"
  },
  "relic:FERTILIZER": {
   "Força": "power:STRENGTH",
@@ -3784,7 +3851,7 @@
   "Baralho": null
  },
  "relic:FUNERARY_MASK": {
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Pilha de Compra": null,
   "plural:Alma": null
  },
@@ -3838,7 +3905,7 @@
   "Proteção": "keyword:BLOCK"
  },
  "relic:INFUSED_CORE": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Relâmpago": "keyword:LIGHTNING_ORB"
  },
  "relic:INTIMIDATING_HELMET": {
@@ -3884,7 +3951,7 @@
  "relic:LEAFY_POULTICE": {
   "Defesas": null,
   "Golpes": null,
-  "Transforme": null
+  "Transforme": "keyword:TRANSFORM"
  },
  "relic:LORDS_PARASOL": {
   "Mercador": null
@@ -3958,10 +4025,10 @@
   "Fúria de Neow": "card:NEOWS_FURY"
  },
  "relic:NEW_LEAF": {
-  "Transforme": null
+  "Transforme": "keyword:TRANSFORM"
  },
  "relic:NINJA_SCROLL": {
-  "Lâminas": null,
+  "Lâminas": "card:SHIV",
   "Mão": null,
   "plural:Lâmina": null
  },
@@ -3996,7 +4063,7 @@
   "Encante": null
  },
  "relic:PAELS_EYE": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Mão": null
  },
  "relic:PAELS_GROWTH": {
@@ -4004,7 +4071,7 @@
  },
  "relic:PAELS_HORN": {
   "Baralho": null,
-  "Relaxamentos": null
+  "Relaxamentos": "card:RELAX"
  },
  "relic:PAELS_LEGION": {
   "Proteção": "keyword:BLOCK"
@@ -4048,7 +4115,7 @@
   "Força": "power:STRENGTH"
  },
  "relic:PHYLACTERY_UNBOUND": {
-  "Vincule": null
+  "Vincule": "keyword:SUMMON_STATIC"
  },
  "relic:PLANISPHERE": {
   "?": null
@@ -4077,7 +4144,7 @@
   "Encante": null
  },
  "relic:RADIANT_PEARL": {
-  "Luminescências": null,
+  "Luminescências": "card:LUMINESCE",
   "Mão": null,
   "plural:Luminescência": null
  },
@@ -4104,7 +4171,7 @@
   "Força": "power:STRENGTH"
  },
  "relic:RINGING_TRIANGLE": {
-  "Mantenha": null,
+  "Mantenha": "keyword:RETAIN",
   "Mão": null
  },
  "relic:RIPPLE_BASIN": {
@@ -4211,7 +4278,7 @@
   "plural:Elite": null
  },
  "relic:SYMBIOTIC_VIRUS": {
-  "Canalize": null,
+  "Canalize": "keyword:CHANNELING",
   "Trevas": "keyword:DARK_ORB"
  },
  "relic:TANXS_WHISTLE": {
@@ -4231,7 +4298,7 @@
   "Poções": null
  },
  "relic:TOASTY_MITTENS": {
-  "Exaure": null,
+  "Exaure": "keyword:EXHAUST",
   "Força": "power:STRENGTH",
   "Mão": null
  },

@@ -409,7 +409,11 @@
   "방어도": "keyword:BLOCK"
  },
  "card:CODA": {
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
   "냉기": "keyword:FROST_ORB",
@@ -914,7 +918,11 @@
  },
  "card:HARMONIC_SHIELD": {
   "방어도": "keyword:BLOCK",
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:HAUNT": {
   "영혼": "card:SOUL"
@@ -1105,11 +1113,19 @@
  },
  "card:LOST_LUTE": {
   "뽑을 카드 더미": null,
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:LULLABY": {
   "방어도": "keyword:BLOCK",
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MAD_SCIENCE": {
   "강화": null,
@@ -1146,7 +1162,11 @@
  },
  "card:MELODIC_SHOT": {
   "발사": null,
-  "선율": null,
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "화살": "keyword:ARROW"
  },
  "card:METAMORPHOSIS": {
@@ -1195,7 +1215,11 @@
   "힘": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "손": null,
@@ -1450,7 +1474,11 @@
   "손": null
  },
  "card:RHYTHM_STRIKE": {
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "골골이": null,
@@ -1602,6 +1630,10 @@
   "방어도": "keyword:BLOCK",
   "초 선율": "keyword:CHO_MELODY"
  },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
+ },
  "card:SOULBOUND": {
   "뽑을 카드 더미": null,
   "영혼": "card:SOUL"
@@ -1658,7 +1690,11 @@
   "방어도": null
  },
  "card:STEADY_CADENCE": {
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "강화": null,
@@ -3114,11 +3150,19 @@
  },
  "power:LOST_LUTE": {
   "뽑을 카드 더미": null,
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:LULLABY": {
   "방어도": "keyword:BLOCK",
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "교활": null
@@ -3136,7 +3180,11 @@
   "힘": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "손": null,
@@ -3466,7 +3514,7 @@
  },
  "power:WITHERING_PRESENCE": {
   "손": null,
-  "시듦": null
+  "시듦": "card:WITHER"
  },
  "power:WRAITH_FORM": {
   "민첩": "power:DEXTERITY"
@@ -3625,7 +3673,11 @@
   "손": null
  },
  "relic:CONDUCTORS_BATON": {
-  "선율": null
+  "선율": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
   "영창": "keyword:CHANNELING",

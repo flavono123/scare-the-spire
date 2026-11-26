@@ -250,7 +250,7 @@
   "Panggil": "keyword:SUMMON_STATIC"
  },
  "card:BODY_SLAM": {
-  "Blokmu": null
+  "Blokmu": "keyword:BLOCK"
  },
  "card:BOLAS": {
   "Tanganmu": null
@@ -284,7 +284,7 @@
   "Bidik": "power:AIM"
  },
  "card:BRAND": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Kekuatan": "power:STRENGTH"
  },
  "card:BREAK": {
@@ -319,7 +319,7 @@
   "Tanganmu": null
  },
  "card:BURNING_PACT": {
-  "Hanguskan": null
+  "Hanguskan": "keyword:EXHAUST"
  },
  "card:BYRDONIS_EGG": {
   "Peristirahatan": null
@@ -394,13 +394,13 @@
   "Tumpukan Ambil": null
  },
  "card:CINDER": {
-  "Hanguskan": null
+  "Hanguskan": "keyword:EXHAUST"
  },
  "card:CLASH": {
   "Tanganmu": null
  },
  "card:CLEANSE": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Panggil": "keyword:SUMMON_STATIC",
   "Tumpukan Ambil": null
  },
@@ -414,7 +414,11 @@
   "Blok": "keyword:BLOCK"
  },
  "card:CODA": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
   "Es": "keyword:FROST_ORB",
@@ -437,7 +441,7 @@
   "Bahan Bakar+": "card:FUEL",
   "Blok": "keyword:BLOCK",
   "Tanganmu": null,
-  "Transformasikan": null
+  "Transformasikan": "keyword:TRANSFORM"
  },
  "card:CONCOCT": {
   "Racun": "power:POISON"
@@ -472,7 +476,7 @@
   "Racun": "power:POISON"
  },
  "card:CORRUPTION": {
-  "Hanguskan": null
+  "Hanguskan": "keyword:EXHAUST"
  },
  "card:COSMIC_INDIFFERENCE": {
   "Blok": "keyword:BLOCK",
@@ -583,7 +587,7 @@
  },
  "card:DEMONIC_SHIELD": {
   "Blok": "keyword:BLOCK",
-  "Blokmu": null
+  "Blokmu": "keyword:BLOCK"
  },
  "card:DEMON_FORM": {
   "Kekuatan": "power:STRENGTH"
@@ -687,11 +691,11 @@
   "Tanganmu": null
  },
  "card:ENTRENCH": {
-  "Blokmu": null
+  "Blokmu": "keyword:BLOCK"
  },
  "card:ENTROPY": {
   "Tanganmu": null,
-  "Transformasikan": null
+  "Transformasikan": "keyword:TRANSFORM"
  },
  "card:ENVENOM": {
   "Racun": "power:POISON"
@@ -766,7 +770,7 @@
  },
  "card:FIEND_FIRE": {
   "Hangus": "keyword:EXHAUST",
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tanganmu": null
  },
  "card:FIGHT_ME": {
@@ -785,7 +789,7 @@
  },
  "card:FLAK_CANNON": {
   "Hangus": "keyword:EXHAUST",
-  "Hanguskan": null
+  "Hanguskan": "keyword:EXHAUST"
  },
  "card:FLAME_BARRIER": {
   "Blok": "keyword:BLOCK"
@@ -925,13 +929,17 @@
  },
  "card:HARMONIC_SHIELD": {
   "Blok": "keyword:BLOCK",
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:HAUNT": {
   "Jiwa": "card:SOUL"
  },
  "card:HAVOC": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tumpukan Ambil": null
  },
  "card:HAZE": {
@@ -1115,12 +1123,20 @@
   "Tumpukan Ambil": null
  },
  "card:LOST_LUTE": {
-  "Melodi": null,
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Tumpukan Ambil": null
  },
  "card:LULLABY": {
   "Blok": "keyword:BLOCK",
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MAD_SCIENCE": {
   "Blok": null,
@@ -1156,7 +1172,11 @@
   "Blok": "keyword:BLOCK"
  },
  "card:MELODIC_SHOT": {
-  "Melodi": null,
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Panah": "keyword:ARROW",
   "Tembak": null
  },
@@ -1206,7 +1226,11 @@
   "Kekuatan": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "Murung": "card:SADNESS",
@@ -1276,7 +1300,7 @@
  },
  "card:OPTIMISM": {
   "Dihanguskan": null,
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Murung": "card:SADNESS",
   "Tanganmu": null
  },
@@ -1347,7 +1371,7 @@
  },
  "card:PROLONG": {
   "Blok": "keyword:BLOCK",
-  "Blokmu": null
+  "Blokmu": "keyword:BLOCK"
  },
  "card:PROTECTOR": {
   "HP Maksimal": null,
@@ -1462,7 +1486,11 @@
   "Tanganmu": null
  },
  "card:RHYTHM_STRIKE": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "Osty": null,
@@ -1488,7 +1516,7 @@
   "Tanganmu": null
  },
  "card:SCAVENGE": {
-  "Hanguskan": null
+  "Hanguskan": "keyword:EXHAUST"
  },
  "card:SCOURGE": {
   "Maut": "power:DOOM"
@@ -1507,7 +1535,7 @@
  "card:SECOND_WIND": {
   "Blok": "keyword:BLOCK",
   "Hangus": "keyword:EXHAUST",
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tanganmu": null
  },
  "card:SECRET_TECHNIQUE": {
@@ -1549,7 +1577,7 @@
   "Tumpukan Singkir": null
  },
  "card:SHADOWMELD": {
-  "Blokmu": null
+  "Blokmu": "keyword:BLOCK"
  },
  "card:SHADOW_SHIELD": {
   "Blok": "keyword:BLOCK",
@@ -1616,6 +1644,10 @@
   "Blok": "keyword:BLOCK",
   "Melodi Cho": "keyword:CHO_MELODY"
  },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
+ },
  "card:SOULBOUND": {
   "Jiwa": "card:SOUL",
   "Tumpukan Ambil": null
@@ -1672,7 +1704,11 @@
   "Blok": null
  },
  "card:STEADY_CADENCE": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "Ditingkatkan": null,
@@ -1745,7 +1781,7 @@
  },
  "card:THE_DEVIL": {
   "Dihanguskan": null,
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tanganmu": null,
   "Tingkatkan": null,
   "Tumpukan Ambil": null
@@ -1801,7 +1837,7 @@
   "Tumpukan Ambil": null
  },
  "card:THRASH": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tanganmu": null
  },
  "card:THRUMMING_HATCHET": {
@@ -1844,7 +1880,7 @@
  },
  "card:TRUE_GRIT": {
   "Blok": "keyword:BLOCK",
-  "Hanguskan": null
+  "Hanguskan": "keyword:EXHAUST"
  },
  "card:TUNE": {
   "Melodi Ki": "keyword:KI_MELODY",
@@ -1864,7 +1900,7 @@
   "Tembak": null
  },
  "card:TYRANNY": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tanganmu": null
  },
  "card:ULTIMATE_DEFEND": {
@@ -2221,7 +2257,7 @@
   "Dek": null,
   "Dekmu": null,
   "Tingkatkan": null,
-  "Transformasikan": null,
+  "Transformasikan": "keyword:TRANSFORM",
   "berduel dengan lawan kuat": null
  },
  "event:BATTLEWORN_DUMMY": {
@@ -2322,7 +2358,7 @@
  },
  "event:MORPHIC_GROVE": {
   "Emas": null,
-  "Transformasikan": null,
+  "Transformasikan": "keyword:TRANSFORM",
   "emasmu": null
  },
  "event:POTION_COURIER": {
@@ -2407,7 +2443,7 @@
  },
  "event:SYMBIOTE": {
   "Efek": null,
-  "Transformasikan": null
+  "Transformasikan": "keyword:TRANSFORM"
  },
  "event:TABLET_OF_TRUTH": {
   "Kata Terakhir": null,
@@ -2469,7 +2505,7 @@
   "Pusaka": null,
   "Sogokan": null,
   "Tingkatkan": null,
-  "Transformasikan": null,
+  "Transformasikan": "keyword:TRANSFORM",
   "bagsawan penguasa": null,
   "bangsawan": null,
   "bangsawan penguasa": null,
@@ -2497,7 +2533,8 @@
   "Belati Sederhana": null,
   "Dekmu": null,
   "Emas": null,
-  "Langka": null
+  "Langka": null,
+  "gold": null
  },
  "event:WATERLOGGED_SCRIPTORIUM": {
   "Efek": null,
@@ -2521,7 +2558,7 @@
  "event:WHISPERING_HOLLOW": {
   "Emas": null,
   "Ramuan": null,
-  "Transformasikan": null,
+  "Transformasikan": "keyword:TRANSFORM",
   "emas": null,
   "mengubah": null
  },
@@ -2683,7 +2720,7 @@
   "Picu:": null
  },
  "potion:ASHWATER": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tanganmu": null
  },
  "potion:ATTACK_POTION": {
@@ -2758,7 +2795,7 @@
   "Tembus": "power:INTANGIBLE"
  },
  "potion:GLOWWATER_POTION": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tanganmu": null
  },
  "potion:HEART_OF_IRON": {
@@ -2947,7 +2984,7 @@
   "Racun": "power:POISON"
  },
  "power:CORRUPTION": {
-  "Hanguskan": null
+  "Hanguskan": "keyword:EXHAUST"
  },
  "power:COUNTDOWN": {
   "Maut": "power:DOOM"
@@ -3006,7 +3043,7 @@
   "Blok": "keyword:BLOCK"
  },
  "power:DEXTERITY_DOWN": {
-  "Ketangkasan": null
+  "Ketangkasan": "power:DEXTERITY_DOWN"
  },
  "power:DIE_FOR_YOU": {
   "Osty": null
@@ -3032,7 +3069,7 @@
  },
  "power:ENTROPY": {
   "Tanganmu": null,
-  "Transformasikan": null
+  "Transformasikan": "keyword:TRANSFORM"
  },
  "power:ENVENOM": {
   "Racun": "power:POISON"
@@ -3058,7 +3095,7 @@
   "Linglung": null
  },
  "power:FOCUS_DOWN": {
-  "Fokus": null
+  "Fokus": "power:FOCUS_DOWN"
  },
  "power:FORBIDDEN_GRIMOIRE": {
   "Dekmu": null
@@ -3148,12 +3185,20 @@
   "Salurkan": "keyword:CHANNELING"
  },
  "power:LOST_LUTE": {
-  "Melodi": null,
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Tumpukan Ambil": null
  },
  "power:LULLABY": {
   "Blok": "keyword:BLOCK",
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "Lihai": null
@@ -3171,7 +3216,11 @@
   "Kekuatan": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "Tanganmu": null,
@@ -3297,7 +3346,7 @@
   "Fokus": null
  },
  "power:RETAIN_HAND": {
-  "Pertahankan": null,
+  "Pertahankan": "power:RETAIN_HAND",
   "Tanganmu": null
  },
  "power:RITUAL": {
@@ -3326,7 +3375,7 @@
   "Tertusuk": "power:IMPALED"
  },
  "power:SHADOWMELD": {
-  "Blokmu": null
+  "Blokmu": "keyword:BLOCK"
  },
  "power:SHARP_EDGE": {
   "Belati": null,
@@ -3465,7 +3514,7 @@
   "Tingkatkan": null
  },
  "power:TYRANNY": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tanganmu": null
  },
  "power:UNDERWORLD": {
@@ -3500,7 +3549,7 @@
   "Rentan": null
  },
  "power:WITHERING_PRESENCE": {
-  "Layu": null,
+  "Layu": "card:WITHER",
   "Tanganmu": null
  },
  "power:WRAITH_FORM": {
@@ -3661,7 +3710,11 @@
   "Tanganmu": null
  },
  "relic:CONDUCTORS_BATON": {
-  "Melodi": null
+  "Melodi": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
   "Petir": "keyword:LIGHTNING_ORB",
@@ -3872,7 +3925,7 @@
  "relic:LEAFY_POULTICE": {
   "Tahan": null,
   "Tebas": null,
-  "Transformasikan": null
+  "Transformasikan": "keyword:TRANSFORM"
  },
  "relic:LORDS_PARASOL": {
   "Pedagang": null
@@ -3916,7 +3969,7 @@
   "Tingkatkan": null
  },
  "relic:MUMMIFIED_HAND": {
-  "Tanganmu": null
+  "Tanganmu": "relic:MUMMIFIED_HAND"
  },
  "relic:MUSIC_BOX": {
   "Rapuh": "keyword:ETHEREAL"
@@ -3947,7 +4000,7 @@
   "Dekmu": null
  },
  "relic:NEW_LEAF": {
-  "Transformasikan": null
+  "Transformasikan": "keyword:TRANSFORM"
  },
  "relic:NINJA_SCROLL": {
   "Belati": "card:SHIV",
@@ -3985,7 +4038,7 @@
   "Tahan": null
  },
  "relic:PAELS_EYE": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Tanganmu": null
  },
  "relic:PAELS_GROWTH": {
@@ -4220,7 +4273,7 @@
   "Rehat": null
  },
  "relic:TOASTY_MITTENS": {
-  "Hanguskan": null,
+  "Hanguskan": "keyword:EXHAUST",
   "Kekuatan": "power:STRENGTH",
   "Tanganmu": null
  },

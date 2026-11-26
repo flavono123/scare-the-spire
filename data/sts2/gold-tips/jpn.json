@@ -414,7 +414,11 @@
   "ブロック": "keyword:BLOCK"
  },
  "card:CODA": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
   "フロスト": "keyword:FROST_ORB",
@@ -919,7 +923,11 @@
  },
  "card:HARMONIC_SHIELD": {
   "ブロック": "keyword:BLOCK",
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:HAUNT": {
   "ソウル": "card:SOUL"
@@ -1110,11 +1118,19 @@
  },
  "card:LOST_LUTE": {
   "山札": null,
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:LULLABY": {
   "ブロック": "keyword:BLOCK",
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MAD_SCIENCE": {
   "アップグレード": null,
@@ -1151,7 +1167,11 @@
  },
  "card:MELODIC_SHOT": {
   "放ち": null,
-  "旋律": null,
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "矢": "keyword:ARROW"
  },
  "card:METAMORPHOSIS": {
@@ -1200,7 +1220,11 @@
   "筋力": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "悲しみ": "card:SADNESS",
@@ -1454,7 +1478,11 @@
   "手札": null
  },
  "card:RHYTHM_STRIKE": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "オスティ": null,
@@ -1606,6 +1634,10 @@
   "チョの旋律": "keyword:CHO_MELODY",
   "ブロック": "keyword:BLOCK"
  },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
+ },
  "card:SOULBOUND": {
   "ソウル": "card:SOUL",
   "山札": null
@@ -1662,7 +1694,11 @@
   "ブロック": null
  },
  "card:STEADY_CADENCE": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "アップグレード": null,
@@ -3136,11 +3172,19 @@
  },
  "power:LOST_LUTE": {
   "山札": null,
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:LULLABY": {
   "ブロック": "keyword:BLOCK",
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "スライ": null
@@ -3158,7 +3202,11 @@
   "筋力": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "タロット": "keyword:TAROT",
@@ -3487,7 +3535,7 @@
  },
  "power:WITHERING_PRESENCE": {
   "手札": null,
-  "衰微": null
+  "衰微": "card:WITHER"
  },
  "power:WRAITH_FORM": {
   "敏捷": "power:DEXTERITY"
@@ -3646,7 +3694,11 @@
   "手札": null
  },
  "relic:CONDUCTORS_BATON": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
   "ライトニング": "keyword:LIGHTNING_ORB",

@@ -53,7 +53,7 @@ function tipIds(tips: readonly CardSideTip[], self: string): Set<string> {
 }
 
 async function auditLocale(gameLocale: GameLocale) {
-  const goldTips = JSON.parse(fs.readFileSync(`data/sts2/gold-tips/${gameLocale}.json`, "utf-8")) as Record<string, Record<string, string | null>>;
+  const goldTips = JSON.parse(fs.readFileSync(`data/sts2/gold-tips/${gameLocale}.json`, "utf-8")) as Record<string, Record<string, string | string[] | null>>;
   const [cards, keywords, relics, potions, powers, enchantments, afflictions, dominions, sources, localCardKeywords, localStatic, localOrbs, engCardKeywords, engStatic, engOrbs] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexKeywords({ gameLocale }),
@@ -129,10 +129,11 @@ async function auditLocale(gameLocale: GameLocale) {
     affliction: new Set(afflictions.map((affliction) => affliction.id)),
   };
   for (const [element, words] of Object.entries(goldTips)) {
-    for (const [word, ref] of Object.entries(words)) {
-      if (!ref) continue;
-      const [kind, id] = ref.split(":");
-      check(Boolean(known[kind]?.has(id)), `${gameLocale} ${element} "${word}" names ${ref}, which the site does not have`);
+    for (const [word, refs] of Object.entries(words)) {
+      for (const ref of refs ? [refs].flat() : []) {
+        const [kind, id] = ref.split(":");
+        check(Boolean(known[kind]?.has(id)), `${gameLocale} ${element} "${word}" names ${ref}, which the site does not have`);
+      }
     }
   }
   for (const [type, list] of [["relic", relics], ["enchantment", enchantments], ["affliction", afflictions], ["dominion", dominions]] as const) {

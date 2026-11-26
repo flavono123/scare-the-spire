@@ -91,6 +91,7 @@ import {
 } from "./codex-types";
 import { groupAncientDialogueLines } from "./ancient-dialogue";
 import gameTips from "../../data/sts2/game-tips.json";
+import type { GoldTip } from "./codex-types";
 import { cardServiceTags } from "./card-service-tags";
 import {
   getMadSciencePreviewCard,
@@ -814,7 +815,7 @@ async function readJson<T>(relativePath: string): Promise<T> {
   return JSON.parse(raw);
 }
 
-type GoldTips = Record<string, Record<string, string | null>>;
+type GoldTips = Record<string, Record<string, GoldTip>>;
 
 /**
  * Each element's gold words and the game tip each names, or null ("<type>:<ID>" -> word -> "<type>:<ID>"),

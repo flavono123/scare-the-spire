@@ -168,14 +168,14 @@
   "Blocco": "keyword:BLOCK"
  },
  "card:BALL_LIGHTNING": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Elettroglobo": "keyword:LIGHTNING_ORB"
  },
  "card:BANSHEES_CRY": {
   "Evanescenza": "keyword:ETHEREAL"
  },
  "card:BARRAGE": {
-  "canalizzato": null
+  "canalizzato": "keyword:CHANNELING"
  },
  "card:BARRICADE": {
   "Blocco": "keyword:BLOCK"
@@ -283,7 +283,7 @@
   "Mira": "power:AIM"
  },
  "card:BRAND": {
-  "Esaurisci": null,
+  "Esaurisci": "keyword:EXHAUST",
   "Forza": "power:STRENGTH"
  },
  "card:BREAK": {
@@ -318,7 +318,7 @@
   "mano": null
  },
  "card:BURNING_PACT": {
-  "Esaurisci": null
+  "Esaurisci": "keyword:EXHAUST"
  },
  "card:BYRDONIS_EGG": {
   "luogo di riposo": null
@@ -348,7 +348,7 @@
   "mazzo di pesca": null
  },
  "card:CHAOS": {
-  "Canalizzi": null
+  "Canalizzi": "keyword:CHANNELING"
  },
  "card:CHARGE": {
   "mazzo di pesca": null,
@@ -361,7 +361,7 @@
   "Blocco": "keyword:BLOCK"
  },
  "card:CHILL": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Crioglobo": "keyword:FROST_ORB"
  },
  "card:CHO_BARBS": {
@@ -393,13 +393,13 @@
   "mazzo di pesca": null
  },
  "card:CINDER": {
-  "Esaurisci": null
+  "Esaurisci": "keyword:EXHAUST"
  },
  "card:CLASH": {
   "mano": null
  },
  "card:CLEANSE": {
-  "Esaurisci": null,
+  "Esaurisci": "keyword:EXHAUST",
   "Invocazione": "keyword:SUMMON_STATIC",
   "mazzo di pesca": null
  },
@@ -413,10 +413,14 @@
   "Blocco": "keyword:BLOCK"
  },
  "card:CODA": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Crioglobo": "keyword:FROST_ORB"
  },
  "card:COLLISION_COURSE": {
@@ -435,7 +439,7 @@
   "Blocco": "keyword:BLOCK",
   "Carburante": "card:FUEL",
   "Carburante+": "card:FUEL",
-  "Trasformi": null,
+  "Trasformi": "keyword:TRANSFORM",
   "mano": null
  },
  "card:CONCOCT": {
@@ -449,20 +453,20 @@
   "Blocco": "keyword:BLOCK"
  },
  "card:CONSUMING_SHADOW": {
-  "Canalizzi": null,
-  "Tetroglobi": null,
-  "evochi": null,
+  "Canalizzi": "keyword:CHANNELING",
+  "Tetroglobi": "keyword:DARK_ORB",
+  "evochi": "keyword:EVOKE",
   "plural:Tetroglobo": null
  },
  "card:CONVERGENCE": {
-  "conservi": null,
+  "conservi": "keyword:RETAIN",
   "mano": null
  },
  "card:COOLANT": {
   "Blocco": "keyword:BLOCK"
  },
  "card:COOLHEADED": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Crioglobo": "keyword:FROST_ORB"
  },
  "card:COORDINATE": {
@@ -506,11 +510,11 @@
   "Blocco": null
  },
  "card:DARKNESS": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Tetroglobo": "keyword:DARK_ORB"
  },
  "card:DARK_EMBRACE": {
-  "esaurita": null
+  "esaurita": "keyword:EXHAUST"
  },
  "card:DARK_SHACKLES": {
   "Forza": "power:STRENGTH"
@@ -643,10 +647,10 @@
   "pila degli scarti": null
  },
  "card:DRUM_OF_BATTLE": {
-  "esaurita": null
+  "esaurita": "keyword:EXHAUST"
  },
  "card:DUALCAST": {
-  "Evochi": null
+  "Evochi": "keyword:EVOKE"
  },
  "card:DUAL_WIELD": {
   "mano": null
@@ -689,7 +693,7 @@
  },
  "card:ENTROPY": {
   "mano": null,
-  "trasformi": null
+  "trasformi": "keyword:TRANSFORM"
  },
  "card:ENVENOM": {
   "Veleno": "power:POISON"
@@ -700,7 +704,7 @@
  },
  "card:EQUILIBRIUM": {
   "Blocco": "keyword:BLOCK",
-  "conservi": null,
+  "conservi": "keyword:RETAIN",
   "mano": null
  },
  "card:ESCAPE_PLAN": {
@@ -711,14 +715,14 @@
  },
  "card:EVIL_EYE": {
   "Blocco": "keyword:BLOCK",
-  "esaurire": null
+  "esaurire": "keyword:EXHAUST"
  },
  "card:EXPECT_A_FIGHT": {
   "Blocco": "keyword:BLOCK",
   "mano": null
  },
  "card:EXPERTISE": {
-  "Conservi": null,
+  "Conservi": "keyword:RETAIN",
   "mano": null
  },
  "card:EXPLOSIVE_ARROWS": {
@@ -747,14 +751,14 @@
   "Vulnerabilità": "power:VULNERABLE"
  },
  "card:FEED": {
-  "letale": null
+  "letale": "keyword:FATAL"
  },
  "card:FEEDING_FRENZY": {
   "Forza": "power:STRENGTH"
  },
  "card:FEEL_NO_PAIN": {
   "Blocco": "keyword:BLOCK",
-  "esaurita": null
+  "esaurita": "keyword:EXHAUST"
  },
  "card:FERAL": {
   "mano": null
@@ -763,8 +767,8 @@
   "Osty": null
  },
  "card:FIEND_FIRE": {
-  "Esaurisci": null,
-  "esaurita": null,
+  "Esaurisci": "keyword:EXHAUST",
+  "esaurita": "keyword:EXHAUST",
   "mano": null
  },
  "card:FIGHT_ME": {
@@ -782,8 +786,8 @@
   "Blocco": "keyword:BLOCK"
  },
  "card:FLAK_CANNON": {
-  "Esaurisci": null,
-  "esaurita": null
+  "Esaurisci": "keyword:EXHAUST",
+  "esaurita": "keyword:EXHAUST"
  },
  "card:FLAME_BARRIER": {
   "Blocco": "keyword:BLOCK"
@@ -818,7 +822,7 @@
   "mazzo di pesca": null
  },
  "card:FORGOTTEN_RITUAL": {
-  "esaurito": null
+  "esaurito": "keyword:EXHAUST"
  },
  "card:FRANTIC_ESCAPE": {
   "Sabbie Mobili": "power:SANDPIT"
@@ -830,7 +834,7 @@
   "Forgiatura": "keyword:FORGE"
  },
  "card:FUSION": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Plasmaglobo": "keyword:PLASMA_ORB"
  },
  "card:GAMMA_BLAST": {
@@ -848,12 +852,12 @@
  },
  "card:GLACIER": {
   "Blocco": "keyword:BLOCK",
-  "Canalizzi": null,
-  "Crioglobi": null
+  "Canalizzi": "keyword:CHANNELING",
+  "Crioglobi": "keyword:FROST_ORB"
  },
  "card:GLASSWORK": {
   "Blocco": "keyword:BLOCK",
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Vitreoglobo": "keyword:GLASS_ORB"
  },
  "card:GLIMMER": {
@@ -911,10 +915,10 @@
  },
  "card:HAMMER_TIME": {
   "forgi": null,
-  "forgiano": null
+  "forgiano": "keyword:FORGE"
  },
  "card:HAND_OF_GREED": {
-  "letale": null,
+  "letale": "keyword:FATAL",
   "oro": null
  },
  "card:HAND_TRICK": {
@@ -922,11 +926,19 @@
   "Blocco": "keyword:BLOCK",
   "mano": null
  },
+ "card:HARMONIC_SHIELD": {
+  "Block": "keyword:BLOCK",
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
+ },
  "card:HAUNT": {
   "Anima": "card:SOUL"
  },
  "card:HAVOC": {
-  "esaurisci": null,
+  "esaurisci": "keyword:EXHAUST",
   "mazzo di pesca": null
  },
  "card:HAZE": {
@@ -978,7 +990,7 @@
   "pila degli scarti": null
  },
  "card:HONING": {
-  "frecce": null
+  "frecce": "keyword:ARROW"
  },
  "card:HOTFIX": {
   "Focus": "power:FOCUS"
@@ -990,8 +1002,8 @@
   "Focus": "power:FOCUS"
  },
  "card:ICE_LANCE": {
-  "Canalizzi": null,
-  "Crioglobi": null,
+  "Canalizzi": "keyword:CHANNELING",
+  "Crioglobi": "keyword:FROST_ORB",
   "plural:Crioglobo": null
  },
  "card:IGNITION": {
@@ -1066,7 +1078,7 @@
  "card:KI_REST": {
   "Melodia Cho": "keyword:CHO_MELODY",
   "Melodia Wah": "keyword:WAH_MELODY",
-  "conservi": null,
+  "conservi": "keyword:RETAIN",
   "mano": null
  },
  "card:KNIFE_TRAP": {
@@ -1105,7 +1117,7 @@
  "card:LIGHTNING_ROD": {
   "Blocco": "keyword:BLOCK",
   "Elettroglobo": "keyword:LIGHTNING_ORB",
-  "canalizzi": null
+  "canalizzi": "keyword:CHANNELING"
  },
  "card:LOCKED_IN": {
   "mano": null,
@@ -1113,12 +1125,20 @@
   "scoccare": null
  },
  "card:LOST_LUTE": {
-  "Melodia": null,
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "mazzo di pesca": null
  },
  "card:LULLABY": {
   "Blocco": "keyword:BLOCK",
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MAD_SCIENCE": {
   "Blocco": null,
@@ -1154,7 +1174,11 @@
   "Blocco": "keyword:BLOCK"
  },
  "card:MELODIC_SHOT": {
-  "Melodia": null,
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Scocchi": null,
   "freccia": "keyword:ARROW"
  },
@@ -1166,8 +1190,8 @@
   "Vulnerabilità": "power:VULNERABLE"
  },
  "card:METEOR_STRIKE": {
-  "Canalizzi": null,
-  "Plasmaglobi": null
+  "Canalizzi": "keyword:CHANNELING",
+  "Plasmaglobi": "keyword:PLASMA_ORB"
  },
  "card:MIDNIGHT": {
   "esaurito": null
@@ -1204,14 +1228,18 @@
   "Forza": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "Tristezza": "card:SADNESS",
   "mano": null
  },
  "card:MULTI_CAST": {
-  "Evochi": null
+  "Evochi": "keyword:EVOKE"
  },
  "card:MYTHIC_FORM": {
   "Tarocco": "keyword:TAROT",
@@ -1262,7 +1290,7 @@
   "Condanna": "power:DOOM"
  },
  "card:NULL": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Debolezza": "power:WEAK",
   "Tetroglobo": "keyword:DARK_ORB"
  },
@@ -1273,9 +1301,9 @@
   "mano": null
  },
  "card:OPTIMISM": {
-  "Esaurisci": null,
+  "Esaurisci": "keyword:EXHAUST",
   "Tristezza": "card:SADNESS",
-  "esaurita": null,
+  "esaurita": "keyword:EXHAUST",
   "mano": null
  },
  "card:OUTBREAK": {
@@ -1368,7 +1396,7 @@
   "mano": null
  },
  "card:PURITY": {
-  "esaurire": null,
+  "esaurire": "keyword:EXHAUST",
   "mano": null
  },
  "card:PUTREFY": {
@@ -1376,7 +1404,7 @@
   "Vulnerabilità": "power:VULNERABLE"
  },
  "card:QUADCAST": {
-  "Evochi": null
+  "Evochi": "keyword:EVOKE"
  },
  "card:QUASAR": {
   "mano": null,
@@ -1390,14 +1418,14 @@
   "scocchi": null
  },
  "card:QUIVER": {
-  "frecce": null,
+  "frecce": "keyword:ARROW",
   "plural:freccia": null
  },
  "card:RAGE": {
   "Blocco": "keyword:BLOCK"
  },
  "card:RAINBOW": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Crioglobo": "keyword:FROST_ORB",
   "Elettroglobo": "keyword:LIGHTNING_ORB",
   "Tetroglobo": "keyword:DARK_ORB"
@@ -1440,8 +1468,8 @@
   "Blocco": "keyword:BLOCK"
  },
  "card:REFRACT": {
-  "Canalizzi": null,
-  "Vitreoglobi": null,
+  "Canalizzi": "keyword:CHANNELING",
+  "Vitreoglobi": "keyword:GLASS_ORB",
   "plural:Vitreoglobo": null
  },
  "card:REGRET": {
@@ -1461,7 +1489,11 @@
   "mano": null
  },
  "card:RHYTHM_STRIKE": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "Osty": null,
@@ -1483,11 +1515,11 @@
   "Osty": null
  },
  "card:SALVO": {
-  "conservi": null,
+  "conservi": "keyword:RETAIN",
   "mano": null
  },
  "card:SCAVENGE": {
-  "Esaurisci": null
+  "Esaurisci": "keyword:EXHAUST"
  },
  "card:SCOURGE": {
   "Condanna": "power:DOOM"
@@ -1505,8 +1537,8 @@
  },
  "card:SECOND_WIND": {
   "Blocco": "keyword:BLOCK",
-  "Esaurisci": null,
-  "esaurita": null,
+  "Esaurisci": "keyword:EXHAUST",
+  "esaurita": "keyword:EXHAUST",
   "mano": null
  },
  "card:SECRET_TECHNIQUE": {
@@ -1552,7 +1584,7 @@
  },
  "card:SHADOW_SHIELD": {
   "Blocco": "keyword:BLOCK",
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Tetroglobo": "keyword:DARK_ORB"
  },
  "card:SHADOW_STEP": {
@@ -1570,7 +1602,7 @@
   "potenzi": null
  },
  "card:SHATTER": {
-  "Evochi": null
+  "Evochi": "keyword:EVOKE"
  },
  "card:SHINING_STRIKE": {
   "mazzo di pesca": null
@@ -1615,6 +1647,10 @@
   "Blocco": "keyword:BLOCK",
   "Melodia Cho": "keyword:CHO_MELODY"
  },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
+ },
  "card:SOULBOUND": {
   "Anima": "card:SOUL",
   "mazzo di pesca": null
@@ -1630,9 +1666,9 @@
   "mano": null
  },
  "card:SPINNER": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Vitreoglobo": "keyword:GLASS_ORB",
-  "canalizzi": null
+  "canalizzi": "keyword:CHANNELING"
  },
  "card:SPIRIT_OF_ASH": {
   "Blocco": "keyword:BLOCK",
@@ -1672,7 +1708,11 @@
   "Blocco": null
  },
  "card:STEADY_CADENCE": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "Esaurisci": null,
@@ -1684,8 +1724,8 @@
   "Placcatura": "power:PLATING"
  },
  "card:STORM": {
-  "Elettroglobi": null,
-  "canalizzi": null,
+  "Elettroglobi": "keyword:LIGHTNING_ORB",
+  "canalizzi": "keyword:CHANNELING",
   "plural:Elettroglobo": null
  },
  "card:STORM_OF_STEEL": {
@@ -1732,23 +1772,23 @@
   "Blocco": "keyword:BLOCK"
  },
  "card:TEMPEST": {
-  "Canalizzi": null,
-  "Elettroglobi": null,
+  "Canalizzi": "keyword:CHANNELING",
+  "Elettroglobi": "keyword:LIGHTNING_ORB",
   "plural:Elettroglobo": null
  },
  "card:TERRAFORMING": {
   "Vigore": "power:VIGOR"
  },
  "card:TESLA_COIL": {
-  "Elettroglobi": null
+  "Elettroglobi": "keyword:LIGHTNING_ORB"
  },
  "card:TEZCATARAS_MIGHT": {
   "Forza": null
  },
  "card:THE_DEVIL": {
-  "Esaurisci": null,
+  "Esaurisci": "keyword:EXHAUST",
   "Potenzi": null,
-  "esaurita": null,
+  "esaurita": "keyword:EXHAUST",
   "mano": null,
   "mazzo di pesca": null
  },
@@ -1764,19 +1804,19 @@
  },
  "card:THE_HERMIT": {
   "Maledizione": null,
-  "esaurite": null
+  "esaurite": "keyword:EXHAUST"
  },
  "card:THE_HIEROPHANT": {
   "mano": null
  },
  "card:THE_HUNT": {
-  "letale": null
+  "letale": "keyword:FATAL"
  },
  "card:THE_LOVERS": {
   "mano": null
  },
  "card:THE_MAGICIAN": {
-  "Canalizzi": null
+  "Canalizzi": "keyword:CHANNELING"
  },
  "card:THE_MOON": {
   "Pugnale": "card:SHIV",
@@ -1803,7 +1843,7 @@
   "mazzo di pesca": null
  },
  "card:THRASH": {
-  "Esaurisci": null,
+  "Esaurisci": "keyword:EXHAUST",
   "mano": null
  },
  "card:THRUMMING_HATCHET": {
@@ -1835,7 +1875,7 @@
   "mano": null
  },
  "card:TRASH_TO_TREASURE": {
-  "canalizzi": null
+  "canalizzi": "keyword:CHANNELING"
  },
  "card:TREMBLE": {
   "Vulnerabilità": "power:VULNERABLE"
@@ -1846,7 +1886,7 @@
  },
  "card:TRUE_GRIT": {
   "Blocco": "keyword:BLOCK",
-  "Esaurisci": null
+  "Esaurisci": "keyword:EXHAUST"
  },
  "card:TUNE": {
   "Melodia Ki": "keyword:KI_MELODY",
@@ -1866,7 +1906,7 @@
   "freccia": "keyword:ARROW"
  },
  "card:TYRANNY": {
-  "esaurisci": null,
+  "esaurisci": "keyword:EXHAUST",
   "mano": null
  },
  "card:ULTIMATE_DEFEND": {
@@ -1924,10 +1964,10 @@
   "mano": null
  },
  "card:VOLTAIC": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Canalizzi Elettroglobi": null,
-  "Elettroglobi": null,
-  "canalizzati": null,
+  "Elettroglobi": "keyword:LIGHTNING_ORB",
+  "canalizzati": "keyword:CHANNELING",
   "plural:Elettroglobo": null
  },
  "card:WAH_BLAST": {
@@ -1998,7 +2038,7 @@
   "Flessibilità": "power:STRETCH"
  },
  "card:ZAP": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Elettroglobo": "keyword:LIGHTNING_ORB"
  },
  "character:FOOL": {
@@ -2222,7 +2262,7 @@
  },
  "event:AROMA_OF_CHAOS": {
   "Potenzi": null,
-  "Trasformi": null,
+  "Trasformi": "keyword:TRANSFORM",
   "affronti nemici formidabili": null,
   "mazzo": null
  },
@@ -2250,7 +2290,7 @@
   "Scheggia prismatica": null
  },
  "event:COLOSSAL_FLOWER": {
-  "Nucleo pollinico": null,
+  "Nucleo pollinico": "relic:POLLINOUS_CORE",
   "nettare": null,
   "nettare di alta qualità": null,
   "nettare dorato": null,
@@ -2290,7 +2330,7 @@
   "pozione": null
  },
  "event:FIELD_OF_MAN_SIZED_HOLES": {
-  "Incanti": null,
+  "Incanti": "enchantment:PERFECT_FIT",
   "luce fioca": null,
   "mazzo": null
  },
@@ -2322,12 +2362,12 @@
   "reliquia": null
  },
  "event:MORPHIC_GROVE": {
-  "Trasformi": null,
+  "Trasformi": "keyword:TRANSFORM",
   "l'oro": null,
   "oro": null
  },
  "event:POTION_COURIER": {
-  "Pozioni Nefaste": null,
+  "Pozioni Nefaste": "potion:FOUL_POTION",
   "addetto alle consegne di pozioni": null,
   "plural:Pozione Nefasta": null,
   "pozione non comune": null
@@ -2408,7 +2448,7 @@
  },
  "event:SYMBIOTE": {
   "Incanti": null,
-  "trasformare": null
+  "trasformare": "keyword:TRANSFORM"
  },
  "event:TABLET_OF_TRUTH": {
   "Potenzi": null,
@@ -2464,7 +2504,7 @@
  "event:TRIAL": {
   "Esprimi un verdetto": null,
   "Potenzi": null,
-  "Trasformi": null,
+  "Trasformi": "keyword:TRANSFORM",
   "arco dorato": null,
   "mazzo": null,
   "nobile": null,
@@ -2522,7 +2562,7 @@
   "oro": null,
   "pozioni": null,
   "trasforma": null,
-  "trasformare": null
+  "trasformare": "keyword:TRANSFORM"
  },
  "event:WOOD_CARVINGS": {
   "Incanta": null,
@@ -2679,8 +2719,8 @@
   "Focus": null
  },
  "potion:ASHWATER": {
-  "Esaurisci": null,
-  "esaurire": null,
+  "Esaurisci": "keyword:EXHAUST",
+  "esaurire": "keyword:EXHAUST",
   "mano": null
  },
  "potion:ATTACK_POTION": {
@@ -2731,7 +2771,7 @@
   "mazzo di pesca": null
  },
  "potion:ESSENCE_OF_DARKNESS": {
-  "Canalizzi": null,
+  "Canalizzi": "keyword:CHANNELING",
   "Tetroglobo": "keyword:DARK_ORB",
   "spazi per Globi": null
  },
@@ -2756,7 +2796,7 @@
   "Intangibilità": "power:INTANGIBLE"
  },
  "potion:GLOWWATER_POTION": {
-  "Esaurisci": null,
+  "Esaurisci": "keyword:EXHAUST",
   "mano": null
  },
  "potion:HEART_OF_IRON": {
@@ -2829,7 +2869,7 @@
   "Destrezza": "power:DEXTERITY"
  },
  "potion:STABLE_SERUM": {
-  "Conservi": null,
+  "Conservi": "keyword:RETAIN",
   "mano": null
  },
  "potion:STRENGTH_POTION": {
@@ -2945,7 +2985,7 @@
   "Veleno": "power:POISON"
  },
  "power:CORRUPTION": {
-  "esaurita": null
+  "esaurita": "keyword:EXHAUST"
  },
  "power:COUNTDOWN": {
   "Condanna": "power:DOOM"
@@ -2977,7 +3017,7 @@
   "Blocco": null
  },
  "power:DARK_EMBRACE": {
-  "esaurita": null
+  "esaurita": "keyword:EXHAUST"
  },
  "power:DEBILITATE": {
   "Debolezza": "power:WEAK",
@@ -3031,7 +3071,7 @@
  },
  "power:ENTROPY": {
   "mano": null,
-  "trasformi": null
+  "trasformi": "keyword:TRANSFORM"
  },
  "power:ENVENOM": {
   "Veleno": "power:POISON"
@@ -3083,7 +3123,7 @@
  },
  "power:HAMMER_TIME": {
   "Forgiatura": "keyword:FORGE",
-  "forgiano": null
+  "forgiano": "keyword:FORGE"
  },
  "power:HANG": {
   "Impiccagione": "card:HANG"
@@ -3143,15 +3183,23 @@
  },
  "power:LIGHTNING_ROD": {
   "Elettroglobo": "keyword:LIGHTNING_ORB",
-  "canalizzi": null
+  "canalizzi": "keyword:CHANNELING"
  },
  "power:LOST_LUTE": {
-  "Melodia": null,
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "mazzo di pesca": null
  },
  "power:LULLABY": {
   "Blocco": "keyword:BLOCK",
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "Astuzia": null
@@ -3169,10 +3217,14 @@
   "Forza": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
-  "Tarocchi": null,
+  "Tarocchi": "keyword:TAROT",
   "Tarocco": "keyword:TAROT",
   "mano": null
  },
@@ -3379,9 +3431,9 @@
   "mano": null
  },
  "power:SPINNER": {
-  "Vitreoglobi": null,
+  "Vitreoglobi": "keyword:GLASS_ORB",
   "Vitreoglobo": "keyword:GLASS_ORB",
-  "canalizzi": null,
+  "canalizzi": "keyword:CHANNELING",
   "plural:Vitreoglobo": null
  },
  "power:SPIRIT_OF_ASH": {
@@ -3392,9 +3444,9 @@
   "mano": null
  },
  "power:STORM": {
-  "Elettroglobi": null,
+  "Elettroglobi": "keyword:LIGHTNING_ORB",
   "Elettroglobo": "keyword:LIGHTNING_ORB",
-  "canalizzi": null,
+  "canalizzi": "keyword:CHANNELING",
   "plural:Elettroglobo": null
  },
  "power:STRATAGEM": {
@@ -3472,7 +3524,7 @@
   "potenzi": null
  },
  "power:TYRANNY": {
-  "esaurisci": null,
+  "esaurisci": "keyword:EXHAUST",
   "mano": null
  },
  "power:UNDERWORLD": {
@@ -3507,7 +3559,7 @@
   "Vulnerabilità": null
  },
  "power:WITHERING_PRESENCE": {
-  "Deterioramento": null,
+  "Deterioramento": "card:WITHER",
   "mano": null
  },
  "power:WRAITH_FORM": {
@@ -3629,11 +3681,11 @@
   "Spinascudo": "power:THORNS"
  },
  "relic:BURNING_STICKS": {
-  "esaurisci": null,
+  "esaurisci": "keyword:EXHAUST",
   "mano": null
  },
  "relic:BYRDINE": {
-  "Gryfoncello": null,
+  "Gryfoncello": "card:GOD_BYRD",
   "Gryfone Divino": "card:GOD_BYRD",
   "Gryfone in Picchiata": "card:BYRD_SWOOP",
   "trasformi": null
@@ -3674,11 +3726,15 @@
   "mano": null
  },
  "relic:CONDUCTORS_BATON": {
-  "Melodia": null
+  "Melodia": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
-  "Elettroglobi": null,
-  "canalizzi": null,
+  "Elettroglobi": "keyword:LIGHTNING_ORB",
+  "canalizzi": "keyword:CHANNELING",
   "plural:Elettroglobo": null
  },
  "relic:CROSSBOW": {
@@ -3841,9 +3897,9 @@
   "Blocco": "keyword:BLOCK"
  },
  "relic:INFUSED_CORE": {
-  "Elettroglobi": null,
+  "Elettroglobi": "keyword:LIGHTNING_ORB",
   "Elettroglobo": "keyword:LIGHTNING_ORB",
-  "canalizzi": null,
+  "canalizzi": "keyword:CHANNELING",
   "plural:Elettroglobo": null
  },
  "relic:INTIMIDATING_HELMET": {
@@ -3858,7 +3914,7 @@
   "mazzo": null
  },
  "relic:JOSS_PAPER": {
-  "esaurisci": null
+  "esaurisci": "keyword:EXHAUST"
  },
  "relic:JUZU_BRACELET": {
   "?": null
@@ -3889,8 +3945,8 @@
  "relic:LEAFY_POULTICE": {
   "Colpo": null,
   "Difendi": null,
-  "Trasformi": null,
-  "trasformi": null
+  "Trasformi": "keyword:TRANSFORM",
+  "trasformi": "keyword:TRANSFORM"
  },
  "relic:LORDS_PARASOL": {
   "mercante": null
@@ -3910,7 +3966,7 @@
   "oro": null
  },
  "relic:MEAT_CLEAVER": {
-  "cucinare": null
+  "cucinare": "keyword:COOK"
  },
  "relic:METRONOME": {
   "Globi": null,
@@ -3933,7 +3989,7 @@
   "potenzi": null
  },
  "relic:MUMMIFIED_HAND": {
-  "mano": null
+  "mano": "relic:MUMMIFIED_HAND"
  },
  "relic:MUSIC_BOX": {
   "Evanescenza": "keyword:ETHEREAL"
@@ -3965,8 +4021,8 @@
   "mazzo": null
  },
  "relic:NEW_LEAF": {
-  "Trasformi": null,
-  "trasformi": null
+  "Trasformi": "keyword:TRANSFORM",
+  "trasformi": "keyword:TRANSFORM"
  },
  "relic:NINJA_SCROLL": {
   "carte Pugnale": null,
@@ -4006,7 +4062,7 @@
   "incanti": null
  },
  "relic:PAELS_EYE": {
-  "esaurisci": null,
+  "esaurisci": "keyword:EXHAUST",
   "mano": null
  },
  "relic:PAELS_GROWTH": {
@@ -4116,7 +4172,7 @@
   "Forza": "power:STRENGTH"
  },
  "relic:RINGING_TRIANGLE": {
-  "Conservi": null,
+  "Conservi": "keyword:RETAIN",
   "mano": null
  },
  "relic:RIPPLE_BASIN": {
@@ -4222,8 +4278,8 @@
   "Élite": null
  },
  "relic:SYMBIOTIC_VIRUS": {
-  "Tetroglobi": null,
-  "canalizzi": null,
+  "Tetroglobi": "keyword:DARK_ORB",
+  "canalizzi": "keyword:CHANNELING",
   "plural:Tetroglobo": null
  },
  "relic:TANXS_WHISTLE": {
@@ -4244,7 +4300,7 @@
  },
  "relic:TOASTY_MITTENS": {
   "Forza": "power:STRENGTH",
-  "esaurisci": null,
+  "esaurisci": "keyword:EXHAUST",
   "mano": null
  },
  "relic:TOOLBOX": {

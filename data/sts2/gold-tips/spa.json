@@ -1,7 +1,7 @@
 {
  "affliction:BOUND": {
   "Ligada": "affliction:BOUND",
-  "Ligadas": null
+  "Ligadas": "affliction:BOUND"
  },
  "affliction:HEXED": {
   "Etérea": "keyword:ETHEREAL"
@@ -101,7 +101,7 @@
   "Veneno": "power:POISON"
  },
  "card:ACCURACY": {
-  "Navajas": null
+  "Navajas": "card:SHIV"
  },
  "card:ADAPTIVE_STRIKE": {
   "Pila de descarte": null
@@ -169,14 +169,14 @@
   "Bloqueo": "keyword:BLOCK"
  },
  "card:BALL_LIGHTNING": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "card:BANSHEES_CRY": {
   "Etérea": "keyword:ETHEREAL"
  },
  "card:BARRAGE": {
-  "Invocado": null
+  "Invocado": "keyword:CHANNELING"
  },
  "card:BARRICADE": {
   "Bloqueo": "keyword:BLOCK"
@@ -194,7 +194,7 @@
   "Pila de descarte": null
  },
  "card:BEAT_INTO_SHAPE": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:BECKON": {
   "Mano": null
@@ -209,21 +209,21 @@
   "Concentración": "power:FOCUS"
  },
  "card:BIG_BANG": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:BLADE_DANCE": {
   "Mano": null,
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "plural:Navaja": null
  },
  "card:BLADE_OF_INK": {
   "Mano": null,
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "plural:Navaja": null
  },
  "card:BLADE_SYMPHONY": {
   "Mano": null,
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "plural:Navaja": null
  },
  "card:BLAZE": {
@@ -312,7 +312,7 @@
  },
  "card:BULWARK": {
   "Bloqueo": "keyword:BLOCK",
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:BUNDLE_OF_JOY": {
   "Mano": null
@@ -340,7 +340,7 @@
   "Mano": null
  },
  "card:CAPTURE_SPIRIT": {
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Pila de robo": null,
   "plural:Alma": null
  },
@@ -351,7 +351,7 @@
   "Pila de robo": null
  },
  "card:CHAOS": {
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:CHARGE": {
   "Pila de robo": null,
@@ -365,7 +365,7 @@
  },
  "card:CHILL": {
   "Escarcha": "keyword:FROST_ORB",
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:CHO_BARBS": {
   "Bloqueo": "keyword:BLOCK",
@@ -409,18 +409,22 @@
  "card:CLOAK_AND_DAGGER": {
   "Bloqueo": "keyword:BLOCK",
   "Mano": null,
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "plural:Navaja": null
  },
  "card:CLOAK_OF_STARS": {
   "Bloqueo": "keyword:BLOCK"
  },
  "card:CODA": {
-  "Melodía": null
+  "Melodía": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
   "Escarcha": "keyword:FROST_ORB",
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:COLLISION_COURSE": {
   "Escombros": "card:DEBRIS",
@@ -428,7 +432,7 @@
  },
  "card:COLOSSUS": {
   "Bloqueo": "keyword:BLOCK",
-  "Vulnerables": null
+  "Vulnerables": "power:VULNERABLE"
  },
  "card:COMET": {
   "Debilidad": "power:WEAK",
@@ -439,21 +443,21 @@
   "Combustible": "card:FUEL",
   "Combustible+": "card:FUEL",
   "Mano": null,
-  "Transforma": null
+  "Transforma": "keyword:TRANSFORM"
  },
  "card:CONCOCT": {
   "Veneno": "power:POISON"
  },
  "card:CONQUEROR": {
   "Espada del soberano": "card:SOVEREIGN_BLADE",
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:CONSTELLATION": {
   "Bloqueo": "keyword:BLOCK"
  },
  "card:CONSUMING_SHADOW": {
-  "Descarga": null,
-  "Invoca": null,
+  "Descarga": "keyword:EVOKE",
+  "Invoca": "keyword:CHANNELING",
   "Oscuridad": "keyword:DARK_ORB"
  },
  "card:CONVERGENCE": {
@@ -465,7 +469,7 @@
  },
  "card:COOLHEADED": {
   "Escarcha": "keyword:FROST_ORB",
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:COORDINATE": {
   "Fuerza": "power:STRENGTH"
@@ -499,7 +503,7 @@
   "Bloqueo": "keyword:BLOCK"
  },
  "card:CRUELTY": {
-  "Vulnerables": null
+  "Vulnerables": "power:VULNERABLE"
  },
  "card:CRUSH_UNDER": {
   "Fuerza": "power:STRENGTH"
@@ -508,11 +512,11 @@
   "Bloqueo": null
  },
  "card:DARKNESS": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Oscuridad": "keyword:DARK_ORB"
  },
  "card:DARK_EMBRACE": {
-  "Agote": null
+  "Agote": "keyword:EXHAUST"
  },
  "card:DARK_SHACKLES": {
   "Fuerza": "power:STRENGTH"
@@ -597,11 +601,11 @@
  },
  "card:DEVOUR_LIFE": {
   "Alma": "card:SOUL",
-  "Vincula": null
+  "Vincula": "keyword:SUMMON_STATIC"
  },
  "card:DIRGE": {
-  "Almas": null,
-  "Almas+": null,
+  "Almas": "card:SOUL",
+  "Almas+": "card:SOUL",
   "Pila de robo": null,
   "Vincula": "keyword:SUMMON_STATIC"
  },
@@ -612,7 +616,7 @@
   "Disparos": null
  },
  "card:DISMANTLE": {
-  "Vulnerable": null
+  "Vulnerable": "power:VULNERABLE"
  },
  "card:DISTRACTION": {
   "Mano": null
@@ -648,7 +652,7 @@
   "Agota": null
  },
  "card:DUALCAST": {
-  "Descarga": null
+  "Descarga": "keyword:EVOKE"
  },
  "card:DUAL_WIELD": {
   "Mano": null
@@ -663,7 +667,7 @@
   "Tristeza": "card:SADNESS"
  },
  "card:EIDOLON": {
-  "Etéreas": null,
+  "Etéreas": "keyword:ETHEREAL",
   "Pila de agotamiento": null
  },
  "card:END_OF_DAYS": {
@@ -691,7 +695,7 @@
  },
  "card:ENTROPY": {
   "Mano": null,
-  "Transforma": null
+  "Transforma": "keyword:TRANSFORM"
  },
  "card:ENVENOM": {
   "Veneno": "power:POISON"
@@ -712,7 +716,7 @@
   "Blindaje": "power:PLATING"
  },
  "card:EVIL_EYE": {
-  "Agotado": null,
+  "Agotado": "keyword:EXHAUST",
   "Bloqueo": "keyword:BLOCK"
  },
  "card:EXPECT_A_FIGHT": {
@@ -724,10 +728,10 @@
   "Retén": null
  },
  "card:EXPLOSIVE_ARROWS": {
-  "Ensartes": null
+  "Ensartes": "power:IMPALED"
  },
  "card:EXPOSE": {
-  "Artefactos": null,
+  "Artefactos": "power:ARTIFACT",
   "Bloqueo": "keyword:BLOCK",
   "Vulnerabilidad": "power:VULNERABLE"
  },
@@ -740,7 +744,7 @@
  },
  "card:FAN_OF_KNIVES": {
   "Mano": null,
-  "Navajas": null
+  "Navajas": "card:SHIV"
  },
  "card:FASTEN": {
   "Bloqueo": "keyword:BLOCK"
@@ -755,7 +759,7 @@
   "Fuerza": "power:STRENGTH"
  },
  "card:FEEL_NO_PAIN": {
-  "Agotada": null,
+  "Agotada": "keyword:EXHAUST",
   "Bloqueo": "keyword:BLOCK"
  },
  "card:FERAL": {
@@ -766,7 +770,7 @@
  },
  "card:FIEND_FIRE": {
   "Agota": null,
-  "Agotada": null,
+  "Agotada": "keyword:EXHAUST",
   "Mano": null
  },
  "card:FIGHT_ME": {
@@ -774,7 +778,7 @@
  },
  "card:FIGHT_THROUGH": {
   "Bloqueo": "keyword:BLOCK",
-  "Heridas": null,
+  "Heridas": "card:WOUND",
   "Pila de descarte": null
  },
  "card:FINESSE": {
@@ -785,7 +789,7 @@
  },
  "card:FLAK_CANNON": {
   "Agota": null,
-  "Agotada": null
+  "Agotada": "keyword:EXHAUST"
  },
  "card:FLAME_BARRIER": {
   "Bloqueo": "keyword:BLOCK"
@@ -820,7 +824,7 @@
   "Pila de robo": null
  },
  "card:FORGOTTEN_RITUAL": {
-  "Agotado": null
+  "Agotado": "keyword:EXHAUST"
  },
  "card:FRANTIC_ESCAPE": {
   "Arenas movedizas": "power:SANDPIT"
@@ -829,10 +833,10 @@
   "Fuerza": null
  },
  "card:FURNACE": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:FUSION": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Plasma": "keyword:PLASMA_ORB"
  },
  "card:GAMMA_BLAST": {
@@ -851,19 +855,19 @@
  "card:GLACIER": {
   "Bloqueo": "keyword:BLOCK",
   "Escarcha": "keyword:FROST_ORB",
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:GLASSWORK": {
   "Bloqueo": "keyword:BLOCK",
   "Cristal": "keyword:GLASS_ORB",
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:GLIMMER": {
   "Mano": null,
   "Pila de robo": null
  },
  "card:GLIMPSE_BEYOND": {
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Pila de robo": null,
   "plural:Alma": null
  },
@@ -912,8 +916,8 @@
   "Escarcha": "keyword:FROST_ORB"
  },
  "card:HAMMER_TIME": {
-  "Forjan": null,
-  "Forjes": null
+  "Forjan": "keyword:FORGE",
+  "Forjes": "keyword:FORGE"
  },
  "card:HAND_OF_GREED": {
   "Letal": "keyword:FATAL",
@@ -926,7 +930,11 @@
  },
  "card:HARMONIC_SHIELD": {
   "Bloqueo": "keyword:BLOCK",
-  "Melodía": null
+  "Melodía": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:HAUNT": {
   "Alma": "card:SOUL"
@@ -983,6 +991,9 @@
   "Mano": null,
   "Pila de descarte": null
  },
+ "card:HONING": {
+  "Arrows": null
+ },
  "card:HOTFIX": {
   "Concentración": "power:FOCUS"
  },
@@ -994,10 +1005,10 @@
  },
  "card:ICE_LANCE": {
   "Escarcha": "keyword:FROST_ORB",
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:IGNITION": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Plasma": "keyword:PLASMA_ORB"
  },
  "card:IMMORTALITY": {
@@ -1072,7 +1083,7 @@
  },
  "card:KNIFE_TRAP": {
   "Mejora": null,
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "Pila de agotamiento": null,
   "plural:Navaja": null
  },
@@ -1086,14 +1097,14 @@
  },
  "card:LEADING_STRIKE": {
   "Mano": null,
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "plural:Navaja": null
  },
  "card:LEAP": {
   "Bloqueo": "keyword:BLOCK"
  },
  "card:LEGION_OF_BONE": {
-  "Vinculan": null
+  "Vinculan": "keyword:SUMMON_STATIC"
  },
  "card:LEG_SWEEP": {
   "Bloqueo": "keyword:BLOCK",
@@ -1104,7 +1115,7 @@
  },
  "card:LIGHTNING_ROD": {
   "Bloqueo": "keyword:BLOCK",
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "card:LOCKED_IN": {
@@ -1113,12 +1124,20 @@
   "Pila de robo": null
  },
  "card:LOST_LUTE": {
-  "Melodía": null,
+  "Melodía": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Pila de robo": null
  },
  "card:LULLABY": {
   "Bloqueo": "keyword:BLOCK",
-  "Melodías": null
+  "Melodías": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MAD_SCIENCE": {
   "Bloqueo": null,
@@ -1156,7 +1175,11 @@
  "card:MELODIC_SHOT": {
   "Dispara": null,
   "Flecha": "keyword:ARROW",
-  "Melodía": null
+  "Melodía": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:METAMORPHOSIS": {
   "Pila de robo": null
@@ -1166,7 +1189,7 @@
   "Vulnerabilidad": "power:VULNERABLE"
  },
  "card:METEOR_STRIKE": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Plasma": "keyword:PLASMA_ORB"
  },
  "card:MIDNIGHT": {
@@ -1204,14 +1227,18 @@
   "Fuerza": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "Melodía": null
+  "Melodía": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "Mano": null,
   "Tristeza": "card:SADNESS"
  },
  "card:MULTI_CAST": {
-  "Descarga": null
+  "Descarga": "keyword:EVOKE"
  },
  "card:MYTHIC_FORM": {
   "Mano": null,
@@ -1263,7 +1290,7 @@
  },
  "card:NULL": {
   "Debilidad": "power:WEAK",
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Oscuridad": "keyword:DARK_ORB"
  },
  "card:OBLIVION": {
@@ -1274,7 +1301,7 @@
  },
  "card:OPTIMISM": {
   "Agota": null,
-  "Agotada": null,
+  "Agotada": "keyword:EXHAUST",
   "Mano": null,
   "Tristeza": "card:SADNESS"
  },
@@ -1314,7 +1341,7 @@
  },
  "card:PHANTOM_BLADES": {
   "Navaja": "card:SHIV",
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "Retención": "keyword:RETAIN"
  },
  "card:PHOTON_CUT": {
@@ -1377,7 +1404,7 @@
   "Vulnerabilidad": "power:VULNERABLE"
  },
  "card:QUADCAST": {
-  "Descarga": null
+  "Descarga": "keyword:EVOKE"
  },
  "card:QUASAR": {
   "Mano": null,
@@ -1399,7 +1426,7 @@
  },
  "card:RAINBOW": {
   "Escarcha": "keyword:FROST_ORB",
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Oscuridad": "keyword:DARK_ORB",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
@@ -1436,14 +1463,14 @@
   "Flecha": null
  },
  "card:REFINE_BLADE": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:REFLECT": {
   "Bloqueo": "keyword:BLOCK"
  },
  "card:REFRACT": {
   "Cristal": "keyword:GLASS_ORB",
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:REGRET": {
   "Mano": null
@@ -1462,7 +1489,11 @@
   "Mano": null
  },
  "card:RHYTHM_STRIKE": {
-  "Melodía": null
+  "Melodía": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "Mano": null,
@@ -1506,7 +1537,7 @@
  },
  "card:SECOND_WIND": {
   "Agota": null,
-  "Agotada": null,
+  "Agotada": "keyword:EXHAUST",
   "Bloqueo": "keyword:BLOCK",
   "Mano": null
  },
@@ -1524,7 +1555,7 @@
  },
  "card:SEEKING_EDGE": {
   "Espada del soberano": "card:SOVEREIGN_BLADE",
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:SELF_DEPRECATE": {
   "Júbilo": null,
@@ -1537,7 +1568,7 @@
   "Mano": null
  },
  "card:SERRATED_ARROWS": {
-  "Ensartados": null
+  "Ensartados": "power:IMPALED"
  },
  "card:SETUP_STRIKE": {
   "Fuerza": "power:STRENGTH"
@@ -1553,7 +1584,7 @@
  },
  "card:SHADOW_SHIELD": {
   "Bloqueo": "keyword:BLOCK",
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Oscuridad": "keyword:DARK_ORB"
  },
  "card:SHADOW_STEP": {
@@ -1571,7 +1602,7 @@
   "Navaja": null
  },
  "card:SHATTER": {
-  "Descarga": null
+  "Descarga": "keyword:EVOKE"
  },
  "card:SHINING_STRIKE": {
   "Pila de robo": null
@@ -1592,7 +1623,7 @@
  },
  "card:SIC_EM": {
   "Nudillos": null,
-  "Vincula": null
+  "Vincula": "keyword:SUMMON_STATIC"
  },
  "card:SIMPLETON": {
   "Mano": null
@@ -1616,6 +1647,10 @@
   "Bloqueo": "keyword:BLOCK",
   "Melodía Cho": "keyword:CHO_MELODY"
  },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
+ },
  "card:SOULBOUND": {
   "Alma": "card:SOUL",
   "Pila de robo": null
@@ -1632,7 +1667,7 @@
  },
  "card:SPINNER": {
   "Cristal": "keyword:GLASS_ORB",
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:SPIRIT_OF_ASH": {
   "Bloqueo": "keyword:BLOCK",
@@ -1646,7 +1681,7 @@
   "Oro": null
  },
  "card:SPOILS_OF_BATTLE": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:SPUR": {
   "Nudillos": null,
@@ -1672,7 +1707,11 @@
   "Bloqueo": null
  },
  "card:STEADY_CADENCE": {
-  "Melodía": null
+  "Melodía": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "Agota": null,
@@ -1684,7 +1723,7 @@
   "Blindaje": "power:PLATING"
  },
  "card:STORM": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "card:STORM_OF_STEEL": {
@@ -1704,7 +1743,7 @@
  },
  "card:SUMMON_FORTH": {
   "Espada del soberano": "card:SOVEREIGN_BLADE",
-  "Forja": null,
+  "Forja": "keyword:FORGE",
   "Mano": null
  },
  "card:SUPPRESS": {
@@ -1731,21 +1770,21 @@
   "Bloqueo": "keyword:BLOCK"
  },
  "card:TEMPEST": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "card:TERRAFORMING": {
   "Vigor": "power:VIGOR"
  },
  "card:TESLA_COIL": {
-  "Relámpagos": null
+  "Relámpagos": "keyword:LIGHTNING_ORB"
  },
  "card:TEZCATARAS_MIGHT": {
   "Fuerza": null
  },
  "card:THE_DEVIL": {
   "Agota": null,
-  "Agotada": null,
+  "Agotada": "keyword:EXHAUST",
   "Mano": null,
   "Mejora": null,
   "Pila de robo": null
@@ -1761,7 +1800,7 @@
   "Bloqueo": "keyword:BLOCK"
  },
  "card:THE_HERMIT": {
-  "Agotan": null,
+  "Agotan": "keyword:EXHAUST",
   "Maldiciones": null
  },
  "card:THE_HIEROPHANT": {
@@ -1774,19 +1813,19 @@
   "Mano": null
  },
  "card:THE_MAGICIAN": {
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:THE_MOON": {
   "Mano": null,
-  "Navajas": null,
-  "Navajas+": null
+  "Navajas": "card:SHIV",
+  "Navajas+": "card:SHIV"
  },
  "card:THE_SHOT": {
   "Dispara": null,
   "Flecha": "keyword:ARROW"
  },
  "card:THE_SMITH": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:THE_SUN": {
   "Hollín": "card:SOOT",
@@ -1833,7 +1872,7 @@
   "Repetición": "keyword:REPLAY"
  },
  "card:TRASH_TO_TREASURE": {
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "card:TREMBLE": {
   "Vulnerabilidad": "power:VULNERABLE"
@@ -1901,7 +1940,7 @@
  },
  "card:UP_MY_SLEEVE": {
   "Mano": null,
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "plural:Navaja": null
  },
  "card:VEILPIERCER": {
@@ -1923,9 +1962,9 @@
   "Tristeza": "card:SADNESS"
  },
  "card:VOLTAIC": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Invoca X Relámpago": null,
-  "Invocado": null,
+  "Invocado": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "card:WAH_BLAST": {
@@ -1939,7 +1978,11 @@
   "Bloqueo": "keyword:BLOCK"
  },
  "card:WAH_HAMMER": {
-  "Ensartados": null
+  "Ensartados": "power:IMPALED"
+ },
+ "card:WAH_KI": {
+  "Discard Pile": null,
+  "Draw Pile": null
  },
  "card:WAH_TOUCH": {
   "Vulnerabilidad": "power:VULNERABLE"
@@ -1983,7 +2026,7 @@
   "Flecha": null
  },
  "card:WROUGHT_IN_WAR": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "card:YAH": {
   "Extraigas": null,
@@ -1993,7 +2036,7 @@
   "Flexibilidad": "power:STRETCH"
  },
  "card:ZAP": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "character:FOOL": {
@@ -2218,7 +2261,7 @@
  "event:AROMA_OF_CHAOS": {
   "Mazo": null,
   "Mejora": null,
-  "Transforma": null,
+  "Transforma": "keyword:TRANSFORM",
   "abatiendo a poderosos enemigos": null
  },
  "event:BATTLEWORN_DUMMY": {
@@ -2317,11 +2360,11 @@
  },
  "event:MORPHIC_GROVE": {
   "Oro": null,
-  "Transforma": null,
+  "Transforma": "keyword:TRANSFORM",
   "cartera": null
  },
  "event:POTION_COURIER": {
-  "Pociones nauseabundas": null,
+  "Pociones nauseabundas": "potion:FOUL_POTION",
   "Poción poco común": null,
   "plural:Poción nauseabunda": null,
   "repartidor de pociones": null
@@ -2407,7 +2450,7 @@
  "event:SYMBIOTE": {
   "Encanta": null,
   "Encantar": null,
-  "Transformarla": null
+  "Transformarla": "keyword:TRANSFORM"
  },
  "event:TABLET_OF_TRUTH": {
   "Mejora": null,
@@ -2468,7 +2511,7 @@
   "Oro": null,
   "Reliquias": null,
   "Silla de las Decisiones": null,
-  "Transforma": null,
+  "Transforma": "keyword:TRANSFORM",
   "arco dorado": null,
   "juicio": null,
   "noble": null,
@@ -2736,7 +2779,7 @@
  },
  "potion:ESSENCE_OF_DARKNESS": {
   "Espacios de Orbe": null,
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Oscuridad": "keyword:DARK_ORB"
  },
  "potion:FLEX_POTION": {
@@ -2767,7 +2810,7 @@
   "Blindaje": "power:PLATING"
  },
  "potion:KINGS_COURAGE": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "potion:LIQUID_BRONZE": {
   "Espinas": "power:THORNS"
@@ -2800,7 +2843,7 @@
   "Condena": "power:DOOM"
  },
  "potion:POT_OF_GHOULS": {
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Mano": null,
   "plural:Alma": null
  },
@@ -2879,6 +2922,7 @@
   "Tristeza": "card:SADNESS"
  },
  "power:ARCHERY": {
+  "Aim": null,
   "Puntería": "power:AIM"
  },
  "power:ARSENAL": {
@@ -2923,13 +2967,13 @@
  },
  "power:CHAINS_OF_BINDING": {
   "Ligada": "affliction:BOUND",
-  "Ligadas": null
+  "Ligadas": "affliction:BOUND"
  },
  "power:CHILD_OF_THE_STARS": {
   "Bloqueo": null
  },
  "power:COLOSSUS": {
-  "Vulnerables": null
+  "Vulnerables": "power:VULNERABLE"
  },
  "power:COMPOST": {
   "Energía": "keyword:ENERGY"
@@ -2974,7 +3018,7 @@
   "Bloqueo": "keyword:BLOCK"
  },
  "power:CRUELTY": {
-  "Vulnerables": null
+  "Vulnerables": "power:VULNERABLE"
  },
  "power:CURL_UP": {
   "Bloqueo": "keyword:BLOCK"
@@ -2986,7 +3030,7 @@
   "Bloqueo": null
  },
  "power:DARK_EMBRACE": {
-  "Agotada": null
+  "Agotada": "keyword:EXHAUST"
  },
  "power:DEBILITATE": {
   "Debilidad": "power:WEAK",
@@ -3008,7 +3052,7 @@
  },
  "power:DEVOUR_LIFE": {
   "Alma": "card:SOUL",
-  "Vincula": null
+  "Vincula": "keyword:SUMMON_STATIC"
  },
  "power:DEXTERITY": {
   "Bloqueo": "keyword:BLOCK"
@@ -3040,13 +3084,13 @@
  },
  "power:ENTROPY": {
   "Mano": null,
-  "Transforma": null
+  "Transforma": "keyword:TRANSFORM"
  },
  "power:ENVENOM": {
   "Veneno": "power:POISON"
  },
  "power:EXPLOSIVE_ARROWS": {
-  "Ensartes": null
+  "Ensartes": "power:IMPALED"
  },
  "power:FAN_OF_KNIVES": {
   "Navajas": null
@@ -3083,7 +3127,7 @@
   "Energía": "keyword:ENERGY"
  },
  "power:FURNACE": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "power:GALVANIC": {
   "Galvanismo": "affliction:GALVANIZED"
@@ -3092,8 +3136,8 @@
   "Escarcha": "keyword:FROST_ORB"
  },
  "power:HAMMER_TIME": {
-  "Forjan": null,
-  "Forjas": null
+  "Forjan": "keyword:FORGE",
+  "Forjas": "keyword:FORGE"
  },
  "power:HANG": {
   "Colgar": "card:HANG"
@@ -3111,7 +3155,7 @@
   "Mano": null
  },
  "power:HEX": {
-  "Etéreas": null
+  "Etéreas": "keyword:ETHEREAL"
  },
  "power:HIBERNATE": {
   "Bloqueo": "keyword:BLOCK",
@@ -3124,6 +3168,7 @@
   "Fuerza": "power:STRENGTH"
  },
  "power:HONING": {
+  "Arrows": null,
   "Flechas": null
  },
  "power:IMBALANCED": {
@@ -3141,7 +3186,7 @@
  "power:INFINITE_BLADES": {
   "Mano": null,
   "Navaja": "card:SHIV",
-  "Navajas": null
+  "Navajas": "card:SHIV"
  },
  "power:JUGGERNAUT": {
   "Bloqueo": null
@@ -3154,16 +3199,24 @@
   "Fuerza": "power:STRENGTH"
  },
  "power:LIGHTNING_ROD": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "power:LOST_LUTE": {
-  "Melodía": null,
+  "Melodía": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Pila de robo": null
  },
  "power:LULLABY": {
   "Bloqueo": "keyword:BLOCK",
-  "Melodías": null
+  "Melodías": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "Astucia": null
@@ -3181,7 +3234,11 @@
   "Fuerza": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "Melodía": null
+  "Melodía": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "Mano": null,
@@ -3222,7 +3279,7 @@
  },
  "power:PAINFUL_STABS": {
   "Herida": "card:WOUND",
-  "Heridas": null,
+  "Heridas": "card:WOUND",
   "Pila de descarte": null,
   "plural:Herida": null
  },
@@ -3240,7 +3297,7 @@
  },
  "power:PHANTOM_BLADES": {
   "Navaja": "card:SHIV",
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "Retención": "keyword:RETAIN"
  },
  "power:PILLAR_OF_CREATION": {
@@ -3251,7 +3308,7 @@
   "Bloqueo": "keyword:BLOCK"
  },
  "power:PLOW": {
-  "Aturdida": null,
+  "Aturdida": "keyword:STUN",
   "Fuerza": "power:STRENGTH"
  },
  "power:POISON": {
@@ -3282,7 +3339,7 @@
   "Bloqueo": null
  },
  "power:RAVENOUS": {
-  "Aturdida": null,
+  "Aturdida": "keyword:STUN",
   "Fuerza": "power:STRENGTH"
  },
  "power:READ_THE_BONES": {
@@ -3336,7 +3393,7 @@
   "Mano": null
  },
  "power:SERRATED_ARROWS": {
-  "Ensartados": null
+  "Ensartados": "power:IMPALED"
  },
  "power:SHADOWMELD": {
   "Bloqueo": "keyword:BLOCK"
@@ -3350,8 +3407,8 @@
   "Puntería": null
  },
  "power:SHRIEK": {
-  "Aturde": null,
-  "Aturdida": null
+  "Aturde": "keyword:STUN",
+  "Aturdida": "keyword:STUN"
  },
  "power:SHROUD": {
   "Bloqueo": null,
@@ -3359,7 +3416,7 @@
  },
  "power:SIC_EM": {
   "Nudillos": null,
-  "Vincula": null
+  "Vincula": "keyword:SUMMON_STATIC"
  },
  "power:SIMPLETON": {
   "Mano": null
@@ -3379,7 +3436,7 @@
  },
  "power:SOULBOUND": {
   "Alma": "card:SOUL",
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Pila de robo": null,
   "plural:Alma": null
  },
@@ -3392,7 +3449,7 @@
  },
  "power:SPINNER": {
   "Cristal": "keyword:GLASS_ORB",
-  "Invoca": null
+  "Invoca": "keyword:CHANNELING"
  },
  "power:SPIRIT_OF_ASH": {
   "Bloqueo": "keyword:BLOCK",
@@ -3402,7 +3459,7 @@
   "Mano": null
  },
  "power:STORM": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "power:STRATAGEM": {
@@ -3417,7 +3474,7 @@
   "fuerza": "power:STRENGTH"
  },
  "power:SUMMON_NEXT_TURN": {
-  "Vincula": null
+  "Vincula": "keyword:SUMMON_STATIC"
  },
  "power:SWORD_SAGE": {
   "Espada del soberano": "card:SOVEREIGN_BLADE",
@@ -3495,7 +3552,7 @@
  },
  "power:VEILPIERCER": {
   "Etérea": "keyword:ETHEREAL",
-  "Etéreas": null
+  "Etéreas": "keyword:ETHEREAL"
  },
  "power:VICIOUS": {
   "Vulnerabilidad": "power:VULNERABLE"
@@ -3517,7 +3574,7 @@
   "Vulnerabilidad": null
  },
  "power:WITHERING_PRESENCE": {
-  "Deteriorar": null,
+  "Deteriorar": "card:WITHER",
   "Mano": null
  },
  "power:WRAITH_FORM": {
@@ -3580,7 +3637,7 @@
  },
  "relic:BIG_HAT": {
   "Etérea": "keyword:ETHEREAL",
-  "Etéreas": null,
+  "Etéreas": "keyword:ETHEREAL",
   "Mano": null
  },
  "relic:BIIIG_HUG": {
@@ -3615,7 +3672,7 @@
   "Mejora": null
  },
  "relic:BOOKMARK": {
-  "Retenida": null
+  "Retenida": "keyword:RETAIN"
  },
  "relic:BOOK_OF_FIVE_RINGS": {
   "Mazo": null
@@ -3639,7 +3696,7 @@
   "Espinas": "power:THORNS"
  },
  "relic:BURNING_STICKS": {
-  "Agotes": null,
+  "Agotes": "keyword:EXHAUST",
   "Mano": null
  },
  "relic:BYRDINE": {
@@ -3683,10 +3740,14 @@
   "Mano": null
  },
  "relic:CONDUCTORS_BATON": {
-  "Melodías": null
+  "Melodías": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "relic:CROSSBOW": {
@@ -3714,7 +3775,7 @@
   "Bloqueo": "keyword:BLOCK"
  },
  "relic:DISTINGUISHED_CAPE": {
-  "Apariciones": null,
+  "Apariciones": "card:APPARITION",
   "Mazo": null,
   "plural:Aparición": null
  },
@@ -3769,7 +3830,7 @@
   "Lugar de descanso": null
  },
  "relic:FENCING_MANUAL": {
-  "Forja": null
+  "Forja": "keyword:FORGE"
  },
  "relic:FERTILIZER": {
   "Fuerza": "power:STRENGTH",
@@ -3795,7 +3856,7 @@
   "Mejóralo": null
  },
  "relic:FUNERARY_MASK": {
-  "Almas": null,
+  "Almas": "card:SOUL",
   "Pila de robo": null,
   "plural:Alma": null
  },
@@ -3849,7 +3910,7 @@
   "Bloqueo": "keyword:BLOCK"
  },
  "relic:INFUSED_CORE": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Relámpago": "keyword:LIGHTNING_ORB"
  },
  "relic:INTIMIDATING_HELMET": {
@@ -3864,7 +3925,7 @@
   "Mazo": null
  },
  "relic:JOSS_PAPER": {
-  "Agotes": null
+  "Agotes": "keyword:EXHAUST"
  },
  "relic:JUZU_BRACELET": {
   "?": null
@@ -3895,7 +3956,7 @@
  "relic:LEAFY_POULTICE": {
   "Defender": null,
   "Golpe": null,
-  "Transforma": null
+  "Transforma": "keyword:TRANSFORM"
  },
  "relic:LORDS_PARASOL": {
   "Comerciante": null
@@ -3938,7 +3999,7 @@
   "Mejórala": null
  },
  "relic:MUMMIFIED_HAND": {
-  "Mano": null
+  "Mano": "relic:MUMMIFIED_HAND"
  },
  "relic:MUSIC_BOX": {
   "Etérea": "keyword:ETHEREAL"
@@ -3969,11 +4030,11 @@
   "Mazo": null
  },
  "relic:NEW_LEAF": {
-  "Transforma": null
+  "Transforma": "keyword:TRANSFORM"
  },
  "relic:NINJA_SCROLL": {
   "Mano": null,
-  "Navajas": null,
+  "Navajas": "card:SHIV",
   "plural:Navaja": null
  },
  "relic:NUTRITIOUS_SOUP": {
@@ -4040,7 +4101,7 @@
   "Débiles": null
  },
  "relic:PAPER_PHROG": {
-  "Vulnerables": null
+  "Vulnerables": "power:VULNERABLE"
  },
  "relic:PARRYING_SHIELD": {
   "Bloqueo": null
@@ -4059,7 +4120,7 @@
   "Fuerza": "power:STRENGTH"
  },
  "relic:PHYLACTERY_UNBOUND": {
-  "Vincula": null
+  "Vincula": "keyword:SUMMON_STATIC"
  },
  "relic:PLANISPHERE": {
   "?": null
@@ -4088,7 +4149,7 @@
   "Encanta": null
  },
  "relic:RADIANT_PEARL": {
-  "Luminiscencias": null,
+  "Luminiscencias": "card:LUMINESCE",
   "Mano": null,
   "plural:Luminiscencia": null
  },
@@ -4222,7 +4283,7 @@
   "Élites": null
  },
  "relic:SYMBIOTIC_VIRUS": {
-  "Invoca": null,
+  "Invoca": "keyword:CHANNELING",
   "Oscuridad": "keyword:DARK_ORB"
  },
  "relic:TANXS_WHISTLE": {

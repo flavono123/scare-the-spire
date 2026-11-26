@@ -29,6 +29,60 @@
   "UNPLAYABLE",
   "WAH_MELODY"
  ],
+ "runtime": [
+  {
+   "element": "card:FASTEN",
+   "reason": "the owner's Defend card; Defend (Ironclad) outside a run"
+  },
+  {
+   "element": "card:FRANTIC_ESCAPE",
+   "reason": "the Sandpit enemy's own power tips in combat"
+  },
+  {
+   "element": "card:MAD_SCIENCE",
+   "reason": "the Tinker Time rider's tips; the Compendium shows them per variant"
+  },
+  {
+   "element": "card:WHISTLE",
+   "reason": "the Stun intent tip (StunIntent.GetStaticHoverTip), an intent, not a keyword"
+  },
+  {
+   "element": "power:SWIPE",
+   "reason": "the stolen card"
+  },
+  {
+   "element": "power:TEMPORARY_DEXTERITY",
+   "reason": "plus the card or relic that applied it"
+  },
+  {
+   "element": "power:TEMPORARY_FOCUS",
+   "reason": "plus the card or relic that applied it"
+  },
+  {
+   "element": "power:TEMPORARY_STRENGTH",
+   "reason": "plus the card or relic that applied it"
+  },
+  {
+   "element": "power:TEMPORARY_THORNS",
+   "reason": "plus the card or relic that applied it"
+  },
+  {
+   "element": "power:WITHERING_PRESENCE",
+   "reason": "Wither upgraded to the Aeonglass count"
+  },
+  {
+   "element": "relic:ARCHAIC_TOOTH",
+   "reason": "the transcended starter card, set when the relic is obtained"
+  },
+  {
+   "element": "relic:DUSTY_TOME",
+   "reason": "the character's ancient card and its tips, set when obtained"
+  },
+  {
+   "element": "relic:TOUCH_OF_OROBAS",
+   "reason": "the starter relic and its upgrade, set when obtained"
+  }
+ ],
  "tips": {
   "card": {
    "ABRASIVE": [
@@ -1623,6 +1677,10 @@
     {
      "kind": "static",
      "id": "BLOCK"
+    },
+    {
+     "kind": "card",
+     "id": "DEFEND_IRONCLAD"
     }
    ],
    "FEAR": [
@@ -2464,12 +2522,6 @@
     }
    ],
    "MACHINE_LEARNING": [
-    {
-     "kind": "keyword",
-     "id": "INNATE"
-    }
-   ],
-   "MAD_SCIENCE": [
     {
      "kind": "keyword",
      "id": "INNATE"
@@ -4377,12 +4429,6 @@
     }
    ],
    "WHEEL_OF_FORTUNE": [
-    {
-     "kind": "keyword",
-     "id": "EXHAUST"
-    }
-   ],
-   "WHISTLE": [
     {
      "kind": "keyword",
      "id": "EXHAUST"
@@ -6481,6 +6527,12 @@
     {
      "kind": "static",
      "id": "ENERGY"
+    }
+   ],
+   "WITHERING_PRESENCE": [
+    {
+     "kind": "card_with_tips",
+     "id": "WITHER"
     }
    ],
    "WRAITH_FORM": [

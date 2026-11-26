@@ -410,7 +410,11 @@
   "格挡": "keyword:BLOCK"
  },
  "card:CODA": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
   "冰霜": "keyword:FROST_ORB",
@@ -915,7 +919,11 @@
   "格挡": "keyword:BLOCK"
  },
  "card:HARMONIC_SHIELD": {
-  "旋律": null,
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "格挡": "keyword:BLOCK"
  },
  "card:HAUNT": {
@@ -1107,10 +1115,18 @@
  },
  "card:LOST_LUTE": {
   "抽牌堆": null,
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:LULLABY": {
-  "旋律": null,
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "格挡": "keyword:BLOCK"
  },
  "card:MAD_SCIENCE": {
@@ -1148,7 +1164,11 @@
  },
  "card:MELODIC_SHOT": {
   "发射": null,
-  "旋律": null,
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "箭矢": "keyword:ARROW"
  },
  "card:METAMORPHOSIS": {
@@ -1197,7 +1217,11 @@
   "力量": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "悲伤": "card:SADNESS",
@@ -1451,7 +1475,11 @@
   "手牌": null
  },
  "card:RHYTHM_STRIKE": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "奥斯提": null,
@@ -1603,6 +1631,10 @@
   "啾 旋律": "keyword:CHO_MELODY",
   "格挡": "keyword:BLOCK"
  },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
+ },
  "card:SOULBOUND": {
   "抽牌堆": null,
   "灵魂": "card:SOUL"
@@ -1659,7 +1691,11 @@
   "格挡": null
  },
  "card:STEADY_CADENCE": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "升级": null,
@@ -3113,10 +3149,18 @@
  },
  "power:LOST_LUTE": {
   "抽牌堆": null,
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:LULLABY": {
-  "旋律": null,
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "格挡": "keyword:BLOCK"
  },
  "power:MASTER_PLANNER": {
@@ -3136,7 +3180,11 @@
   "力量": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "塔罗牌": "keyword:TAROT",
@@ -3464,7 +3512,7 @@
   "易伤": null
  },
  "power:WITHERING_PRESENCE": {
-  "凋萎": null,
+  "凋萎": "card:WITHER",
   "手牌": null
  },
  "power:WRAITH_FORM": {
@@ -3624,7 +3672,11 @@
   "格挡": "keyword:BLOCK"
  },
  "relic:CONDUCTORS_BATON": {
-  "旋律": null
+  "旋律": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
   "生成": "keyword:CHANNELING",

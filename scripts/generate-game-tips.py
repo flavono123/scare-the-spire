@@ -163,6 +163,26 @@ PLAIN_TABLES = {
 }
 
 
+# Elements whose class builds its tip list at run time. The Compendium shows the list the game
+# builds for an element outside a run (the canonical model); the reason says what a run adds.
+RUNTIME_TIPS: dict[tuple[str, str], tuple[list[dict], str]] = {
+    ("card", "FASTEN"): ([{"kind": "static", "id": "BLOCK"}, {"kind": "card", "id": "DEFEND_IRONCLAD"}],
+                         "the owner's Defend card; Defend (Ironclad) outside a run"),
+    ("card", "FRANTIC_ESCAPE"): ([{"kind": "power", "id": "SANDPIT"}], "the Sandpit enemy's own power tips in combat"),
+    ("card", "MAD_SCIENCE"): ([], "the Tinker Time rider's tips; the Compendium shows them per variant"),
+    ("card", "WHISTLE"): ([], "the Stun intent tip (StunIntent.GetStaticHoverTip), an intent, not a keyword"),
+    ("relic", "ARCHAIC_TOOTH"): ([], "the transcended starter card, set when the relic is obtained"),
+    ("relic", "DUSTY_TOME"): ([], "the character's ancient card and its tips, set when obtained"),
+    ("relic", "TOUCH_OF_OROBAS"): ([], "the starter relic and its upgrade, set when obtained"),
+    ("power", "SWIPE"): ([], "the stolen card"),
+    ("power", "TEMPORARY_DEXTERITY"): ([{"kind": "power", "id": "DEXTERITY"}], "plus the card or relic that applied it"),
+    ("power", "TEMPORARY_FOCUS"): ([{"kind": "power", "id": "FOCUS"}], "plus the card or relic that applied it"),
+    ("power", "TEMPORARY_STRENGTH"): ([{"kind": "power", "id": "STRENGTH"}], "plus the card or relic that applied it"),
+    ("power", "TEMPORARY_THORNS"): ([{"kind": "power", "id": "THORNS"}], "plus the card or relic that applied it"),
+    ("power", "WITHERING_PRESENCE"): ([{"kind": "card_with_tips", "id": "WITHER"}], "Wither upgraded to the Aeonglass count"),
+}
+
+
 def loc_id(type_: str, key: str) -> str:
     head = key.split(".", 1)[0]
     return head.removesuffix("_POWER") if type_ == "power" else head
@@ -190,6 +210,8 @@ def model_tips(src: Path) -> dict[str, dict[str, list[dict]]]:
                     if kw.upper() == "ETHEREAL":
                         specs.append({"kind": "keyword", "id": "EXHAUST"})
                 specs = [s for i, s in enumerate(specs) if s not in specs[:i]]
+            if (type_, id_) in RUNTIME_TIPS:
+                specs = RUNTIME_TIPS[(type_, id_)][0]
             if specs:
                 out[id_] = specs
         tips[type_] = out
@@ -235,11 +257,18 @@ def event_tips(src: Path) -> dict[str, list[dict]]:
     return out
 
 
+def loc_table(locale: str, name: str) -> dict:
+    """A locale's table with English under it: the game shows the English text for a key the locale lacks (LocManager)."""
+    def read(code: str) -> dict:
+        path = LOC / code / f"{name}.json"
+        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    return {**read("eng"), **read(locale)}
+
+
 def titles(locale: str) -> dict[str, str]:
     """"kind:ID" -> title in this locale, for every tip a spec can name."""
     def table(name: str) -> dict:
-        path = LOC / locale / f"{name}.json"
-        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+        return loc_table(locale, name)
 
     def strip(value: str) -> str:
         value = re.sub(r"\{Hotkey:.*?\(\{\}\)\}", "", value)
@@ -281,7 +310,33 @@ def is_inflection(word: str, base: str, locale: str) -> bool:
     if locale == "kor":
         # Only the last syllable changes, on names of three or more (꿰뚫린, 꿰뚫을 for 꿰뚫림): 손 is not 손상.
         return len(b) >= 3 and len(w) == len(b) and w[:-1] == b[:-1]
+    if locale in INFLECTED_LOCALES:
+        # Case and verb endings, word by word (Bloku for Blok, силы for Сила, злого рока for Злой рок,
+        # Épuisez for Épuisement, Tüketilirse for Tüket); a one-word name may stand for a two-word title's head
+        # (Заряжает for Зарядка сфер).
+        words, parts = w.strip("«»\"'„“”").split(), b.split()
+        if len(words) == 1 and len(parts) == 2 and len(parts[0]) >= 4:
+            parts = parts[:1]
+        return len(words) == len(parts) and all(_word_inflects(x, y) for x, y in zip(words, parts))
     return False
+
+
+def _word_inflects(word: str, base: str) -> bool:
+    if word == base:
+        return True
+    if len(base) <= 3:
+        return word.startswith(base) and len(word) - len(base) <= 2  # яда for Яд
+    if word.startswith(base):
+        return True
+    if base.startswith(word) and len(base) - len(word) > 3:
+        return False  # a compound, not an ending: Gold is not Goldsiegel
+    common = next((i for i, (x, y) in enumerate(zip(word, base)) if x != y), min(len(word), len(base)))
+    # A verb against its noun (Canalizas for Canalización, Agotas for Agotamiento): the shorter word bar its last three letters.
+    return common >= max(3, min(len(word), len(base)) - 3) and common >= min(4, len(base) - 1) and abs(len(word) - len(base)) <= 6
+
+
+# Locales whose words take endings; Japanese, Chinese and Thai names do not inflect.
+INFLECTED_LOCALES = {"deu", "esp", "spa", "fra", "ind", "ita", "pol", "ptb", "rus", "tur"}
 
 
 GOLD_RE = re.compile(r"\[gold\](.*?)\[/gold\]", re.S)
@@ -303,14 +358,25 @@ def gold_words(text: str) -> list[str]:
     return words
 
 
-def pair(word: str, refs: list[str], title_of: dict[str, str], locale: str) -> str | None:
+def pair(word: str, refs: list[str], title_of: dict[str, str], locale: str) -> str | list[str] | None:
+    """The tip of the element's list a gold word names; several when it names what they share (선율 for 와·초·키 선율)."""
     key = word.lower()
     bare = key.rstrip("+")  # an upgraded card: 하수인 투하+
     exact = [r for r in refs if title_of.get(r, "").lower() in (key, bare if r.startswith("card:") else key)]
     if exact:
         return exact[0]
-    inflected = [r for r in refs if title_of.get(r) and is_inflection(word, title_of[r], locale)]
-    return inflected[0] if len(inflected) == 1 else None
+    inflected = {site_ref(r): r for r in refs if title_of.get(r) and is_inflection(word, title_of[r], locale)}
+    if len(inflected) == 1:
+        return next(iter(inflected.values()))
+    # A word two or more titles share as one of their words (선율 in 와 선율, Melodię in Melodia Wah): the game shows all of them.
+    def names_part(title: str) -> bool:
+        return any(part == key or is_inflection(word, part, locale) for part in TITLE_PARTS.split(title.lower()) if part)
+    shared = list(dict.fromkeys(site_ref(r) for r in refs if title_of.get(r) and names_part(title_of[r])))
+    return shared if len(shared) >= 2 else None
+
+
+# Word breaks inside tip titles: spaces, hyphens (Wa-Melodie) and Japanese の (ワーの旋律).
+TITLE_PARTS = re.compile(r"[\s\-‐・の]+")
 
 
 # Compendium keyword ids: the static Replay and Summon tips each have one entry.
@@ -332,13 +398,10 @@ def gold_tips(tips: dict[str, dict[str, list[dict]]], locale: str) -> dict[str, 
     def add(element: str, text: str, refs: list[str]) -> None:
         for word in gold_words(text):
             ref = pair(word, refs, title_of, locale)
-            out.setdefault(element, {})[word] = ref and site_ref(ref)
+            out.setdefault(element, {})[word] = ref if isinstance(ref, list) or ref is None else site_ref(ref)
 
     for type_, (_ns, table, _member) in MODEL_TYPES.items():
-        path = LOC / locale / f"{table}.json"
-        if not path.exists():
-            continue
-        for key, text in json.loads(path.read_text(encoding="utf-8")).items():
+        for key, text in loc_table(locale, table).items():
             if not isinstance(text, str) or key.endswith(".title"):
                 continue
             id_ = loc_id(type_, key)
@@ -347,18 +410,14 @@ def gold_tips(tips: dict[str, dict[str, list[dict]]], locale: str) -> dict[str, 
             add(f"{type_}:{id_}", text, refs if type_ == "card" else [*refs, f"{type_}:{id_}"])
     for table, type_, pattern in (("ascension", "dominion", r"DREAD\.([A-Z0-9_]+)\.description$"),
                                   ("merchant_room", "blitz", r"MERCHANT\.blitz\.([a-z0-9_]+)_entry\.description$")):
-        path = LOC / locale / f"{table}.json"
-        for key, text in (json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}).items():
+        for key, text in loc_table(locale, table).items():
             m = re.match(pattern, key)
             if m and isinstance(text, str):
                 id_ = m.group(1).upper()
                 add(f"{type_}:{id_}", text, [r for spec in tips[type_].get(id_, []) for r in spec_refs(spec)])
     for type_, tables in PLAIN_TABLES.items():
         for table in tables:
-            path = LOC / locale / f"{table}.json"
-            if not path.exists():
-                continue
-            for key, text in json.loads(path.read_text(encoding="utf-8")).items():
+            for key, text in loc_table(locale, table).items():
                 if not isinstance(text, str) or key.endswith(".title"):
                     continue
                 if type_ == "ascension" and key.startswith("DREAD."):
@@ -378,6 +437,9 @@ def self_check(tips: dict, gold: dict[str, dict]) -> None:
     assert kor["event:AROMA_OF_CHAOS"]["변화"] == "keyword:TRANSFORM", "Aroma of Chaos attaches Transform"
     assert {"kind": "static", "id": "BLOCK"} in tips["card"]["BONE_SHARDS"], "GainsBlock adds Block"
     assert {"kind": "keyword", "id": "EXHAUST"} in tips["card"]["ASCENDERS_BANE"], "Ethereal adds Exhaust"
+    assert kor["card:CODA"]["선율"] == ["keyword:WAH_MELODY", "keyword:CHO_MELODY", "keyword:KI_MELODY"], "선율 names all three melodies"
+    assert gold["pol"]["card:DEFEND_IRONCLAD"].get("Bloku") == "keyword:BLOCK" if "pol" in gold else True
+    assert "Erschöpfungsstapel" not in [w for v in gold.get("deu", {}).values() for w, r in v.items() if r], "the Exhaust Pile is not Exhaust"
 
 
 def audit() -> None:
@@ -413,11 +475,13 @@ def main() -> None:
     gold = {locale: gold_tips(tips, locale) for locale in locales}
     self_check(tips, gold)
     # Compendium keywords: every keyword tip a gold word names somewhere, plus the keywords printed on cards.
-    keywords = sorted({ref.split(":", 1)[1] for data in gold.values() for words in data.values() for ref in words.values()
-                       if ref and ref.startswith("keyword:")}
+    named = (one for data in gold.values() for words in data.values() for ref in words.values() if ref
+             for one in (ref if isinstance(ref, list) else [ref]))
+    keywords = sorted({ref.split(":", 1)[1] for ref in named if ref.startswith("keyword:")}
                       | {spec["id"] for specs in tips["card"].values() for spec in specs if spec["kind"] == "keyword"})
     assert "DECK" not in keywords and "ROOM_UNKNOWN_ELITE" not in keywords, "UI tips are not keywords"
-    TIPS_OUT.write_text(json.dumps({"keywords": keywords, "tips": tips}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    runtime = [{"element": f"{t}:{i}", "reason": reason} for (t, i), (_specs, reason) in sorted(RUNTIME_TIPS.items())]
+    TIPS_OUT.write_text(json.dumps({"keywords": keywords, "runtime": runtime, "tips": tips}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     GOLD_OUT.mkdir(exist_ok=True)
     for locale, data in gold.items():
         (GOLD_OUT / f"{locale}.json").write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

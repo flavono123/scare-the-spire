@@ -414,7 +414,11 @@
   "Block": "keyword:BLOCK"
  },
  "card:CODA": {
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
   "Channel": "keyword:CHANNELING",
@@ -922,7 +926,11 @@
  },
  "card:HARMONIC_SHIELD": {
   "Block": "keyword:BLOCK",
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:HAUNT": {
   "Soul": "card:SOUL"
@@ -1114,11 +1122,19 @@
  },
  "card:LOST_LUTE": {
   "Draw Pile": null,
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:LULLABY": {
   "Block": "keyword:BLOCK",
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MAD_SCIENCE": {
   "Block": null,
@@ -1155,7 +1171,11 @@
  },
  "card:MELODIC_SHOT": {
   "Arrow": "keyword:ARROW",
-  "Melody": null,
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Shoot": null
  },
  "card:METAMORPHOSIS": {
@@ -1204,7 +1224,11 @@
   "Strength": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "Hand": null,
@@ -1462,7 +1486,11 @@
   "Hand": null
  },
  "card:RHYTHM_STRIKE": {
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "Discard Pile": null,
@@ -1676,7 +1704,11 @@
   "Block": null
  },
  "card:STEADY_CADENCE": {
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "Exhaust": null,
@@ -3092,7 +3124,10 @@
   "Forge": "keyword:FORGE"
  },
  "power:HANG": {
-  "Hangs": null
+  "Hangs": [
+   "card:HANG",
+   "power:HANG"
+  ]
  },
  "power:HARD_TO_KILL": {
   "Exoskeleton": null
@@ -3154,11 +3189,19 @@
  },
  "power:LOST_LUTE": {
   "Draw Pile": null,
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:LULLABY": {
   "Block": "keyword:BLOCK",
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "Sly": null
@@ -3176,7 +3219,11 @@
   "Strength": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "Hand": null,
@@ -3511,7 +3558,7 @@
  },
  "power:WITHERING_PRESENCE": {
   "Hand": null,
-  "Wither": null
+  "Wither": "card:WITHER"
  },
  "power:WRAITH_FORM": {
   "Dexterity": "power:DEXTERITY"
@@ -3672,7 +3719,11 @@
   "Hand": null
  },
  "relic:CONDUCTORS_BATON": {
-  "Melody": null
+  "Melody": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
   "Channel": "keyword:CHANNELING",

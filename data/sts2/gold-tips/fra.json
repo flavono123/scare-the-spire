@@ -1,7 +1,7 @@
 {
  "affliction:BOUND": {
   "Entrave": "affliction:BOUND",
-  "Entravée": null
+  "Entravée": "affliction:BOUND"
  },
  "affliction:HEXED": {
   "Éthéré": "keyword:ETHEREAL"
@@ -101,7 +101,7 @@
   "Poison": "power:POISON"
  },
  "card:ACCURACY": {
-  "Surins": null
+  "Surins": "card:SHIV"
  },
  "card:ADAPTIVE_STRIKE": {
   "Défausse": null
@@ -110,7 +110,7 @@
   "Armure": "keyword:BLOCK"
  },
  "card:AFTERLIFE": {
-  "Invoquez": null
+  "Invoquez": "keyword:SUMMON_STATIC"
  },
  "card:AGGRESSION": {
   "Améliorez": null,
@@ -160,7 +160,7 @@
   "Force": "power:STRENGTH"
  },
  "card:ASHEN_STRIKE": {
-  "Épuisée": null
+  "Épuisée": "keyword:EXHAUST"
  },
  "card:ASSASSINATE": {
   "Vulnérable": "power:VULNERABLE"
@@ -169,14 +169,14 @@
   "Armure": "keyword:BLOCK"
  },
  "card:BALL_LIGHTNING": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe kéraunique": "keyword:LIGHTNING_ORB"
  },
  "card:BANSHEES_CRY": {
-  "Éthérée": null
+  "Éthérée": "keyword:ETHEREAL"
  },
  "card:BARRAGE": {
-  "Canalisé": null
+  "Canalisé": "keyword:CHANNELING"
  },
  "card:BARRICADE": {
   "Armure": "keyword:BLOCK"
@@ -194,7 +194,7 @@
   "Défausse": null
  },
  "card:BEAT_INTO_SHAPE": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "card:BECKON": {
   "Main": null
@@ -209,21 +209,21 @@
   "Focalisation": "power:FOCUS"
  },
  "card:BIG_BANG": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "card:BLADE_DANCE": {
   "Main": null,
-  "Surins": null,
+  "Surins": "card:SHIV",
   "plural:Surin": null
  },
  "card:BLADE_OF_INK": {
   "Main": null,
-  "Surins": null,
+  "Surins": "card:SHIV",
   "plural:Surin": null
  },
  "card:BLADE_SYMPHONY": {
   "Main": null,
-  "Surins": null,
+  "Surins": "card:SHIV",
   "plural:Surin": null
  },
  "card:BLAZE": {
@@ -247,7 +247,7 @@
   "Armure": "keyword:BLOCK"
  },
  "card:BODYGUARD": {
-  "Invoquez": null
+  "Invoquez": "keyword:SUMMON_STATIC"
  },
  "card:BODY_SLAM": {
   "Armure": "keyword:BLOCK"
@@ -256,7 +256,7 @@
   "Main": null
  },
  "card:BOMBARDMENT": {
-  "Épuisées": null
+  "Épuisées": "keyword:EXHAUST"
  },
  "card:BONE_SHARDS": {
   "Armure": "keyword:BLOCK",
@@ -285,15 +285,15 @@
  },
  "card:BRAND": {
   "Force": "power:STRENGTH",
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:BREAK": {
   "Vulnérable": "power:VULNERABLE"
  },
  "card:BRIGHTEN_UP": {
-  "Joies": null,
+  "Joies": "card:JOY",
   "Main": null,
-  "Tristesses": null
+  "Tristesses": "card:SADNESS"
  },
  "card:BUBBLE_BUBBLE": {
   "Poison": "power:POISON"
@@ -310,7 +310,7 @@
  },
  "card:BULWARK": {
   "Armure": "keyword:BLOCK",
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "card:BUNDLE_OF_JOY": {
   "Main": null
@@ -319,7 +319,7 @@
   "Main": null
  },
  "card:BURNING_PACT": {
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:BYRDONIS_EGG": {
   "Site de repos": null
@@ -340,7 +340,7 @@
  "card:CAPTURE_SPIRIT": {
   "Pioche": null,
   "plural:Âme": null,
-  "Âmes": null
+  "Âmes": "card:SOUL"
  },
  "card:CASCADE": {
   "Pioche": null
@@ -349,7 +349,7 @@
   "Pioche": null
  },
  "card:CHAOS": {
-  "Canalisez": null
+  "Canalisez": "keyword:CHANNELING"
  },
  "card:CHARGE": {
   "Pioche": null,
@@ -362,7 +362,7 @@
   "Armure": "keyword:BLOCK"
  },
  "card:CHILL": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe glaciaire": "keyword:FROST_ORB"
  },
  "card:CHO_BARBS": {
@@ -394,30 +394,34 @@
   "Pioche": null
  },
  "card:CINDER": {
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:CLASH": {
   "Main": null
  },
  "card:CLEANSE": {
-  "Invoquez": null,
+  "Invoquez": "keyword:SUMMON_STATIC",
   "Pioche": null,
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:CLOAK_AND_DAGGER": {
   "Armure": "keyword:BLOCK",
   "Main": null,
-  "Surins": null,
+  "Surins": "card:SHIV",
   "plural:Surin": null
  },
  "card:CLOAK_OF_STARS": {
   "Armure": "keyword:BLOCK"
  },
  "card:CODA": {
-  "Mélodie": null
+  "Mélodie": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:COLD_SNAP": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe glaciaire": "keyword:FROST_ORB"
  },
  "card:COLLISION_COURSE": {
@@ -426,7 +430,7 @@
  },
  "card:COLOSSUS": {
   "Armure": "keyword:BLOCK",
-  "Vulnérables": null
+  "Vulnérables": "power:VULNERABLE"
  },
  "card:COMET": {
   "Affaibli": "power:WEAK",
@@ -437,32 +441,32 @@
   "Combustible": "card:FUEL",
   "Combustible+": "card:FUEL",
   "Main": null,
-  "Transformez": null
+  "Transformez": "keyword:TRANSFORM"
  },
  "card:CONCOCT": {
   "Poison": "power:POISON"
  },
  "card:CONQUEROR": {
-  "Forgez": null,
+  "Forgez": "keyword:FORGE",
   "Lame souveraine": "card:SOVEREIGN_BLADE"
  },
  "card:CONSTELLATION": {
   "Armure": "keyword:BLOCK"
  },
  "card:CONSUMING_SHADOW": {
-  "Activez": null,
-  "Canalisez": null,
-  "Orbes ténébreux": null
+  "Activez": "keyword:EVOKE",
+  "Canalisez": "keyword:CHANNELING",
+  "Orbes ténébreux": "keyword:DARK_ORB"
  },
  "card:CONVERGENCE": {
   "Main": null,
-  "Retenez": null
+  "Retenez": "keyword:RETAIN"
  },
  "card:COOLANT": {
   "Armure": "keyword:BLOCK"
  },
  "card:COOLHEADED": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe glaciaire": "keyword:FROST_ORB"
  },
  "card:COORDINATE": {
@@ -472,7 +476,7 @@
   "Poison": "power:POISON"
  },
  "card:CORRUPTION": {
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:COSMIC_INDIFFERENCE": {
   "Armure": "keyword:BLOCK",
@@ -497,7 +501,7 @@
   "Armure": "keyword:BLOCK"
  },
  "card:CRUELTY": {
-  "Vulnérables": null
+  "Vulnérables": "power:VULNERABLE"
  },
  "card:CRUSH_UNDER": {
   "Force": "power:STRENGTH"
@@ -506,12 +510,12 @@
   "Armure": null
  },
  "card:DARKNESS": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe ténébreux": "keyword:DARK_ORB",
-  "Orbes ténébreux": null
+  "Orbes ténébreux": "keyword:DARK_ORB"
  },
  "card:DARK_EMBRACE": {
-  "Épuisée": null
+  "Épuisée": "keyword:EXHAUST"
  },
  "card:DARK_SHACKLES": {
   "Force": "power:STRENGTH"
@@ -599,10 +603,10 @@
   "Âme": "card:SOUL"
  },
  "card:DIRGE": {
-  "Invoquez": null,
+  "Invoquez": "keyword:SUMMON_STATIC",
   "Pioche": null,
-  "Âmes": null,
-  "Âmes+": null
+  "Âmes": "card:SOUL",
+  "Âmes+": "card:SOUL"
  },
  "card:DISCOVERY": {
   "Main": null
@@ -644,10 +648,10 @@
   "Main": null
  },
  "card:DRUM_OF_BATTLE": {
-  "Épuisée": null
+  "Épuisée": "keyword:EXHAUST"
  },
  "card:DUALCAST": {
-  "Activez": null
+  "Activez": "keyword:EVOKE"
  },
  "card:DUAL_WIELD": {
   "Main": null
@@ -656,14 +660,14 @@
   "Force": "power:STRENGTH"
  },
  "card:ECSTASY": {
-  "Joies": null,
+  "Joies": "card:JOY",
   "Main": null,
   "Transformez": null,
-  "Tristesses": null
+  "Tristesses": "card:SADNESS"
  },
  "card:EIDOLON": {
-  "Épuisées": null,
-  "Éthérées": null
+  "Épuisées": "keyword:EXHAUST",
+  "Éthérées": "keyword:ETHEREAL"
  },
  "card:END_OF_DAYS": {
   "Fatalité": "power:DOOM"
@@ -690,7 +694,7 @@
  },
  "card:ENTROPY": {
   "Main": null,
-  "Transformez": null
+  "Transformez": "keyword:TRANSFORM"
  },
  "card:ENVENOM": {
   "Poison": "power:POISON"
@@ -702,7 +706,7 @@
  "card:EQUILIBRIUM": {
   "Armure": "keyword:BLOCK",
   "Main": null,
-  "Retenez": null
+  "Retenez": "keyword:RETAIN"
  },
  "card:ESCAPE_PLAN": {
   "Armure": "keyword:BLOCK"
@@ -712,7 +716,7 @@
  },
  "card:EVIL_EYE": {
   "Armure": "keyword:BLOCK",
-  "Épuisé": null
+  "Épuisé": "keyword:EXHAUST"
  },
  "card:EXPECT_A_FIGHT": {
   "Armure": "keyword:BLOCK",
@@ -720,14 +724,14 @@
  },
  "card:EXPERTISE": {
   "Main": null,
-  "Retenez": null
+  "Retenez": "keyword:RETAIN"
  },
  "card:EXPLOSIVE_ARROWS": {
-  "Empalez": null
+  "Empalez": "power:IMPALED"
  },
  "card:EXPOSE": {
   "Armure": "keyword:BLOCK",
-  "Artéfacts": null,
+  "Artéfacts": "power:ARTIFACT",
   "Vulnérable": "power:VULNERABLE"
  },
  "card:FADE": {
@@ -739,7 +743,7 @@
  },
  "card:FAN_OF_KNIVES": {
   "Main": null,
-  "Surins": null
+  "Surins": "card:SHIV"
  },
  "card:FASTEN": {
   "Armure": "keyword:BLOCK"
@@ -755,7 +759,7 @@
  },
  "card:FEEL_NO_PAIN": {
   "Armure": "keyword:BLOCK",
-  "Épuisée": null
+  "Épuisée": "keyword:EXHAUST"
  },
  "card:FERAL": {
   "Main": null
@@ -765,8 +769,8 @@
  },
  "card:FIEND_FIRE": {
   "Main": null,
-  "Épuisez": null,
-  "Épuisée": null
+  "Épuisez": "keyword:EXHAUST",
+  "Épuisée": "keyword:EXHAUST"
  },
  "card:FIGHT_ME": {
   "Force": "power:STRENGTH"
@@ -774,7 +778,7 @@
  "card:FIGHT_THROUGH": {
   "Armure": "keyword:BLOCK",
   "Défausse": null,
-  "Plaies": null
+  "Plaies": "card:WOUND"
  },
  "card:FINESSE": {
   "Armure": "keyword:BLOCK"
@@ -783,8 +787,8 @@
   "Armure": "keyword:BLOCK"
  },
  "card:FLAK_CANNON": {
-  "Épuisez": null,
-  "Épuisée": null
+  "Épuisez": "keyword:EXHAUST",
+  "Épuisée": "keyword:EXHAUST"
  },
  "card:FLAME_BARRIER": {
   "Armure": "keyword:BLOCK"
@@ -819,7 +823,7 @@
   "Pioche": null
  },
  "card:FORGOTTEN_RITUAL": {
-  "Épuisé": null
+  "Épuisé": "keyword:EXHAUST"
  },
  "card:FRANTIC_ESCAPE": {
   "Sables mouvants": "power:SANDPIT"
@@ -828,10 +832,10 @@
   "Force": null
  },
  "card:FURNACE": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "card:FUSION": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe plasmique": "keyword:PLASMA_ORB"
  },
  "card:GAMMA_BLAST": {
@@ -849,12 +853,12 @@
  },
  "card:GLACIER": {
   "Armure": "keyword:BLOCK",
-  "Canalisez": null,
-  "Orbes glaciaires": null
+  "Canalisez": "keyword:CHANNELING",
+  "Orbes glaciaires": "keyword:FROST_ORB"
  },
  "card:GLASSWORK": {
   "Armure": "keyword:BLOCK",
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe vitreux": "keyword:GLASS_ORB"
  },
  "card:GLIMMER": {
@@ -864,7 +868,7 @@
  "card:GLIMPSE_BEYOND": {
   "Pioche": null,
   "plural:Âme": null,
-  "Âmes": null
+  "Âmes": "card:SOUL"
  },
  "card:GLITTERSTREAM": {
   "Armure": "keyword:BLOCK"
@@ -911,8 +915,8 @@
   "Orbe glaciaire": "keyword:FROST_ORB"
  },
  "card:HAMMER_TIME": {
-  "Forgent": null,
-  "Forgez": null
+  "Forgent": "keyword:FORGE",
+  "Forgez": "keyword:FORGE"
  },
  "card:HAND_OF_GREED": {
   "Coup de grâce": "keyword:FATAL",
@@ -925,14 +929,18 @@
  },
  "card:HARMONIC_SHIELD": {
   "Armure": "keyword:BLOCK",
-  "Mélodie": null
+  "Mélodie": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:HAUNT": {
   "Âme": "card:SOUL"
  },
  "card:HAVOC": {
   "Pioche": null,
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:HAZE": {
   "Affaibli": "power:WEAK",
@@ -955,7 +963,7 @@
  },
  "card:HIBERNATE": {
   "Armure": "keyword:BLOCK",
-  "Orbes glaciaires": null
+  "Orbes glaciaires": "keyword:FROST_ORB"
  },
  "card:HIDDEN_DAGGERS": {
   "Main": null
@@ -982,21 +990,24 @@
   "Défausse": null,
   "Main": null
  },
+ "card:HONING": {
+  "Arrows": null
+ },
  "card:HOTFIX": {
   "Focalisation": "power:FOCUS"
  },
  "card:HOWL_FROM_BEYOND": {
-  "Épuisées": null
+  "Épuisées": "keyword:EXHAUST"
  },
  "card:HYPERBEAM": {
   "Focalisation": "power:FOCUS"
  },
  "card:ICE_LANCE": {
-  "Canalisez": null,
-  "Orbes glaciaires": null
+  "Canalisez": "keyword:CHANNELING",
+  "Orbes glaciaires": "keyword:FROST_ORB"
  },
  "card:IGNITION": {
-  "Canalise": null,
+  "Canalise": "keyword:CHANNELING",
   "Orbe plasmique": "keyword:PLASMA_ORB"
  },
  "card:IMMORTALITY": {
@@ -1028,7 +1039,7 @@
   "Armure": "keyword:BLOCK"
  },
  "card:INVOKE": {
-  "Invoquez": null
+  "Invoquez": "keyword:SUMMON_STATIC"
  },
  "card:IRON_WAVE": {
   "Armure": "keyword:BLOCK"
@@ -1047,7 +1058,7 @@
  "card:JEST": {
   "Armure": "keyword:BLOCK",
   "Main": null,
-  "Tristesses": null,
+  "Tristesses": "card:SADNESS",
   "plural:Tristesse": null
  },
  "card:JUGGERNAUT": {
@@ -1068,12 +1079,12 @@
   "Main": null,
   "Mélodie Cho": "keyword:CHO_MELODY",
   "Mélodie Wah": "keyword:WAH_MELODY",
-  "Retenez": null
+  "Retenez": "keyword:RETAIN"
  },
  "card:KNIFE_TRAP": {
   "Améliorez": null,
   "Surin": "card:SHIV",
-  "Surins": null,
+  "Surins": "card:SHIV",
   "plural:Surin": null,
   "Épuisées": null
  },
@@ -1087,14 +1098,14 @@
  },
  "card:LEADING_STRIKE": {
   "Main": null,
-  "Surins": null,
+  "Surins": "card:SHIV",
   "plural:Surin": null
  },
  "card:LEAP": {
   "Armure": "keyword:BLOCK"
  },
  "card:LEGION_OF_BONE": {
-  "Invoquent": null
+  "Invoquent": "keyword:SUMMON_STATIC"
  },
  "card:LEG_SWEEP": {
   "Affaibli": "power:WEAK",
@@ -1105,7 +1116,7 @@
  },
  "card:LIGHTNING_ROD": {
   "Armure": "keyword:BLOCK",
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe kéraunique": "keyword:LIGHTNING_ORB"
  },
  "card:LOCKED_IN": {
@@ -1114,12 +1125,20 @@
   "Pioche": null
  },
  "card:LOST_LUTE": {
-  "Mélodie": null,
+  "Mélodie": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Pioche": null
  },
  "card:LULLABY": {
   "Armure": "keyword:BLOCK",
-  "Mélodies": null
+  "Mélodies": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MAD_SCIENCE": {
   "Affaibli": null,
@@ -1157,7 +1176,11 @@
  "card:MELODIC_SHOT": {
   "Décochez": null,
   "Flèche": "keyword:ARROW",
-  "Mélodie": null
+  "Mélodie": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:METAMORPHOSIS": {
   "Pioche": null
@@ -1167,20 +1190,20 @@
   "Vulnérable": "power:VULNERABLE"
  },
  "card:METEOR_STRIKE": {
-  "Canalisez": null,
-  "Orbes plasmiques": null
+  "Canalisez": "keyword:CHANNELING",
+  "Orbes plasmiques": "keyword:PLASMA_ORB"
  },
  "card:MIDNIGHT": {
   "Épuisée": null
  },
  "card:MIGHTY_SHIELD": {
   "Armure": "keyword:BLOCK",
-  "Hébétés": null,
+  "Hébétés": "card:DAZED",
   "Pioche": null,
   "plural:Hébété": null
  },
  "card:MIGHTY_WEAPON": {
-  "Hébétés": null,
+  "Hébétés": "card:DAZED",
   "Pioche": null,
   "plural:Hébété": null
  },
@@ -1207,14 +1230,18 @@
   "Force": "power:STRENGTH"
  },
  "card:MOTIF": {
-  "Mélodie": null
+  "Mélodie": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:MOURNING_BLOW": {
   "Main": null,
   "Tristesse": "card:SADNESS"
  },
  "card:MULTI_CAST": {
-  "Activez": null
+  "Activez": "keyword:EVOKE"
  },
  "card:MYTHIC_FORM": {
   "Main": null,
@@ -1229,7 +1256,7 @@
   "Vulnérable": "power:VULNERABLE"
  },
  "card:NECRO_MASTERY": {
-  "Invoquez": null,
+  "Invoquez": "keyword:SUMMON_STATIC",
   "Titos": null
  },
  "card:NEGATIVE_PULSE": {
@@ -1266,7 +1293,7 @@
  },
  "card:NULL": {
   "Affaibli": "power:WEAK",
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe ténébreux": "keyword:DARK_ORB"
  },
  "card:OBLIVION": {
@@ -1274,6 +1301,12 @@
  },
  "card:OFF_BY_ONE": {
   "Main": null
+ },
+ "card:OPTIMISM": {
+  "Exhaust": null,
+  "Exhausted": null,
+  "Hand": null,
+  "Sadness": null
  },
  "card:OUTBREAK": {
   "Poison": "power:POISON"
@@ -1292,7 +1325,7 @@
   "Deck": null
  },
  "card:PAGESTORM": {
-  "Éthérée": null
+  "Éthérée": "keyword:ETHEREAL"
  },
  "card:PANIC_BUTTON": {
   "Armure": "keyword:BLOCK"
@@ -1312,7 +1345,7 @@
  "card:PHANTOM_BLADES": {
   "Retenue": "keyword:RETAIN",
   "Surin": "card:SHIV",
-  "Surins": null
+  "Surins": "card:SHIV"
  },
  "card:PHOTON_CUT": {
   "Main": null,
@@ -1355,30 +1388,30 @@
  },
  "card:PULL_AGGRO": {
   "Armure": "keyword:BLOCK",
-  "Invoquez": null
+  "Invoquez": "keyword:SUMMON_STATIC"
  },
  "card:PULL_FROM_BELOW": {
-  "Éthérée": null
+  "Éthérée": "keyword:ETHEREAL"
  },
  "card:PUNCH_OF_JOY": {
-  "Joies": null,
+  "Joies": "card:JOY",
   "Main": null,
   "Transformez": null,
   "Tristesse": "card:SADNESS",
-  "Tristesses": null,
+  "Tristesses": "card:SADNESS",
   "plural:Joie": null
  },
  "card:PURITY": {
   "Main": null,
-  "Épuiser": null,
-  "Épuisez": null
+  "Épuiser": "keyword:EXHAUST",
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:PUTREFY": {
   "Affaibli": "power:WEAK",
   "Vulnérable": "power:VULNERABLE"
  },
  "card:QUADCAST": {
-  "Activez": null
+  "Activez": "keyword:EVOKE"
  },
  "card:QUASAR": {
   "Améliorée": null,
@@ -1393,13 +1426,13 @@
  },
  "card:QUIVER": {
   "Flèche": "keyword:ARROW",
-  "Flèches": null
+  "Flèches": "keyword:ARROW"
  },
  "card:RAGE": {
   "Armure": "keyword:BLOCK"
  },
  "card:RAINBOW": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe glaciaire": "keyword:FROST_ORB",
   "Orbe kéraunique": "keyword:LIGHTNING_ORB",
   "Orbe ténébreux": "keyword:DARK_ORB"
@@ -1415,7 +1448,7 @@
   "Titos": null
  },
  "card:REANIMATE": {
-  "Invoquez": null
+  "Invoquez": "keyword:SUMMON_STATIC"
  },
  "card:REAPER_FORM": {
   "Fatalité": "power:DOOM"
@@ -1437,14 +1470,14 @@
   "Flèche": null
  },
  "card:REFINE_BLADE": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "card:REFLECT": {
   "Armure": "keyword:BLOCK"
  },
  "card:REFRACT": {
-  "Canalisez": null,
-  "Orbes vitreux": null
+  "Canalisez": "keyword:CHANNELING",
+  "Orbes vitreux": "keyword:GLASS_ORB"
  },
  "card:REGRET": {
   "Main": null
@@ -1463,7 +1496,11 @@
   "Main": null
  },
  "card:RHYTHM_STRIKE": {
-  "Mélodie": null
+  "Mélodie": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:RIGHT_HAND_HAND": {
   "Défausse": null,
@@ -1486,10 +1523,10 @@
  },
  "card:SALVO": {
   "Main": null,
-  "Retenez": null
+  "Retenez": "keyword:RETAIN"
  },
  "card:SCAVENGE": {
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:SCOURGE": {
   "Fatalité": "power:DOOM"
@@ -1508,8 +1545,8 @@
  "card:SECOND_WIND": {
   "Armure": "keyword:BLOCK",
   "Main": null,
-  "Épuisez": null,
-  "Épuisée": null
+  "Épuisez": "keyword:EXHAUST",
+  "Épuisée": "keyword:EXHAUST"
  },
  "card:SECRET_TECHNIQUE": {
   "Main": null,
@@ -1524,22 +1561,22 @@
   "Pioche": null
  },
  "card:SEEKING_EDGE": {
-  "Forgez": null,
+  "Forgez": "keyword:FORGE",
   "Lame souveraine": "card:SOVEREIGN_BLADE"
  },
  "card:SELF_DEPRECATE": {
-  "Joies": null,
+  "Joies": "card:JOY",
   "Main": null,
   "Mains": null,
   "Tristesse": "card:SADNESS",
-  "Tristesses": null
+  "Tristesses": "card:SADNESS"
  },
  "card:SENTRY_MODE": {
   "Balayage optique": "card:SWEEPING_GAZE",
   "Main": null
  },
  "card:SERRATED_ARROWS": {
-  "Empalés": null
+  "Empalés": "power:IMPALED"
  },
  "card:SETUP_STRIKE": {
   "Force": "power:STRENGTH"
@@ -1555,7 +1592,7 @@
  },
  "card:SHADOW_SHIELD": {
   "Armure": "keyword:BLOCK",
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe ténébreux": "keyword:DARK_ORB"
  },
  "card:SHADOW_STEP": {
@@ -1573,7 +1610,7 @@
   "Surin": null
  },
  "card:SHATTER": {
-  "Activez": null
+  "Activez": "keyword:EVOKE"
  },
  "card:SHINING_STRIKE": {
   "Pioche": null
@@ -1618,6 +1655,10 @@
   "Armure": "keyword:BLOCK",
   "Mélodie Cho": "keyword:CHO_MELODY"
  },
+ "card:SORROWFUL_STRIKE": {
+  "Hand": null,
+  "Sadness": null
+ },
  "card:SOULBOUND": {
   "Pioche": null,
   "Âme": "card:SOUL"
@@ -1633,12 +1674,12 @@
   "Main": null
  },
  "card:SPINNER": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe vitreux": "keyword:GLASS_ORB"
  },
  "card:SPIRIT_OF_ASH": {
   "Armure": "keyword:BLOCK",
-  "Éthérée": null
+  "Éthérée": "keyword:ETHEREAL"
  },
  "card:SPLASH": {
   "Améliorée": null,
@@ -1648,10 +1689,10 @@
   "Pièces d'or": null
  },
  "card:SPOILS_OF_BATTLE": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "card:SPUR": {
-  "Invoquez": null,
+  "Invoquez": "keyword:SUMMON_STATIC",
   "Titos": null
  },
  "card:SQUASH": {
@@ -1674,7 +1715,11 @@
   "Armure": null
  },
  "card:STEADY_CADENCE": {
-  "Mélodie": null
+  "Mélodie": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "card:STOKE": {
   "Améliorée": null,
@@ -1686,14 +1731,14 @@
   "Blindage": "power:PLATING"
  },
  "card:STORM": {
-  "Canalisez": null,
-  "Orbes kérauniques": null,
+  "Canalisez": "keyword:CHANNELING",
+  "Orbes kérauniques": "keyword:LIGHTNING_ORB",
   "plural:Orbe kéraunique": null
  },
  "card:STORM_OF_STEEL": {
   "Main": null,
-  "Surins": null,
-  "Surins+": null
+  "Surins": "card:SHIV",
+  "Surins+": "card:SHIV"
  },
  "card:STRATAGEM": {
   "Main": null,
@@ -1706,7 +1751,7 @@
   "Affaibli": "power:WEAK"
  },
  "card:SUMMON_FORTH": {
-  "Forgez": null,
+  "Forgez": "keyword:FORGE",
   "Lame souveraine": "card:SOVEREIGN_BLADE",
   "Main": null
  },
@@ -1734,14 +1779,14 @@
   "Armure": "keyword:BLOCK"
  },
  "card:TEMPEST": {
-  "Canalisez": null,
-  "Orbes kérauniques": null
+  "Canalisez": "keyword:CHANNELING",
+  "Orbes kérauniques": "keyword:LIGHTNING_ORB"
  },
  "card:TERRAFORMING": {
   "Vigueur": "power:VIGOR"
  },
  "card:TESLA_COIL": {
-  "Orbes kérauniques": null
+  "Orbes kérauniques": "keyword:LIGHTNING_ORB"
  },
  "card:TEZCATARAS_MIGHT": {
   "Force": null
@@ -1750,8 +1795,8 @@
   "Améliorez": null,
   "Main": null,
   "Pioche": null,
-  "Épuisez": null,
-  "Épuisée": null
+  "Épuisez": "keyword:EXHAUST",
+  "Épuisée": "keyword:EXHAUST"
  },
  "card:THE_EMPRESS": {
   "Affaibli": "power:WEAK",
@@ -1765,7 +1810,7 @@
  },
  "card:THE_HERMIT": {
   "Malédictions": null,
-  "Épuisées": null
+  "Épuisées": "keyword:EXHAUST"
  },
  "card:THE_HIEROPHANT": {
   "Main": null
@@ -1777,23 +1822,23 @@
   "Main": null
  },
  "card:THE_MAGICIAN": {
-  "Canalisez": null
+  "Canalisez": "keyword:CHANNELING"
  },
  "card:THE_MOON": {
   "Main": null,
-  "Surins": null,
-  "Surins+": null
+  "Surins": "card:SHIV",
+  "Surins+": "card:SHIV"
  },
  "card:THE_SHOT": {
   "Décochez": null,
   "Flèche": "keyword:ARROW"
  },
  "card:THE_SMITH": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "card:THE_SUN": {
   "Pioche": null,
-  "Suies": null
+  "Suies": "card:SOOT"
  },
  "card:THE_WORLD": {
   "Défausse": null,
@@ -1805,14 +1850,14 @@
  },
  "card:THRASH": {
   "Main": null,
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:THRUMMING_HATCHET": {
   "Main": null
  },
  "card:THUNDER": {
-  "Activez": null,
-  "Orbes kérauniques": null
+  "Activez": "keyword:EVOKE",
+  "Orbes kérauniques": "keyword:LIGHTNING_ORB"
  },
  "card:THUNDERCLAP": {
   "Vulnérable": "power:VULNERABLE"
@@ -1827,7 +1872,7 @@
   "Main": null
  },
  "card:TRACKING": {
-  "Affaiblis": null
+  "Affaiblis": "power:WEAK"
  },
  "card:TRAINING_STRIKE": {
   "Coup de grâce": null
@@ -1837,7 +1882,7 @@
   "Écho": "keyword:REPLAY"
  },
  "card:TRASH_TO_TREASURE": {
-  "Canalisez": null
+  "Canalisez": "keyword:CHANNELING"
  },
  "card:TREMBLE": {
   "Vulnérable": "power:VULNERABLE"
@@ -1848,7 +1893,7 @@
  },
  "card:TRUE_GRIT": {
   "Armure": "keyword:BLOCK",
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:TUNE": {
   "Améliorez": null,
@@ -1869,7 +1914,7 @@
  },
  "card:TYRANNY": {
   "Main": null,
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "card:ULTIMATE_DEFEND": {
   "Armure": "keyword:BLOCK"
@@ -1905,11 +1950,11 @@
  },
  "card:UP_MY_SLEEVE": {
   "Main": null,
-  "Surins": null,
+  "Surins": "card:SHIV",
   "plural:Surin": null
  },
  "card:VEILPIERCER": {
-  "Éthérée": null
+  "Éthérée": "keyword:ETHEREAL"
  },
  "card:VETERAN": {
   "Armure": null,
@@ -1924,14 +1969,14 @@
  "card:VITRIOL": {
   "Affaibli": "power:WEAK",
   "Main": null,
-  "Tristesses": null,
+  "Tristesses": "card:SADNESS",
   "plural:Tristesse": null
  },
  "card:VOLTAIC": {
-  "Canalisez": null,
-  "Canalisés": null,
+  "Canalisez": "keyword:CHANNELING",
+  "Canalisés": "keyword:CHANNELING",
   "Orbe kéraunique": "keyword:LIGHTNING_ORB",
-  "Orbes kérauniques": null
+  "Orbes kérauniques": "keyword:LIGHTNING_ORB"
  },
  "card:WAH_BLAST": {
   "Mélodie Cho": "keyword:CHO_MELODY",
@@ -1944,7 +1989,11 @@
   "Armure": "keyword:BLOCK"
  },
  "card:WAH_HAMMER": {
-  "Empalés": null
+  "Empalés": "power:IMPALED"
+ },
+ "card:WAH_KI": {
+  "Discard Pile": null,
+  "Draw Pile": null
  },
  "card:WAH_TOUCH": {
   "Vulnérable": "power:VULNERABLE"
@@ -1988,7 +2037,7 @@
   "Flèche": null
  },
  "card:WROUGHT_IN_WAR": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "card:YAH": {
   "Arrachez": null,
@@ -1998,7 +2047,7 @@
   "Souplesse": "power:STRETCH"
  },
  "card:ZAP": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe kéraunique": "keyword:LIGHTNING_ORB"
  },
  "character:FOOL": {
@@ -2241,7 +2290,7 @@
  "event:AROMA_OF_CHAOS": {
   "Améliorez": null,
   "Deck": null,
-  "Transformez": null,
+  "Transformez": "keyword:TRANSFORM",
   "affronter de redoutables adversaires": null
  },
  "event:BATTLEWORN_DUMMY": {
@@ -2342,13 +2391,13 @@
  },
  "event:MORPHIC_GROVE": {
   "Pièces d'or": null,
-  "Transformez": null,
+  "Transformez": "keyword:TRANSFORM",
   "or": null
  },
  "event:POTION_COURIER": {
   "Coursier de potions": null,
   "Potion inhabituelle": null,
-  "Potions infectes": null,
+  "Potions infectes": "potion:FOUL_POTION",
   "plural:Potion infecte": null
  },
  "event:PUNCH_OFF": {
@@ -2493,7 +2542,7 @@
   "Procès": null,
   "Reliques": null,
   "Siège de la prise de décision": null,
-  "Transformez": null,
+  "Transformez": "keyword:TRANSFORM",
   "arche dorée": null,
   "aristocrate": null,
   "décidez": null,
@@ -2711,8 +2760,8 @@
  },
  "potion:ASHWATER": {
   "Main": null,
-  "Épuiser": null,
-  "Épuisez": null
+  "Épuiser": "keyword:EXHAUST",
+  "Épuisez": "keyword:EXHAUST"
  },
  "potion:ATTACK_POTION": {
   "Main": null
@@ -2725,7 +2774,7 @@
   "Armure": "keyword:BLOCK"
  },
  "potion:BONE_BREW": {
-  "Invoquez": null
+  "Invoquez": "keyword:SUMMON_STATIC"
  },
  "potion:BOTTLED_POTENTIAL": {
   "Pioche": null
@@ -2742,9 +2791,9 @@
   "Main": null
  },
  "potion:CRYSTALLINE_EUPHORIA": {
-  "Joies": null,
+  "Joies": "card:JOY",
   "Main": null,
-  "Tristesses": null,
+  "Tristesses": "card:SADNESS",
   "plural:Joie": null
  },
  "potion:CUNNING_POTION": {
@@ -2763,7 +2812,7 @@
   "Pioche": null
  },
  "potion:ESSENCE_OF_DARKNESS": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe obscur": null,
   "emplacements d'Orbe": null
  },
@@ -2789,13 +2838,13 @@
  },
  "potion:GLOWWATER_POTION": {
   "Main": null,
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "potion:HEART_OF_IRON": {
   "Blindage": "power:PLATING"
  },
  "potion:KINGS_COURAGE": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "potion:LIQUID_BRONZE": {
   "Épines": "power:THORNS"
@@ -2830,7 +2879,7 @@
  "potion:POT_OF_GHOULS": {
   "Main": null,
   "plural:Âme": null,
-  "Âmes": null
+  "Âmes": "card:SOUL"
  },
  "potion:POWER_POTION": {
   "Main": null
@@ -2862,7 +2911,7 @@
  },
  "potion:STABLE_SERUM": {
   "Main": null,
-  "Retenez": null
+  "Retenez": "keyword:RETAIN"
  },
  "potion:STRENGTH_POTION": {
   "Force": "power:STRENGTH"
@@ -2890,7 +2939,7 @@
   "Pioche": null,
   "plural:Érosion": null,
   "Érosion": "card:WITHER",
-  "Érosions": null
+  "Érosions": "card:WITHER"
  },
  "power:AFTERIMAGE": {
   "Armure": "keyword:BLOCK"
@@ -2908,6 +2957,7 @@
   "Tristesse": "card:SADNESS"
  },
  "power:ARCHERY": {
+  "Aim": null,
   "Visée": "power:AIM"
  },
  "power:ARSENAL": {
@@ -2956,7 +3006,7 @@
   "Armure": null
  },
  "power:COLOSSUS": {
-  "Vulnérables": null
+  "Vulnérables": "power:VULNERABLE"
  },
  "power:COMPOST": {
   "Énergie": "keyword:ENERGY"
@@ -2980,7 +3030,7 @@
   "Poison": "power:POISON"
  },
  "power:CORRUPTION": {
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "power:COUNTDOWN": {
   "Fatalité": "power:DOOM"
@@ -3000,7 +3050,7 @@
   "Armure": "keyword:BLOCK"
  },
  "power:CRUELTY": {
-  "Vulnérables": null
+  "Vulnérables": "power:VULNERABLE"
  },
  "power:CURL_UP": {
   "Armure": "keyword:BLOCK"
@@ -3012,7 +3062,7 @@
   "Armure": null
  },
  "power:DARK_EMBRACE": {
-  "Épuisée": null
+  "Épuisée": "keyword:EXHAUST"
  },
  "power:DEBILITATE": {
   "Affaibli": "power:WEAK",
@@ -3040,7 +3090,7 @@
   "Armure": "keyword:BLOCK"
  },
  "power:DEXTERITY_DOWN": {
-  "Dextérité": null
+  "Dextérité": "power:DEXTERITY_DOWN"
  },
  "power:DIE_FOR_YOU": {
   "Titos": null
@@ -3050,11 +3100,11 @@
  },
  "power:ECSTASY": {
   "Joie": "card:JOY",
-  "Joies": null,
+  "Joies": "card:JOY",
   "Main": null,
   "Transformez": null,
   "Tristesse": "card:SADNESS",
-  "Tristesses": null,
+  "Tristesses": "card:SADNESS",
   "plural:Joie": null,
   "plural:Tristesse": null
  },
@@ -3072,13 +3122,13 @@
  },
  "power:ENTROPY": {
   "Main": null,
-  "Transformez": null
+  "Transformez": "keyword:TRANSFORM"
  },
  "power:ENVENOM": {
   "Poison": "power:POISON"
  },
  "power:EXPLOSIVE_ARROWS": {
-  "Empalez": null
+  "Empalez": "power:IMPALED"
  },
  "power:FAN_OF_KNIVES": {
   "Surins": null
@@ -3097,7 +3147,7 @@
   "Étourdir": null
  },
  "power:FOCUS_DOWN": {
-  "Focalisation": null
+  "Focalisation": "power:FOCUS_DOWN"
  },
  "power:FORBIDDEN_GRIMOIRE": {
   "Deck": null
@@ -3113,7 +3163,7 @@
   "Énergie": "keyword:ENERGY"
  },
  "power:FURNACE": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "power:GALVANIC": {
   "Galvanique": "affliction:GALVANIZED"
@@ -3122,11 +3172,14 @@
   "Orbe glaciaire": "keyword:FROST_ORB"
  },
  "power:HAMMER_TIME": {
-  "Forgent": null,
-  "Forgez": null
+  "Forgent": "keyword:FORGE",
+  "Forgez": "keyword:FORGE"
  },
  "power:HANG": {
-  "Pendaisons": null
+  "Pendaisons": [
+   "card:HANG",
+   "power:HANG"
+  ]
  },
  "power:HARD_TO_KILL": {
   "Exosquelette": null
@@ -3141,11 +3194,11 @@
   "Main": null
  },
  "power:HEX": {
-  "Éthérées": null
+  "Éthérées": "keyword:ETHEREAL"
  },
  "power:HIBERNATE": {
   "Armure": "keyword:BLOCK",
-  "Orbes glaciaires": null
+  "Orbes glaciaires": "keyword:FROST_ORB"
  },
  "power:HIDDEN_ROOTS": {
   "Souplesse": "power:STRETCH"
@@ -3154,6 +3207,7 @@
   "Force": "power:STRENGTH"
  },
  "power:HONING": {
+  "Arrows": null,
   "Flèches": null
  },
  "power:IMBALANCED": {
@@ -3166,12 +3220,12 @@
   "Flèche": null
  },
  "power:IMPROVEMENT": {
-  "Améliorez": null
+  "Améliorez": "power:IMPROVEMENT"
  },
  "power:INFINITE_BLADES": {
   "Main": null,
   "Surin": "card:SHIV",
-  "Surins": null
+  "Surins": "card:SHIV"
  },
  "power:JUGGERNAUT": {
   "Armure": null
@@ -3184,16 +3238,24 @@
   "Force": "power:STRENGTH"
  },
  "power:LIGHTNING_ROD": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe kéraunique": "keyword:LIGHTNING_ORB"
  },
  "power:LOST_LUTE": {
-  "Mélodie": null,
+  "Mélodie": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ],
   "Pioche": null
  },
  "power:LULLABY": {
   "Armure": "keyword:BLOCK",
-  "Mélodies": null
+  "Mélodies": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MASTER_PLANNER": {
   "Ruse": null
@@ -3211,7 +3273,11 @@
   "Force": "power:STRENGTH"
  },
  "power:MOTIF": {
-  "Mélodie": null
+  "Mélodie": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "power:MYTHIC_FORM": {
   "Main": null,
@@ -3248,12 +3314,12 @@
   "Orbes": null
  },
  "power:PAGESTORM": {
-  "Éthérée": null
+  "Éthérée": "keyword:ETHEREAL"
  },
  "power:PAINFUL_STABS": {
   "Défausse": null,
   "Plaie": "card:WOUND",
-  "Plaies": null,
+  "Plaies": "card:WOUND",
   "plural:Plaie": null
  },
  "power:PAPER_CUTS": {
@@ -3270,7 +3336,7 @@
  "power:PHANTOM_BLADES": {
   "Retenue": "keyword:RETAIN",
   "Surin": "card:SHIV",
-  "Surins": null
+  "Surins": "card:SHIV"
  },
  "power:PILLAR_OF_CREATION": {
   "Armure": "keyword:BLOCK"
@@ -3281,8 +3347,8 @@
  },
  "power:PLOW": {
   "Force": "power:STRENGTH",
-  "Étourdi": null,
-  "Étourdie": null
+  "Étourdi": "keyword:STUN",
+  "Étourdie": "keyword:STUN"
  },
  "power:POISON": {
   "Poison": "power:POISON"
@@ -3313,7 +3379,7 @@
  },
  "power:RAVENOUS": {
   "Force": "power:STRENGTH",
-  "Étourdie": null
+  "Étourdie": "keyword:STUN"
  },
  "power:READ_THE_BONES": {
   "Invoquez": null
@@ -3340,7 +3406,7 @@
   "Focalisation": null
  },
  "power:RETAIN_HAND": {
-  "Main": null,
+  "Main": "power:RETAIN_HAND",
   "Retenez": null
  },
  "power:RITUAL": {
@@ -3366,7 +3432,7 @@
   "Main": null
  },
  "power:SERRATED_ARROWS": {
-  "Empalés": null
+  "Empalés": "power:IMPALED"
  },
  "power:SHADOWMELD": {
   "Armure": "keyword:BLOCK"
@@ -3380,7 +3446,7 @@
   "Visée": null
  },
  "power:SHRIEK": {
-  "Étourdie": null
+  "Étourdie": "keyword:STUN"
  },
  "power:SHROUD": {
   "Armure": null,
@@ -3410,7 +3476,7 @@
   "Pioche": null,
   "plural:Âme": null,
   "Âme": "card:SOUL",
-  "Âmes": null
+  "Âmes": "card:SOUL"
  },
  "power:SOW": {
   "Main": null,
@@ -3420,22 +3486,22 @@
   "Main": null
  },
  "power:SPINNER": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe vitreux": "keyword:GLASS_ORB",
-  "Orbes vitreux": null,
+  "Orbes vitreux": "keyword:GLASS_ORB",
   "plural:Orbe vitreux": null
  },
  "power:SPIRIT_OF_ASH": {
   "Armure": "keyword:BLOCK",
-  "Éthérée": null
+  "Éthérée": "keyword:ETHEREAL"
  },
  "power:STAMPEDE": {
   "Main": null
  },
  "power:STORM": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe kéraunique": "keyword:LIGHTNING_ORB",
-  "Orbes kérauniques": null,
+  "Orbes kérauniques": "keyword:LIGHTNING_ORB",
   "plural:Orbe kéraunique": null
  },
  "power:STRATAGEM": {
@@ -3502,7 +3568,7 @@
   "Armure": "keyword:BLOCK"
  },
  "power:TRACKING": {
-  "Affaiblis": null
+  "Affaiblis": "power:WEAK"
  },
  "power:TRASH_TO_TREASURE": {
   "Canalisez": null
@@ -3514,7 +3580,7 @@
  },
  "power:TYRANNY": {
   "Main": null,
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "power:UNDERWORLD": {
   "Fatalité": "power:DOOM"
@@ -3526,8 +3592,8 @@
   "Étourdi": null
  },
  "power:VEILPIERCER": {
-  "Éthérée": null,
-  "Éthérées": null
+  "Éthérée": "keyword:ETHEREAL",
+  "Éthérées": "keyword:ETHEREAL"
  },
  "power:VICIOUS": {
   "Vulnérable": "power:VULNERABLE"
@@ -3537,7 +3603,10 @@
  },
  "power:VITAL_SPARK": {
   "Compétences": null,
-  "Souillées": null
+  "Souillées": [
+   "affliction:TAINTED",
+   "power:TAINTED"
+  ]
  },
  "power:WASTE_AWAY": {
   "Énergie": "keyword:ENERGY"
@@ -3550,7 +3619,7 @@
  },
  "power:WITHERING_PRESENCE": {
   "Main": null,
-  "Érosion": null
+  "Érosion": "card:WITHER"
  },
  "power:WRAITH_FORM": {
   "Dextérité": "power:DEXTERITY"
@@ -3611,8 +3680,8 @@
  },
  "relic:BIG_HAT": {
   "Main": null,
-  "Éthérée": null,
-  "Éthérées": null
+  "Éthérée": "keyword:ETHEREAL",
+  "Éthérées": "keyword:ETHEREAL"
  },
  "relic:BIIIG_HUG": {
   "Deck": null,
@@ -3657,7 +3726,7 @@
   "Élite": null
  },
  "relic:BOUND_PHYLACTERY": {
-  "Invoquez": null
+  "Invoquez": "keyword:SUMMON_STATIC"
  },
  "relic:BOWLER_HAT": {
   "Pièces d'or": null
@@ -3670,7 +3739,7 @@
  },
  "relic:BURNING_STICKS": {
   "Main": null,
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "relic:BYRDINE": {
   "Oizodette": "relic:BYRDINE",
@@ -3709,10 +3778,14 @@
   "Main": null
  },
  "relic:CONDUCTORS_BATON": {
-  "Mélodies": null
+  "Mélodies": [
+   "keyword:WAH_MELODY",
+   "keyword:CHO_MELODY",
+   "keyword:KI_MELODY"
+  ]
  },
  "relic:CRACKED_CORE": {
-  "Canalisez": null,
+  "Canalisez": "keyword:CHANNELING",
   "Orbe kéraunique": "keyword:LIGHTNING_ORB"
  },
  "relic:CROSSBOW": {
@@ -3740,7 +3813,7 @@
   "Armure": "keyword:BLOCK"
  },
  "relic:DISTINGUISHED_CAPE": {
-  "Apparitions": null,
+  "Apparitions": "card:APPARITION",
   "Deck": null,
   "plural:Apparition": null
  },
@@ -3795,7 +3868,7 @@
   "Site de repos": null
  },
  "relic:FENCING_MANUAL": {
-  "Forgez": null
+  "Forgez": "keyword:FORGE"
  },
  "relic:FERTILIZER": {
   "Force": "power:STRENGTH",
@@ -3823,7 +3896,7 @@
  "relic:FUNERARY_MASK": {
   "Pioche": null,
   "plural:Âme": null,
-  "Âmes": null
+  "Âmes": "card:SOUL"
  },
  "relic:GALACTIC_DUST": {
   "Armure": "keyword:BLOCK"
@@ -3831,7 +3904,7 @@
  "relic:GHOST_SEED": {
   "Défenses": null,
   "Frappes": null,
-  "Éthérées": null
+  "Éthérées": "keyword:ETHEREAL"
  },
  "relic:GIRYA": {
   "Force": "power:STRENGTH",
@@ -3875,8 +3948,8 @@
   "Armure": "keyword:BLOCK"
  },
  "relic:INFUSED_CORE": {
-  "Canalisez": null,
-  "Orbes kérauniques": null
+  "Canalisez": "keyword:CHANNELING",
+  "Orbes kérauniques": "keyword:LIGHTNING_ORB"
  },
  "relic:INTIMIDATING_HELMET": {
   "Armure": "keyword:BLOCK"
@@ -3890,7 +3963,7 @@
   "Deck": null
  },
  "relic:JOSS_PAPER": {
-  "Épuisé": null
+  "Épuisé": "keyword:EXHAUST"
  },
  "relic:JUZU_BRACELET": {
   "?": null
@@ -3921,7 +3994,7 @@
  "relic:LEAFY_POULTICE": {
   "Défense": null,
   "Frappe": null,
-  "Transformez": null
+  "Transformez": "keyword:TRANSFORM"
  },
  "relic:LORDS_PARASOL": {
   "Marchand": null
@@ -3964,10 +4037,10 @@
   "Deck": null
  },
  "relic:MUMMIFIED_HAND": {
-  "Main": null
+  "Main": "relic:MUMMIFIED_HAND"
  },
  "relic:MUSIC_BOX": {
-  "Éthérée": null
+  "Éthérée": "keyword:ETHEREAL"
  },
  "relic:MYSTERIOUS_COCOON": {
   "Empaler": null,
@@ -3991,15 +4064,18 @@
   "Frappes": null
  },
  "relic:NEOWS_TORMENT": {
-  "Deck": null,
+  "Deck": [
+   "card:NEOWS_FURY",
+   "relic:NEOWS_TORMENT"
+  ],
   "Fureur de Neow": "card:NEOWS_FURY"
  },
  "relic:NEW_LEAF": {
-  "Transformez": null
+  "Transformez": "keyword:TRANSFORM"
  },
  "relic:NINJA_SCROLL": {
   "Main": null,
-  "Surins": null,
+  "Surins": "card:SHIV",
   "plural:Surin": null
  },
  "relic:NUTRITIOUS_SOUP": {
@@ -4034,14 +4110,14 @@
  },
  "relic:PAELS_EYE": {
   "Main": null,
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "relic:PAELS_GROWTH": {
   "Envoûtez": null
  },
  "relic:PAELS_HORN": {
   "Deck": null,
-  "Relaxations": null
+  "Relaxations": "card:RELAX"
  },
  "relic:PAELS_LEGION": {
   "Armure": "keyword:BLOCK"
@@ -4063,10 +4139,10 @@
   "Boss": null
  },
  "relic:PAPER_KRANE": {
-  "Affaiblis": null
+  "Affaiblis": "power:WEAK"
  },
  "relic:PAPER_PHROG": {
-  "Vulnérables": null
+  "Vulnérables": "power:VULNERABLE"
  },
  "relic:PARRYING_SHIELD": {
   "Armure": null
@@ -4142,7 +4218,7 @@
  },
  "relic:RINGING_TRIANGLE": {
   "Main": null,
-  "Retenez": null
+  "Retenez": "keyword:RETAIN"
  },
  "relic:RIPPLE_BASIN": {
   "Armure": "keyword:BLOCK"
@@ -4248,15 +4324,15 @@
   "Élites": null
  },
  "relic:SYMBIOTIC_VIRUS": {
-  "Canalisez": null,
-  "Orbes ténébreux": null
+  "Canalisez": "keyword:CHANNELING",
+  "Orbes ténébreux": "keyword:DARK_ORB"
  },
  "relic:TANXS_WHISTLE": {
   "Deck": null,
   "Sifflet": "card:WHISTLE"
  },
  "relic:TEA_OF_DISCOURTESY": {
-  "Hébétement": null,
+  "Hébétement": "card:DAZED",
   "Pioche": null
  },
  "relic:THE_ABACUS": {
@@ -4270,7 +4346,7 @@
  "relic:TOASTY_MITTENS": {
   "Force": "power:STRENGTH",
   "Main": null,
-  "Épuisez": null
+  "Épuisez": "keyword:EXHAUST"
  },
  "relic:TOOLBOX": {
   "Main": null
