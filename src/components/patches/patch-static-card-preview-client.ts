@@ -1,5 +1,6 @@
 import { fitCardDescriptionText } from "@/lib/card-description-fit";
 import { DESCRIPTION_FIT, FONT_CQI } from "@/lib/sts2-card-style";
+import { drawnRect, placeBesideTrigger } from "@/lib/hover-tip-layer";
 
 (() => {
   const TRIGGER_SELECTOR = "[data-static-card-trigger]";
@@ -55,21 +56,22 @@ import { DESCRIPTION_FIT, FONT_CQI } from "@/lib/sts2-card-style";
     preview.style.top = "0";
     fitPreview(preview);
 
-    const triggerRect = trigger.getBoundingClientRect();
-    const previewRect = preview.getBoundingClientRect();
-    const left = Math.max(
-      Math.min(
-        triggerRect.left + triggerRect.width / 2 - previewRect.width / 2,
-        window.innerWidth - previewRect.width - MARGIN,
-      ),
-      MARGIN,
-    );
-    const top = triggerRect.top >= previewRect.height + MARGIN
-      ? triggerRect.top - previewRect.height - 8
-      : triggerRect.bottom + 8;
+    // The card paints its frame outside its box: place the painted area beside the keyword, never over it.
+    const previewBox = preview.getBoundingClientRect();
+    const previewDrawn = drawnRect(preview);
+    const { left, top } = placeBesideTrigger({
+      trigger: drawnRect(trigger),
+      tipWidth: previewDrawn.width,
+      tipHeight: previewDrawn.height,
+      order: ["above", "below", "right", "left"],
+      align: "center",
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      margin: MARGIN,
+    });
 
-    preview.style.left = `${left}px`;
-    preview.style.top = `${Math.min(top, window.innerHeight - previewRect.height - MARGIN)}px`;
+    preview.style.left = `${left + (previewBox.left - previewDrawn.left)}px`;
+    preview.style.top = `${top + (previewBox.top - previewDrawn.top)}px`;
     preview.style.visibility = "";
     activePreview = preview;
   }
