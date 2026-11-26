@@ -1087,7 +1087,7 @@
         "label": "비관"
       }
     ],
-    "searchText": "v0.100.0:line-016-ascension-level-06 v0.100.0 0.100.0 밸런스 일반 비관 승천이 이제 ? 방에도 영향을 줍니다. gloom ascension now also affects ? rooms. ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
+    "searchText": "v0.100.0:line-016-ascension-level-06 v0.100.0 0.100.0 밸런스 일반 비관 승천이 이제 ? 방에도 영향을 줍니다. gloom ascension now also affects ? rooms. ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 ascension 6 a6 gloom"
   },
   {
     "id": "v0.100.0:line-017-text-13rrmif",
@@ -5764,7 +5764,7 @@
         "label": "비관"
       }
     ],
-    "searchText": "v0.101.0:line-010-ascension-level-06 v0.101.0 0.101.0 밸런스 일반 비관 승천 모디파이어가 더 이상 휴식 장소 외에 ? 방에 영향을 주지 않음 gloom ascension modifier no longer affects ? rooms in addition to rest sites ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
+    "searchText": "v0.101.0:line-010-ascension-level-06 v0.101.0 0.101.0 밸런스 일반 비관 승천 모디파이어가 더 이상 휴식 장소 외에 ? 방에 영향을 주지 않음 gloom ascension modifier no longer affects ? rooms in addition to rest sites ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 ascension 6 a6 gloom"
   },
   {
     "id": "v0.101.0:line-011-text-1nitq3o",
@@ -7060,7 +7060,7 @@
         "label": "비관"
       }
     ],
-    "searchText": "v0.102.0:line-001-ascension-level-06 v0.102.0 0.102.0 컨텐츠 일반 승천 6 리워크: 비관 - \"휴식 장소가 줄어듭니다.\"에서 인플레이션 - \"상인에게서 카드를 제거하는 비용이 증가합니다.\"로 변경. 카드 제거 비용이 100 골드에서 시작하며, 제거당 25가 아닌 50씩 증가. reworked ascension 6 from gloom - \"less rest sites.\" -> inflation - \"removing cards from your deck at the merchant is more expensive.\" card removal now starts at 100 gold, increases by 50 gold per removal instead of 25. ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
+    "searchText": "v0.102.0:line-001-ascension-level-06 v0.102.0 0.102.0 컨텐츠 일반 승천 6 리워크: 비관 - \"휴식 장소가 줄어듭니다.\"에서 인플레이션 - \"상인에게서 카드를 제거하는 비용이 증가합니다.\"로 변경. 카드 제거 비용이 100 골드에서 시작하며, 제거당 25가 아닌 50씩 증가. reworked ascension 6 from gloom - \"less rest sites.\" -> inflation - \"removing cards from your deck at the merchant is more expensive.\" card removal now starts at 100 gold, increases by 50 gold per removal instead of 25. ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 ascension 6 a6 gloom"
   },
   {
     "id": "v0.102.0:line-002-power-strength",
@@ -10025,9 +10025,9 @@
       "Content & Balance",
       "General Changes"
     ],
-    "markdownKo": "**승천 6** 리워크: 침울 - \"휴식 장소 감소.\" → 인플레이션 - \"상인에게서 덱의 카드를 제거하는 비용이 증가합니다.\"",
+    "markdownKo": "**승천 6** 리워크: 비관 - \"휴식 장소 감소.\" → 인플레이션 - \"상인에게서 덱의 카드를 제거하는 비용이 증가합니다.\"",
     "markdownEn": "**Ascension 6** reworked: Gloom - \"Less rest sites.\" -> Inflation - \"Removing cards from your deck at the Merchant is more expensive.\"",
-    "textKo": "승천 6 리워크: 침울 - \"휴식 장소 감소.\" → 인플레이션 - \"상인에게서 덱의 카드를 제거하는 비용이 증가합니다.\"",
+    "textKo": "승천 6 리워크: 비관 - \"휴식 장소 감소.\" → 인플레이션 - \"상인에게서 덱의 카드를 제거하는 비용이 증가합니다.\"",
     "textEn": "Ascension 6 reworked: Gloom - \"Less rest sites.\" -> Inflation - \"Removing cards from your deck at the Merchant is more expensive.\"",
     "entityRefs": [
       {
@@ -10036,7 +10036,7 @@
         "label": "승천 6"
       }
     ],
-    "searchText": "v0.103.2:line-001-ascension-level-06 v0.103.2 0.103.2 컨텐츠 & 밸런스 전반적 변경 승천 6 리워크: 침울 - \"휴식 장소 감소.\" → 인플레이션 - \"상인에게서 덱의 카드를 제거하는 비용이 증가합니다.\" ascension 6 reworked: gloom - \"less rest sites.\" -> inflation - \"removing cards from your deck at the merchant is more expensive.\" ascension level_06 승천 6 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
+    "searchText": "v0.103.2:line-001-ascension-level-06 v0.103.2 0.103.2 컨텐츠 & 밸런스 전반적 변경 승천 6 리워크: 비관 - \"휴식 장소 감소.\" → 인플레이션 - \"상인에게서 덱의 카드를 제거하는 비용이 증가합니다.\" ascension 6 reworked: gloom - \"less rest sites.\" -> inflation - \"removing cards from your deck at the merchant is more expensive.\" ascension level_06 승천 6 인플레이션 inflation 승천 6 a6 비관 ascension 6 a6 gloom"
   },
   {
     "id": "v0.103.2:line-002-text-1f96k7x",

@@ -3407,7 +3407,7 @@ export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<
 const ASCENSION_HISTORICAL_ALIASES: Record<string, { ko: string[]; en: string[] }> = {
   // A6 was reworked from Gloom to Inflation; keep both names for patch matching.
   LEVEL_06: {
-    ko: ["비관", "침울"],
+    ko: ["비관"],
     en: ["Gloom"],
   },
 };
