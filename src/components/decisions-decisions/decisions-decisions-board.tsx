@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { createPortal } from "react-dom";
 import { GripVertical, Plus, X } from "lucide-react";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
+import type { HandCharacter } from "@/components/decisions-decisions/decisions-decisions-hand";
 import {
   DecisionsDecisionsToken,
   DecisionsDecisionsTokenPlaceholder,
@@ -308,6 +309,7 @@ export function DecisionsDecisionsBoard({
   thumbnail = false,
   staticOnly = false,
   className,
+  dragHand,
 }: {
   rows: TierRow[];
   placements: TierPlacement[];
@@ -334,6 +336,8 @@ export function DecisionsDecisionsBoard({
   thumbnail?: boolean;
   staticOnly?: boolean;
   className?: string;
+  /** Character whose fist rides on a dragged piece's drag image. */
+  dragHand?: HandCharacter;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const poolOnly = variant === "pool";
@@ -416,7 +420,7 @@ export function DecisionsDecisionsBoard({
               dragKindRef.current = "token";
               event.dataTransfer.setData("text/plain", key);
               event.dataTransfer.effectAllowed = "move";
-              setDecisionsTokenDragImage(event);
+              setDecisionsTokenDragImage(event, dragHand);
             }}
             onDragEnd={() => {
               dragKindRef.current = null;

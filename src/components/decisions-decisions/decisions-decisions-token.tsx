@@ -6,6 +6,11 @@ import { EntityPreview } from "@/components/patch-note-renderer";
 import { CardTile } from "@/components/codex/card-tile";
 import { AscensionToken } from "@/components/codex/ascension-token";
 import { DecisionsActorSprite } from "@/components/decisions-decisions/decisions-decisions-actor";
+import {
+  fistBounds,
+  fistOverlay,
+  type HandCharacter,
+} from "@/components/decisions-decisions/decisions-decisions-hand";
 import Image from "@/components/ui/static-image";
 import type { DecisionsDecisionsResourceRef } from "@/lib/decisions-decisions";
 import {
@@ -21,7 +26,14 @@ import { cn } from "@/lib/utils";
 /** Draggable pool/board piece (말). */
 const TILE_ATTR = "data-decisions-decisions-tile";
 
-export function setDecisionsTokenDragImage(event: DragEvent<HTMLElement>) {
+/**
+ * Drag image for a piece. With a hand character, the character's fist hangs
+ * over the piece in the same image, so piece and hand move as one.
+ */
+export function setDecisionsTokenDragImage(
+  event: DragEvent<HTMLElement>,
+  character?: HandCharacter,
+) {
   const tile = event.currentTarget.querySelector(`[${TILE_ATTR}]`);
   const preview = event.currentTarget.querySelector("[data-drag-preview]");
   const source = preview instanceof HTMLElement ? preview : tile;
@@ -48,24 +60,43 @@ export function setDecisionsTokenDragImage(event: DragEvent<HTMLElement>) {
     clone.querySelectorAll("canvas").forEach((node) => node.remove());
   }
   clone.setAttribute("aria-hidden", "true");
-  clone.style.position = "fixed";
-  clone.style.top = "-1200px";
-  clone.style.left = "-1200px";
   clone.style.width = `${width}px`;
   clone.style.height = `${height}px`;
   clone.style.margin = "0";
   clone.style.opacity = "1";
   clone.style.visibility = "visible";
-  clone.style.zIndex = "-1";
   clone.style.pointerEvents = "none";
   clone.style.transform = "none";
-  document.body.appendChild(clone);
+
+  // The box grows past the piece to take in the arm above it.
+  const fist = character ? fistBounds(width / 2, height / 2) : null;
+  const left = fist ? Math.min(0, fist.left) : 0;
+  const top = fist ? Math.min(0, fist.top) : 0;
+  const right = fist ? Math.max(width, fist.right) : width;
+  const bottom = fist ? Math.max(height, fist.bottom) : height;
+  const box = document.createElement("div");
+  box.setAttribute("aria-hidden", "true");
+  box.style.cssText = [
+    "position:fixed",
+    "top:-2400px",
+    "left:-2400px",
+    `width:${right - left}px`,
+    `height:${bottom - top}px`,
+    "z-index:-1",
+    "pointer-events:none",
+  ].join(";");
+  clone.style.position = "absolute";
+  clone.style.left = `${-left}px`;
+  clone.style.top = `${-top}px`;
+  box.appendChild(clone);
+  if (character) box.appendChild(fistOverlay(character, width / 2 - left, height / 2 - top));
+  document.body.appendChild(box);
   event.dataTransfer.setDragImage(
-    clone,
-    Math.min(Math.max(event.clientX - rect.left, 0), width),
-    Math.min(Math.max(event.clientY - rect.top, 0), height),
+    box,
+    Math.min(Math.max(event.clientX - rect.left, 0), width) - left,
+    Math.min(Math.max(event.clientY - rect.top, 0), height) - top,
   );
-  const cleanup = () => clone.remove();
+  const cleanup = () => box.remove();
   event.currentTarget.addEventListener("dragend", cleanup, { once: true });
   window.setTimeout(cleanup, 1500);
 }

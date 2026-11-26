@@ -14,9 +14,10 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
 import {
   DecisionsDecisionsHand,
-  GRAB_HAND_CHARACTERS,
+  fistOverlay,
+  HAND_CHARACTERS,
   type DecisionsHandGoal,
-  type GrabHandCharacter,
+  type HandCharacter,
 } from "@/components/decisions-decisions/decisions-decisions-hand";
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
 import { DecisionsDecisionsToken } from "@/components/decisions-decisions/decisions-decisions-token";
@@ -152,11 +153,12 @@ function PoolTools({
       : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
   );
   return (
+    // Fixed height: picking a sort must not push the sort row up, so the value row is always reserved.
     <div className="space-y-1" data-decisions-decisions-pool-tools>
-      <div className="flex flex-wrap items-center gap-1">
+      <div className="flex h-8 flex-nowrap items-center gap-1">
         {sortLabels && (
           // Pressing the active sort again goes back to the pool order; no separate "default" chip.
-          <div role="group" aria-label={copy.poolSort} className="flex flex-wrap gap-1">
+          <div role="group" aria-label={copy.poolSort} className="flex shrink-0 gap-1">
             {CARD_SORT_KEYS.map((key) => (
               <button
                 key={key}
@@ -177,7 +179,7 @@ function PoolTools({
           <button
             type="button"
             onClick={onReset}
-            className="inline-flex items-center gap-0.5 border-l border-white/10 pl-2 text-[11px] text-red-400/70 transition-colors hover:text-red-300"
+            className="inline-flex shrink-0 items-center whitespace-nowrap gap-0.5 border-l border-white/10 pl-2 text-[11px] text-red-400/70 transition-colors hover:text-red-300"
           >
             <X size={11} aria-hidden />
             {copy.poolFilterReset}
@@ -189,11 +191,15 @@ function PoolTools({
           onChange={(event) => onQuery(event.target.value)}
           placeholder={copy.poolSearch}
           aria-label={copy.poolSearch}
-          className="ml-auto h-7 w-36 rounded-md border border-white/10 bg-black/30 px-2 text-xs text-foreground outline-none placeholder:text-zinc-500 focus:border-primary/40"
+          className="ml-auto h-7 w-36 min-w-0 shrink rounded-md border border-white/10 bg-black/30 px-2 text-xs text-foreground outline-none placeholder:text-zinc-500 focus:border-primary/40"
         />
       </div>
-      {sort !== "default" && values.length > 1 && (
-        <div role="group" aria-label={sortLabels?.[sort]} className="flex flex-wrap gap-1">
+      <div
+        role="group"
+        aria-label={sort !== "default" ? sortLabels?.[sort] : undefined}
+        className="flex h-7 flex-nowrap items-center gap-1 overflow-x-auto"
+      >
+        {sort !== "default" && values.length > 1 && (<>
           {values.map(({ value, label }) => {
             const active = filters[sort].includes(value);
             return (
@@ -202,14 +208,14 @@ function PoolTools({
                 type="button"
                 aria-pressed={active}
                 onClick={() => onToggleValue(value)}
-                className={cn(chip(active), "border", active ? "border-primary/40" : "border-white/10")}
+                className={cn(chip(active), "shrink-0 border", active ? "border-primary/40" : "border-white/10")}
               >
                 {label}
               </button>
             );
           })}
-        </div>
-      )}
+        </>)}
+      </div>
     </div>
   );
 }
@@ -219,7 +225,10 @@ function refFromKey(key: string): DecisionsDecisionsResourceRef {
   return { type, id } as DecisionsDecisionsResourceRef;
 }
 
-const FLIGHT_MS = 380;
+/** About a person's drag speed, so a carried piece never outruns the eye. */
+const CARRY_PX_PER_MS = 1.1;
+const CARRY_MIN_MS = 300;
+const CARRY_MAX_MS = 800;
 const TIP_INSET_PX = 6;
 const PIECE_SIZE_VARS = ["--dd-card", "--dd-icon", "--dd-monster"] as const;
 const noSubscribe = () => () => {};
@@ -246,23 +255,19 @@ function fingertipOn(element: Element): DecisionsHandGoal {
     top = Math.max(top, box.top);
   }
   if (rect.bottom < 0 || top > window.innerHeight) return null;
-  return { x: rect.left + rect.width / 2, y: top + TIP_INSET_PX, grab: false };
-}
-
-function gripOn(rect: { left: number; top: number; width: number; height: number }): DecisionsHandGoal {
-  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, grab: true };
+  return { x: rect.left + rect.width / 2, y: top + TIP_INSET_PX };
 }
 
 /** The character most of the pool belongs to; null on a tie or when none does. */
 function dominantCharacter(
   pool: DecisionsDecisionsResourceRef[],
   entityMap: Map<string, EntityInfo>,
-): GrabHandCharacter | null {
-  const counts = new Map<GrabHandCharacter, number>();
+): HandCharacter | null {
+  const counts = new Map<HandCharacter, number>();
   for (const ref of pool) {
     const entity = entityMap.get(resourceKey(ref));
     const slug = entity?.cardData?.color ?? entity?.relicData?.pool ?? entity?.potionData?.pool;
-    const character = GRAB_HAND_CHARACTERS.find((item) => item === slug);
+    const character = HAND_CHARACTERS.find((item) => item === slug);
     if (character) counts.set(character, (counts.get(character) ?? 0) + 1);
   }
   const [first, second] = [...counts].sort((left, right) => right[1] - left[1]);
@@ -270,11 +275,11 @@ function dominantCharacter(
 }
 
 /**
- * Flies a stand-in from `from` to where the piece now sits. The stand-in lives
- * on <body> because both boards clip their overflow; the real piece stays
- * hidden until it lands.
+ * Carries a stand-in, gripped by the character's fist, from `from` to where the
+ * piece now sits. The stand-in lives on <body> because both boards clip their
+ * overflow; the real piece stays hidden until it lands.
  */
-function flyPiece(element: HTMLElement, from: DOMRect): PieceFlight | null {
+function flyPiece(element: HTMLElement, from: DOMRect, character: HandCharacter): PieceFlight | null {
   const to = element.getBoundingClientRect();
   if (to.width === 0 || from.width === 0) return null;
   const ghost = element.cloneNode(true) as HTMLElement;
@@ -298,12 +303,17 @@ function flyPiece(element: HTMLElement, from: DOMRect): PieceFlight | null {
     pointerEvents: "none",
     transformOrigin: "0 0",
   });
+  // Over the piece, in the same element, so hand and piece never drift apart.
+  ghost.appendChild(fistOverlay(character, to.width / 2, to.height / 2));
   document.body.appendChild(ghost);
   element.style.visibility = "hidden";
+  const dx = from.left - to.left;
+  const dy = from.top - to.top;
+  const duration = Math.min(CARRY_MAX_MS, Math.max(CARRY_MIN_MS, Math.hypot(dx, dy) / CARRY_PX_PER_MS));
   const animation = ghost.animate([
-    { transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width})` },
+    { transform: `translate(${dx}px, ${dy}px) scale(${from.width / to.width})` },
     { transform: "none" },
-  ], { duration: FLIGHT_MS, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+  ], { duration, easing: "cubic-bezier(0.45, 0, 0.25, 1)" });
   const land = () => {
     ghost.remove();
     element.style.visibility = "";
@@ -315,7 +325,8 @@ function flyPiece(element: HTMLElement, from: DOMRect): PieceFlight | null {
 
 /**
  * Tier buttons for the selected piece. Only there while a piece is picked
- * (random.gg opens a modal; this keeps the board in view and takes number keys).
+ * (random.gg opens a modal; this keeps the board in view). Number keys 1-9 and
+ * 0 still work; the panel does not spell them out.
  */
 function TierAssignBar({
   rows,
@@ -335,7 +346,6 @@ function TierAssignBar({
   onAssign: (rowId: string) => void;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
-  const kbd = "rounded px-1 font-sans text-[10px] font-semibold";
   return (
     <div
       role="toolbar"
@@ -357,15 +367,10 @@ function TierAssignBar({
               />
             </span>
           )}
-          <span className="min-w-0">
-            <span className="block truncate font-service text-sm font-bold text-primary">{name}</span>
-            <span className="hidden text-[11px] text-zinc-500 sm:block">
-              {copy.assignKeys.replace("{count}", String(Math.min(rows.length, 9)))}
-            </span>
-          </span>
+          <span className="min-w-0 truncate font-service text-lg font-bold leading-tight text-primary">{name}</span>
         </div>
         <div className="flex flex-1 flex-wrap gap-1.5">
-          {rows.map((row, index) => (
+          {rows.map((row) => (
             <button
               key={row.id}
               type="button"
@@ -377,9 +382,6 @@ function TierAssignBar({
               )}
               style={{ backgroundColor: tierColorBar(row.color) }}
             >
-              {index < 9 && (
-                <kbd className={cn(kbd, "hidden bg-black/15 text-zinc-950/70 sm:inline")}>{index + 1}</kbd>
-              )}
               <span className="truncate">{row.label}</span>
             </button>
           ))}
@@ -389,7 +391,6 @@ function TierAssignBar({
             onClick={() => onAssign(UNRANKED_ROW_ID)}
             className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-white/15 bg-white/5 px-3 text-xs font-semibold text-zinc-300 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <kbd className={cn(kbd, "hidden border border-white/15 text-zinc-400 sm:inline")}>0</kbd>
             {copy.unranked}
           </button>
         </div>
@@ -729,7 +730,14 @@ export function DecisionsDecisionsComposer({
   }, [entityMap, poolSort, sortedPool]);
   const poolHasUnplacedHidden = boardPool.length < pool.length
     && pool.some((ref) => !placements.some((item) => resourceKey(item) === resourceKey(ref)));
-  const poolCharacter = useMemo(() => dominantCharacter(pool, entityMap), [entityMap, pool]);
+  // The pool's own character's hand; a tie or no character draws one at random.
+  const [randomHand] = useState<HandCharacter>(
+    () => HAND_CHARACTERS[Math.floor(Math.random() * HAND_CHARACTERS.length)],
+  );
+  const handCharacter = useMemo(
+    () => dominantCharacter(pool, entityMap) ?? randomHand,
+    [entityMap, pool, randomHand],
+  );
   const poolHasCards = useMemo(
     () => pool.some((ref) => ref.type === "card"),
     [pool],
@@ -764,7 +772,7 @@ export function DecisionsDecisionsComposer({
     const element = pending ? pieceElement(pending.key) : null;
     if (pending && element && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       flightRef.current?.animation.finish();
-      const flight = flyPiece(element, pending.from);
+      const flight = flyPiece(element, pending.from, handCharacter);
       flightRef.current = flight;
       flight?.animation.addEventListener("finish", () => {
         if (flightRef.current === flight) flightRef.current = null;
@@ -774,7 +782,7 @@ export function DecisionsDecisionsComposer({
       revealSelectedRef.current = false;
       pieceElement(selectedKey)?.scrollIntoView({ block: "nearest" });
     }
-  }, [pieceElement, placements, selectedKey]);
+  }, [handCharacter, pieceElement, placements, selectedKey]);
 
   useEffect(() => () => flightRef.current?.animation.finish(), []);
 
@@ -821,18 +829,10 @@ export function DecisionsDecisionsComposer({
     };
   }, [step]);
 
-  // The hand grips the dragged piece, then the flying one, else points at the selection.
+  // The pointing hand steps aside while a fist carries a piece, else points at the selection.
   const handGoal = useCallback((): DecisionsHandGoal => {
-    const drag = dragRef.current;
-    if (drag) {
-      return gripOn({
-        left: drag.x - drag.offsetX,
-        top: drag.y - drag.offsetY,
-        width: drag.width,
-        height: drag.height,
-      });
-    }
-    if (flightRef.current) return gripOn(flightRef.current.ghost.getBoundingClientRect());
+    // The fist rides on the drag image or the flying piece itself.
+    if (dragRef.current || flightRef.current) return "hide";
     const key = selectedKeyRef.current;
     const element = key ? pieceElement(key) : null;
     return element ? fingertipOn(element) : null;
@@ -1025,7 +1025,6 @@ export function DecisionsDecisionsComposer({
                 setPoolFilters(EMPTY_POOL_FILTERS);
               }}
             />
-            <p className="text-[11px] text-zinc-500">{copy.assignHint}</p>
           </div>
           <section
             aria-label={copy.unranked}
@@ -1044,6 +1043,7 @@ export function DecisionsDecisionsComposer({
               selectedKey={selectedKey}
               onSelect={toggleSelect}
               onMove={handleMove}
+              dragHand={handCharacter}
               emptyPoolLabel={poolHasUnplacedHidden ? copy.poolNoMatch : copy.poolAllPlaced}
               className="lg:max-h-[calc(100dvh-9rem)]"
             />
@@ -1061,6 +1061,7 @@ export function DecisionsDecisionsComposer({
             selectedKey={selectedKey}
             onSelect={toggleSelect}
             onMove={handleMove}
+            dragHand={handCharacter}
             onRowLabelChange={(rowId, label) => {
               setRows((current) => current.map((row) => (
                 row.id === rowId ? { ...row, label } : row
@@ -1106,7 +1107,7 @@ export function DecisionsDecisionsComposer({
               onAssign={assignSelected}
             />
           )}
-          {mounted && <DecisionsDecisionsHand getGoal={handGoal} poolCharacter={poolCharacter} />}
+          {mounted && <DecisionsDecisionsHand getGoal={handGoal} character={handCharacter} />}
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
