@@ -38,6 +38,7 @@ import {
   type TierPlacement,
   type TierRow,
 } from "@/lib/decisions-decisions";
+import type { CodexCard } from "@/lib/codex-types";
 import { compareCards, type SortKey } from "@/lib/card-sort";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -65,6 +66,133 @@ function sortPoolForBoard(
     }
     return 0;
   });
+}
+
+type CardFilterKey = keyof DecisionsCardSortLabels;
+type PoolFilters = Record<CardFilterKey, string[]>;
+const EMPTY_POOL_FILTERS: PoolFilters = { type: [], rarity: [], cost: [] };
+
+function cardFilterValue(card: CodexCard, key: CardFilterKey): string {
+  if (key === "type") return card.type;
+  if (key === "rarity") return card.rarity;
+  return card.isXCost ? "X" : String(card.cost);
+}
+
+function cardFilterLabel(card: CodexCard, key: CardFilterKey): string {
+  if (key === "type") return card.typeLabel;
+  if (key === "rarity") return card.rarityLabel;
+  return cardFilterValue(card, key);
+}
+
+/** Name search plus card type/rarity/cost; a card filter hides pieces that are not cards. */
+function filterPool(
+  pool: DecisionsDecisionsResourceRef[],
+  entityMap: Map<string, EntityInfo>,
+  query: string,
+  filters: PoolFilters,
+): DecisionsDecisionsResourceRef[] {
+  const needle = query.trim().toLowerCase();
+  const active = CARD_SORT_KEYS.filter((key) => filters[key].length > 0);
+  if (!needle && active.length === 0) return pool;
+  return pool.filter((ref) => {
+    const entity = entityMap.get(resourceKey(ref));
+    if (!entity) return false;
+    if (needle && ![entity.nameKo, entity.nameEn].some((name) => name?.toLowerCase().includes(needle))) {
+      return false;
+    }
+    if (active.length === 0) return true;
+    const card = entity.cardData;
+    return Boolean(card) && active.every((key) => filters[key].includes(cardFilterValue(card!, key)));
+  });
+}
+
+function PoolTools({
+  sortLabels,
+  sort,
+  query,
+  filters,
+  values,
+  serviceLocale,
+  onSort,
+  onQuery,
+  onToggleValue,
+  onReset,
+}: {
+  sortLabels: DecisionsCardSortLabels | null;
+  sort: PoolSort;
+  query: string;
+  filters: PoolFilters;
+  values: { value: string; label: string }[];
+  serviceLocale: ServiceLocale;
+  onSort: (sort: PoolSort) => void;
+  onQuery: (query: string) => void;
+  onToggleValue: (value: string) => void;
+  onReset: () => void;
+}) {
+  const copy = serviceMessages[serviceLocale].decisionsDecisions;
+  const filtered = query.trim().length > 0 || CARD_SORT_KEYS.some((key) => filters[key].length > 0);
+  const chip = (active: boolean) => cn(
+    "rounded-md px-2 py-1 text-xs font-semibold transition-colors",
+    active
+      ? "bg-primary/15 text-primary"
+      : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+  );
+  return (
+    <div className="space-y-1" data-decisions-decisions-pool-tools>
+      <div className="flex flex-wrap items-center gap-1">
+        {sortLabels && (
+          <div role="radiogroup" aria-label={copy.poolSort} className="flex flex-wrap gap-1">
+            {(["default", ...CARD_SORT_KEYS] as const).map((key) => (
+              <button
+                key={key}
+                type="button"
+                role="radio"
+                aria-checked={sort === key}
+                onClick={() => onSort(key)}
+                className={chip(sort === key)}
+              >
+                {key === "default" ? copy.poolSortDefault : sortLabels[key]}
+                {key !== "default" && filters[key].length > 0 && (
+                  <span aria-hidden className="ml-1 text-[10px] text-primary">●</span>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+        <input
+          type="search"
+          value={query}
+          onChange={(event) => onQuery(event.target.value)}
+          placeholder={copy.poolSearch}
+          aria-label={copy.poolSearch}
+          className="ml-auto h-7 w-36 rounded-md border border-white/10 bg-black/30 px-2 text-xs text-foreground outline-none placeholder:text-zinc-500 focus:border-primary/40"
+        />
+        {filtered && (
+          <button type="button" onClick={onReset} className="rounded-md px-1.5 py-1 text-xs text-zinc-400 hover:text-foreground">
+            {copy.poolFilterReset}
+          </button>
+        )}
+      </div>
+      {sort !== "default" && values.length > 1 && (
+        <div role="group" aria-label={sortLabels?.[sort]} className="flex flex-wrap gap-1">
+          {values.map(({ value, label }) => {
+            const active = filters[sort].includes(value);
+            return (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onToggleValue(value)}
+                className={cn(chip(active), "border", active ? "border-primary/40" : "border-white/10")}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function refFromKey(key: string): DecisionsDecisionsResourceRef {
@@ -247,6 +375,8 @@ export function DecisionsDecisionsComposer({
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [poolSort, setPoolSort] = useState<PoolSort>("default");
+  const [poolQuery, setPoolQuery] = useState("");
+  const [poolFilters, setPoolFilters] = useState<PoolFilters>(EMPTY_POOL_FILTERS);
 
   const filterReady = poolFilterIsReady(major, dims);
   const presetKey = lockedPresetKey ?? namedPresetKeyFromFilter(major, dims);
@@ -436,10 +566,28 @@ export function DecisionsDecisionsComposer({
     title,
   ]);
 
-  const boardPool = useMemo(
+  const sortedPool = useMemo(
     () => sortPoolForBoard(pool, entityMap, poolSort),
     [entityMap, pool, poolSort],
   );
+  const boardPool = useMemo(
+    () => filterPool(sortedPool, entityMap, poolQuery, poolFilters),
+    [entityMap, poolFilters, poolQuery, sortedPool],
+  );
+  // Chips for the sorted key: the values the pool's cards actually have, in sort order.
+  const poolFilterValues = useMemo(() => {
+    if (poolSort === "default") return [];
+    const seen = new Map<string, string>();
+    for (const ref of sortedPool) {
+      const card = entityMap.get(resourceKey(ref))?.cardData;
+      if (!card) continue;
+      const value = cardFilterValue(card, poolSort);
+      if (!seen.has(value)) seen.set(value, cardFilterLabel(card, poolSort));
+    }
+    return [...seen].map(([value, label]) => ({ value, label }));
+  }, [entityMap, poolSort, sortedPool]);
+  const poolHasUnplacedHidden = boardPool.length < pool.length
+    && pool.some((ref) => !placements.some((item) => resourceKey(item) === resourceKey(ref)));
   const poolHasCards = useMemo(
     () => pool.some((ref) => ref.type === "card"),
     [pool],
@@ -632,27 +780,29 @@ export function DecisionsDecisionsComposer({
             data-decisions-decisions-pool-panel
             className="space-y-1.5 lg:sticky lg:top-14"
           >
-            {poolHasCards && cardSortLabels && (
-              <div role="radiogroup" aria-label={copy.poolSort} className="flex flex-wrap gap-1">
-                {(["default", ...CARD_SORT_KEYS] as const).map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    role="radio"
-                    aria-checked={poolSort === key}
-                    onClick={() => setPoolSort(key)}
-                    className={cn(
-                      "rounded-md px-2 py-1 text-xs font-semibold transition-colors",
-                      poolSort === key
-                        ? "bg-primary/15 text-primary"
-                        : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
-                    )}
-                  >
-                    {key === "default" ? copy.poolSortDefault : cardSortLabels[key]}
-                  </button>
-                ))}
-              </div>
-            )}
+            <PoolTools
+              sortLabels={poolHasCards && cardSortLabels ? cardSortLabels : null}
+              sort={poolSort}
+              query={poolQuery}
+              filters={poolFilters}
+              values={poolFilterValues}
+              serviceLocale={serviceLocale}
+              onSort={setPoolSort}
+              onQuery={setPoolQuery}
+              onToggleValue={(value) => {
+                if (poolSort === "default") return;
+                setPoolFilters((current) => ({
+                  ...current,
+                  [poolSort]: current[poolSort].includes(value)
+                    ? current[poolSort].filter((item) => item !== value)
+                    : [...current[poolSort], value],
+                }));
+              }}
+              onReset={() => {
+                setPoolQuery("");
+                setPoolFilters(EMPTY_POOL_FILTERS);
+              }}
+            />
             <DecisionsDecisionsBoard
               variant="pool"
               rows={rows}
@@ -665,8 +815,8 @@ export function DecisionsDecisionsComposer({
               selectedKey={selectedKey}
               onSelect={toggleSelect}
               onMove={handleMove}
-              emptyPoolLabel={copy.poolAllPlaced}
-              className="lg:max-h-[calc(100dvh-14rem)]"
+              emptyPoolLabel={poolHasUnplacedHidden ? copy.poolNoMatch : copy.poolAllPlaced}
+              className="lg:max-h-[calc(100dvh-16rem)]"
             />
           </section>
           <DecisionsDecisionsBoard
