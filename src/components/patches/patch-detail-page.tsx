@@ -41,6 +41,7 @@ import {
 import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { EntityVersionDiff, PatchType, STS2Patch } from "@/lib/types";
+import betaArtPayload from "../../../data/sts2-beta-art.json";
 import { compareVersions } from "@/lib/entity-versioning";
 import type { HistoryEntityType, LocalizationHistory } from "@/lib/localization-history";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
@@ -979,6 +980,28 @@ export async function getPatchDetailMetadata({
   };
 }
 
+/**
+ * The patch that brought an official art over its beta art, as an imageUrl diff,
+ * so patch note tips dissolve the beta art into the official one. Patch pages only:
+ * Compendium versions keep their static art.
+ */
+function officialArtVersionDiffs(
+  byType: Record<"card" | "relic" | "power" | "epoch", readonly { id: string; imageUrl?: string | null; betaImageUrl?: string | null }[]>,
+): EntityVersionDiff[] {
+  return betaArtPayload.pairs.flatMap((pair) => {
+    if (!pair.officialArtVersion) return [];
+    const [type, id] = pair.key.split(":") as [keyof typeof byType, string];
+    const entity = byType[type]?.find((candidate) => candidate.id === id);
+    if (!entity?.betaImageUrl || !entity.imageUrl) return [];
+    return [{
+      entityType: type,
+      entityId: id,
+      patch: `v${pair.officialArtVersion}`,
+      diffs: [{ field: "imageUrl", before: entity.betaImageUrl, after: entity.imageUrl }],
+    }];
+  });
+}
+
 export async function PatchDetailPage({
   version,
   serviceLocale,
@@ -1500,7 +1523,10 @@ export async function PatchDetailPage({
             patchVersion={patch.version}
             currentVersion={codexMeta.version}
             patches={patches}
-            versionDiffs={versionDiffs}
+            versionDiffs={[
+              ...versionDiffs,
+              ...officialArtVersionDiffs({ card: codexCards, relic: codexRelics, power: codexPowers, epoch: codexEpochs }),
+            ]}
             staticHoverPreviews={staticHoverPreviews}
             patchId={patchId}
             patchLines={patchLines}

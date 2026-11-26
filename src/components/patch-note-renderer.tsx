@@ -590,7 +590,7 @@ function LocalizedEntityPreview({
   const useTapPreview = isCoarsePointer && !forceShow;
   const visible = show || forceShow;
   const previewEntity = useMemo(
-    () => reconstructPatchPreviewEntity(entity, patchVersion, currentVersion, versionDiffs, patches),
+    () => withLifecycleAt(reconstructPatchPreviewEntity(entity, patchVersion, currentVersion, versionDiffs, patches), patchVersion),
     [currentVersion, entity, patchVersion, patches, versionDiffs],
   );
   const asIsEntity = useMemo(
@@ -1001,26 +1001,26 @@ function LocalizedEntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {entity.type === "epoch" && entity.epochData && (
+      {target.type === "epoch" && target.epochData && (
         wrap(
           <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.epochData.imageUrl}
-            imageAlt={entity.nameKo}
+            title={target.nameKo}
+            imageUrl={target.epochData.imageUrl}
+            imageAlt={target.nameKo}
             hoverTipStyle={{ width: "max-content", maxWidth: 360, whiteSpace: "nowrap" }}
             hoverTipArt={{
               mode: epochArtMode,
-              imageUrl: entity.epochData.imageUrl,
-              betaImageUrl: entity.epochData.betaImageUrl,
-              alt: entity.nameKo,
-              betaAlt: serviceLocale === "en" ? `${entity.nameKo} beta art` : `${entity.nameKo} 베타 아트`,
+              imageUrl: target.epochData.imageUrl,
+              betaImageUrl: target.epochData.betaImageUrl,
+              alt: target.nameKo,
+              betaAlt: serviceLocale === "en" ? `${target.nameKo} beta art` : `${target.nameKo} 베타 아트`,
               width: 320,
               height: 224,
               className: "h-auto w-80 rounded object-cover",
             }}
-            meta={entity.epochData.eraName ? (
+            meta={target.epochData.eraName ? (
               <span className="text-blue-300">
-                {entity.epochData.eraYear ? `${entity.epochData.eraName} ${entity.epochData.eraYear}` : entity.epochData.eraName}
+                {target.epochData.eraYear ? `${target.epochData.eraName} ${target.epochData.eraYear}` : target.epochData.eraName}
               </span>
             ) : undefined}
           />,
@@ -1128,6 +1128,9 @@ function LocalizedEntityPreview({
 
 const keepContent = (content: ReactNode) => content;
 
+// Tips drawn from versioned data; the others render current data, so both layers would match.
+const VERSION_DISSOLVE_TYPES = new Set<EntityInfo["type"]>(["card", "relic", "potion", "power", "enchantment", "event", "affliction", "monster", "epoch"]);
+
 /**
  * The entity before this patch when the patch changed or removed it, else null.
  * New entities and untouched ones keep the single to-be tip.
@@ -1140,20 +1143,32 @@ function patchAsIsEntity(
   patches?: STS2Patch[],
 ): EntityInfo | null {
   if (!patchVersion || !currentVersion || !versionDiffs?.length || !patches?.length) return null;
-  const samePatch = (version: unknown) => typeof version === "string" && compareVersions(version, patchVersion) === 0;
+  if (!VERSION_DISSOLVE_TYPES.has(entity.type)) return null;
+  // A main build ships every beta since the last main build, so it is compared with that build, not the beta before it.
+  const channel = patches.find((patch) => compareVersions(patch.version, patchVersion) === 0)?.channel;
+  const earlier = patches.filter((patch) => compareVersions(patch.version, patchVersion) < 0);
+  const previousVersion = latestPatchVersion(earlier.filter((patch) => patch.channel === channel)) || latestPatchVersion(earlier);
+  if (!previousVersion) return null;
+  const sinceAsIs = (version: unknown) => typeof version === "string"
+    && compareVersions(version, previousVersion) > 0
+    && compareVersions(version, patchVersion) <= 0;
   const dataKey = `${entity.type}Data` as keyof EntityInfo;
   const data = entity[dataKey] as { introducedInPatch?: string; deprecatedInPatch?: string } | undefined;
-  if (samePatch(data?.introducedInPatch)) return null;
-  const removed = samePatch(data?.deprecatedInPatch);
-  if (!removed && !versionDiffs.some((diff) => diff.entityType === entity.type && diff.entityId === entity.id && samePatch(diff.patch))) {
+  if (sinceAsIs(data?.introducedInPatch)) return null;
+  const removed = sinceAsIs(data?.deprecatedInPatch);
+  if (!removed && !versionDiffs.some((diff) => diff.entityType === entity.type && diff.entityId === entity.id && sinceAsIs(diff.patch))) {
     return null;
   }
-  const previousVersion = latestPatchVersion(patches.filter((patch) => compareVersions(patch.version, patchVersion) < 0));
-  if (!previousVersion) return null;
   const asIs = reconstructPatchPreviewEntity(entity, previousVersion, currentVersion, versionDiffs, patches);
-  // Lifecycle fields are never reverted, so an entity removed later still reads deprecated: before this patch it was live.
-  const asIsData = asIs[dataKey];
-  return asIsData && typeof asIsData === "object" ? { ...asIs, [dataKey]: { ...asIsData, deprecated: false } } : asIs;
+  return withLifecycleAt(asIs, previousVersion);
+}
+
+/** Lifecycle fields are never reverted: an entity removed in a later patch was still live at this version. */
+function withLifecycleAt(entity: EntityInfo, version?: string): EntityInfo {
+  const dataKey = `${entity.type}Data` as keyof EntityInfo;
+  const data = entity[dataKey] as { deprecated?: boolean; deprecatedInPatch?: string } | undefined;
+  if (!version || !data?.deprecated || !data.deprecatedInPatch || compareVersions(data.deprecatedInPatch, version) <= 0) return entity;
+  return { ...entity, [dataKey]: { ...data, deprecated: false } };
 }
 
 function reconstructPatchPreviewEntity(

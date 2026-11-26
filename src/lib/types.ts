@@ -131,6 +131,8 @@ export interface STS2Patch {
   title: string;
   titleKo: string;
   type: PatchType;
+  /** Steam branch the build shipped on. Patch note hover tips compare against the previous build of the same branch. */
+  channel?: "main" | "beta";
   status?: "ready" | "building" | "watching";
   watchStage?: "prep_time" | "delay";
   /** Published rich notes that are still being shaped. Not a visual stage. */
