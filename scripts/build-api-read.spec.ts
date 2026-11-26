@@ -131,7 +131,7 @@ async function main() {
     // Which deployment answers for which data env.
     process.env.NEXT_PUBLIC_SUPABASE_ENV = "production";
     assert.equal(buildApiOrigin("production"), PRODUCTION_SITE_ORIGIN);
-    assert.equal(PRODUCTION_SITE_ORIGIN, "https://scare-the-spire.flavono123.workers.dev");
+    assert.equal(PRODUCTION_SITE_ORIGIN, "https://scare-the-spire.com");
     process.env.NEXT_PUBLIC_SITE_ORIGIN = "https://example.test/some/path";
     assert.equal(buildApiOrigin("production"), "https://example.test");
     assert.equal(buildApiOrigin("development"), TESTBED_SITE_ORIGIN);

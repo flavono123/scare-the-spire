@@ -88,6 +88,7 @@ assert.equal(isPublicHttpUrl("http://example.com:80/")?.hostname, "example.com")
 assert.equal(isPublicHttpUrl("https://example.com:443/")?.hostname, "example.com");
 assert.equal(isPublicHttpUrl("http://example.com:443/")?.hostname, "example.com");
 assert.equal(isPublicHttpUrl("https://scare-the-spire.flavono123.workers.dev/en"), null);
+assert.equal(isPublicHttpUrl("https://scare-the-spire.com/en"), null);
 assert.equal(isPublicHttpUrl("https://1234abcd-scare-the-spire-testbed.flavono123.workers.dev/"), null);
 assert.equal(isPublicHttpUrl("https://scare-the-spire-patches.flavono123.workers.dev/patches"), null);
 assert.equal(isPublicHttpUrl("https://new-domain.example/", "new-domain.example"), null);

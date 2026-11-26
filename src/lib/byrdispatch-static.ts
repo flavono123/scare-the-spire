@@ -18,8 +18,9 @@ export function parseByrdispatchNoticeOriginHost(origin: string | undefined): st
   }
 }
 
+// The notice announced the move to workers.dev; the own domain came after it, so it is stale there too.
 export function isByrdispatchMigrationTargetHost(host: string | null | undefined): boolean {
-  return host === BYRDISPATCH_MIGRATION_TARGET_HOST;
+  return host === BYRDISPATCH_MIGRATION_TARGET_HOST || host === "scare-the-spire.com";
 }
 
 export function isConfiguredByrdispatchMigrationTargetHost(): boolean {

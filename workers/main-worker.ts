@@ -25,13 +25,10 @@ export const LEGACY_WORKERS_DEV_HOST = "scare-the-spire.flavono123.workers.dev";
 
 // Before every route: crawlers reaching the old host get no body and so no links to follow.
 // Returning visitors carry slseoun_idm (Path=/, every page since cookie identity) and stay, because
-// their identity cookie, localStorage and IndexedDB belong to this host.
+// their identity cookie, localStorage and IndexedDB belong to this host. www of the new domain
+// always moves: nothing was ever stored there.
 function maybeRedirectLegacyHost(request: Request, url: URL, env: Env): Response | null {
-  if (!env.LEGACY_HOST_REDIRECT || url.hostname !== LEGACY_WORKERS_DEV_HOST) return null;
-  if (env.LEGACY_HOST_REDIRECT_SCOPE !== "all" && readCookie(request, IDENTITY_MODE_COOKIE_NAME) !== null) {
-    return null;
-  }
-
+  if (!env.LEGACY_HOST_REDIRECT) return null;
   let location: URL;
   try {
     location = new URL(`${url.pathname}${url.search}`, env.LEGACY_HOST_REDIRECT);
@@ -39,6 +36,12 @@ function maybeRedirectLegacyHost(request: Request, url: URL, env: Env): Response
     return null;
   }
   if (location.hostname === url.hostname) return null;
+  if (url.hostname !== `www.${location.hostname}`) {
+    if (url.hostname !== LEGACY_WORKERS_DEV_HOST) return null;
+    if (env.LEGACY_HOST_REDIRECT_SCOPE !== "all" && readCookie(request, IDENTITY_MODE_COOKIE_NAME) !== null) {
+      return null;
+    }
+  }
   return Response.redirect(location.toString(), isReadMethod(request.method) ? 301 : 308);
 }
 

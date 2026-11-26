@@ -5,6 +5,14 @@
   "minify": true,
   "compatibility_date": "2026-06-15",
   "compatibility_flags": ["nodejs_compat"],
+  // Own domain since 2026-11-27 (crawlers spent the account's daily 100k on workers.dev, which has no
+  // WAF). With routes set wrangler turns workers.dev off unless it is stated: keep it on while it
+  // redirects (LEGACY_HOST_REDIRECT); switch it off only after search engines have moved.
+  "routes": [
+    { "pattern": "scare-the-spire.com", "custom_domain": true },
+    { "pattern": "www.scare-the-spire.com", "custom_domain": true }
+  ],
+  "workers_dev": true,
   "assets": {
     "directory": ".cloudflare/assets",
     "binding": "ASSETS",
@@ -43,7 +51,8 @@
     "API_PATH_DEFAULT": "api",
     "API_WRITE_MODE_DEFAULT": "worker",
     "API_WRITE_SOURCE_DEFAULT": "d1",
-    "API_IDENTITY_MODE_DEFAULT": "cookie"
+    "API_IDENTITY_MODE_DEFAULT": "cookie",
+    "LEGACY_HOST_REDIRECT": "https://scare-the-spire.com"
   },
   // Step 2 1-minute D1 sync (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3). A no-op unless
   // API_RUNTIME_FLAGS is "d1" and runtime_flags sync.enabled is on; API_SUPABASE_SECRET_KEY is a secret.
@@ -91,6 +100,8 @@
   ],
   "env": {
     "testbed": {
+      // routes are inherited; the testbed must never claim the production domain.
+      "routes": [],
       "workers_dev": true,
       "preview_urls": true,
       "vars": {
@@ -98,7 +109,8 @@
         "API_PATH_DEFAULT": "api",
         "API_WRITE_MODE_DEFAULT": "worker",
         "API_WRITE_SOURCE_DEFAULT": "d1",
-        "API_IDENTITY_MODE_DEFAULT": "cookie"
+        "API_IDENTITY_MODE_DEFAULT": "cookie",
+        "LEGACY_HOST_REDIRECT": ""
       },
       "triggers": {
         "crons": ["* * * * *"]

@@ -7,7 +7,7 @@ import path from "node:path";
 const root = path.resolve(__dirname, "..");
 const json = <T>(rel: string): T => JSON.parse(readFileSync(path.join(root, rel), "utf8")) as T;
 const HOSTS: Record<string, string> = {
-  prod: "https://scare-the-spire.flavono123.workers.dev",
+  prod: "https://scare-the-spire.com",
   testbed: "https://scare-the-spire-testbed.flavono123.workers.dev",
   local: "http://localhost:3000",
 };

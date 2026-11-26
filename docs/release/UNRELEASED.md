@@ -40,8 +40,9 @@
 
 ### own-domain-move
 - Feature: workers.dev → 자체 도메인 이전(크롤러로 계정 일일 10만 한도가 터진 2026-11-25·26 대응). main Worker가 맨 앞에서 옛 호스트 `scare-the-spire.flavono123.workers.dev`를 `LEGACY_HOST_REDIRECT`(wrangler.jsonc vars, 비우면 꺼짐) origin으로 같은 경로·쿼리 301(GET·HEAD)·308(그 밖). 기본은 `slseoun_idm` 쿠키 없는 요청(크롤러·첫 방문)만 보내고, 쿠키가 있는 기존 사용자는 옛 호스트에 남긴다(신원 쿠키·localStorage·IndexedDB가 호스트별). `LEGACY_HOST_REDIRECT_SCOPE=all`이면 전부. testbed·버전 미리보기 호스트는 안 건드린다. 배포 smoke는 `scripts/ci-smoke.sh` 하나로 모았고 1027(계정 일일 한도)은 경고 후 통과, 저장소 변수 `CF_SMOKE=off`면 smoke 단계를 모두 건너뛴다. 예전 휴면 설계 `claude/domain-migration-c54d7b`(공지·일정)는 쓰지 않았다.
-- Expect: 도메인 연결 뒤 `curl -sI https://scare-the-spire.flavono123.workers.dev/compendium/cards` → 301 새 도메인, 같은 요청에 `Cookie: slseoun_idm=cookie` → 200.
-- QA: `scripts/worker-routing.spec.ts`(301·308·쿠키 유지·all·꺼짐·다른 호스트), `scripts/ci-smoke.sh`를 1027 중인 운영·testbed에 실행(경고 후 통과). 확인 못 함: 실제 도메인 응답.
+- Domain: `scare-the-spire.com`(Cloudflare Registrar, 같은 계정 Free zone). `wrangler.jsonc` routes에 apex·www custom domain, `workers_dev: true` 명시(routes가 있으면 wrangler 기본값이 꺼짐), testbed는 `routes: []`(routes는 상속됨). 커스텀 도메인 두 개는 배포 전 빌드가 새 도메인 `/api`를 읽도록 2026-11-27 00시대(KST) API로 먼저 붙였다. www는 쿠키와 상관없이 apex로 301. `DEFAULT_SITE_ORIGIN`·`bin/ssy` prod·환경 `cloudflare-production`의 `NEXT_PUBLIC_SITE_ORIGIN`(canonical·sitemap·OG·robots·빌드 API·smoke)이 새 도메인. 섀소식(byrdispatch)의 workers.dev 이전 공지는 새 도메인에서도 숨김.
+- Expect: `curl -sI https://scare-the-spire.flavono123.workers.dev/compendium/cards` → 301 `https://scare-the-spire.com/compendium/cards`, 같은 요청에 `Cookie: slseoun_idm=cookie` → 200. `curl -sI https://www.scare-the-spire.com/en` → 301 apex. `https://scare-the-spire.com/sitemap.xml`·canonical·`og:url`이 새 도메인.
+- QA: `scripts/worker-routing.spec.ts`(301·308·쿠키 유지·all·꺼짐·다른 호스트), `scripts/ci-smoke.sh`를 1027 중인 운영·testbed에 실행(경고 후 통과). 도메인 붙인 직후 apex TLS·Worker 연결 확인(1027 응답). 확인 못 함: 한도 풀린 뒤 실제 응답.
 - Commits: 이 항목을 추가한 커밋부터.
 
 ### game-text-tips

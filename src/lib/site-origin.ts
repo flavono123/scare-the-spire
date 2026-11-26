@@ -1,4 +1,4 @@
-export const DEFAULT_SITE_ORIGIN = "https://scare-the-spire.flavono123.workers.dev";
+export const DEFAULT_SITE_ORIGIN = "https://scare-the-spire.com";
 
 function normalizeSiteOrigin(value: string | undefined): string | null {
   if (!value) return null;

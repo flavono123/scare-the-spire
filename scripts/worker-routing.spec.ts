@@ -96,6 +96,10 @@ async function main() {
     ctx,
   );
   assert.equal(movedAll.headers.get("location"), "https://new.test/");
+  const www = await mainWorker.fetch(new Request("https://www.new.test/a?b=1", returning), redirectEnv, ctx);
+  assert.equal(www.headers.get("location"), "https://new.test/a?b=1", "www always moves, cookie or not");
+  const apex = await mainWorker.fetch(new Request("https://new.test/", { headers: { "user-agent": GOOGLEBOT_UA } }), redirectEnv, ctx);
+  assert.equal(apex.headers.get("location"), null);
   const switchedOff = await mainWorker.fetch(new Request(`${legacy}/`, { headers: { "user-agent": GOOGLEBOT_UA } }), { ASSETS: assets }, ctx);
   assert.equal(switchedOff.headers.get("location"), null);
 }
