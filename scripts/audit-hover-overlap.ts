@@ -20,6 +20,9 @@ const base = arg("base", "http://localhost:3005");
 const kinds = arg("pages", "cards,relics,potions,powers,enchantments,keywords,patches").split(",");
 const limit = Number(arg("limit", "0"));
 const workers = Number(arg("workers", "3"));
+// Resume: audit only the pages a previous report could not open, and add to that report.
+const resume = process.argv.includes("--resume");
+const REPORT = "test-results/hover-overlap.json";
 
 const ids = (file: string) => (JSON.parse(fs.readFileSync(`data/sts2/kor/${file}.json`, "utf-8")) as { id: string }[]).map((e) => e.id.toLowerCase());
 const pagesFor: Record<string, () => string[]> = {
@@ -102,7 +105,8 @@ async function auditPage(page: Page, path: string): Promise<Violation[]> {
 }
 
 async function main() {
-  let paths = kinds.flatMap((kind) => pagesFor[kind]?.() ?? []);
+  const previous = resume ? JSON.parse(fs.readFileSync(REPORT, "utf-8")) : null;
+  let paths: string[] = previous ? previous.failed.map((line: string) => line.split(":")[0]) : kinds.flatMap((kind) => pagesFor[kind]?.() ?? []);
   if (limit) paths = paths.slice(0, limit);
   const browser = await chromium.launch();
   const violations: Violation[] = [];
@@ -124,9 +128,16 @@ async function main() {
   }));
   await browser.close();
   fs.mkdirSync("test-results", { recursive: true });
-  fs.writeFileSync("test-results/hover-overlap.json", JSON.stringify({ base, pages: paths.length, ...stats, failed, violations }, null, 2));
+  if (previous) {
+    violations.unshift(...previous.violations);
+    stats.hovers += previous.hovers;
+    stats.tipsSeen += previous.tipsSeen;
+    stats.alwaysOn += previous.alwaysOn;
+  }
+  const pages = previous ? previous.pages : paths.length;
+  fs.writeFileSync(REPORT, JSON.stringify({ base, pages, ...stats, failed, violations }, null, 2));
   for (const v of violations.slice(0, 40)) console.log(`${v.page} | ${v.trigger} | ${v.tip} | ${v.overlap}`);
-  console.log(`hover overlap audit: ${paths.length} pages, ${stats.hovers} hovers, ${stats.tipsSeen} tips shown, ${stats.alwaysOn} always-on stacks, ${violations.length} overlaps, ${failed.length} pages failed`);
+  console.log(`hover overlap audit: ${pages} pages, ${stats.hovers} hovers, ${stats.tipsSeen} tips shown, ${stats.alwaysOn} always-on stacks, ${violations.length} overlaps, ${failed.length} pages failed`);
   if (violations.length || failed.length) process.exitCode = 1;
 }
 
