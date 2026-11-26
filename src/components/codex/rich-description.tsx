@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type ReactNode } from "react";
+import { useContext, useMemo, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import {
   parseBBCode,
@@ -9,6 +9,7 @@ import {
 } from "@/components/rich-text";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
+import { SideTipsShownContext } from "@/components/codex/side-tips-context";
 import type { CardSideKeywordTip } from "@/lib/card-keyword-tips";
 import type { GoldTip } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -42,6 +43,8 @@ interface RenderCtx {
   self?: string;
   gameUi?: CodexGameUiLabels;
   energyIcon: string;
+  /** Inside an element already showing its tips beside it (see SideTipsShownContext). */
+  insideShownTips: boolean;
 }
 
 function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode[] {
@@ -59,6 +62,9 @@ function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode
 
       const inner = extractPlainText(node.children).trim();
       const ref = tag === "gold" && inner ? ctx.goldTips?.[inner] : null;
+      if (Array.isArray(ref) && ctx.insideShownTips) {
+        return <span key={key} className={className || undefined}>{inner}</span>;
+      }
       if (Array.isArray(ref)) {
         // One word for several tips (선율 for the three melodies): hovering it shows all of them, as the game does.
         const tips = ref.flatMap((one): CardSideKeywordTip[] => {
@@ -171,7 +177,8 @@ export function RichDescription({
 
   const nodes = useMemo(() => parseBBCode(description) as BBNode[], [description]);
 
-  const ctx: RenderCtx = { entitiesByRef, goldTips, self, gameUi, energyIcon };
+  const insideShownTips = useContext(SideTipsShownContext);
+  const ctx: RenderCtx = { entitiesByRef, goldTips, self, gameUi, energyIcon, insideShownTips };
 
   return <span className={className}>{renderNodes(nodes, ctx, "rd")}</span>;
 }

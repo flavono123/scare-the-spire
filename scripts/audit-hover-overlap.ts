@@ -87,12 +87,14 @@ async function auditPage(page: Page, path: string): Promise<Violation[]> {
     stats.tipsSeen += await page.evaluate((skip) => Math.max(0, ((window as unknown as Record<string, () => Element[]>).__layers()).length - skip), before);
     const found = await trigger.evaluate((el, skip) => {
       const w = window as unknown as Record<string, (...a: unknown[]) => unknown>;
-      const own = w.__drawn(el);
+      // The trigger and every element around it that is a trigger too (a gold word inside a relic hero).
+      const owners: Element[] = [];
+      for (let node: Element | null = el; node; node = node.parentElement?.closest("[data-hover-trigger]") ?? null) owners.push(node);
       return (w.__layers() as Element[]).slice(skip as number).flatMap((layer) => {
         const tip = w.__drawn(layer);
         const name = (layer.textContent ?? "").trim().slice(0, 40);
         return [
-          ...(own ? [w.__overlap(tip, own)].filter(Boolean).map((o) => ({ name, overlap: `tip over trigger ${o}` })) : []),
+          ...owners.flatMap((owner, depth) => [w.__overlap(tip, w.__drawn(owner))].filter(Boolean).map((o) => ({ name, overlap: `tip over ${depth ? "enclosing trigger" : "trigger"} ${o}` }))),
           ...(w.__stackOverlaps(layer) as string[]).map((o) => ({ name, overlap: o })),
         ];
       }).map((v) => ({ ...v, trigger: (el.textContent ?? "").trim().slice(0, 30) }));

@@ -22,6 +22,7 @@ import { drawnRect, getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib
 import { DescriptionText } from "./codex-description";
 import { CardTile } from "./card-tile";
 import { GameHoverTip } from "./hover-tip";
+import { SideTipsShownContext } from "./side-tips-context";
 
 type FixedPlacement = {
   left: number;
@@ -29,6 +30,12 @@ type FixedPlacement = {
 };
 
 const MIN_VIEWPORT_WIDTH = 768;
+const SIDE_TIPS_MEDIA = `(min-width: ${MIN_VIEWPORT_WIDTH}px) and (hover: hover)`;
+const subscribeSideTipsMedia = (onChange: () => void) => {
+  const media = window.matchMedia(SIDE_TIPS_MEDIA);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+};
 
 function KeywordSideTip({ tip }: { tip: Extract<CardSideTip, { kind: "keyword" }> }) {
   return (
@@ -110,6 +117,11 @@ export function CardSideTipsAnchor({
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
+    () => false,
+  );
+  const sideTipsPossible = useSyncExternalStore(
+    subscribeSideTipsMedia,
+    () => window.matchMedia(SIDE_TIPS_MEDIA).matches,
     () => false,
   );
   const [fits, setFits] = useState(false);
@@ -213,7 +225,7 @@ export function CardSideTipsAnchor({
         if (mode === "hover") setHovered(false);
       }}
     >
-      {children}
+      <SideTipsShownContext.Provider value={sideTipsPossible && tips.length > 0}>{children}</SideTipsShownContext.Provider>
       {portal}
     </div>
   );
