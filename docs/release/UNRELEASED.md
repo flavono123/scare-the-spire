@@ -38,6 +38,12 @@
 
 ## 기능 기대치
 
+### own-domain-move
+- Feature: workers.dev → 자체 도메인 이전(크롤러로 계정 일일 10만 한도가 터진 2026-11-25·26 대응). main Worker가 맨 앞에서 옛 호스트 `scare-the-spire.flavono123.workers.dev`를 `LEGACY_HOST_REDIRECT`(wrangler.jsonc vars, 비우면 꺼짐) origin으로 같은 경로·쿼리 301(GET·HEAD)·308(그 밖). 기본은 `slseoun_idm` 쿠키 없는 요청(크롤러·첫 방문)만 보내고, 쿠키가 있는 기존 사용자는 옛 호스트에 남긴다(신원 쿠키·localStorage·IndexedDB가 호스트별). `LEGACY_HOST_REDIRECT_SCOPE=all`이면 전부. testbed·버전 미리보기 호스트는 안 건드린다. 배포 smoke는 `scripts/ci-smoke.sh` 하나로 모았고 1027(계정 일일 한도)은 경고 후 통과, 저장소 변수 `CF_SMOKE=off`면 smoke 단계를 모두 건너뛴다. 예전 휴면 설계 `claude/domain-migration-c54d7b`(공지·일정)는 쓰지 않았다.
+- Expect: 도메인 연결 뒤 `curl -sI https://scare-the-spire.flavono123.workers.dev/compendium/cards` → 301 새 도메인, 같은 요청에 `Cookie: slseoun_idm=cookie` → 200.
+- QA: `scripts/worker-routing.spec.ts`(301·308·쿠키 유지·all·꺼짐·다른 호스트), `scripts/ci-smoke.sh`를 1027 중인 운영·testbed에 실행(경고 후 통과). 확인 못 함: 실제 도메인 응답.
+- Commits: 이 항목을 추가한 커밋부터.
+
 ### game-text-tips
 - Feature: 게임 문구의 금색 단어는 "팁 있음/없음" 둘 중 하나이고, 게임 코드에서 뽑은 데이터로 정한다(`scripts/generate-game-tips.py` → `data/sts2/game-tips.json`·`data/sts2/gold-tips/<로케일>.json`). 카드·유물·포션·파워·인챈트·고통의 옆 툴팁은 그 요소의 게임 팁 목록 그대로(카드는 금색 단어 이름 매칭 제거, 몬스터 팁 제거). 유물·인챈트·고통·도미니언 설명의 금색 단어는 데이터가 짝지은 팁에만 링크, 나머지 금색·색 글자는 강조만. 백과사전 키워드는 게임 문구가 쓰는 팁 28개(UI 팁 25개 제외, 옛 주소는 키워드 목록으로 308). 지어낸 금색 단어 툴팁 문구 삭제. `/dev/gold-words`는 팁 없는 금색 단어 목록(로케일별). 전수 감사 `pnpm game-tips:audit`는 커밋된 데이터만 읽고 배포 경로에 없다. 한국어 패치 노트의 리젠트 별 7곳은 `[gold:keyword]`로 강조만.
 - Expect: /compendium/cards/coda 옆 툴팁에 와·초·키 선율, /compendium/cards/charge는 하수인 투하 카드 팁만, /compendium/cards/bone_shards는 방어도. /compendium/relics/bag_of_marbles의 "취약"은 취약 파워 링크, /compendium/relics/fishing_rod의 "덱"·"강화"는 강조만. /compendium/keywords 28개, /compendium/keywords/deck → /compendium/keywords 308. /patches/0.100.0의 덱·별은 강조만.

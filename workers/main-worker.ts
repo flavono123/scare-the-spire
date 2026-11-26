@@ -14,7 +14,33 @@ type Env = ApiEnv & {
   LINK_PREVIEW_LIMITER?: LinkPreviewLimiter;
   /** "d1" turns on record OG enrichment from DB (workers/detail-shell-og.ts); unset in wrangler.jsonc. */
   DETAIL_SHELL_OG?: string;
+  /** Origin the legacy workers.dev host redirects to (wrangler.jsonc vars); unset keeps serving it. */
+  LEGACY_HOST_REDIRECT?: string;
+  /** "all" also moves visitors carrying our cookie, who lose their host-bound identity and storage. */
+  LEGACY_HOST_REDIRECT_SCOPE?: string;
 };
+
+/** The production workers.dev host. Testbed and version preview hosts never redirect. */
+export const LEGACY_WORKERS_DEV_HOST = "scare-the-spire.flavono123.workers.dev";
+
+// Before every route: crawlers reaching the old host get no body and so no links to follow.
+// Returning visitors carry slseoun_idm (Path=/, every page since cookie identity) and stay, because
+// their identity cookie, localStorage and IndexedDB belong to this host.
+function maybeRedirectLegacyHost(request: Request, url: URL, env: Env): Response | null {
+  if (!env.LEGACY_HOST_REDIRECT || url.hostname !== LEGACY_WORKERS_DEV_HOST) return null;
+  if (env.LEGACY_HOST_REDIRECT_SCOPE !== "all" && readCookie(request, IDENTITY_MODE_COOKIE_NAME) !== null) {
+    return null;
+  }
+
+  let location: URL;
+  try {
+    location = new URL(`${url.pathname}${url.search}`, env.LEGACY_HOST_REDIRECT);
+  } catch {
+    return null;
+  }
+  if (location.hostname === url.hostname) return null;
+  return Response.redirect(location.toString(), isReadMethod(request.method) ? 301 : 308);
+}
 
 type ExecutionContextLike = {
   waitUntil(promise: Promise<unknown>): void;
@@ -25,7 +51,8 @@ import {
   getLegacyCompendiumDetailRedirectPath,
   getSts1DetailRedirectPath,
 } from "../src/lib/compendium-resource-links";
-import { withFlagCookie } from "./api/flag-cookie";
+import { readCookie, withFlagCookie } from "./api/flag-cookie";
+import { IDENTITY_MODE_COOKIE_NAME } from "../src/lib/identity-cookies";
 import { isApiRouterPath, type ApiEnv } from "./api/router";
 import { apiRouter } from "./api/routes";
 import { runSync } from "./sync/run-sync";
@@ -564,6 +591,8 @@ const mainWorker = {
 
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
+    const legacyHostRedirect = maybeRedirectLegacyHost(request, url, env);
+    if (legacyHostRedirect) return legacyHostRedirect;
     // Before routeRequest: /api/patches* would otherwise match the patch Worker paths.
     if (isApiRouterPath(url.pathname)) {
       return withSecurityHeaders(await apiRouter.handle(request, env, ctx, url));

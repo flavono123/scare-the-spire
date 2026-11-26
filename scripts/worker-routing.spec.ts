@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 
 import { serviceMessages } from "../src/messages/service";
 import { NOT_FOUND_TITLE_EN } from "../workers/document-locale";
-import mainWorker from "../workers/main-worker";
+import mainWorker, { LEGACY_WORKERS_DEV_HOST } from "../workers/main-worker";
 import patchWorker, { LATEST_PATCH_VERSION_ASSET } from "../workers/patch-worker";
 
 const ORIGIN = "https://routing.test";
@@ -77,6 +77,27 @@ async function main() {
   const latestEn = await patchWorker.fetch(new Request(`${ORIGIN}/en/patches/latest/`), { ASSETS: patchAssets });
   assert.equal(latestEn.headers.get("location"), "/en/patches/0.114.0");
   assert.equal(await patchPage("/xx/patches/latest"), "404 not-found:ko");
+
+  const legacy = `https://${LEGACY_WORKERS_DEV_HOST}`;
+  const redirectEnv = { ASSETS: assets, LEGACY_HOST_REDIRECT: "https://new.test" };
+  const moved = await mainWorker.fetch(new Request(`${legacy}/en/compendium/cards?q=a`), redirectEnv, ctx);
+  assert.equal(moved.status, 301);
+  assert.equal(moved.headers.get("location"), "https://new.test/en/compendium/cards?q=a");
+  const movedWrite = await mainWorker.fetch(new Request(`${legacy}/api/x`, { method: "POST" }), redirectEnv, ctx);
+  assert.equal(movedWrite.status, 308);
+  const otherHost = await mainWorker.fetch(new Request(`${ORIGIN}/`, { headers: { "user-agent": GOOGLEBOT_UA } }), redirectEnv, ctx);
+  assert.notEqual(otherHost.status, 301);
+  const returning = { headers: { cookie: "a=1; slseoun_idm=cookie", "user-agent": GOOGLEBOT_UA } };
+  const kept = await mainWorker.fetch(new Request(`${legacy}/`, returning), redirectEnv, ctx);
+  assert.notEqual(kept.status, 301);
+  const movedAll = await mainWorker.fetch(
+    new Request(`${legacy}/`, returning),
+    { ...redirectEnv, LEGACY_HOST_REDIRECT_SCOPE: "all" },
+    ctx,
+  );
+  assert.equal(movedAll.headers.get("location"), "https://new.test/");
+  const switchedOff = await mainWorker.fetch(new Request(`${legacy}/`, { headers: { "user-agent": GOOGLEBOT_UA } }), { ASSETS: assets }, ctx);
+  assert.equal(switchedOff.headers.get("location"), null);
 }
 
 main().then(
