@@ -176,7 +176,11 @@ def extract_monsters(src: Path) -> dict:
     return out
 
 
-LOC_TABLES = ["cards", "relics", "potions", "powers", "enchantments", "afflictions", "monsters", "encounters", "events", "ancients"]
+LOC_TABLES = [
+    "cards", "relics", "potions", "powers", "enchantments", "afflictions", "monsters", "encounters", "events", "ancients",
+    # Name history for Compendium keywords, modifiers, epochs, ascensions and characters.
+    "card_keywords", "static_hover_tips", "orbs", "modifiers", "epochs", "ascension", "characters",
+]
 # Tables the site pins per version in every locale (scripts/generate-localization-history.ts).
 LOC_HISTORY_TABLES = ["cards", "relics", "potions", "enchantments"]
 PCK = "SlayTheSpire2.app/Contents/Resources/Slay the Spire 2.pck"

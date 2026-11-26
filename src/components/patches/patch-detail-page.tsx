@@ -4,8 +4,8 @@ import Image from "@/components/ui/static-image";
 import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
-import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches, getSTS2PatchLines, getSTS2Stories } from "@/lib/data";
-import { getCodexCards, getCodexCharacters, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexModifiers, getCodexAscensions, getCodexEnchantments, getCodexAfflictions, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
+import { getCodexMeta, getEntityVersionDiffs, getLocalizationHistory, getSTS2Patches, getSTS2PatchLines, getSTS2Stories } from "@/lib/data";
+import { getCodexCards, getCodexCharacters, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexModifiers, getCodexAscensions, getCodexEnchantments, getCodexAfflictions, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs, getCodexPets } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
 import { characterTitleAliases, loadAllEntities } from "@/lib/load-all-entities";
@@ -40,8 +40,9 @@ import {
 } from "@/lib/service-metadata";
 import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
-import type { EntityVersionDiff, PatchType, STS2Patch, VersionedEntityType } from "@/lib/types";
-import { compareVersions, reconstructEntityAtVersion } from "@/lib/entity-versioning";
+import type { EntityVersionDiff, PatchType, STS2Patch } from "@/lib/types";
+import { compareVersions } from "@/lib/entity-versioning";
+import type { HistoryEntityType, LocalizationHistory } from "@/lib/localization-history";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
 import { getDebateGameCopy, getPatchStageGameCopy, getPatchBackstabGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
@@ -366,56 +367,98 @@ function filterPatchNoteEntities(markdown: string, entities: EntityInfo[]): Enti
   });
 }
 
-function patchVersionedData(entity: EntityInfo): [VersionedEntityType, { id: string; name: string; nameEn: string }] | null {
-  if (entity.eventOptionDesc) return null;
-  switch (entity.type) {
-    case "card": return entity.cardData ? ["card", entity.cardData] : null;
-    case "relic": return entity.relicData ? ["relic", entity.relicData] : null;
-    case "potion": return entity.potionData ? ["potion", entity.potionData] : null;
-    case "power": return entity.powerData ? ["power", entity.powerData] : null;
-    case "enchantment": return entity.enchantmentData ? ["enchantment", entity.enchantmentData] : null;
-    case "event": return entity.eventData ? ["event", entity.eventData] : null;
-    case "monster": return entity.monsterData ? ["monster", entity.monsterData] : null;
-    case "encounter": return entity.encounterData ? ["encounter", entity.encounterData] : null;
-    default: return null;
+const VERSION_NAMED_TYPES: ReadonlySet<EntityInfo["type"]> = new Set([
+  "card", "relic", "potion", "power", "enchantment", "event", "monster", "encounter", "epoch", "ancient", "affliction",
+]);
+const HISTORY_ONLY_NAMED_TYPES: readonly HistoryEntityType[] = ["keyword", "modifier", "ascension", "character"];
+
+type NameChange = { patch: string; before: string };
+
+/**
+ * Name changes per "type:id" in the page's game locale (game) and English (en): the
+ * Compendium version data for versioned types, the build name history for the rest.
+ */
+function patchNameChanges(
+  versionDiffs: EntityVersionDiff[],
+  history: LocalizationHistory,
+  gameLocale: GameLocale,
+): Map<string, { game: NameChange[]; en: NameChange[] }> {
+  const changes = new Map<string, { game: NameChange[]; en: NameChange[] }>();
+  const add = (key: string, side: "game" | "en", patch: string, before: unknown) => {
+    if (typeof before !== "string") return;
+    const entry = changes.get(key) ?? { game: [], en: [] };
+    entry[side].push({ patch: patch.replace(/^v/, ""), before });
+    changes.set(key, entry);
+  };
+  for (const entry of versionDiffs) {
+    for (const diff of entry.diffs) {
+      if (diff.field === "name") add(`${entry.entityType}:${entry.entityId}`, "game", entry.patch, diff.before);
+      if (diff.field === "nameEn") add(`${entry.entityType}:${entry.entityId}`, "en", entry.patch, diff.before);
+    }
   }
+  for (const [locale, side] of [[gameLocale, "game"], ["eng", "en"]] as const) {
+    for (const type of HISTORY_ONLY_NAMED_TYPES) {
+      for (const [id, fields] of Object.entries(history.text[locale]?.[type] ?? {})) {
+        const timeline = fields.name ?? [];
+        for (let index = 1; index < timeline.length; index += 1) add(`${type}:${id}`, side, timeline[index][0], timeline[index - 1][1]);
+      }
+    }
+  }
+  for (const entry of changes.values()) {
+    for (const list of [entry.game, entry.en]) list.sort((a, b) => compareVersions(a.patch, b.patch));
+  }
+  return changes;
+}
+
+/** The name before the first rename after `version` (`renamedHere`: from `version` on), or undefined for today's name. */
+function nameBeforeRename(changes: NameChange[], version: string, renamedHere: boolean): string | undefined {
+  return changes.find((change) => {
+    const order = compareVersions(change.patch, version);
+    return renamedHere ? order >= 0 : order > 0;
+  })?.before;
 }
 
 /**
- * Names each entity as the game did at this patch, from the same version data the
- * Compendium version view uses (굴뚝 on 0.103.0, 배기 장치 from 0.104.0). Today's name stays an alias.
+ * Names each entity as the game did at this patch (굴뚝 on 0.103.0, 배기 장치 from 0.104.0);
+ * today's name stays an alias. A name this patch replaced (비관 on 0.102.0) gets its own entry,
+ * so a note that writes the old name links it under that name.
  */
 function withPatchVersionNames(
   entities: EntityInfo[],
   patchVersion: string,
-  currentVersion: string,
   versionDiffs: EntityVersionDiff[],
-  patches: STS2Patch[],
+  history: LocalizationHistory,
   gameLocale: GameLocale,
 ): EntityInfo[] {
-  const renamedLater = new Set(
-    versionDiffs
-      .filter((entry) =>
-        compareVersions(entry.patch.replace(/^v/, ""), patchVersion) > 0 &&
-        entry.diffs.some((diff) => diff.field === "name" || diff.field === "nameEn"),
-      )
-      .map((entry) => `${entry.entityType}:${entry.entityId}`),
-  );
-  if (renamedLater.size === 0) return entities;
-  return entities.map((entity) => {
-    const versioned = patchVersionedData(entity);
-    if (!versioned || !renamedLater.has(`${versioned[0]}:${versioned[1].id}`)) return entity;
-    const then = reconstructEntityAtVersion(versioned[1], versioned[0], patchVersion, currentVersion, versionDiffs, patches);
-    const nameKo = patchDisplayName(then.name, then.nameEn, gameLocale);
-    if (nameKo === entity.nameKo && then.nameEn === entity.nameEn) return entity;
-    return {
-      ...entity,
-      nameKo,
-      nameEn: then.nameEn,
-      aliasesKo: [...(entity.aliasesKo ?? []), entity.nameKo],
-      aliasesEn: [...(entity.aliasesEn ?? []), entity.nameEn],
+  const changes = patchNameChanges(versionDiffs, history, gameLocale);
+  const replaced: EntityInfo[] = [];
+  const named = entities.map((entity) => {
+    if (entity.eventOptionDesc) return entity;
+    if (!VERSION_NAMED_TYPES.has(entity.type) && !HISTORY_ONLY_NAMED_TYPES.includes(entity.type as HistoryEntityType)) return entity;
+    const entry = changes.get(`${entity.type}:${entity.id}`);
+    if (!entry) return entity;
+    const namesAt = (renamedHere: boolean) => {
+      const nameEn = nameBeforeRename(entry.en, patchVersion, renamedHere) ?? entity.nameEn;
+      const game = nameBeforeRename(entry.game, patchVersion, renamedHere);
+      return { nameKo: game === undefined ? entity.nameKo : patchDisplayName(game, nameEn, gameLocale), nameEn };
     };
+    const atPatch = namesAt(false);
+    const versioned = atPatch.nameKo === entity.nameKo && atPatch.nameEn === entity.nameEn
+      ? entity
+      : {
+        ...entity,
+        ...atPatch,
+        aliasesKo: [...(entity.aliasesKo ?? []), entity.nameKo],
+        aliasesEn: [...(entity.aliasesEn ?? []), entity.nameEn],
+      };
+    const beforePatch = namesAt(true);
+    if (beforePatch.nameKo !== atPatch.nameKo || beforePatch.nameEn !== atPatch.nameEn) {
+      replaced.push({ ...versioned, ...beforePatch, aliasesKo: undefined, aliasesEn: undefined });
+    }
+    return versioned;
   });
+  // Replaced names first: later entries win the type:id lookups (patch art, previews).
+  return [...replaced, ...named];
 }
 
 function compendiumResourceIdForPatchEntity(entity: EntityInfo): string | null {
@@ -1085,7 +1128,8 @@ export async function PatchDetailPage({
     );
   }
 
-  const [versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexAfflictions, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
+  const [localizationHistory, versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexAfflictions, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, codexPets, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
+    getLocalizationHistory(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
@@ -1103,6 +1147,7 @@ export async function PatchDetailPage({
     getCodexEncounters({ gameLocale }),
     getCodexAncients({ gameLocale }),
     getCodexEpochs({ gameLocale }),
+    getCodexPets({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
     getPatchGameKeywordLabels(gameLocale),
     getPatchGameHeadingLabels(gameLocale),
@@ -1350,9 +1395,20 @@ export async function PatchDetailPage({
         epochData: e,
       };
     }),
+    // Last: a pet named like its relic (Byrdpip) leaves an untyped name to the relic; [gold:pet] picks the pet.
+    ...codexPets.map((p) => ({
+      id: p.id,
+      nameEn: p.nameEn,
+      nameKo: patchDisplayName(p.name, p.nameEn, gameLocale),
+      imageUrl: p.imageUrl,
+      href: buildCompendiumResourceHref("pet", p.id),
+      color: "pet",
+      type: "pet" as const,
+      petData: p,
+    })),
   ];
   const entities = applyCompendiumManifestAvailability(
-    withPatchVersionNames(rawEntities, patch.version, codexMeta.version, versionDiffs, patches, gameLocale),
+    withPatchVersionNames(rawEntities, patch.version, versionDiffs, localizationHistory, gameLocale),
     compendiumManifest,
   );
 

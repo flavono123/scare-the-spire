@@ -32200,7 +32200,7 @@
     "searchText": "v0.108.0:line-104-text-2mdohi v0.108.0 0.108.0 버그 수정 일반 이상한 rng 동작 여러 건을 수정했습니다. fixed many instances of unusual rng behavior."
   },
   {
-    "id": "v0.108.0:line-105-relic-byrdpip",
+    "id": "v0.108.0:line-105-text-t8e3sq",
     "patch": "v0.108.0",
     "version": "0.108.0",
     "date": "2026-07-03",
@@ -32212,18 +32212,12 @@
       "Bug Fixes",
       "General"
     ],
-    "markdownKo": "[gold:relic]짹짹이[/gold]로 컨트롤러 탐색이 가능하던 문제를 수정했습니다.",
-    "markdownEn": "Fixed being able to controller-navigate to [gold:relic]Byrdpip[/gold].",
+    "markdownKo": "[gold:pet]짹짹이[/gold]로 컨트롤러 탐색이 가능하던 문제를 수정했습니다.",
+    "markdownEn": "Fixed being able to controller-navigate to [gold:pet]Byrdpip[/gold].",
     "textKo": "짹짹이로 컨트롤러 탐색이 가능하던 문제를 수정했습니다.",
     "textEn": "Fixed being able to controller-navigate to Byrdpip.",
-    "entityRefs": [
-      {
-        "type": "relic",
-        "id": "BYRDPIP",
-        "label": "짹짹이"
-      }
-    ],
-    "searchText": "v0.108.0:line-105-relic-byrdpip v0.108.0 0.108.0 버그 수정 일반 짹짹이로 컨트롤러 탐색이 가능하던 문제를 수정했습니다. fixed being able to controller-navigate to byrdpip. relic byrdpip 짹짹이 짹짹이 byrdpip"
+    "entityRefs": [],
+    "searchText": "v0.108.0:line-105-text-t8e3sq v0.108.0 0.108.0 버그 수정 일반 짹짹이로 컨트롤러 탐색이 가능하던 문제를 수정했습니다. fixed being able to controller-navigate to byrdpip."
   },
   {
     "id": "v0.108.0:line-106-ancient-neow",
@@ -50739,8 +50733,8 @@
       "Bug Fixes",
       "Controller"
     ],
-    "markdownKo": "컨트롤러로 [gold:monster]짹짹이[/gold]에 이동할 수 있던 문제를 고쳤습니다.",
-    "markdownEn": "Fixed being able to controller navigate to [gold:monster]Byrdpip[/gold].",
+    "markdownKo": "컨트롤러로 [gold:pet]짹짹이[/gold]에 이동할 수 있던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed being able to controller navigate to [gold:pet]Byrdpip[/gold].",
     "textKo": "컨트롤러로 짹짹이에 이동할 수 있던 문제를 고쳤습니다.",
     "textEn": "Fixed being able to controller navigate to Byrdpip.",
     "entityRefs": [],

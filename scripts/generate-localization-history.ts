@@ -17,9 +17,16 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import {
   getCodexCards,
+  getCodexAfflictions,
+  getCodexAncients,
+  getCodexAscensions,
+  getCodexCharacters,
   getCodexEnchantments,
   getCodexEncounters,
+  getCodexEpochs,
   getCodexEvents,
+  getCodexKeywords,
+  getCodexModifiers,
   getCodexMonsters,
   getCodexPotions,
   getCodexPowers,
@@ -31,6 +38,7 @@ import { compareVersions } from "../src/lib/entity-versioning";
 import { GAME_LOCALES, type GameLocale } from "../src/lib/i18n";
 import {
   LOCALE_TEXT_PINNED_FROM,
+  type HistoryEntityType,
   type LocalizationHistory,
   type TrackedField,
 } from "../src/lib/localization-history";
@@ -45,8 +53,12 @@ const TITLE_AND_DESCRIPTION: FieldKeys = [
 ];
 
 const SOURCES: {
-  type: VersionedEntityType;
+  type: HistoryEntityType;
   table: string;
+  /** The type's entities are spread over several tables: skip the ones this table lacks. */
+  partial?: boolean;
+  /** Normalizes a table value to the name the site shows. */
+  value?: (raw: string) => string;
   load: (gameLocale: GameLocale) => Promise<{ id: string }[]>;
   fields: FieldKeys;
   /** Locales the site shows this type's text in; the others fall back to English. */
@@ -62,6 +74,25 @@ const SOURCES: {
   { type: "power", table: "powers", load: (gameLocale) => getCodexPowers({ includeDeprecated: true, gameLocale }), fields: [["name", (id) => `${id}_POWER.title`]] },
   { type: "event", table: "events", load: (gameLocale) => getCodexEvents({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
   { type: "encounter", table: "encounters", load: (gameLocale) => getCodexEncounters({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
+  { type: "epoch", table: "epochs", load: (gameLocale) => getCodexEpochs({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
+  { type: "ancient", table: "ancients", load: (gameLocale) => getCodexAncients({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
+  { type: "affliction", table: "afflictions", load: (gameLocale) => getCodexAfflictions({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
+  { type: "ascension", table: "ascension", load: (gameLocale) => getCodexAscensions({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
+  { type: "character", table: "characters", load: (gameLocale) => getCodexCharacters({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
+  // Six character-card modifiers are the site's own and have no table entry.
+  { type: "modifier", table: "modifiers", partial: true, load: (gameLocale) => getCodexModifiers({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
+  // Keywords come from three tables (src/lib/codex-data.ts getCodexKeywords).
+  { type: "keyword", table: "card_keywords", partial: true, load: (gameLocale) => getCodexKeywords({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
+  {
+    type: "keyword",
+    table: "static_hover_tips",
+    partial: true,
+    load: (gameLocale) => getCodexKeywords({ gameLocale }),
+    fields: [["name", (id) => `${id === "REPLAY" ? "REPLAY_STATIC" : id}.title`]],
+    // Pile and map tips carry a hotkey slot: "덱 (D)" before 0.107.0, "덱{Hotkey:...}" after.
+    value: (raw) => raw.replace(/\{Hotkey:.*?\(\{\}\)\}/g, "").replace(/ \([A-Z]\)$/, "").trim(),
+  },
+  { type: "keyword", table: "orbs", partial: true, load: (gameLocale) => getCodexKeywords({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
 ];
 
 /**
@@ -176,12 +207,17 @@ async function main() {
       for (const entity of entities as (Record<string, unknown> & { id: string })[]) {
         for (const [field, keyOf] of source.fields) {
           const key = keyOf(entity.id);
-          const latest = clean(current[key]);
+          const read = (value: unknown) => {
+            const text = clean(value);
+            return text !== undefined && source.value ? source.value(text) : text;
+          };
+          const latest = read(current[key]);
+          if (source.partial && latest === undefined) continue;
           const shown = clean(entity[field]);
           if (latest === undefined && shown === undefined) continue;
           const untrack = () => ((history.untracked[locale] ??= {})[source.type] ??= []).push(`${entity.id}.${field}`);
           const valueAt = (index: number) =>
-            clean(tables[index][keyOf(BUILD_ID_ALIASES[source.table]?.[entity.id]?.[snapshots[index].build] ?? entity.id)]);
+            read(tables[index][keyOf(BUILD_ID_ALIASES[source.table]?.[entity.id]?.[snapshots[index].build] ?? entity.id)]);
           // The site renders this field from somewhere other than the table,
           // so the table's history cannot replace it.
           if (latest !== undefined && shown !== latest) {

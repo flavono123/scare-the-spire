@@ -13,15 +13,19 @@ export interface LocalizationHistory {
   /** Build whose text each version was read from: an archive directory, or WORKTREE for the unarchived current version. */
   snapshots: { version: string; build: string }[];
   /** Change points per locale, type, id, and entity field: [version, value] oldest first. */
-  text: Partial<Record<GameLocale, Partial<Record<VersionedEntityType, Record<string, Partial<Record<TrackedField, [string, string][]>>>>>>>;
+  text: Partial<Record<GameLocale, Partial<Record<HistoryEntityType, Record<string, Partial<Record<TrackedField, [string, string][]>>>>>>>;
   /**
    * Number changes the authored diffs recorded only inside the Korean baked
    * text. Recovered against the Korean template so every locale bakes them.
    */
   varDiffs: { entityType: VersionedEntityType; entityId: string; patch: string; field: string; before: number; after: number | null }[];
   /** Fields the site renders differently from the raw table, so history cannot stand in for them. */
-  untracked: Partial<Record<GameLocale, Partial<Record<VersionedEntityType, string[]>>>>;
+  untracked: Partial<Record<GameLocale, Partial<Record<HistoryEntityType, string[]>>>>;
 }
+
+/** Compendium types with name history; the last four have no Compendium version view, only patch-page names. */
+export type HistoryEntityType = VersionedEntityType | "keyword" | "modifier" | "ascension" | "character";
+const UNVERSIONED_HISTORY_TYPES: readonly HistoryEntityType[] = ["keyword", "modifier", "ascension", "character"];
 
 export type TrackedField = "name" | "descriptionRaw";
 
@@ -29,12 +33,17 @@ export type TrackedField = "name" | "descriptionRaw";
  * Entity types whose title and description come straight from the localization
  * tables (monsters, powers, events and encounters: the name only).
  */
-export const LOCALIZATION_HISTORY_TYPES: readonly VersionedEntityType[] = ["card", "relic", "potion", "enchantment", "monster", "power", "event", "encounter"];
+export const LOCALIZATION_HISTORY_TYPES: readonly HistoryEntityType[] = [
+  "card", "relic", "potion", "enchantment", "monster", "power", "event", "encounter",
+  "epoch", "ancient", "affliction", ...UNVERSIONED_HISTORY_TYPES,
+];
 
 /** Types whose history holds only the name (their descriptions are rendered from other tables or authored diffs). */
-const NAME_ONLY_HISTORY_TYPES: readonly VersionedEntityType[] = ["monster", "power", "event", "encounter"];
+const NAME_ONLY_HISTORY_TYPES: readonly HistoryEntityType[] = [
+  "monster", "power", "event", "encounter", "epoch", "ancient", "affliction", ...UNVERSIONED_HISTORY_TYPES,
+];
 
-function historyTracksField(type: VersionedEntityType, field: TrackedField): boolean {
+function historyTracksField(type: HistoryEntityType, field: TrackedField): boolean {
   return LOCALIZATION_HISTORY_TYPES.includes(type) && (field === "name" || !NAME_ONLY_HISTORY_TYPES.includes(type));
 }
 
@@ -134,6 +143,7 @@ export function localizeVersionDiffs(
     fieldName: (field: TrackedField) => string,
   ) => {
     for (const [type, ids] of Object.entries(source) as [VersionedEntityType, Record<string, Partial<Record<TrackedField, [string, string][]>>>][]) {
+      if (UNVERSIONED_HISTORY_TYPES.includes(type)) continue;
       for (const [id, fields] of Object.entries(ids)) {
         for (const [field, timeline] of Object.entries(fields) as [TrackedField, [string, string][]][]) {
           for (let index = 1; index < timeline.length; index += 1) {
@@ -153,3 +163,4 @@ export function localizeVersionDiffs(
   pushTimelines(history.text.eng ?? {}, (field) => ENGLISH_FIELD_FOR[field]);
   return localized;
 }
+

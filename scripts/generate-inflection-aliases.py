@@ -88,6 +88,8 @@ GAMEPLAY_KEYWORDS = [f"keyword:{k}" for k in (
 
 
 NOUN_KEYWORDS = {"keyword:TAROT", "keyword:ARROW"}  # plural only
+# Keywords titled in the plural; the game's own tip text uses the singular ("Your current Star count").
+PLURAL_TITLE_KEYWORDS = {"keyword:STAR_COUNT"}
 
 
 def regular_forms(word: str) -> set[str]:
@@ -134,6 +136,10 @@ def generate(src: Path) -> dict:
                         if is_inflection(word, titles[entity], loc):
                             found.setdefault(entity, set()).add(word)
         if loc == "eng":
+            for entity in PLURAL_TITLE_KEYWORDS:
+                title = titles.get(entity, "")
+                if title.endswith("s"):
+                    found.setdefault(entity, set()).add(title[:-1])
             # Regular English forms (Exhausts, Arrows, Replays) of the keywords the game attaches to card text.
             for entity in GAMEPLAY_KEYWORDS:
                 title = titles.get(entity, "")
@@ -149,6 +155,7 @@ def generate(src: Path) -> dict:
 def self_check(data: dict) -> None:
     assert "꿰뚫린" in data["kor"].get("power:IMPALED", []), "Bow Smack's 꿰뚫린 should alias Impaled"
     assert "Exhausted" in data["eng"].get("keyword:EXHAUST", []), "Dark Embrace's Exhausted should alias Exhaust"
+    assert "Star" in data["eng"].get("keyword:STAR_COUNT", []), "Stars is titled in the plural"
     assert regular_forms("Stun") == {"Stuns", "Stunned"} and regular_forms("Forge") == {"Forges", "Forged"}
     assert not any(a.endswith(("aled", "abled")) for v in data["eng"].values() for a in v), "adjective keywords get no -ed"
 

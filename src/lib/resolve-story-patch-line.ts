@@ -33,6 +33,8 @@ export const PATCH_LINE_ALIASES: Record<string, string> = {
   "v0.108.0:line-139-card-supermassive-card-mad-science-skill": "v0.108.0:line-139-card-supermassive-card-mad-science",
   "v0.111.1:line-270-card-mad-science-skill-power-vigor": "v0.111.1:line-270-card-mad-science-power-vigor",
   "v0.111.1:line-271-card-mad-science-skill-card-supermassive": "v0.111.1:line-271-card-mad-science-card-supermassive",
+  // 2026-11-26 Byrdpip controller fix retagged from the relic to the pet.
+  "v0.108.0:line-105-relic-byrdpip": "v0.108.0:line-105-text-t8e3sq",
   // 2026-11-26 gold tag fixes (official names and types) renamed these line ids; ssy tags found them.
   "v0.100.0:line-003-card-dominate": "v0.100.0:line-003-card-dominate-power-strength",
   "v0.100.0:line-012-ancient-neow": "v0.100.0:line-012-ancient-neow-relic-hefty-tablet",

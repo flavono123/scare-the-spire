@@ -1381,7 +1381,10 @@ export function findEntity(text: string, lookup: EntityLookup, typeHint?: string
 
   const preferDirectEntity = (matches: EntityInfo[] | undefined): EntityInfo | null => {
     if (!matches?.length) return null;
-    return matches.find((entity) => entity.type !== "epoch") ?? matches[0];
+    // Untyped gold is a game term: the keyword 별 (Regent's stars) wins over the tarot card 별.
+    return matches.find((entity) => entity.type === "keyword")
+      ?? matches.find((entity) => entity.type !== "epoch")
+      ?? matches[0];
   };
 
   const match =
