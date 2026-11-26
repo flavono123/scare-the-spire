@@ -5,6 +5,8 @@ import { normalizeVersionedEntityType } from "./codex-versioning";
 import type { GameLocale } from "./i18n";
 import { localizeVersionDiffs, type LocalizationHistory } from "./localization-history";
 import { stripNameCounterPlaceholder } from "./game-name-placeholders";
+import { getGameplayCardRarityLabels, getGameplayCardTypeLabels } from "./codex-game-ui";
+import { readGameLocalizationTable } from "./game-localization";
 
 function toSlug(name: string, cardClass?: string): string {
   const base = name
@@ -168,8 +170,30 @@ export function getLocalizationHistory(): Promise<LocalizationHistory> {
  */
 export async function getEntityVersionDiffs(gameLocale?: GameLocale): Promise<EntityVersionDiff[]> {
   const base = deriveEntityVersionDiffs(await getSTS2Changes());
-  if (!gameLocale) return base;
-  return localizeVersionDiffs(base, gameLocale, await getLocalizationHistory());
+  const diffs = gameLocale ? localizeVersionDiffs(base, gameLocale, await getLocalizationHistory()) : base;
+  return withCardLabelDiffs(diffs, await readGameLocalizationTable(gameLocale ?? "kor", "gameplay_ui"));
+}
+
+/**
+ * Cards keep the game-locale labels of their type and rarity beside the Korean
+ * keys (mapCard). A diff only names the key, so a reverted card kept today's
+ * label: an old Power drew the Power frame under a 스킬 plaque. Each key diff
+ * brings its label along.
+ */
+export function withCardLabelDiffs(diffs: EntityVersionDiff[], gameplay: Record<string, string>): EntityVersionDiff[] {
+  const labels: Record<string, Record<string, string>> = {
+    type: getGameplayCardTypeLabels(gameplay),
+    rarity: getGameplayCardRarityLabels(gameplay),
+  };
+  const label = (field: string, value: unknown) => (typeof value === "string" ? labels[field][value] ?? value : value);
+  return diffs.map((entry) => entry.entityType !== "card" ? entry : {
+    ...entry,
+    diffs: entry.diffs.flatMap((diff) => (
+      diff.field in labels && !diff.upgraded
+        ? [diff, { field: `${diff.field}Label`, before: label(diff.field, diff.before), after: label(diff.field, diff.after) }]
+        : [diff]
+    )),
+  });
 }
 
 export async function getCodexMeta(): Promise<CodexMeta> {

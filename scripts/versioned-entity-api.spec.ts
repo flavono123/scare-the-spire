@@ -19,6 +19,17 @@ import type { CodexCard } from "../src/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "../src/lib/types";
 
 async function runTests() {
+  console.log("\n[Card] type and rarity labels revert with their keys");
+  {
+    const drum = async (version: string, locale: "kor" | "eng") =>
+      (await getVersionedEntity<CodexCard>({ entityType: "card", entityId: "DRUM_OF_BATTLE", version, locale })).entity;
+    const kor103 = await drum("v0.103.0", "kor");
+    assert.equal(kor103?.type, "파워");
+    assert.equal(kor103?.typeLabel, "파워", "Drum of Battle was a Power before v0.104.0, plaque included");
+    assert.equal((await drum("v0.103.0", "eng"))?.typeLabel, "Power");
+    assert.equal((await drum("v0.104.0", "kor"))?.typeLabel, "스킬");
+  }
+
   console.log("\n[Monster] structured moves, power amounts, and move graph revert by version");
   {
     const at = (entityId: string, version: string) =>

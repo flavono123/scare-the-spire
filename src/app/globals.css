@@ -1062,39 +1062,31 @@
 }
 
 /* Patch note hover tips: as-is dissolves into to-be on a loop, after the version
-   shorts (1.2 s hold, 0.4 s dissolve each way). Like the video's composite, the
-   as-is layer fades on top of a fully opaque to-be, so the tip never dips through
-   two half-transparent layers. The to-be layer only switches off while the as-is
-   layer fully covers it, so a transparent edge never shows the other version. */
+   shorts (1.2 s hold, 0.4 s dissolve each way). The layers cross with opposite
+   opacities and add up (plus-lighter, the way browsers cross-fade views): an
+   opaque pixel stays opaque mid-dissolve, and an antialiased edge or shadow keeps
+   its own alpha instead of stacking two layers' worth into a faint outline. */
 .version-dissolve-tip {
   --version-dissolve-cycle: 3.2s;
   display: inline-grid;
+  isolation: isolate;
 }
 
 .version-dissolve-tip > * {
   display: block;
   grid-area: 1 / 1;
-  animation: var(--version-dissolve-cycle) linear infinite;
+  mix-blend-mode: plus-lighter;
+  animation: version-dissolve var(--version-dissolve-cycle) linear infinite;
 }
 
+/* Half a cycle late, the as-is layer runs the same curve inverted. */
 .version-dissolve-tip > [data-version-as-is] {
-  z-index: 1;
-  animation-name: version-dissolve-as-is;
+  animation-delay: calc(var(--version-dissolve-cycle) / -2);
 }
 
-.version-dissolve-tip > [data-version-to-be] {
-  animation-name: version-dissolve-to-be;
-}
-
-@keyframes version-dissolve-as-is {
-  0%, 37.5% { opacity: 1; }
-  50%, 87.5% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes version-dissolve-to-be {
-  0%, 37.4% { opacity: 0; }
-  37.5%, 99.9% { opacity: 1; }
+@keyframes version-dissolve {
+  0%, 37.5% { opacity: 0; }
+  50%, 87.5% { opacity: 1; }
   100% { opacity: 0; }
 }
 
