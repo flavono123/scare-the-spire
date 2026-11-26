@@ -33,6 +33,7 @@ const pagesFor: Record<string, () => string[]> = {
 };
 
 type Violation = { page: string; trigger: string; tip: string; overlap: string };
+const stats = { hovers: 0, tipsSeen: 0, alwaysOn: 0 };
 
 /** Runs in the page: painted bounds, visible tip layers, and hover checks. */
 const PAGE_HELPERS = `
@@ -50,8 +51,9 @@ window.__stackOverlaps = (layer) => { const items=[...(layer.querySelector('.fle
 async function auditPage(page: Page, path: string): Promise<Violation[]> {
   const out: Violation[] = [];
   await page.goto(base + path, { waitUntil: "domcontentloaded", timeout: 120_000 });
-  await page.waitForTimeout(1500);
-  await page.addScriptTag({ content: PAGE_HELPERS });
+  // Some pages replace their URL after hydration; let that settle before measuring.
+  await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => {});
+  await page.waitForTimeout(1200);
 
   // Always-on side tips (card detail): against every card on the page and within their own stack.
   const always = await page.evaluate(() => {
@@ -66,6 +68,7 @@ async function auditPage(page: Page, path: string): Promise<Violation[]> {
     });
   });
   for (const overlap of always) out.push({ page: path, trigger: "(always-on)", tip: "side tips", overlap });
+  stats.alwaysOn += await page.evaluate(() => ((window as unknown as Record<string, () => Element[]>).__layers()).length);
 
   const before = await page.evaluate(() => ((window as unknown as Record<string, () => Element[]>).__layers()).length);
   const count = await page.locator("[data-hover-trigger],[data-static-card-trigger]").count();
@@ -77,6 +80,8 @@ async function auditPage(page: Page, path: string): Promise<Violation[]> {
     if (!box) continue;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.waitForTimeout(400);
+    stats.hovers += 1;
+    stats.tipsSeen += await page.evaluate((skip) => Math.max(0, ((window as unknown as Record<string, () => Element[]>).__layers()).length - skip), before);
     const found = await trigger.evaluate((el, skip) => {
       const w = window as unknown as Record<string, (...a: unknown[]) => unknown>;
       const own = w.__drawn(el);
@@ -106,9 +111,10 @@ async function main() {
   const queue = [...paths];
   await Promise.all(Array.from({ length: workers }, async () => {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.addInitScript({ content: PAGE_HELPERS });
     for (let path = queue.shift(); path; path = queue.shift()) {
       try {
-        violations.push(...(await auditPage(page, path)));
+        violations.push(...(await auditPage(page, path).catch(() => auditPage(page, path))));
       } catch (error) {
         failed.push(`${path}: ${(error as Error).message.split("\n")[0]}`);
       }
@@ -118,9 +124,9 @@ async function main() {
   }));
   await browser.close();
   fs.mkdirSync("test-results", { recursive: true });
-  fs.writeFileSync("test-results/hover-overlap.json", JSON.stringify({ base, pages: paths.length, failed, violations }, null, 2));
+  fs.writeFileSync("test-results/hover-overlap.json", JSON.stringify({ base, pages: paths.length, ...stats, failed, violations }, null, 2));
   for (const v of violations.slice(0, 40)) console.log(`${v.page} | ${v.trigger} | ${v.tip} | ${v.overlap}`);
-  console.log(`hover overlap audit: ${paths.length} pages, ${violations.length} overlaps, ${failed.length} pages failed`);
+  console.log(`hover overlap audit: ${paths.length} pages, ${stats.hovers} hovers, ${stats.tipsSeen} tips shown, ${stats.alwaysOn} always-on stacks, ${violations.length} overlaps, ${failed.length} pages failed`);
   if (violations.length || failed.length) process.exitCode = 1;
 }
 
