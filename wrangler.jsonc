@@ -6,12 +6,8 @@
   "compatibility_date": "2026-06-15",
   "compatibility_flags": ["nodejs_compat"],
   // Own domain since 2026-11-27 (crawlers spent the account's daily 100k on workers.dev, which has no
-  // WAF). With routes set wrangler turns workers.dev off unless it is stated: keep it on while it
-  // redirects (LEGACY_HOST_REDIRECT); switch it off only after search engines have moved.
-  "routes": [
-    { "pattern": "scare-the-spire.com", "custom_domain": true },
-    { "pattern": "www.scare-the-spire.com", "custom_domain": true }
-  ],
+  // WAF). Its custom domains live in infra/cloudflare (OpenTofu), so no custom_domain routes here:
+  // wrangler then leaves them alone. workers.dev stays on while it redirects (LEGACY_HOST_REDIRECT).
   "workers_dev": true,
   "assets": {
     "directory": ".cloudflare/assets",
@@ -100,8 +96,6 @@
   ],
   "env": {
     "testbed": {
-      // routes are inherited; the testbed must never claim the production domain.
-      "routes": [],
       "workers_dev": true,
       "preview_urls": true,
       "vars": {
