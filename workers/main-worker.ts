@@ -23,10 +23,17 @@ type Env = ApiEnv & {
 /** The production workers.dev host. Testbed and version preview hosts never redirect. */
 const LEGACY_WORKERS_DEV_HOST = "scare-the-spire.flavono123.workers.dev";
 
-// Before every route: crawlers reaching the old host get no body and so no links to follow.
-// Returning visitors carry slseoun_idm (Path=/, every page since cookie identity) and stay, because
-// their identity cookie, localStorage and IndexedDB belong to this host. www of the new domain
-// always moves: nothing was ever stored there.
+/** Set by the legacy host chooser page on browsers that keep data on the old host (one year). */
+const LEGACY_STAY_COOKIE = "slseoun_stay";
+/** Search engines get a plain 301 so they move their index (Search Console change of address). */
+const SEARCH_ENGINE_UA = /Googlebot|bingbot|Yeti|DuckDuckBot|Applebot/i;
+
+// Before every route. Identity cookies, localStorage and IndexedDB belong to a host, so a returning
+// visitor moved to the new domain starts with an empty profile. The Worker cannot tell them apart:
+// slseoun_idm lives one day and slseoun_id only rides /api/ requests. So a cookieless page request
+// gets a linkless chooser page (crawlers still find nothing to follow) whose script keeps browsers
+// with stored data here behind slseoun_stay and sends everyone else to the new domain. www of the
+// new domain always moves: nothing was ever stored there.
 function maybeRedirectLegacyHost(request: Request, url: URL, env: Env): Response | null {
   if (!env.LEGACY_HOST_REDIRECT) return null;
   let location: URL;
@@ -38,11 +45,35 @@ function maybeRedirectLegacyHost(request: Request, url: URL, env: Env): Response
   if (location.hostname === url.hostname) return null;
   if (url.hostname !== `www.${location.hostname}`) {
     if (url.hostname !== LEGACY_WORKERS_DEV_HOST) return null;
-    if (env.LEGACY_HOST_REDIRECT_SCOPE !== "all" && readCookie(request, IDENTITY_MODE_COOKIE_NAME) !== null) {
-      return null;
+    if (env.LEGACY_HOST_REDIRECT_SCOPE !== "all") {
+      for (const name of [LEGACY_STAY_COOKIE, IDENTITY_MODE_COOKIE_NAME, IDENTITY_COOKIE_NAME]) {
+        if (readCookie(request, name) !== null) return null;
+      }
+      if (isPageRequest(request, url) && !SEARCH_ENGINE_UA.test(request.headers.get("user-agent") ?? "")) {
+        return legacyHostChooser(location.toString());
+      }
     }
   }
   return Response.redirect(location.toString(), isReadMethod(request.method) ? 301 : 308);
+}
+
+function legacyHostChooser(target: string): Response {
+  const attr = target.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  const js = JSON.stringify(target).replace(/</g, "\\u003c");
+  const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex">`
+    + `<link rel="canonical" href="${attr}"><noscript><meta http-equiv="refresh" content="0;url=${attr}"></noscript>`
+    + `<script>(async function(){var kept=false;try{kept=localStorage.length>0}catch(e){}`
+    + `try{if(!kept&&indexedDB.databases)kept=(await indexedDB.databases()).length>0}catch(e){}`
+    + `if(kept){document.cookie="${LEGACY_STAY_COOKIE}=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure";`
+    + `if(document.cookie.indexOf("${LEGACY_STAY_COOKIE}=1")>=0){location.reload();return}}`
+    + `location.replace(${js})})()</script></head><body></body></html>`;
+  return new Response(html, {
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "no-store",
+      "x-robots-tag": "noindex",
+    },
+  });
 }
 
 type ExecutionContextLike = {
@@ -54,8 +85,8 @@ import {
   getLegacyCompendiumDetailRedirectPath,
   getSts1DetailRedirectPath,
 } from "../src/lib/compendium-resource-links";
-import { readCookie, withFlagCookie } from "./api/flag-cookie";
-import { IDENTITY_MODE_COOKIE_NAME } from "../src/lib/identity-cookies";
+import { isPageRequest, readCookie, withFlagCookie } from "./api/flag-cookie";
+import { IDENTITY_COOKIE_NAME, IDENTITY_MODE_COOKIE_NAME } from "../src/lib/identity-cookies";
 import { isApiRouterPath, type ApiEnv } from "./api/router";
 import { apiRouter } from "./api/routes";
 import { runSync } from "./sync/run-sync";
