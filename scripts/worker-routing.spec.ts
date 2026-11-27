@@ -13,7 +13,6 @@ import * as sts1Entry from "../workers/sts1-worker";
 
 const mainWorker = mainEntry.default;
 const patchWorker = patchEntry.default;
-const LEGACY_WORKERS_DEV_HOST = "scare-the-spire.flavono123.workers.dev";
 
 // workerd takes every named export of a Worker entry as an entrypoint and will not start on any other
 // value: `wrangler dev` dies and local /api shows "database is not answering". Production tolerates it.
@@ -92,68 +91,6 @@ async function main() {
   assert.equal(latestEn.headers.get("location"), "/en/patches/0.114.0");
   assert.equal(await patchPage("/xx/patches/latest"), "404 not-found:ko");
 
-  const legacy = `https://${LEGACY_WORKERS_DEV_HOST}`;
-  const redirectEnv = { ASSETS: assets, LEGACY_HOST_REDIRECT: "https://new.test" };
-  const botUa = { headers: { "user-agent": GOOGLEBOT_UA } };
-  const moved = await mainWorker.fetch(new Request(`${legacy}/en/compendium/cards?q=a`, botUa), redirectEnv, ctx);
-  assert.equal(moved.status, 301, "search engines move with a 301");
-  assert.equal(moved.headers.get("location"), "https://new.test/en/compendium/cards?q=a");
-  const apiRead = await mainWorker.fetch(new Request(`${legacy}/api/read/x`), redirectEnv, ctx);
-  assert.equal(apiRead.status, 301, "cookieless API reads move");
-  const apiOwner = await mainWorker.fetch(new Request(`${legacy}/api/read/x`, { headers: { cookie: "slseoun_id=signed" } }), redirectEnv, ctx);
-  assert.notEqual(apiOwner.status, 301, "a page that stayed keeps its API calls here");
-
-  // Cookieless browsers get the chooser: stored data keeps them here, none sends them on.
-  const chooser = await mainWorker.fetch(
-    new Request(`${legacy}/en/compendium/cards?q=a&b=1`, { headers: { accept: "text/html", "user-agent": CHROME_UA } }),
-    redirectEnv,
-    ctx,
-  );
-  assert.equal(chooser.status, 200);
-  const html = await chooser.text();
-  assert.ok(!/<a\b/i.test(html), "no links for crawlers to follow");
-  assert.ok(html.includes('href="https://new.test/en/compendium/cards?q=a&amp;b=1"'));
-  const script = /<script>([\s\S]*)<\/script>/.exec(html)?.[1] ?? "";
-  async function runChooser(stored: { local: number; dbs: number; cookiesWork?: boolean }) {
-    const seen = { cookie: "", reloaded: false, replaced: "" };
-    const document = {
-      get cookie() { return seen.cookie; },
-      set cookie(value: string) { if (stored.cookiesWork !== false) seen.cookie = value.split(";")[0]; },
-    };
-    const location = { reload() { seen.reloaded = true; }, replace(to: string) { seen.replaced = to; } };
-    const localStorage = { length: stored.local };
-    const indexedDB = { databases: async () => Array.from({ length: stored.dbs }) };
-    await new Function("document", "location", "localStorage", "indexedDB", `return (${script.replace(/^\(/, "").replace(/\)\(\)$/, "")})()`)(
-      document, location, localStorage, indexedDB,
-    );
-    return seen;
-  }
-  assert.deepEqual(await runChooser({ local: 2, dbs: 0 }), { cookie: "slseoun_stay=1", reloaded: true, replaced: "" });
-  assert.deepEqual(await runChooser({ local: 0, dbs: 1 }), { cookie: "slseoun_stay=1", reloaded: true, replaced: "" });
-  assert.equal((await runChooser({ local: 0, dbs: 0 })).replaced, "https://new.test/en/compendium/cards?q=a&b=1");
-  assert.equal((await runChooser({ local: 3, dbs: 0, cookiesWork: false })).replaced, "https://new.test/en/compendium/cards?q=a&b=1", "no reload loop without cookies");
-  const stayed = await mainWorker.fetch(new Request(`${legacy}/`, { headers: { cookie: "slseoun_stay=1", "user-agent": GOOGLEBOT_UA } }), redirectEnv, ctx);
-  assert.notEqual(stayed.status, 301);
-  assert.ok(!(await stayed.text()).includes("location.replace"));
-  const movedWrite = await mainWorker.fetch(new Request(`${legacy}/api/x`, { method: "POST" }), redirectEnv, ctx);
-  assert.equal(movedWrite.status, 308);
-  const otherHost = await mainWorker.fetch(new Request(`${ORIGIN}/`, { headers: { "user-agent": GOOGLEBOT_UA } }), redirectEnv, ctx);
-  assert.notEqual(otherHost.status, 301);
-  const returning = { headers: { cookie: "a=1; slseoun_idm=cookie", "user-agent": GOOGLEBOT_UA } };
-  const kept = await mainWorker.fetch(new Request(`${legacy}/`, returning), redirectEnv, ctx);
-  assert.notEqual(kept.status, 301);
-  const movedAll = await mainWorker.fetch(
-    new Request(`${legacy}/`, returning),
-    { ...redirectEnv, LEGACY_HOST_REDIRECT_SCOPE: "all" },
-    ctx,
-  );
-  assert.equal(movedAll.headers.get("location"), "https://new.test/");
-  const www = await mainWorker.fetch(new Request("https://www.new.test/a?b=1", returning), redirectEnv, ctx);
-  assert.equal(www.headers.get("location"), "https://new.test/a?b=1", "www always moves, cookie or not");
-  const apex = await mainWorker.fetch(new Request("https://new.test/", { headers: { "user-agent": GOOGLEBOT_UA } }), redirectEnv, ctx);
-  assert.equal(apex.headers.get("location"), null);
-  const switchedOff = await mainWorker.fetch(new Request(`${legacy}/`, botUa), { ASSETS: assets }, ctx);
-  assert.equal(switchedOff.headers.get("location"), null);
 }
 
 main().then(

@@ -44,6 +44,7 @@ jobs:
       - run: npx tsx scripts/link-preview.spec.ts
 
       - run: npx tsx scripts/worker-routing.spec.ts
+      - run: npx tsx scripts/legacy-host-move.spec.ts
 
       - run: npx tsx scripts/place-registry.spec.ts
 
