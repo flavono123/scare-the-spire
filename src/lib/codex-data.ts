@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import { readJsonFile } from "./read-json-file";
 import { bakeDescription, withLibraryCalculatedVars } from "./codex-bake";
 import { EVENT_CHARACTER_QUOTE_PLACEHOLDER_NAMES } from "./event-character-quotes";
 import {
@@ -809,10 +810,8 @@ function mapCard(
   };
 }
 
-async function readJson<T>(relativePath: string): Promise<T> {
-  const filePath = path.join(DATA_DIR, relativePath);
-  const raw = await fs.readFile(filePath, "utf-8");
-  return JSON.parse(raw);
+function readJson<T>(relativePath: string): Promise<T> {
+  return readJsonFile<T>(path.join(DATA_DIR, relativePath));
 }
 
 type GoldTips = Record<string, Record<string, GoldTip>>;

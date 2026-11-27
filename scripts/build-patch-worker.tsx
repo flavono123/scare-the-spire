@@ -64,6 +64,9 @@ import {
 import { SiteTopBar } from "@/components/site-top-bar";
 import { topBarMenuRows, topBarPatchLinks } from "@/lib/top-bar-menu";
 
+// 840 pages load the same catalogs: parse each data file once per process (src/lib/read-json-file.ts).
+process.env.JSON_FILE_MEMO ??= "1";
+
 type StaticPatchRoute = {
   pathname: string;
   serviceLocale: ServiceLocale;

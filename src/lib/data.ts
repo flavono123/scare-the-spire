@@ -7,6 +7,7 @@ import { localizeVersionDiffs, type LocalizationHistory } from "./localization-h
 import { stripNameCounterPlaceholder } from "./game-name-placeholders";
 import { getGameplayCardRarityLabels, getGameplayCardTypeLabels } from "./codex-game-ui";
 import { readGameLocalizationTable } from "./game-localization";
+import { readJsonFile } from "./read-json-file";
 
 function toSlug(name: string, cardClass?: string): string {
   const base = name
@@ -104,41 +105,27 @@ export async function getPotions(): Promise<Potion[]> {
 }
 
 export async function getChanges(): Promise<Change[]> {
-  return JSON.parse(
-    await fs.readFile(path.join(DATA_DIR, "changes.json"), "utf-8"),
-  );
+  return readJsonFile(path.join(DATA_DIR, "changes.json"));
 }
 
 export async function getStories(): Promise<Story[]> {
-  return JSON.parse(
-    await fs.readFile(path.join(DATA_DIR, "stories.json"), "utf-8"),
-  );
+  return readJsonFile(path.join(DATA_DIR, "stories.json"));
 }
 
 export async function getSTS2Stories(): Promise<Story[]> {
-  return JSON.parse(
-    await fs.readFile(path.join(DATA_DIR, "sts2-stories.json"), "utf-8"),
-  );
+  return readJsonFile(path.join(DATA_DIR, "sts2-stories.json"));
 }
 
 export async function getSTS2Patches(): Promise<STS2Patch[]> {
-  return JSON.parse(
-    await fs.readFile(path.join(DATA_DIR, "sts2-patches.json"), "utf-8"),
-  );
+  return readJsonFile(path.join(DATA_DIR, "sts2-patches.json"));
 }
 
 export async function getSTS2Changes(): Promise<STS2Change[]> {
-  return JSON.parse(
-    await fs.readFile(path.join(DATA_DIR, "sts2-changes.json"), "utf-8"),
-  );
+  return readJsonFile(path.join(DATA_DIR, "sts2-changes.json"));
 }
 
 export async function getSTS2PatchLines(): Promise<STS2PatchLine[]> {
-  return JSON.parse(
-    stripNameCounterPlaceholder(
-      await fs.readFile(path.join(DATA_DIR, "sts2-patch-lines.json"), "utf-8"),
-    ),
-  );
+  return readJsonFile(path.join(DATA_DIR, "sts2-patch-lines.json"), stripNameCounterPlaceholder);
 }
 
 export function deriveEntityVersionDiffs(changes: readonly STS2Change[]): EntityVersionDiff[] {

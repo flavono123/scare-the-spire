@@ -35,7 +35,7 @@
     "patch:css": "tailwindcss -i src/app/globals.css -o .patch-worker/assets/_patches/patch.css --minify",
     "patch:assets": "node scripts/copy-patch-worker-assets.mjs",
     "patch:dev": "pnpm cf:patch:preview",
-    "patch:html": "tsx scripts/build-patch-worker.tsx",
+    "patch:html": "NODE_ENV=production tsx scripts/build-patch-worker.tsx",
     "patch:audit-ids": "tsx scripts/audit-patch-line-ids.ts",
     "patch:test": "node scripts/ensure-lint-generated.mjs && tsx scripts/check-patch-pending-links.tsx && tsx scripts/audit-patch-line-ids.ts",
     "search:test": "tsx scripts/check-search-regressions.ts",

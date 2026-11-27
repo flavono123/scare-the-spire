@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
 import { getCodexMeta, getEntityVersionDiffs, getLocalizationHistory, getSTS2Patches, getSTS2PatchLines, getSTS2Stories } from "@/lib/data";
+import { memoInBuild } from "@/lib/read-json-file";
 import { getCodexCards, getCodexCharacters, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexModifiers, getCodexAscensions, getCodexEnchantments, getCodexAfflictions, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs, getCodexPets } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
@@ -1151,7 +1152,7 @@ export async function PatchDetailPage({
     );
   }
 
-  const [localizationHistory, versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexAfflictions, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, codexPets, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
+  const [localizationHistory, versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexAfflictions, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, codexPets, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await memoInBuild(`patch-detail:${gameLocale}`, () => Promise.all([
     getLocalizationHistory(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
@@ -1179,7 +1180,7 @@ export async function PatchDetailPage({
     getSTS2Stories(),
     getStoryComposerPlaceholder(gameLocale),
     getPatchStageGameCopy(gameLocale),
-  ]);
+  ]));
 
   const patchId = patch.id;
   const patchLines = allPatchLines.filter((line) => line.patch === patchId);
