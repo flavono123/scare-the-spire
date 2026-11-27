@@ -25,8 +25,10 @@ resource "cloudflare_ruleset" "custom_firewall" {
       enabled = true
     },
     {
+      # Meta's crawler arrives as a verified bot with a desktop Chrome user agent, outside the AI
+      # Crawler category; only its link preview fetcher (facebookexternalhit) gets through.
       description = "ai crawlers"
-      expression  = "(cf.verified_bot_category eq \"AI Crawler\")"
+      expression  = "(cf.verified_bot_category eq \"AI Crawler\") or (ip.src.asnum eq 32934 and not http.user_agent contains \"facebookexternalhit\")"
       action      = "block"
       enabled     = true
     },
