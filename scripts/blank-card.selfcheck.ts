@@ -5,8 +5,11 @@ import {
   cardText,
   conflicts,
   isBlankCardAnswer,
+  hintPoints,
+  isRefusedProposal,
   matchProposal,
-  roundScore,
+  scoreLines,
+  totalScore,
 } from "../src/lib/blank-card";
 
 async function main() {
@@ -38,9 +41,22 @@ async function main() {
   assert.deepEqual(conflicts(strike, bludgeon, { hints: {}, present: ["피해"], absent: ["방어도"], wrongGuesses: [] }), []);
   assert.deepEqual(conflicts(strike, bludgeon, { hints: {}, present: [], absent: ["피해"], wrongGuesses: ["BLUDGEON"] }), ["text", "guessed"]);
 
-  assert.equal(roundScore({ solved: true, hints: 0, actions: 1, livesLost: 0 }), SCORE.start);
-  assert.equal(roundScore({ solved: true, hints: 3, actions: 1, livesLost: 0 }), SCORE.start - 3 * SCORE.hint);
-  assert.equal(roundScore({ solved: false, hints: 0, actions: 1, livesLost: 3 }), 0);
+  // Unused hints are worth more the more they would have told: the character splits the pool most.
+  const points = hintPoints(pool);
+  assert.ok(points.color > points.cost && points.color > points.type, JSON.stringify(points));
+  const best = scoreLines({ solved: true, hintsUsed: [], attempts: 0, submissions: 1, livesLeft: 3 }, points);
+  assert.ok(best.some((line) => line.key === "hole-in-one"));
+  assert.equal(totalScore(best), SCORE.solved + SCORE.hints + 3 * SCORE.life + SCORE.holeInOne + (Object.values(points).reduce((a, b) => a + b, 0) - SCORE.hints));
+  const hinted = scoreLines({ solved: true, hintsUsed: ["color"], attempts: 2, submissions: 2, livesLeft: 2 }, points);
+  assert.ok(!hinted.some((line) => line.hint === "color") && !hinted.some((line) => line.key === "hole-in-one"));
+  assert.equal(totalScore(scoreLines({ solved: false, hintsUsed: [], attempts: 9, submissions: 3, livesLeft: 0 }, points)), 0);
+
+  // One syllable and near-universal endings are refused; content words are not.
+  const texts = pool.map(cardText);
+  assert.ok(isRefusedProposal("다", texts));
+  assert.ok(isRefusedProposal("니다", texts));
+  assert.ok(!isRefusedProposal("습니다", texts));
+  assert.ok(!isRefusedProposal("피해", texts));
   console.log(`blank-card selfcheck ok (${pool.length} answers)`);
 }
 

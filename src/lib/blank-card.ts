@@ -11,8 +11,10 @@ import {
 
 export const LIVES = 3;
 export const HINTS = 3;
-/** Tunable playtest scoring: a hint costs far more than an action. */
-export const SCORE = { start: 1000, hint: 250, action: 40, life: 100, floor: 50 } as const;
+/** Tunable playtest scoring. Unused hints share `hints` by how much each one would have told. */
+export const SCORE = { solved: 300, hints: 400, life: 100, attempt: 25, holeInOne: 100 } as const;
+/** A proposal that this share of the answer pool says gives positions away for free ("니다"). */
+export const FREE_PROPOSAL_SHARE = 0.75;
 
 export type HintKey = "cost" | "color" | "rarity" | "type";
 export const HINT_KEYS: readonly HintKey[] = ["cost", "color", "rarity", "type"];
@@ -133,14 +135,66 @@ export function conflicts(card: CodexCard, text: CardText, known: Knowledge): Co
   return reasons;
 }
 
-/** Score of a finished round; actions are proposals and guesses, the winning guess included. */
-export function roundScore(round: { solved: boolean; hints: number; actions: number; livesLost: number }): number {
-  if (!round.solved) return 0;
-  return Math.max(
-    SCORE.floor,
-    SCORE.start
-      - round.hints * SCORE.hint
-      - Math.max(0, round.actions - 1) * SCORE.action
-      - round.livesLost * SCORE.life,
-  );
+/** Points an unused hint is worth: `SCORE.hints` split by each hint's entropy over the answer pool. */
+export function hintPoints(cards: CodexCard[]): Record<HintKey, number> {
+  const entropy = (key: HintKey) => {
+    const counts = new Map<string, number>();
+    cards.forEach((card) => counts.set(hintValue(card, key), (counts.get(hintValue(card, key)) ?? 0) + 1));
+    return [...counts.values()].reduce((sum, n) => sum - (n / cards.length) * Math.log2(n / cards.length), 0);
+  };
+  const bits = Object.fromEntries(HINT_KEYS.map((key) => [key, entropy(key)])) as Record<HintKey, number>;
+  const total = HINT_KEYS.reduce((sum, key) => sum + bits[key], 0);
+  return Object.fromEntries(
+    HINT_KEYS.map((key) => [key, Math.round((SCORE.hints * bits[key]) / total / 10) * 10]),
+  ) as Record<HintKey, number>;
+}
+
+/** Proposals refused without a cost: one Hangul syllable, or text nearly every answer says. */
+export function isRefusedProposal(proposal: string, pool: CardText[]): boolean {
+  const query = normalizeProposal(proposal);
+  if (/^[가-힣]$/.test(query)) return true;
+  const saying = pool.filter((text) => matchProposal(text, query).length > 0).length;
+  return saying >= pool.length * FREE_PROPOSAL_SHARE;
+}
+
+export interface Round {
+  solved: boolean;
+  hintsUsed: HintKey[];
+  /** 문구 시도 */
+  attempts: number;
+  /** 정답 제출, the winning one included */
+  submissions: number;
+  livesLeft: number;
+}
+
+export interface ScoreLine {
+  key: string;
+  label: string;
+  /** Count shown beside the label (×n), when the line is per item. */
+  count?: number;
+  hint?: HintKey;
+  value: number;
+}
+
+/** Run-end style score lines of a finished round; a failed round scores nothing. */
+export function scoreLines(round: Round, points: Record<HintKey, number>): ScoreLine[] {
+  if (!round.solved) return [{ key: "failed", label: "실패", value: 0 }];
+  const lines: ScoreLine[] = [{ key: "solved", label: "정답", value: SCORE.solved }];
+  for (const key of HINT_KEYS) {
+    if (!round.hintsUsed.includes(key)) lines.push({ key: `hint-${key}`, label: "아낀 힌트", hint: key, value: points[key] });
+  }
+  if (round.livesLeft > 0) {
+    lines.push({ key: "lives", label: "남은 라이프", count: round.livesLeft, value: round.livesLeft * SCORE.life });
+  }
+  if (round.attempts > 0) {
+    lines.push({ key: "attempts", label: "문구 시도", count: round.attempts, value: -round.attempts * SCORE.attempt });
+  }
+  if (round.attempts === 0 && round.submissions === 1 && round.hintsUsed.length === 0) {
+    lines.push({ key: "hole-in-one", label: "홀인원", value: SCORE.holeInOne });
+  }
+  return lines;
+}
+
+export function totalScore(lines: ScoreLine[]): number {
+  return Math.max(0, lines.reduce((sum, line) => sum + line.value, 0));
 }

@@ -93,6 +93,12 @@ export const devNavItems = [
   },
   {
     group: "서비스 개발",
+    href: "/dev/vexing-puzzlebox",
+    label: "짜퍼 후보",
+    icon: "/images/sts2/relics/vexing_puzzlebox.webp",
+  },
+  {
+    group: "서비스 개발",
     href: "/dev/decisions-board",
     label: "어려운 결정 보드",
     icon: "/images/sts2/powers/buffer_power.webp",
