@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# OpenTofu for infra/cloudflare with the zone token from .env.local (CLOUDFLARE_ZONE_API_TOKEN).
+set -euo pipefail
+root="$(cd "$(dirname "$0")/.." && pwd)"
+token="$(grep -E '^CLOUDFLARE_ZONE_API_TOKEN=' "$root/.env.local" | tail -1 | cut -d= -f2- | tr -d "\"'")"
+[[ -n "$token" ]] || { echo "CLOUDFLARE_ZONE_API_TOKEN is missing in .env.local" >&2; exit 1; }
+TF_VAR_cloudflare_api_token="$token" exec tofu -chdir="$root/infra/cloudflare" "$@"
