@@ -55,7 +55,7 @@ import {
 } from "@/lib/search-canonical";
 import { serviceMessages } from "@/messages/service";
 import { PATCH_NOT_FOUND_KO_SEGMENT, patchNotFoundAssetPath } from "../workers/patch-not-found";
-import { LATEST_PATCH_VERSION_ASSET } from "../workers/patch-worker";
+import { LATEST_PATCH_VERSION_ASSET } from "../workers/patch-worker-assets";
 import { contactMessages } from "@/messages/contact";
 import {
   gameOnlyLanguageNavLocales,

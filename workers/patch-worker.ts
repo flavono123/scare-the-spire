@@ -1,5 +1,6 @@
 import { gameLocaleFromPathSegment } from "../src/lib/i18n";
 import { PATCH_NOT_FOUND_KO_SEGMENT, patchNotFoundAssetPath } from "./patch-not-found";
+import { LATEST_PATCH_VERSION_ASSET } from "./patch-worker-assets";
 import { withSecurityHeaders } from "./security-headers";
 
 type Env = {
@@ -7,9 +8,6 @@ type Env = {
     fetch(request: Request): Promise<Response>;
   };
 };
-
-/** The newest patch version (the patch list's first card), written by scripts/build-patch-worker.tsx. */
-export const LATEST_PATCH_VERSION_ASSET = "/_patches/latest-version.txt";
 
 /** /patches/latest and /<locale>/patches/latest: a redirect to that language's newest patch page. */
 async function latestPatchRedirect(env: Env, url: URL): Promise<Response | null> {

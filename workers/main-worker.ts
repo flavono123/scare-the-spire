@@ -21,7 +21,7 @@ type Env = ApiEnv & {
 };
 
 /** The production workers.dev host. Testbed and version preview hosts never redirect. */
-export const LEGACY_WORKERS_DEV_HOST = "scare-the-spire.flavono123.workers.dev";
+const LEGACY_WORKERS_DEV_HOST = "scare-the-spire.flavono123.workers.dev";
 
 // Before every route: crawlers reaching the old host get no body and so no links to follow.
 // Returning visitors carry slseoun_idm (Path=/, every page since cookie identity) and stay, because

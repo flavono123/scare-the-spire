@@ -6,8 +6,22 @@ import assert from "node:assert/strict";
 
 import { serviceMessages } from "../src/messages/service";
 import { NOT_FOUND_TITLE_EN } from "../workers/document-locale";
-import mainWorker, { LEGACY_WORKERS_DEV_HOST } from "../workers/main-worker";
-import patchWorker, { LATEST_PATCH_VERSION_ASSET } from "../workers/patch-worker";
+import * as mainEntry from "../workers/main-worker";
+import * as patchEntry from "../workers/patch-worker";
+import { LATEST_PATCH_VERSION_ASSET } from "../workers/patch-worker-assets";
+import * as sts1Entry from "../workers/sts1-worker";
+
+const mainWorker = mainEntry.default;
+const patchWorker = patchEntry.default;
+const LEGACY_WORKERS_DEV_HOST = "scare-the-spire.flavono123.workers.dev";
+
+// workerd takes every named export of a Worker entry as an entrypoint and will not start on any other
+// value: `wrangler dev` dies and local /api shows "database is not answering". Production tolerates it.
+for (const [name, entry] of Object.entries({ mainEntry, patchEntry, sts1Entry })) {
+  for (const [key, value] of Object.entries(entry)) {
+    assert.ok(key === "default" || typeof value === "function", `${name} exports non-entrypoint "${key}"`);
+  }
+}
 
 const ORIGIN = "https://routing.test";
 const ctx = { waitUntil() {} };
