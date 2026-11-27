@@ -18,6 +18,7 @@ Korean is the first-class language. Facts the repo can answer (stack, structure,
 - English commit messages. Commits that change user-visible behavior carry `Feature:`, `Expect:`, `QA:` lines (`QA: none` otherwise); multi-commit features and open worktrees go in `docs/release/UNRELEASED.md`.
 - No branches or worktrees unless asked, except: for a large refactor (services, shared rendering, route trees or data schemas; unsafe half-done or longer than a weekly release) ask to approve a worktree in `.claude/worktrees/<name>` on `refactor/<name>`, then `git merge --no-ff` into `main` and remove it.
 - Ask before creating many files, moving route trees, or broad mechanical edits.
+- Local dev on `main`: use the user's running `pnpm dev` (3000, the proxy that owns `/api`; 3001, Next) and never start another dev server or `wrangler dev`. Worktree sessions may run `pnpm dev` on their own ports. "데이터베이스가 응답하지 않습니다" in dev means the local API Worker (8792) is down; its error is in the `pnpm dev` output.
 - Never commit generated output (`public/generated/*`, `src/generated/*.json`); `pnpm static:data` and the ensure helpers rebuild it.
 
 ## Deploy

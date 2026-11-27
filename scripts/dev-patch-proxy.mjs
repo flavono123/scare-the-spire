@@ -16,10 +16,10 @@ const patchAssetsDir = path.join(root, ".patch-worker/assets");
 // Step 6 (docs/supabase-exit/STEP6_PLAN.md WP-Q): the browser's data goes to the same-origin /api
 // only, and next dev has none of those routes. They go to a local main Worker (`wrangler dev
 // --local`) on the D1 that scripts/d1-local-seed.ts copies from the testbed, with the env file it
-// writes (keep the path equal to LOCAL_API_ENV_FILE there). Not 8787/8788: `pnpm cf:testbed:local`
-// starts its main and patch Workers there (scripts/run-cloudflare-testbed.mjs), and the two commands
-// run side by side.
-const localApiPort = Number(process.env.LOCAL_API_PORT ?? 8789);
+// writes (keep the path equal to LOCAL_API_ENV_FILE there). Not 8787-8789: `pnpm cf:testbed:local`
+// starts its main, patch and STS1 Workers there (scripts/run-cloudflare-testbed.mjs), and the two
+// commands run side by side.
+const localApiPort = Number(process.env.LOCAL_API_PORT ?? 8792);
 const localApiEnvFile = path.join(root, ".wrangler/local-api/worker.env");
 // The Worker serves only /api here: an empty asset directory keeps wrangler from watching .cloudflare/assets.
 const localApiAssetsDir = path.join(root, ".wrangler/local-api/assets");
@@ -63,12 +63,16 @@ function processCommand(pid) {
   }
 }
 
+// Worktrees live under the checkout (.claude/worktrees/*) and run their own dev servers: never ours.
+const worktreesDir = path.join(root, ".claude/worktrees");
+
 function isThisProjectListener(pid) {
   const cwd = processCwd(pid);
+  if (cwd.startsWith(`${worktreesDir}/`)) return false;
   if (cwd === root || cwd.startsWith(`${root}/`)) return true;
 
   const command = processCommand(pid);
-  return command.includes(root);
+  return command.includes(root) && !command.includes(`${worktreesDir}/`);
 }
 
 function childPids(pid) {
@@ -660,10 +664,25 @@ async function startLocalApiWorker() {
   child.on("exit", (code, signal) => {
     if (localApiWorker === child) localApiWorker = null;
     if (!shuttingDown) {
-      console.error(`Local API Worker exited (${signal ?? code ?? "unknown"}); /api answers 502 until pnpm dev restarts`);
+      console.error(
+        `Local API Worker exited (${signal ?? code ?? "unknown"}); /api answers 502 until workers/ or wrangler.jsonc changes`,
+      );
+      restartLocalApiOnChange();
     }
   });
   console.log(`Local API Worker (wrangler dev --local, seeded D1) on http://127.0.0.1:${localApiPort}`);
+}
+
+/** After the Worker dies (usually a source error), the next fix brings it back without restarting pnpm dev. */
+function restartLocalApiOnChange() {
+  const watchers = ["workers", "wrangler.jsonc"].map((relativePath) =>
+    watch(path.join(root, relativePath), { recursive: true }, () => {
+      for (const watcher of watchers) watcher.close();
+      if (shuttingDown) return;
+      console.log("Worker sources changed; restarting the local API Worker");
+      void startLocalApiWorker();
+    }),
+  );
 }
 
 void (async () => {
