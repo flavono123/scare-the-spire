@@ -17,7 +17,7 @@ import {
   verifyIdentityCookie,
   type IdentityEnv,
 } from "./api/identity/cookie";
-import { IDENTITY_COOKIE_NAME } from "../src/lib/identity-cookies";
+import { IDENTITY_COOKIE_NAME, IDENTITY_MARKER_STORAGE_KEY } from "../src/lib/identity-cookies";
 
 export type LegacyHostEnv = IdentityEnv & {
   /** Origin the legacy workers.dev host moves to (wrangler.jsonc vars); unset keeps serving it. */
@@ -115,7 +115,8 @@ export function handoffPage(target: URL): Response {
     + `var q=db.transaction("${RUN_STORE}").objectStore("${RUN_STORE}").getAll();`
     + `q.onsuccess=function(){db.close();res(q.result.filter(function(x){return x&&x.origin!=="donation-cache"}))};`
     + `q.onerror=function(){db.close();res([])}}})}catch(e){}`
-    + `var t="";try{var r=await fetch("${HANDOFF_TOKEN_PATH}",{method:"POST",credentials:"same-origin"});if(r.ok)t=(await r.json()).token||""}catch(e){}`
+    // Only a browser that claimed an identity has one to hand over; crawlers running scripts skip the call.
+    + `var t="";if(ls["${IDENTITY_MARKER_STORAGE_KEY}"])try{var r=await fetch("${HANDOFF_TOKEN_PATH}",{method:"POST",credentials:"same-origin"});if(r.ok)t=(await r.json()).token||""}catch(e){}`
     + `if(!t&&!n&&!runs.length){location.replace(to);return}`
     + `var u=new TextEncoder().encode(JSON.stringify({ls:ls,runs:runs})),b="";`
     + `for(var j=0;j<u.length;j+=32768)b+=String.fromCharCode.apply(null,u.subarray(j,j+32768));`

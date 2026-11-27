@@ -111,8 +111,12 @@ function browser(opts: { local?: Record<string, string>; runs?: Run[] | null; to
     },
   };
   const location = { hash: "", replace: (to: string) => void (seen.replaced = to) };
-  const fetch = async () => Response.json({ token: opts.token ?? "" });
-  return { seen, localStorage, indexedDB, globals: { document, location, localStorage, indexedDB, fetch } };
+  const calls = { token: 0 };
+  const fetch = async () => {
+    calls.token++;
+    return Response.json({ token: opts.token ?? "" });
+  };
+  return { calls, seen, localStorage, indexedDB, globals: { document, location, localStorage, indexedDB, fetch } };
 }
 
 async function main() {
@@ -152,6 +156,13 @@ async function main() {
   await runScript(pageHtml, empty.globals);
   assert.equal(empty.seen.replaced, "https://new.test/en/compendium/cards?q=a&b=1");
   assert.equal(empty.seen.submitted, null);
+  assert.equal(empty.calls.token, 0, "no identity marker, no token call: crawlers cost one request");
+
+  // Settings but no identity: storage moves, no token call.
+  const settingsOnly = browser({ local: { theme: "dark" }, token: tokenBody.token });
+  await runScript(pageHtml, settingsOnly.globals);
+  assert.equal(settingsOnly.calls.token, 0);
+  assert.equal(settingsOnly.seen.submitted?.fields.t, "");
 
   // Already handed off once: never overwrite newer data on the new domain.
   const done = browser({ local: { "slseoun-handoff-done": "1", theme: "dark" }, token: tokenBody.token });
@@ -166,6 +177,7 @@ async function main() {
   ];
   const old = browser({ local: { "slseoun-identity": UID, theme: "dark" }, runs, token: tokenBody.token });
   await runScript(pageHtml, old.globals);
+  assert.equal(old.calls.token, 1);
   const sent = old.seen.submitted;
   assert.ok(sent);
   assert.equal(sent.action, "https://new.test/__handoff");
