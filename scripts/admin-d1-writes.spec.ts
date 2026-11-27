@@ -203,6 +203,9 @@ async function main() {
     assert.deepEqual(d1.testbed.one("SELECT admin_response, responded_at, status, reply_seen_at FROM contact_inquiries WHERE id = ?1", U(2)), {
       admin_response: "새 답변입니다", responded_at: "2026-11-10T03:04:05.678000Z", status: "done", reply_seen_at: null,
     }, "a changed reply clears reply_seen_at as Supabase's trigger does");
+    assert.deepEqual(d1.testbed.rows("SELECT author, message, created_at FROM contact_inquiry_messages WHERE inquiry_id = ?1", U(2)), [
+      { author: "admin", message: "새 답변입니다", created_at: "2026-11-10T03:04:05.678000Z" },
+    ], "the reply is appended to the D1 thread");
     const calls = await mirror("testbed");
     assert.deepEqual(calls.map((entry) => `${entry.method} ${entry.url.pathname}${entry.url.search}`), [`PATCH /rest/v1/contact_inquiries?id=eq.${U(2)}&env=eq.development`]);
     assert.deepEqual(Object.keys(JSON.parse(calls[0].body)).sort(), Object.keys(todayBody).sort(), "the mirror sends today's columns");
@@ -213,14 +216,16 @@ async function main() {
     assert.deepEqual(without(dev, ["id", "env"]), without(prod, ["id", "env"]), "same Supabase row by either path");
   });
 
-  await check("inquiry reply: clearing a reply, a missing id (no outbox row), a paused gate and the input checks", async () => {
+  await check("inquiry reply: no reply changes only the status, a missing id (no outbox row), a paused gate and the input checks", async () => {
     await replyToContactInquiry(deps(), { id: U(1), dataEnv: "production", response: "", status: "spam" });
     await replyToContactInquiry(deps(), { id: U(2), dataEnv: "development", response: "", status: "spam" });
+    assert.deepEqual(outbox("testbed").at(-1)?.payload, { read: "contact_inquiries", columns: ["status"] });
     await mirror("testbed");
     const [prod] = await sbRows("select * from public.contact_inquiries where id = $1", [U(1)]);
     const [dev] = await sbRows("select * from public.contact_inquiries where id = $1", [U(2)]);
-    assert.deepEqual([prod.admin_response, prod.responded_at, prod.status], [null, null, "spam"]);
+    assert.deepEqual([prod.admin_response, prod.status], ["새 답변입니다", "spam"], "the reply stays");
     assert.deepEqual(without(dev, ["id", "env"]), without(prod, ["id", "env"]));
+    assert.equal(d1.testbed.rows("SELECT id FROM contact_inquiry_messages WHERE inquiry_id = ?1", U(2)).length, 1, "no thread row without a reply");
 
     const missing = await replyToContactInquiry(deps(), { id: U(3), dataEnv: "development", response: "답변", status: "done" });
     assert.equal(missing.matched, false);
@@ -228,11 +233,10 @@ async function main() {
 
     setGate("testbed", "d1", { paused: true });
     await assert.rejects(replyToContactInquiry(deps(), { id: U(2), dataEnv: "development", response: "멈춤", status: "done" }), WritesPausedError);
-    assert.equal(d1.testbed.one("SELECT admin_response FROM contact_inquiries WHERE id = ?1", U(2))!.admin_response, null, "nothing written while paused");
+    assert.equal(d1.testbed.one("SELECT admin_response FROM contact_inquiries WHERE id = ?1", U(2))!.admin_response, "새 답변입니다", "nothing written while paused");
     setGate("testbed", "d1");
 
     await assert.rejects(replyToContactInquiry(deps(), { id: "nope", dataEnv: "development", response: "", status: "done" }), /Invalid inquiry id/);
-    await assert.rejects(replyToContactInquiry(deps(), { id: U(2), dataEnv: "development", response: "", status: "done" }), /A completed inquiry needs a response/);
     await assert.rejects(replyToContactInquiry(deps(), { id: U(2), dataEnv: "staging", response: "답", status: "done" }), /Invalid inquiry env/);
   });
 
@@ -242,7 +246,7 @@ async function main() {
     await replyToContactInquiry(deps({ dryRun: true, log: (line) => lines.push(line) }), { id: U(2), dataEnv: "development", response: "드라이", status: "done" });
     await replyToContactInquiry(deps({ dryRun: true, log: (line) => lines.push(line) }), { id: U(1), dataEnv: "production", response: "드라이", status: "done" });
     assert.equal(outbox("testbed").length, 0);
-    assert.equal(d1.testbed.one("SELECT admin_response FROM contact_inquiries WHERE id = ?1", U(2))!.admin_response, null);
+    assert.equal(d1.testbed.one("SELECT admin_response FROM contact_inquiries WHERE id = ?1", U(2))!.admin_response, "새 답변입니다");
     assert.equal(restCalls.length, before, "no Supabase call in a dry run");
     assert.ok(lines.some((line) => line.includes("UPDATE contact_inquiries")) && lines.some((line) => line.includes("PATCH /rest/v1/contact_inquiries")));
     await assert.rejects(replyToContactInquiry(deps({ localD1: true }), { id: U(1), dataEnv: "production", response: "로컬", status: "done" }), AdminWriteError);

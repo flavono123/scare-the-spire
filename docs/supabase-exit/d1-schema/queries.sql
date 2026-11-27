@@ -637,6 +637,17 @@ SELECT id FROM contact_inquiries WHERE user_id = ?1 AND admin_response IS NOT NU
 SELECT id, category, message, status, admin_response, reply_seen_at, created_at FROM contact_inquiries
 WHERE user_id = ?1 ORDER BY created_at DESC, id DESC LIMIT 50;
 
+-- @ C3m threads of my inquiry history | expect=contact_inquiry_messages:contact_inquiry_messages_inquiry_created,contact_inquiries:contact_inquiries_user_created | allow=tempsort | params=["11111111-1111-4111-8111-111111111111"]
+SELECT inquiry_id, author, message, created_at FROM contact_inquiry_messages
+WHERE inquiry_id IN (SELECT id FROM contact_inquiries WHERE user_id = ?1 ORDER BY created_at DESC, id DESC LIMIT 50)
+ORDER BY inquiry_id, created_at, id;
+
+-- @ C6 thread reply on my own inquiry, ten an hour (0 changes -> 404 or 429) | expect=contact_inquiries:PK,i:contact_inquiries_user_created,m:contact_inquiry_messages_inquiry_created | allow= | params=["90000000-0000-4000-8000-000000000002","11111111-1111-4111-8111-111111111111","한 번 더 여쭙니다.","2026-11-08T01:02:03.456000Z","2026-11-08T00:02:03.456000Z"]
+INSERT INTO contact_inquiry_messages (inquiry_id, author, message, created_at)
+SELECT id, 'user', ?3, ?4 FROM contact_inquiries WHERE id = ?1 AND user_id = ?2
+AND (SELECT count(*) FROM contact_inquiry_messages m JOIN contact_inquiries i ON i.id = m.inquiry_id
+     WHERE i.user_id = ?2 AND m.author = 'user' AND m.created_at > ?5) < 10;
+
 -- @ C4 mark replies seen | expect=contact_inquiries:contact_inquiries_user_created | allow= | params=["11111111-1111-4111-8111-111111111111","2026-11-08T01:02:03.456000Z"]
 UPDATE contact_inquiries SET reply_seen_at = ?2
 WHERE user_id = ?1 AND admin_response IS NOT NULL AND reply_seen_at IS NULL;

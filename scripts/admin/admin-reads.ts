@@ -254,17 +254,25 @@ export async function readAdminContactInquiries(deps: AdminReadDeps): Promise<Re
   type Part = { env: D1EnvName; source: WriteSource | null; rows: Row[]; count: number; error?: string };
   const parts: Part[] = await Promise.all(D1_ENVS.map(async (env): Promise<Part> => {
     try {
-      const { gate, results: [rows, total] } = await gatedD1(deps.d1(env), [
+      const { gate, results: [rows, total, messages] } = await gatedD1(deps.d1(env), [
         stmt(
           "SELECT id, user_id, category, message, reply_email, page_path, service_locale, game_locale, status, admin_response, responded_at, created_at " +
             `FROM contact_inquiries ORDER BY created_at DESC LIMIT ${ADMIN_CONTACT_ROW_LIMIT}`,
         ),
         stmt("SELECT count(*) AS n FROM contact_inquiries"),
+        stmt(
+          "SELECT inquiry_id, author, message, created_at FROM contact_inquiry_messages WHERE inquiry_id IN " +
+            `(SELECT id FROM contact_inquiries ORDER BY created_at DESC LIMIT ${ADMIN_CONTACT_ROW_LIMIT}) ORDER BY inquiry_id, created_at, id`,
+        ),
       ]);
+      const threads = new Map<unknown, Row[]>();
+      for (const row of messages) {
+        threads.set(row.inquiry_id, [...(threads.get(row.inquiry_id) ?? []), pgRow(row, { ts: ["created_at"] }, {})]);
+      }
       return {
         env,
         source: gate.sources.contact,
-        rows: rows.map((row) => pgRow(row, { ts: ["responded_at", "created_at"] }, { env: DATA_ENV_OF[env] })),
+        rows: rows.map((row) => pgRow(row, { ts: ["responded_at", "created_at"] }, { env: DATA_ENV_OF[env], messages: threads.get(row.id) ?? [] })),
         count: countOf(total),
       };
     } catch (error) {

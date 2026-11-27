@@ -41,6 +41,8 @@ interface ContactInquiryAdminRow {
   admin_response: string | null;
   responded_at: string | null;
   created_at: string;
+  /** The thread after the first message, oldest first (D1 only). */
+  messages?: { author: "user" | "admin"; message: string; created_at: string }[];
 }
 
 
@@ -131,6 +133,20 @@ export async function ContactInboxPanel() {
                         <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
                           {inquiry.message}
                         </p>
+                        {(inquiry.messages ?? []).map((reply, index) => (
+                          <div
+                            key={`${reply.created_at}-${index}`}
+                            className={`mt-3 border-l-2 pl-3 ${reply.author === "admin" ? "border-primary/60" : "border-sky-300/60"}`}
+                          >
+                            <p className="mb-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+                              <span className={`font-semibold ${reply.author === "admin" ? "text-primary" : "text-sky-300"}`}>
+                                {reply.author === "admin" ? "운영자" : "문의자"}
+                              </span>
+                              <time className="ml-auto" dateTime={reply.created_at}>{formatDate(reply.created_at)}</time>
+                            </p>
+                            <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">{reply.message}</p>
+                          </div>
+                        ))}
                         <dl className="mt-3 grid gap-x-4 gap-y-1 border-t border-border/70 pt-3 text-[11px] text-muted-foreground sm:grid-cols-2">
                           <div><dt className="inline font-semibold">답변 이메일 </dt><dd className="inline">{inquiry.reply_email ?? "-"}</dd></div>
                           <div><dt className="inline font-semibold">문의 위치 </dt><dd className="inline"><code>{inquiry.page_path}</code></dd></div>
@@ -141,12 +157,11 @@ export async function ContactInboxPanel() {
                           <input type="hidden" name="id" value={inquiry.id} />
                           <input type="hidden" name="env" value={inquiry.env} />
                           <label className="block text-xs font-semibold text-muted-foreground" htmlFor={`response-${inquiry.id}`}>
-                            운영자 답변
+                            운영자 답글
                           </label>
                           <textarea
                             id={`response-${inquiry.id}`}
                             name="response"
-                            defaultValue={inquiry.admin_response ?? ""}
                             maxLength={8000}
                             rows={4}
                             className="w-full resize-y rounded-md border border-border bg-background/70 px-3 py-2 text-sm text-foreground outline-none focus:border-primary/60"
@@ -168,11 +183,6 @@ export async function ContactInboxPanel() {
                             >
                               저장
                             </button>
-                            <span className="text-[11px] text-muted-foreground">
-                              {inquiry.admin_response
-                                ? "저장하면 기존 답변을 덮어씁니다."
-                                : "답변을 입력하면 답변 완료로 저장됩니다."}
-                            </span>
                           </div>
                         </form>
                       </article>

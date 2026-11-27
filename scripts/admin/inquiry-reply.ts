@@ -1,10 +1,10 @@
 /**
- * Answer a contact inquiry, as the /dev/admin mailbox form does (scripts/admin/admin-writes.ts):
+ * Reply to a contact inquiry's thread, as the /dev/admin mailbox form does (scripts/admin/admin-writes.ts):
  * Supabase while source.contact is supabase, D1 and its outbox row while it is d1.
  *
  *   set -a && source .env.local && set +a
  *   pnpm exec tsx scripts/admin/inquiry-reply.ts --env testbed|production --id <uuid> --response "text" [--status done]
- *   pnpm exec tsx scripts/admin/inquiry-reply.ts --env testbed --id <uuid> --status reviewing   (no response: clears it)
+ *   pnpm exec tsx scripts/admin/inquiry-reply.ts --env testbed --id <uuid> --status reviewing   (no response: only the status)
  *   options: --response-file <path> instead of --response; --dry-run (read the gate, print, write nothing);
  *            --local (the wrangler dev D1 under .wrangler/state; the Supabase path then needs --dry-run)
  *

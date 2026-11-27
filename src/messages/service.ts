@@ -320,6 +320,11 @@ export const serviceMessages = {
           empty: "아직 보낸 문의가 없습니다",
           responseTitle: "운영자 답변",
           noResponse: "아직 답변이 없습니다",
+          userReplyTitle: "내 답글",
+          replyLabel: "답글",
+          replySend: "답글 달기",
+          replySending: "보내는 중...",
+          replyRateLimited: "한 시간에 답글을 10번까지 달 수 있습니다. 잠시 뒤 다시 시도해 주세요.",
           status: {
             new: "접수",
             reviewing: "확인 중",
@@ -2040,6 +2045,11 @@ export const serviceMessages = {
           empty: "You have not sent any inquiries yet",
           responseTitle: "Operator response",
           noResponse: "No response yet",
+          userReplyTitle: "My reply",
+          replyLabel: "Reply",
+          replySend: "Reply",
+          replySending: "Sending...",
+          replyRateLimited: "You can reply up to ten times per hour. Please try again later.",
           status: {
             new: "Received",
             reviewing: "Reviewing",

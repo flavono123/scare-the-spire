@@ -302,6 +302,11 @@ export const Q_C2 = `SELECT id FROM contact_inquiries WHERE user_id = ?1 AND adm
 export const Q_C3 = `SELECT id, category, message, status, admin_response, reply_seen_at, created_at FROM contact_inquiries
 WHERE user_id = ?1 ORDER BY created_at DESC, id DESC LIMIT 50`;
 
+/** C3m: the threads of C3's inquiries, each in time order */
+export const Q_C3m = `SELECT inquiry_id, author, message, created_at FROM contact_inquiry_messages
+WHERE inquiry_id IN (SELECT id FROM contact_inquiries WHERE user_id = ?1 ORDER BY created_at DESC, id DESC LIMIT 50)
+ORDER BY inquiry_id, created_at, id`;
+
 /** X2: leaderboard of one board or all boards (valid boards drive PK seeks; t and r are CTE results) */
 export const Q_X2 = `WITH valid AS (
   SELECT key AS board, CAST(value AS INTEGER) AS max_score FROM json_each(?1) WHERE ?2 IS NULL OR key = ?2),

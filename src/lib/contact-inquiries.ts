@@ -20,16 +20,27 @@ export {
 export type ContactInquiryEnv = "development" | "production";
 export type ContactInquiryStatus = "new" | "reviewing" | "done" | "spam";
 
+export type ContactThreadAuthor = "user" | "admin";
+
+export interface ContactThreadMessage {
+  author: ContactThreadAuthor;
+  message: string;
+  createdAt: string;
+}
+
 export interface ContactInquiryHistoryItem {
   id: string;
   category: ContactCategory;
   message: string;
   env: ContactInquiryEnv;
   status: ContactInquiryStatus;
+  /** The latest operator reply (also the last admin message of the thread). */
   adminResponse: string | null;
   /** Null when a reply exists and has not been opened. Omitted when the column is not deployed yet. */
   replySeenAt?: string | null;
   createdAt: string;
+  /** Replies after the first message, oldest first. */
+  messages: ContactThreadMessage[];
 }
 
 interface ContactInquiryHistoryRow {
@@ -41,6 +52,7 @@ interface ContactInquiryHistoryRow {
   admin_response: string | null;
   reply_seen_at?: string | null;
   created_at: string;
+  messages?: { author: ContactThreadAuthor; message: string; created_at: string }[];
 }
 
 export interface ContactInquiryInput {
@@ -93,7 +105,22 @@ function historyItem(row: ContactInquiryHistoryRow): ContactInquiryHistoryItem {
     adminResponse: row.admin_response,
     replySeenAt: "reply_seen_at" in row ? row.reply_seen_at ?? null : undefined,
     createdAt: row.created_at,
+    messages: (row.messages ?? []).map((message) => ({
+      author: message.author,
+      message: message.message,
+      createdAt: message.created_at,
+    })),
   };
+}
+
+/** Appends the caller's reply to their own inquiry. Throws ContactInquiryRateLimitError or an ApiError. */
+export async function replyToOwnContactInquiry(id: string, message: string): Promise<void> {
+  try {
+    await apiFetchAsUser("contact", "/api/write/contact-inquiries/reply", { method: "POST", body: { id, message } });
+  } catch (error) {
+    if (error instanceof ApiError && error.code === "rate_limited") throw new ContactInquiryRateLimitError();
+    throw error;
+  }
 }
 
 /** This env's inquiries only (docs/supabase-exit/STEP1_DESIGN.md 9.4). Throws on any failure. */

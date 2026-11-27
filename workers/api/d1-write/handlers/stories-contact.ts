@@ -1,4 +1,4 @@
-import { contactInquiryRow } from "../../../../src/lib/contact-rules";
+import { contactInquiryRow, contactReplyRow } from "../../../../src/lib/contact-rules";
 import { postgrestTs } from "../../../../src/lib/d1-time";
 import { isUuid } from "../../../../src/lib/engagement-keys";
 import { storyInsertRow } from "../../../../src/lib/stories-api-rules";
@@ -8,10 +8,11 @@ import { boolOrNull, changesOf, rowsOf, runBatch, stmt, tsFromMs, writeFailureCo
 import { outboxStatement, readPayload } from "../outbox";
 
 /**
- * Stories (E16i, E16j), contact inquiries (C1) and the profile's "replies seen" (C4) on D1.
+ * Stories (E16i, E16j), contact inquiries (C1), thread replies (C6) and the profile's "replies seen" (C4) on D1.
  */
 
 const HOUR_MS = 60 * 60 * 1000;
+const REPLIES_PER_HOUR = 10;
 
 export async function createStory(write: D1WriteContext): Promise<Response> {
   const body = write.context.body;
@@ -133,6 +134,51 @@ export async function submitInquiry(write: D1WriteContext): Promise<Response> {
     return apiError(writeFailureCode(error));
   }
   if (changesOf(results[0]) === 0) return apiError("rate_limited");
+  return json({}, 201);
+}
+
+export async function replyToInquiry(write: D1WriteContext): Promise<Response> {
+  const body = write.context.body;
+  if (!body || typeof body !== "object" || Array.isArray(body)) return apiError("invalid");
+  const row = contactReplyRow(body as { id?: unknown; message?: unknown });
+  if (!row) return apiError("invalid");
+  let results;
+  try {
+    results = await runBatch(write.db, [
+      // C6: only on the caller's own inquiry, ten replies an hour per user; 0 rows -> 404 or 429.
+      stmt(
+        "INSERT INTO contact_inquiry_messages (inquiry_id, author, message, created_at) " +
+          "SELECT id, 'user', ?3, ?4 FROM contact_inquiries WHERE id = ?1 AND user_id = ?2 " +
+          "AND (SELECT count(*) FROM contact_inquiry_messages m JOIN contact_inquiries i ON i.id = m.inquiry_id " +
+          `WHERE i.user_id = ?2 AND m.author = 'user' AND m.created_at > ?5) < ${REPLIES_PER_HOUR}`,
+        row.inquiry_id,
+        write.uid,
+        row.message,
+        write.now,
+        tsFromMs(write.nowMs - HOUR_MS),
+      ),
+      // C6b: a reply reopens the inquiry, so the operator's inbox shows it as 접수 again (spam stays spam).
+      stmt(
+        "UPDATE contact_inquiries SET status = 'new' WHERE id = ?1 AND status IN ('reviewing', 'done') " +
+          "AND EXISTS (SELECT 1 FROM contact_inquiry_messages WHERE inquiry_id = ?1 AND author = 'user' AND created_at = ?2)",
+        row.inquiry_id,
+        write.now,
+      ),
+      // The thread itself is D1 only (no mirror spec); the reopened status mirrors as before.
+      outboxStatement(
+        { table: "contact_inquiries", op: "update", match: { id: row.inquiry_id }, payload: { read: "contact_inquiries", columns: ["status"] } },
+        write.nowMs,
+        {
+          sql: "EXISTS (SELECT 1 FROM contact_inquiry_messages WHERE inquiry_id = ?6 AND author = 'user' AND created_at = ?7)",
+          params: [row.inquiry_id, write.now],
+        },
+      ),
+      stmt("SELECT 1 FROM contact_inquiries WHERE id = ?1 AND user_id = ?2", row.inquiry_id, write.uid),
+    ]);
+  } catch (error) {
+    return apiError(writeFailureCode(error));
+  }
+  if (changesOf(results[0]) === 0) return apiError(rowsOf(results[3]).length > 0 ? "rate_limited" : "not_found");
   return json({}, 201);
 }
 

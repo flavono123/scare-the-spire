@@ -10,7 +10,7 @@ import {
 import { isStoryLimit, isStorySource, STORY_COLUMNS } from "../../../src/lib/stories-api-rules";
 import { REEL_COLUMNS } from "../routes/colorful-philosophers";
 import { philosopherRow } from "./engagement";
-import { Q_C2, Q_C3, Q_E10, Q_E10b, Q_E3, Q_F1, Q_F2, Q_F3, Q_P1, Q_P2, Q_P3 } from "./queries";
+import { Q_C2, Q_C3, Q_C3m, Q_E10, Q_E10b, Q_E3, Q_F1, Q_F2, Q_F3, Q_P1, Q_P2, Q_P3 } from "./queries";
 import {
   AdapterInputError,
   bool,
@@ -149,16 +149,25 @@ export async function profileActivityAdapter(context: AdapterContext): Promise<R
 /** me.profile.inquiries: the caller's 50 latest inquiries (CONTACT_INQUIRY_HISTORY_COLUMNS). */
 export async function profileInquiriesAdapter(context: AdapterContext): Promise<Row> {
   if (!context.userId) throw new AdapterInputError("user");
-  const [rows] = await readAll(context.db, [query(Q_C3, context.userId)]);
+  const [rows, messages] = await readAll(context.db, [query(Q_C3, context.userId), query(Q_C3m, context.userId)]);
   const columns = columnsOf(CONTACT_INQUIRY_HISTORY_COLUMNS);
+  const threads = new Map<unknown, Row[]>();
+  for (const message of messages) {
+    const thread = threads.get(message.inquiry_id) ?? [];
+    thread.push({ author: message.author, message: message.message, created_at: ts(message.created_at) });
+    threads.set(message.inquiry_id, thread);
+  }
   return {
     v: 1,
     env: context.dataEnv,
-    rows: rows.map((row) => pick({
-      ...row,
-      env: context.dataEnv,
-      reply_seen_at: ts(row.reply_seen_at),
-      created_at: ts(row.created_at),
-    }, columns)),
+    rows: rows.map((row) => ({
+      ...pick({
+        ...row,
+        env: context.dataEnv,
+        reply_seen_at: ts(row.reply_seen_at),
+        created_at: ts(row.created_at),
+      }, columns),
+      messages: threads.get(row.id) ?? [],
+    })),
   };
 }

@@ -7,9 +7,9 @@ this-or-that cascade: ok
 same id in two services: two rows: ok
 same id in two services: delete is per service: ok
 comment cascade: ok
-migrations (7): 0001_runtime_flags.sql, 0002_api_cache.sql, 0003_sync_bookkeeping.sql, 0004_engagement.sql, 0005_posts.sql, 0006_profile_contact_puzzlebox_philosophers.sql, 0007_api_verification_keys.sql
+migrations (8): 0001_runtime_flags.sql, 0002_api_cache.sql, 0003_sync_bookkeeping.sql, 0004_engagement.sql, 0005_posts.sql, 0006_profile_contact_puzzlebox_philosophers.sql, 0007_api_verification_keys.sql, 0008_contact_inquiry_messages.sql
 sqlite 3.51.0
-tables (43): api_cache=1, api_verification_keys=0, colorful_philosopher_posts=62, comment_likes=502, comments=1504, community_stories=302, contact_inquiries=62, defragment_bodies=201, favorite_tournament_candidate_stats=2, favorite_tournament_plays=1, likes=353, outbox=3, pagestorm_drafts=1, post_chemical_x=101, post_combo=100, post_combo_resources=200, post_decisions_decisions=101, post_favorite_tournament=101, post_favorite_tournament_pool=202, post_history_course=101, post_history_course_file=101, post_pagestorm=101, post_this_or_that=101, post_transfigure=101, posts=807, profile_character_nickname_pools=2, puzzlebox_best=302, puzzlebox_board_stats=13, puzzlebox_players=52, puzzlebox_runs=602, resource_reaction_counts=122, resource_reactions=403, runtime_flag_events=1, runtime_flags=1, shadow_diffs=1, shadow_stats=1, sync_checks=3, sync_pending_raw=1, sync_rejects=2, sync_state=2, this_or_that_post_likes=401, this_or_that_post_votes=100, threads=147
+tables (44): api_cache=1, api_verification_keys=0, colorful_philosopher_posts=62, comment_likes=502, comments=1504, community_stories=302, contact_inquiries=62, contact_inquiry_messages=0, defragment_bodies=201, favorite_tournament_candidate_stats=2, favorite_tournament_plays=1, likes=353, outbox=3, pagestorm_drafts=1, post_chemical_x=101, post_combo=100, post_combo_resources=200, post_decisions_decisions=101, post_favorite_tournament=101, post_favorite_tournament_pool=202, post_history_course=101, post_history_course_file=101, post_pagestorm=101, post_this_or_that=101, post_transfigure=101, posts=807, profile_character_nickname_pools=2, puzzlebox_best=302, puzzlebox_board_stats=13, puzzlebox_players=52, puzzlebox_runs=602, resource_reaction_counts=122, resource_reactions=403, runtime_flag_events=1, runtime_flags=1, shadow_diffs=1, shadow_stats=1, sync_checks=3, sync_pending_raw=1, sync_rejects=2, sync_state=2, this_or_that_post_likes=401, this_or_that_post_votes=100, threads=147
 
 == CHECK / FK probes
 ok   rejected: timestamp without 6 fraction digits -> CHECK constraint failed: (substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')
@@ -451,6 +451,16 @@ PASS C2 mailbox dot [ran, 1 row(s)]
       SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
 PASS C3 my inquiry history [ran, 2 row(s)]
       SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
+PASS C3m threads of my inquiry history allow=tempsort [ran, 0 row(s)]
+      SEARCH contact_inquiry_messages USING INDEX contact_inquiry_messages_inquiry_created (inquiry_id=?)
+      LIST SUBQUERY 1
+      SEARCH contact_inquiries USING COVERING INDEX contact_inquiries_user_created (user_id=?)
+      CREATE BLOOM FILTER
+PASS C6 thread reply on my own inquiry, ten an hour (0 changes -> 404 or 429) [ran, 0 row(s)]
+      SEARCH contact_inquiries USING INDEX sqlite_autoindex_contact_inquiries_1 (id=?)
+      SCALAR SUBQUERY 1
+      SEARCH i USING COVERING INDEX contact_inquiries_user_created (user_id=?)
+      SEARCH m USING INDEX contact_inquiry_messages_inquiry_created (inquiry_id=? AND created_at>?)
 PASS C4 mark replies seen [ran, 0 row(s)]
       SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
 PASS C5a admin inbox (local script; full scan of a small table is fine) allow=scan:contact_inquiries,tempsort [ran, 62 row(s)]
@@ -940,6 +950,16 @@ PASS C2 mailbox dot [ran, 1 row(s)]
       SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
 PASS C3 my inquiry history [ran, 2 row(s)]
       SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
+PASS C3m threads of my inquiry history allow=tempsort [ran, 0 row(s)]
+      SEARCH contact_inquiry_messages USING INDEX contact_inquiry_messages_inquiry_created (inquiry_id=?)
+      LIST SUBQUERY 1
+      SEARCH contact_inquiries USING COVERING INDEX contact_inquiries_user_created (user_id=?)
+      CREATE BLOOM FILTER
+PASS C6 thread reply on my own inquiry, ten an hour (0 changes -> 404 or 429) [ran, 0 row(s)]
+      SEARCH contact_inquiries USING INDEX sqlite_autoindex_contact_inquiries_1 (id=?)
+      SCALAR SUBQUERY 1
+      SEARCH i USING COVERING INDEX contact_inquiries_user_created (user_id=?)
+      SEARCH m USING INDEX contact_inquiry_messages_inquiry_created (inquiry_id=? AND created_at>?)
 PASS C4 mark replies seen [ran, 0 row(s)]
       SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
 PASS C5a admin inbox (local script; full scan of a small table is fine) allow=scan:contact_inquiries,tempsort [ran, 62 row(s)]
@@ -1036,4 +1056,4 @@ PASS K5a undo a revocation (CLI): a revoke-only row without coordinates goes awa
 PASS K5b undo a revocation (CLI): a key with coordinates counts again [ran, 0 row(s)]
       SEARCH api_verification_keys USING PRIMARY KEY (kid=?)
 
-queries: 136, failures (probes + plans, both passes): 0
+queries: 138, failures (probes + plans, both passes): 0

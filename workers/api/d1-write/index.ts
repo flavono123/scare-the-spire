@@ -8,7 +8,7 @@ import { commentLike, createComment, deleteComment, reaction, threadLike } from 
 import { submitRun } from "./handlers/puzzlebox";
 import { batchShareOnD1, deleteRun, SHARE_UNAVAILABLE_CODE, shareRun, syncNicknames, updateCover } from "./handlers/runs";
 import { shareRunOnSupabase } from "../routes/history-runs-share";
-import { createStory, deleteStory, markRepliesSeen, submitInquiry } from "./handlers/stories-contact";
+import { createStory, deleteStory, markRepliesSeen, replyToInquiry, submitInquiry } from "./handlers/stories-contact";
 import {
   createDraft,
   createPost,
@@ -43,6 +43,7 @@ export const D1_WRITE_HANDLERS: Readonly<Record<string, D1WriteHandler>> = {
   "write.stories.create": createStory,
   "write.stories.delete": deleteStory,
   "write.contact-inquiries": submitInquiry,
+  "write.contact-inquiries.reply": replyToInquiry,
   "write.profile.inquiries-seen": markRepliesSeen,
   "write.history-runs.create": batchShareOnD1,
   "write.history-runs.batch": batchShareOnD1,

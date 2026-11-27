@@ -252,6 +252,7 @@ async function main() {
       admin_response: "fixed",
       reply_seen_at: null,
       created_at: "2026-11-01T00:00:00.000Z",
+      messages: [{ author: "admin", message: "fixed", created_at: "2026-11-02T00:00:00.000Z" }],
     };
     const { result, made } = await withAnswer(() => marked({ v: 1, rows: [row] }), () => listOwnContactInquiries());
     assert.equal(result.status, "fulfilled");
@@ -264,6 +265,7 @@ async function main() {
       adminResponse: "fixed",
       replySeenAt: null,
       createdAt: "2026-11-01T00:00:00.000Z",
+      messages: [{ author: "admin", message: "fixed", createdAt: "2026-11-02T00:00:00.000Z" }],
     }]);
     assert.deepEqual(made.map((call) => `${call.method} ${call.url}`), ["GET /api/me/profile/inquiries"]);
   }

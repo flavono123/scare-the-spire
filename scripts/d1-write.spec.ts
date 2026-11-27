@@ -12,6 +12,7 @@ import { D1_WRITE_HANDLERS } from "../workers/api/d1-write";
 import { pgTimestampText } from "../workers/api/d1-write/db";
 import { parseGateRows, readWriteGate, resetWriteGateForTest, supabaseInSyncAllowed } from "../workers/api/d1-write/gate";
 import { API_ROUTES } from "../workers/api/routes";
+import { profileInquiriesAdapter } from "../workers/api/d1-adapters/community";
 import { OTHER, setupHarness, USER, type Harness } from "./d1-sync/write-harness";
 
 let checks = 0;
@@ -194,6 +195,30 @@ async function storiesAndContact() {
     assert.equal(h.db.rows("SELECT * FROM contact_inquiries WHERE user_id = ?1 AND reply_seen_at IS NULL", OTHER).length, 1);
     await h.call("/api/write/profile/inquiries-seen", { method: "POST" });
     assert.equal(h.outbox().length, before + 3, "nothing left to mark: no rows");
+  });
+
+  await check("thread replies: owner only, reopen the inquiry, ten an hour, read back in order", async () => {
+    const { id } = h.db.one("SELECT id FROM contact_inquiries WHERE user_id = ?1 ORDER BY created_at, id LIMIT 1", USER)! as { id: string };
+    h.db.run("UPDATE contact_inquiries SET status = 'done' WHERE id = ?1", id);
+    const reply = (message: unknown, as?: typeof OTHER) =>
+      h.call("/api/write/contact-inquiries/reply", { method: "POST", body: { id: id.toUpperCase(), message }, ...(as ? { as } : {}) });
+    assert.equal((await reply("  한 번 더 여쭙니다.  ")).status, 201);
+    assert.deepEqual(h.db.rows("SELECT author, message FROM contact_inquiry_messages WHERE inquiry_id = ?1", id), [{ author: "user", message: "한 번 더 여쭙니다." }]);
+    assert.equal(h.db.one("SELECT status FROM contact_inquiries WHERE id = ?1", id)!.status, "new", "a reply reopens the inquiry");
+    assert.deepEqual(h.outbox().at(-1)!.payload, { read: "contact_inquiries", columns: ["status"] });
+    const other = await reply("남의 문의", OTHER);
+    assert.deepEqual([other.status, other.json.error], [404, "not_found"]);
+    assert.equal((await reply("   ")).status, 400);
+    for (let i = 0; i < 9; i += 1) assert.equal((await reply(`추가 ${i}`)).status, 201);
+    const limited = await reply("열한 번째");
+    assert.deepEqual([limited.status, limited.json.error], [429, "rate_limited"]);
+
+    h.db.run("INSERT INTO contact_inquiry_messages (inquiry_id, author, message, created_at) VALUES (?1, 'admin', '운영자 답글', '2999-01-01T00:00:00.000000Z')", id);
+    const history = await profileInquiriesAdapter({ db: h.db as never, dataEnv: "development", url: new URL("https://x/api/me/profile/inquiries"), userId: USER, now: Date.now() }) as { rows: { id: string; messages: { author: string; message: string }[] }[] };
+    const thread = history.rows.find((row) => row.id === id)!.messages;
+    assert.equal(thread.length, 11);
+    assert.deepEqual([thread[0].message, thread.at(-1)!.author], ["한 번 더 여쭙니다.", "admin"], "oldest first");
+    assert.ok(history.rows.filter((row) => row.id !== id).every((row) => row.messages.length === 0));
   });
 }
 

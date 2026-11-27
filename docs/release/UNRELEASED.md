@@ -30,6 +30,7 @@
 | 파일 | testbed(`slseoun-testbed`) | 운영(`slseoun-prod`) |
 |---|---|---|
 | 0007(4단계 전제: 토큰 서명 키 목록과 폐기 `api_verification_keys`, Worker 소유라 첫 복사의 다시 채우기가 건드리지 않음) | testbed 배포 때 적용(`step4/prereqs`) | 적용 안 함. 표가 없어도 지금과 같다(고정 키만, 1분에 한 번 읽기 실패) |
+| 0008(작은 우편함 스레드 `contact_inquiry_messages`, 기존 운영자 답변을 첫 답글로 옮김. Worker 소유) | 적용 안 함 | 적용 안 함. **push 직전에 적용**: 표가 없으면 프로필 문의 내역·답글·/dev/admin 문의함 읽기가 실패하고, 적용 뒤 옛 코드로 단 답변은 스레드에 안 들어간다 |
 
 ## 긴급 배포로 QA 없이 나간 범위
 
@@ -37,6 +38,12 @@
 - 2026-11-25 v0.114.0 패치노트 긴급 배포(`618880a5`~`e4abb706`)에 `f820e6e4..618880a5`의 다른 세션 커밋 약 90개가 같이 나감. 운영 화면에 보이는 것: `nav-story-redesign`(상단바·메뉴·검색·이야기 /stories/<id>·인덱스 /compendium·/toybox·/vexing-puzzlebox·/menu, 커넥션스 /vexing-puzzlebox/connections 이동), `sts1-compendium-remaining-types`와 STS1 관련 레일·조우·의도·점수 페이지, STS2 점수 페이지(`c9442d74`~`a932b362`), 역사 강의 점수 화면(`581ef148`), 몬스터·이벤트 갤러리/목록 토글(`0e46481c`, `50b16da8`), NEW 표시 14일 만료(`1aebb756`). dev 전용: 게임 문구 카탈로그, OG 감사, 우편함 표시. 마이그레이션 없음. 스모크는 위 인덱스·이야기·/patches/0.114.0 응답 200만 봤다. 장소 등록부가 생성 JSON(`borrowed-game-copy`)을 import하는 순환 때문에 깨끗한 체크아웃 CI가 실패해 `2012aa7b`에서 빈 JSON을 먼저 깔고 생성하게 고쳤다.
 
 ## 기능 기대치
+
+### contact-threads
+- Feature: 작은 우편함 문의가 질답 스레드가 된다. 문의자는 프로필 "내 1:1 문의"의 각 문의 아래에서 답글을 여러 번 달고(한 시간 10번, 본인 문의만), 운영자는 /dev/admin 문의함에서 답글을 덧붙인다(덮어쓰기 없음, 빈 답글은 상태만 바꿈). 문의자 답글은 확인 중·답변 완료 문의를 접수로 되돌려 dev 우편함 표시가 켜진다(스팸은 그대로). 스레드는 D1 `contact_inquiry_messages`(0008)에만 있고, `admin_response`는 마지막 운영자 답글로 남아 우편함 점·읽음 처리는 그대로. 새 라우트 `POST /api/write/contact-inquiries/reply`(D1 소스만, Supabase면 503).
+- Expect: /profile 문의 카드에 원문 → 운영자 답변·내 답글이 시간순, 그 아래 답글 칸. 답글을 보내면 바로 목록에 붙고, /dev/admin 문의함에서 그 문의가 접수로 보이며 "문의자" 답글이 스레드에 뜬다. 운영자 답글을 저장하면 기존 답변 아래에 하나 더 붙고 문의자 우편함 점이 켜진다.
+- QA: `scripts/d1-write.spec.ts`(본인만·재접수·시간당 10번·시간순 읽기), `admin-d1-writes.spec.ts`(덧붙이기·상태만 변경), `pnpm test:api`·`pnpm test:d1-sync` 통과, d1-schema check.py 0 실패. 확인 못 함: 브라우저 화면(떠 있는 pnpm dev가 11:36 포트 변경 전 프로세스라 로컬 API Worker가 없음).
+- Commits: 이 항목을 추가한 커밋.
 
 ### own-domain-move
 - Feature: workers.dev → 자체 도메인 이전(크롤러로 계정 일일 10만 한도가 터진 2026-11-25·26 대응). main Worker가 맨 앞에서 옛 호스트 `scare-the-spire.flavono123.workers.dev`를 `LEGACY_HOST_REDIRECT`(wrangler.jsonc vars, 비우면 꺼짐) origin으로 같은 경로·쿼리 301(GET·HEAD)·308(그 밖). 기본은 `slseoun_idm` 쿠키 없는 요청(크롤러·첫 방문)만 보내고, 쿠키가 있는 기존 사용자는 옛 호스트에 남긴다(신원 쿠키·localStorage·IndexedDB가 호스트별). `LEGACY_HOST_REDIRECT_SCOPE=all`이면 전부. testbed·버전 미리보기 호스트는 안 건드린다. 배포 smoke는 `scripts/ci-smoke.sh` 하나로 모았고 1027(계정 일일 한도)은 경고 후 통과, 저장소 변수 `CF_SMOKE=off`면 smoke 단계를 모두 건너뛴다. 예전 휴면 설계 `claude/domain-migration-c54d7b`(공지·일정)는 쓰지 않았다.

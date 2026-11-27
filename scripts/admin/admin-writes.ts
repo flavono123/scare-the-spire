@@ -205,53 +205,62 @@ export function checkInquiryReply(input: InquiryReplyInput): { id: string; env: 
   if (!INQUIRY_ID_PATTERN.test(id)) throw new AdminInputError("Invalid inquiry id");
   if (!INQUIRY_STATUSES.includes(status)) throw new AdminInputError("Invalid inquiry status");
   if (response.length > INQUIRY_RESPONSE_MAX) throw new AdminInputError("Response is too long");
-  if (!response && status === "done") throw new AdminInputError("A completed inquiry needs a response");
   const env = d1EnvOf(input.dataEnv);
   if (!env) throw new AdminInputError("Invalid inquiry env");
   return { id, env, response, status };
 }
 
-/** Today's Supabase update: PATCH contact_inquiries?id=eq.<id> (its trigger clears reply_seen_at). */
+/**
+ * The Supabase update: PATCH contact_inquiries?id=eq.<id> (its trigger clears reply_seen_at). A reply
+ * replaces the latest one there (Supabase has no thread); no reply changes only the status.
+ */
 export function inquiryReplyRequest(id: string, response: string, status: InquiryStatus, nowMs: number): RestRequest {
   return {
     method: "PATCH",
     path: "contact_inquiries",
     query: { id: `eq.${id}` },
-    body: {
-      admin_response: response || null,
-      responded_at: response ? new Date(nowMs).toISOString() : null,
-      status: response ? "done" : status,
-    },
+    body: response
+      ? { admin_response: response, responded_at: new Date(nowMs).toISOString(), status: "done" }
+      : { status },
   };
 }
 
 export const INQUIRY_REPLY_COLUMNS = ["admin_response", "responded_at", "status"] as const;
 
 /**
- * The same update on D1 with Supabase's contact_inquiries_clear_reply_seen trigger in the statement
- * (design-runs-profile 532: the C5 CASE): a new or changed reply clears reply_seen_at, so the user's
- * mailbox dot lights again. SQLite evaluates every SET expression on the old row. The outbox row
- * (only when the inquiry is in this database) PATCHes the three columns, as the request above does.
+ * The same on D1, where a reply is appended to the inquiry's thread (contact_inquiry_messages) and
+ * admin_response/responded_at keep the latest one. A reply clears reply_seen_at, as Supabase's
+ * contact_inquiries_clear_reply_seen trigger does, so the user's mailbox dot lights again. No reply
+ * changes only the status. The outbox row (only when the inquiry is in this database) PATCHes the
+ * columns the request above sends; the thread is D1 only.
  */
 export function inquiryReplyStatements(id: string, response: string, status: InquiryStatus, nowMs: number): D1Statement[] {
   const key = id.toLowerCase();
-  const adminResponse = response || null;
-  const respondedAt = response ? tsFromMs(nowMs) : null;
+  const columns = response ? [...INQUIRY_REPLY_COLUMNS] : ["status"];
+  const outbox = outboxStatement(
+    { table: "contact_inquiries", op: "update", match: { id: key }, payload: { read: "contact_inquiries", columns } },
+    nowMs,
+    { sql: "EXISTS (SELECT 1 FROM contact_inquiries WHERE id = ?6)", params: [key] },
+  );
+  const exists = stmt("SELECT id FROM contact_inquiries WHERE id = ?1", key);
+  if (!response) return [stmt("UPDATE contact_inquiries SET status = ?1 WHERE id = ?2", status, key), outbox, exists];
+  const respondedAt = tsFromMs(nowMs);
   return [
     stmt(
-      "UPDATE contact_inquiries SET reply_seen_at = CASE WHEN admin_response IS ?1 AND responded_at IS ?2 THEN reply_seen_at ELSE NULL END, " +
-        "admin_response = ?1, responded_at = ?2, status = ?3 WHERE id = ?4",
-      adminResponse,
+      "UPDATE contact_inquiries SET reply_seen_at = NULL, admin_response = ?1, responded_at = ?2, status = 'done' WHERE id = ?3",
+      response,
       respondedAt,
-      response ? "done" : status,
       key,
     ),
-    outboxStatement(
-      { table: "contact_inquiries", op: "update", match: { id: key }, payload: { read: "contact_inquiries", columns: [...INQUIRY_REPLY_COLUMNS] } },
-      nowMs,
-      { sql: "EXISTS (SELECT 1 FROM contact_inquiries WHERE id = ?6)", params: [key] },
+    outbox,
+    exists,
+    stmt(
+      "INSERT INTO contact_inquiry_messages (inquiry_id, author, message, created_at) " +
+        "SELECT id, 'admin', ?1, ?2 FROM contact_inquiries WHERE id = ?3",
+      response,
+      respondedAt,
+      key,
     ),
-    stmt("SELECT id FROM contact_inquiries WHERE id = ?1", key),
   ];
 }
 

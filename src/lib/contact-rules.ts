@@ -83,3 +83,13 @@ export function contactInquiryRow(input: {
     viewport_height: height,
   };
 }
+
+/** A thread reply (author user): the inquiry id and the trimmed message, or null. */
+export function contactReplyRow(input: { id?: unknown; message?: unknown }): { inquiry_id: string; message: string } | null {
+  if (typeof input.id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input.id)) return null;
+  if (typeof input.message !== "string") return null;
+  const message = input.message.trim();
+  const length = Array.from(message).length;
+  if (length < 1 || length > CONTACT_MESSAGE_MAX_LENGTH) return null;
+  return { inquiry_id: input.id.toLowerCase(), message };
+}

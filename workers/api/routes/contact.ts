@@ -58,6 +58,11 @@ async function handleSubmit(context: UserRouteContext): Promise<Response> {
   return jsonResponse({}, { status: 201 });
 }
 
+/** Supabase has no thread table (retired before threads): only the D1 source answers replies. */
+async function handleReplyOnSupabase(): Promise<Response> {
+  return apiError("unavailable");
+}
+
 export const contactRoutes: readonly ApiRoute[] = [
   {
     id: "me.mailbox",
@@ -77,5 +82,15 @@ export const contactRoutes: readonly ApiRoute[] = [
     query: {},
     body: { maxBytes: 48 * 1024 },
     handle: handleSubmit,
+  },
+  {
+    id: "write.contact-inquiries.reply",
+    method: "POST",
+    path: "/api/write/contact-inquiries/reply",
+    group: "contact",
+    access: "write",
+    query: {},
+    body: { maxBytes: 48 * 1024 },
+    handle: handleReplyOnSupabase,
   },
 ];

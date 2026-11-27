@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronRight, LoaderCircle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
+import { EngagementSpinner } from "@/components/engagement-spinner";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { SpireLikeIcon } from "@/components/spire-icon";
 import Image from "@/components/ui/static-image";
@@ -20,8 +21,11 @@ import {
   useProfileActivity,
 } from "@/hooks/use-profile-activity";
 import {
+  CONTACT_MESSAGE_MAX_LENGTH,
+  ContactInquiryRateLimitError,
   listOwnContactInquiries,
   markOwnContactRepliesSeen,
+  replyToOwnContactInquiry,
   type ContactInquiryHistoryItem,
   type ContactInquiryStatus,
 } from "@/lib/contact-inquiries";
@@ -38,6 +42,11 @@ export interface ProfileActivityCopy {
     empty: string;
     responseTitle: string;
     noResponse: string;
+    userReplyTitle: string;
+    replyLabel: string;
+    replySend: string;
+    replySending: string;
+    replyRateLimited: string;
     status: Record<ContactInquiryStatus, string>;
     unavailableTitle: string;
   };
@@ -109,6 +118,64 @@ function activityHref(
   return localizeHrefWithGameLocale(href, serviceLocale, gameLocale);
 }
 
+function InquiryReplyForm({
+  inquiryId,
+  copy,
+  onSent,
+}: {
+  inquiryId: string;
+  copy: ProfileActivityCopy["inquiries"];
+  onSent: () => void;
+}) {
+  const [draft, setDraft] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "rate-limited" | "unavailable">("idle");
+  const message = draft.trim();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!message || state === "sending") return;
+    setState("sending");
+    try {
+      await replyToOwnContactInquiry(inquiryId, message);
+      setDraft("");
+      setState("idle");
+      onSent();
+    } catch (error) {
+      setState(error instanceof ContactInquiryRateLimitError ? "rate-limited" : "unavailable");
+    }
+  };
+
+  if (state === "unavailable") {
+    return <StorageUnavailableNotice title={copy.unavailableTitle} compact className="mt-3 min-h-20" />;
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-3 space-y-2" data-inquiry-reply-form>
+      <textarea
+        value={draft}
+        onChange={(event) => setDraft(event.target.value.slice(0, CONTACT_MESSAGE_MAX_LENGTH))}
+        aria-label={copy.replyLabel}
+        maxLength={CONTACT_MESSAGE_MAX_LENGTH}
+        rows={2}
+        className="w-full resize-y rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors focus:border-primary/45 focus:bg-card"
+      />
+      {state === "rate-limited" && (
+        <p role="alert" className="text-xs font-medium text-red-800 dark:text-red-200">{copy.replyRateLimited}</p>
+      )}
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={!message || state === "sending"}
+          className="inline-flex h-9 items-center gap-2 rounded-lg border border-primary/40 bg-primary/12 px-4 text-sm font-bold text-primary transition-colors hover:bg-primary/18 disabled:cursor-not-allowed disabled:opacity-35"
+        >
+          {state === "sending" && <EngagementSpinner size={13} />}
+          {state === "sending" ? copy.replySending : copy.replySend}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export function ProfileActivity({
   copy,
   serviceLocale,
@@ -121,6 +188,7 @@ export function ProfileActivity({
   const { userId, ready, unavailable: authUnavailable } = useAuth();
   const [filter, setFilter] = useState<ProfileActivityFilter>("all");
   const [sort, setSort] = useState<ProfileActivitySort>("latest");
+  const [inquiryReload, setInquiryReload] = useState(0);
   const [inquiryResult, setInquiryResult] = useState<{
     userId: string;
     items: ContactInquiryHistoryItem[];
@@ -136,6 +204,10 @@ export function ProfileActivity({
       month: "short",
       day: "numeric",
     }),
+    [serviceLocale],
+  );
+  const timeFormatter = useMemo(
+    () => new Intl.DateTimeFormat(serviceLocale === "ko" ? "ko-KR" : "en-US", { dateStyle: "medium", timeStyle: "short" }),
     [serviceLocale],
   );
 
@@ -155,7 +227,7 @@ export function ProfileActivity({
     return () => {
       cancelled = true;
     };
-  }, [ready, userId]);
+  }, [ready, userId, inquiryReload]);
 
   const activeInquiryResult = inquiryResult?.userId === userId ? inquiryResult : null;
   const inquiries = activeInquiryResult?.items ?? [];
@@ -227,16 +299,37 @@ export function ProfileActivity({
                 <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
                   {inquiry.message}
                 </p>
-                <div className="mt-3 border-t border-border pt-3">
-                  <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                    {copy.inquiries.responseTitle}
-                  </p>
-                  <p className={cn(
-                    "whitespace-pre-wrap break-words text-sm leading-relaxed",
-                    inquiry.adminResponse ? "text-foreground" : "text-muted-foreground",
-                  )}>
-                    {inquiry.adminResponse ?? copy.inquiries.noResponse}
-                  </p>
+                <div className="mt-3 space-y-3 border-t border-border pt-3" data-inquiry-thread>
+                  {inquiry.messages.length === 0 && (
+                    <p className="text-sm text-muted-foreground">{copy.inquiries.noResponse}</p>
+                  )}
+                  {inquiry.messages.map((reply, index) => (
+                    <div
+                      key={`${reply.createdAt}-${index}`}
+                      data-inquiry-message={reply.author}
+                      className={cn("border-l-2 pl-3", reply.author === "admin" ? "border-primary/60" : "border-border")}
+                    >
+                      <p className="mb-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                        <span className={cn(
+                          "font-semibold uppercase tracking-[0.12em]",
+                          reply.author === "admin" && "text-primary",
+                        )}>
+                          {reply.author === "admin" ? copy.inquiries.responseTitle : copy.inquiries.userReplyTitle}
+                        </span>
+                        <time className="ml-auto" dateTime={reply.createdAt}>
+                          {timeFormatter.format(new Date(reply.createdAt))}
+                        </time>
+                      </p>
+                      <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
+                        {reply.message}
+                      </p>
+                    </div>
+                  ))}
+                  <InquiryReplyForm
+                    inquiryId={inquiry.id}
+                    copy={copy.inquiries}
+                    onSent={() => setInquiryReload((value) => value + 1)}
+                  />
                 </div>
               </article>
             ))}

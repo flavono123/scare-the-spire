@@ -181,7 +181,11 @@ export const SHADOW_SPECS: Readonly<Record<string, ShadowSpec>> = {
       }],
     }),
   },
-  "me.profile.inquiries": { rules: rules([{ path: "rows", keys: ["created_at"], limit: 50 }]) },
+  "me.profile.inquiries": {
+    // The threads are D1 only (0008): Supabase has no messages to compare.
+    prepareD1: (answer) => dropKeys(answer, "rows.[]", ["messages"]),
+    rules: rules([{ path: "rows", keys: ["created_at"], limit: 50 }]),
+  },
   "read.puzzlebox.leaderboard": {},
   "me.puzzlebox.leaderboard": {},
   "me.puzzlebox.standings": { rules: rules([set("standings")]) },
