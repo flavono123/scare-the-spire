@@ -106,13 +106,29 @@ function reducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+/** CardTile layers (data-card-layer) each hint paints. */
+const HINT_LAYERS: Record<HintKey, string[]> = {
+  cost: ["cost", "star-cost"],
+  color: ["frame", "cost"],
+  rarity: ["banner", "portrait-border", "type-plaque"],
+  type: ["frame", "portrait-border", "type-plaque"],
+};
+
 /** Card transform / evolution beat: the part goes white, then its real look shows through. */
-function playWhiteFlash(element: HTMLElement | null): void {
-  if (!element || reducedMotion()) return;
-  element.animate(
-    [{ filter: "brightness(0) invert(1)" }, { filter: "brightness(0) invert(1)", offset: 0.25 }, { filter: "brightness(1) invert(0)" }],
-    { duration: 650, easing: "ease-out" },
-  );
+function playWhiteFlash(elements: HTMLElement[]): void {
+  if (reducedMotion()) return;
+  for (const element of elements) {
+    // Keep the layer's own tint under the flash so it ends on its real look.
+    const base = element.style.filter;
+    element.animate(
+      [
+        { filter: `${base} brightness(0) invert(1)` },
+        { filter: `${base} brightness(0) invert(1)`, offset: 0.25 },
+        { filter: `${base} brightness(1) invert(0)` },
+      ],
+      { duration: 650, easing: "ease-out" },
+    );
+  }
 }
 
 export default function BlankCardGame({
@@ -187,6 +203,7 @@ export default function BlankCardGame({
   const [guessQuery, setGuessQuery] = useState("");
   const [pickQuery, setPickQuery] = useState("");
   const [salt] = useState(() => Math.floor(Math.random() * 1000));
+  const [flash, setFlash] = useState<{ key: HintKey; n: number } | null>(null);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const tileRef = useRef<HTMLDivElement>(null);
@@ -375,8 +392,15 @@ export default function BlankCardGame({
   const revealHint = (key: HintKey) => {
     if (status !== "playing") return;
     setHints((current) => ({ ...current, [key]: hintValue(answer, key) }));
-    playWhiteFlash(tileRef.current);
+    setFlash((current) => ({ key, n: (current?.n ?? 0) + 1 }));
   };
+
+  // After the revealed value has rendered, flash only the layers that hint paints.
+  useEffect(() => {
+    if (!flash || !tileRef.current) return;
+    const selector = HINT_LAYERS[flash.key].map((layer) => `[data-card-layer="${layer}"]`).join(",");
+    playWhiteFlash([...tileRef.current.querySelectorAll<HTMLElement>(selector)]);
+  }, [flash]);
 
   const newRound = (next?: CodexCard) => {
     clearClones();
@@ -443,9 +467,7 @@ export default function BlankCardGame({
 
   const wordQuery = normalizeProposal(word);
   const keywordSuggestions = wordFocus && status === "playing"
-    ? keywordNames
-      .filter((name) => !proposals.some((p) => p.text === name) && (!wordQuery || name.includes(wordQuery)))
-      .slice(0, 8)
+    ? keywordNames.filter((name) => !proposals.some((p) => p.text === name) && (!wordQuery || name.includes(wordQuery)))
     : [];
 
   const searchCards = (query: string, limit: number) => {
@@ -566,6 +588,7 @@ export default function BlankCardGame({
                     onChange={(event) => setWord(event.target.value)}
                     onFocus={() => setWordFocus(true)}
                     onBlur={() => setWordFocus(false)}
+                    placeholder="아무 말이나 쳐 보세요"
                     autoComplete="off"
                     className="min-w-0 flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-base outline-none focus:border-amber-400"
                   />
@@ -578,7 +601,7 @@ export default function BlankCardGame({
                   </button>
                   {keywordSuggestions.length > 0 && (
                     // The compendium's keyword entries, title only: as wide as the longest name.
-                    <ul className="absolute left-0 top-full z-30 mt-1 inline-flex flex-col items-stretch">
+                    <ul className="absolute left-0 top-full z-30 mt-1 inline-flex max-h-72 flex-col items-stretch overflow-y-auto">
                       {keywordSuggestions.map((name) => (
                         <li key={name}>
                           <button

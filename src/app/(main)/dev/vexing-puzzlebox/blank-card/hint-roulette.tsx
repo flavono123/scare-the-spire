@@ -76,6 +76,7 @@ export function HintRoulette({
   const [open, setOpen] = useState(false);
   const [spinning, setSpinning] = useState<{ key: HintKey; index: number } | null>(null);
   const [popped, setPopped] = useState<HintKey | null>(null);
+  const [peek, setPeek] = useState<HintKey | null>(null);
   const timers = useRef<number[]>([]);
 
   useEffect(() => () => timers.current.forEach((timer) => window.clearTimeout(timer)), []);
@@ -122,11 +123,19 @@ export function HintRoulette({
             const row = options[key];
             const shown = revealed[key];
             const active = spinning?.key === key;
-            const spread = active || shown !== undefined;
+            const settled = active || shown !== undefined;
+            // Hover or focus fans a stacked row out to preview its options.
+            const spread = settled || peek === key;
             const usable = !disabled && !spinning && hintsLeft > 0 && shown === undefined;
             const { size, gap } = rowMetrics(row.length);
             return (
-              <li key={key}>
+              <li
+                key={key}
+                onMouseEnter={() => setPeek(key)}
+                onMouseLeave={() => setPeek((current) => (current === key ? null : current))}
+                onFocus={() => setPeek(key)}
+                onBlur={() => setPeek((current) => (current === key ? null : current))}
+              >
                 <button
                   type="button"
                   onClick={() => spin(key)}
@@ -135,7 +144,7 @@ export function HintRoulette({
                   onAnimationEnd={() => setPopped((current) => (current === key ? null : current))}
                   className={`flex w-full items-center rounded-md px-2 py-1.5 ${
                     usable ? "hover:bg-zinc-800" : ""
-                  } ${popped === key ? "blank-card-hint-pop" : ""} ${!usable && !spread ? "opacity-40" : ""}`}
+                  } ${popped === key ? "blank-card-hint-pop" : ""} ${!usable && !settled ? "opacity-40" : ""}`}
                 >
                   {row.map((option, index) => {
                     const lit = active ? spinning.index === index : shown === option.value;
@@ -146,7 +155,7 @@ export function HintRoulette({
                         className="shrink-0 rounded-md transition-[margin,opacity,transform] duration-300"
                         style={{
                           marginLeft: index === 0 ? 0 : spread ? gap : 2 - size,
-                          opacity: spread && !lit ? 0.35 : 1,
+                          opacity: settled && !lit ? 0.35 : 1,
                           transform: lit ? "scale(1.18)" : undefined,
                           boxShadow: lit ? "0 0 0 2px #fcd34d, 0 0 14px #fcd34d" : undefined,
                           // Stacked, the first option lies on top.

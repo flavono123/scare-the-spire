@@ -642,6 +642,7 @@ function fitTitleFont(box: HTMLElement, text: HTMLElement) {
 function TypePlaque({ label, filter }: { label: ReactNode; filter?: string }) {
   return (
     <div
+      data-card-layer="type-plaque"
       className="absolute left-1/2 -translate-x-1/2 z-[4] flex items-center justify-center whitespace-nowrap"
       style={{
         top: `${L.plaque.top}%`,
@@ -1140,6 +1141,7 @@ export const CardTile = memo(function CardTile({
   // ─── Energy cost orb ───
   const renderCostOrb = () => costDisplay || costContent ? (
     <div
+      data-card-layer="cost"
       className="absolute z-[6]"
       style={{
         top: `${L.cost.top}%`,
@@ -1173,6 +1175,7 @@ export const CardTile = memo(function CardTile({
   // ─── Star cost (Regent) ───
   const renderStarCost = () => starCostDisplay || starCostContent ? (
     <div
+      data-card-layer="star-cost"
       className="absolute z-[6]"
       style={{
         top: `${L.starCost.top}%`,
@@ -1468,6 +1471,7 @@ export const CardTile = memo(function CardTile({
         </div>
 
         <Image
+          data-card-layer="frame"
           src={frameAsset}
           alt=""
           fill
@@ -1477,7 +1481,7 @@ export const CardTile = memo(function CardTile({
           priority={false}
         />
 
-        <div className="absolute z-[2] pointer-events-none" style={L.portraitBorder}>
+        <div data-card-layer="portrait-border" className="absolute z-[2] pointer-events-none" style={L.portraitBorder}>
           <Image
             src={portraitBorderAsset}
             alt=""
@@ -1491,7 +1495,7 @@ export const CardTile = memo(function CardTile({
         <AfflictionCardOverlay afflictionId={afflictionId} />
         {afflictionOverlay}
 
-        <div className="absolute z-[3] pointer-events-none" style={L.banner}>
+        <div data-card-layer="banner" className="absolute z-[3] pointer-events-none" style={L.banner}>
           <Image
             src="/images/game-assets/card-misc/card_banner.png"
             alt=""
