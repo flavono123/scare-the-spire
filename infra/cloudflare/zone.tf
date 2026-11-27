@@ -46,3 +46,16 @@ resource "cloudflare_bot_management" "main" {
     openai_agent    = "disabled"
   }
 }
+
+# Plain http answers a redirect to https at the edge; TLS below 1.2 is refused.
+resource "cloudflare_zone_setting" "always_use_https" {
+  zone_id    = local.zone_id
+  setting_id = "always_use_https"
+  value      = "on"
+}
+
+resource "cloudflare_zone_setting" "min_tls_version" {
+  zone_id    = local.zone_id
+  setting_id = "min_tls_version"
+  value      = "1.2"
+}

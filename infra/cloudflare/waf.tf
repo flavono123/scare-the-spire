@@ -56,3 +56,27 @@ import {
   to = cloudflare_ruleset.custom_firewall
   id = "zones/${local.zone_id}/1c85ed9942894f85897db4a273e4eb41"
 }
+
+# Free allows one rate limiting rule: per IP, a 10 second window and a 10 second block. A page
+# view makes two or three /api requests, so 50 in 10 seconds is far past any reader while a
+# scraper looping the API stops before the Worker counts it. The Worker's own API_READ_LIMITER
+# (600 a minute) still answers what gets through.
+resource "cloudflare_ruleset" "rate_limit" {
+  zone_id = local.zone_id
+  name    = "default"
+  kind    = "zone"
+  phase   = "http_ratelimit"
+
+  rules = [{
+    description = "api per ip"
+    expression  = "(starts_with(http.request.uri.path, \"/api/\"))"
+    action      = "block"
+    ratelimit = {
+      characteristics     = ["ip.src", "cf.colo.id"]
+      period              = 10
+      requests_per_period = 50
+      mitigation_timeout  = 10
+    }
+    enabled = true
+  }]
+}
