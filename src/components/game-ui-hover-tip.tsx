@@ -70,10 +70,8 @@ export function GameUiHoverTip({
   };
 
   useLayoutEffect(() => {
-    if (!visible) {
-      setPlacement(null);
-      return;
-    }
+    // The tip only renders while visible, and this layout effect re-places it before paint.
+    if (!visible) return;
     updatePlacement();
     const onReposition = () => updatePlacement();
     window.addEventListener("scroll", onReposition, true);
