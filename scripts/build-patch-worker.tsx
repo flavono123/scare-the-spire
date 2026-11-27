@@ -852,6 +852,7 @@ async function main() {
   const env = { ...process.env, PATCH_COMPENDIUM_MANIFEST_FILE: manifestFile };
 
   const count = Math.max(1, Number(process.env.PATCH_HTML_JOBS) || os.availableParallelism());
+  console.log(`patch html: ${count} shards on ${os.availableParallelism()} cpus`);
   await Promise.all(Array.from({ length: count }, (_, index) => runShard(index, count, env)));
 }
 
