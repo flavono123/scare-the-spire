@@ -155,6 +155,7 @@ jobs:
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
       NEXT_PUBLIC_SITE_ORIGIN: ${{ vars.NEXT_PUBLIC_SITE_ORIGIN }}
+      CF_SMOKE_BYPASS: ${{ secrets.CF_SMOKE_BYPASS }}
       # The data env (src/lib/data-env.ts); the name stays until step 7. The builds need no
       # Supabase URL or key since step 6: the steps that check or deploy the Worker's
       # API_SUPABASE_* vars get them in their own env.
@@ -232,6 +233,7 @@ jobs:
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
       NEXT_PUBLIC_SITE_ORIGIN: ${{ vars.NEXT_PUBLIC_SITE_ORIGIN }}
+      CF_SMOKE_BYPASS: ${{ secrets.CF_SMOKE_BYPASS }}
       # The data env (src/lib/data-env.ts); the name stays until step 7. The builds need no
       # Supabase URL or key since step 6: the steps that check or deploy the Worker's
       # API_SUPABASE_* vars get them in their own env.

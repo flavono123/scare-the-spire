@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# OpenTofu for infra/cloudflare with the zone token from .env.local (CLOUDFLARE_ZONE_API_TOKEN).
+# OpenTofu for infra/cloudflare with the zone token and smoke bypass from .env.local
+# (CLOUDFLARE_ZONE_API_TOKEN, CLOUDFLARE_SMOKE_BYPASS).
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 token="$(grep -E '^CLOUDFLARE_ZONE_API_TOKEN=' "$root/.env.local" | tail -1 | cut -d= -f2- | tr -d "\"'")"
 [[ -n "$token" ]] || { echo "CLOUDFLARE_ZONE_API_TOKEN is missing in .env.local" >&2; exit 1; }
-TF_VAR_cloudflare_api_token="$token" exec tofu -chdir="$root/infra/cloudflare" "$@"
+bypass="$(grep -E '^CLOUDFLARE_SMOKE_BYPASS=' "$root/.env.local" | tail -1 | cut -d= -f2- | tr -d "\"'")"
+[[ -n "$bypass" ]] || { echo "CLOUDFLARE_SMOKE_BYPASS is missing in .env.local" >&2; exit 1; }
+TF_VAR_cloudflare_api_token="$token" TF_VAR_smoke_bypass="$bypass" exec tofu -chdir="$root/infra/cloudflare" "$@"

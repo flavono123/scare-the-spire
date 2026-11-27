@@ -1,6 +1,10 @@
 # Deploy smoke helpers for .github/workflows/cloudflare-workers.yml. Source it with $origin set.
 # Cloudflare error 1027 (account daily request limit) says nothing about the deploy, so a smoke
 # that meets it warns and passes. Turn every smoke step off with the repo variable CF_SMOKE=off.
+# CF_SMOKE_BYPASS (secret) rides as x-slseoun-smoke so the zone's challenge rules skip the runner
+# (infra/cloudflare/waf.tf).
+smoke_bypass=()
+if [[ -n "${CF_SMOKE_BYPASS:-}" ]]; then smoke_bypass=(--header "x-slseoun-smoke: ${CF_SMOKE_BYPASS}"); fi
 
 # Prints "limit" when the response is the account daily limit page.
 smoke_limit_hit() {
@@ -13,7 +17,7 @@ smoke() {
   body="$(mktemp)"
 
   for attempt in $(seq 1 30); do
-    status="$(curl --silent --show-error --output "$body" --write-out "%{http_code}" "$url" || true)"
+    status="$(curl --silent --show-error "${smoke_bypass[@]}" --output "$body" --write-out "%{http_code}" "$url" || true)"
     echo "smoke ${url}: HTTP ${status} (attempt ${attempt}/30)"
     case "$status" in
       2*|3*) rm -f "$body"; return 0 ;;
@@ -39,10 +43,10 @@ smoke_static_detail() {
     body="$(mktemp)"
     for attempt in $(seq 1 30); do
       if [[ "$mode" == "rsc" ]]; then
-        status="$(curl --silent --show-error --dump-header "$headers" --header "RSC: 1" --output "$body" --write-out "%{http_code}" "${url}?_rsc=ci" || true)"
+        status="$(curl --silent --show-error "${smoke_bypass[@]}" --dump-header "$headers" --header "RSC: 1" --output "$body" --write-out "%{http_code}" "${url}?_rsc=ci" || true)"
         expected_content_type="text/x-component"
       else
-        status="$(curl --silent --show-error --dump-header "$headers" --header "Accept: text/html" --output "$body" --write-out "%{http_code}" "$url" || true)"
+        status="$(curl --silent --show-error "${smoke_bypass[@]}" --dump-header "$headers" --header "Accept: text/html" --output "$body" --write-out "%{http_code}" "$url" || true)"
         expected_content_type="text/html"
       fi
 
